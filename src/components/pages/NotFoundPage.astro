@@ -1,0 +1,31 @@
+---
+// Страница 404 на нужном языке. Всегда noindex, без canonical и hreflang.
+import ToolCards from '../ToolCards.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { Locale } from '../../config/site';
+import { pagePath } from '../../i18n/routes';
+import { UI } from '../../i18n/ui';
+import { TOOLS } from '../../tools/registry';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = UI[locale].notFound;
+---
+
+<BaseLayout locale={locale} pageId={null} title={t.title} description={t.text} noindex>
+  <section class="not-found">
+    <h1>{t.title}</h1>
+    <p>{t.text}</p>
+    <p><a href={pagePath('home', locale)}>{t.toHome}</a></p>
+  </section>
+  <ToolCards locale={locale} toolIds={TOOLS.map((tool) => tool.id)} />
+</BaseLayout>
+
+<style>
+  .not-found {
+    padding: 40px 0 16px;
+  }
+</style>

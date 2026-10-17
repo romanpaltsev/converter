@@ -1,0 +1,15 @@
+# Texts for the licenses page (/en/licenses). Draft for the owner's review (see CONTENT.md).
+page: licenses
+title: "Third-Party Licenses"
+description: "The open-source libraries this converter is built on, with their licenses, full license texts and links to the source code."
+h1: "Licenses"
+breadcrumb: "Licenses"
+intro: "This converter is built on open-source libraries. Below are the components that run in your browser, their licenses and links to their source code."
+columns:
+  name: "Component"
+  purpose: "Used for"
+  license: "License"
+  source: "Source code"
+lgpl: "libheif and libde265 are distributed under the GNU LGPL version 3. They are loaded into your browser unmodified as a separate WebAssembly module; the source code of these exact versions is linked in the table, and the full texts of the GNU LGPL and the GNU GPL (which the LGPL refers to) are included below."
+patents: "The HEVC (H.265) format that HEIC is based on may be covered by patents."
+fullTexts: "Full license texts"

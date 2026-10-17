@@ -3,7 +3,7 @@
 import { convertImage } from '../pipeline/convert';
 import { loadDecoder } from '../pipeline/decoders';
 import { loadEncoder } from '../pipeline/encoders';
-import { SNIFF_BYTES, sniff } from '../pipeline/sniff';
+import { SNIFF_BYTES, sniff, sniffError } from '../pipeline/sniff';
 import { ConvertError, type Decoder, type Encoder, type EncoderId, type ErrorCode } from '../pipeline/types';
 import type { FromWorker, ToWorker } from './protocol';
 
@@ -17,14 +17,6 @@ const post = (message: FromWorker, transfer: Transferable[] = []) => scope.postM
 
 /** Сколько файлов обработал этот экземпляр worker'а (память WASM после роста не уменьшается). */
 let processed = 0;
-
-const SNIFF_ERRORS: Record<string, ErrorCode> = {
-  avif: 'avif-unsupported',
-  jpeg: 'already-jpeg',
-  png: 'already-png',
-  'other-image': 'unsupported-image',
-  unknown: 'not-image',
-};
 
 /** Ошибки WASM, после которых экземпляр модуля нельзя использовать дальше. */
 function classifyUnexpected(error: unknown): { code: ErrorCode; fatal: true } {
@@ -52,8 +44,8 @@ async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): P
     const readStarted = performance.now();
     const bytes = new Uint8Array(await message.file.arrayBuffer());
     const read = performance.now() - readStarted;
-    const kind = sniff(bytes.subarray(0, SNIFF_BYTES)).kind;
-    if (kind !== 'heic') throw new ConvertError(SNIFF_ERRORS[kind] ?? 'not-image');
+    const notHeic = sniffError(sniff(bytes.subarray(0, SNIFF_BYTES)));
+    if (notHeic) throw new ConvertError(notHeic);
 
     const [decoder, encoder] = await Promise.all([loadDecoder('heic'), loadEncoder(message.options.encoder)]);
     loadedEncoders.set(message.options.encoder, encoder);

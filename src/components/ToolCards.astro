@@ -1,0 +1,82 @@
+---
+// Карточки конвертеров: на главной и в блоке перелинковки.
+import { getEntry } from 'astro:content';
+import type { Locale } from '../config/site';
+import { pagePath, toolPageId } from '../i18n/routes';
+import { getTool } from '../tools/registry';
+
+interface Props {
+  locale: Locale;
+  toolIds: string[];
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { locale, toolIds, headingLevel = 'h3' } = Astro.props;
+const Heading = headingLevel;
+const cards = await Promise.all(
+  toolIds.map(async (id) => {
+    const tool = getTool(id);
+    const entry = await getEntry('tools', `${locale}/${tool.content}`);
+    if (!entry) throw new Error(`Нет текстов ${locale}/${tool.content}`);
+    return { href: pagePath(toolPageId(id), locale), ...entry.data.card };
+  }),
+);
+---
+
+<ul class="cards">
+  {
+    cards.map((card) => (
+      <li class="card">
+        <Heading class="card__title">
+          <a href={card.href}>{card.title}</a>
+        </Heading>
+        <p class="card__text">{card.text}</p>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .card {
+    position: relative;
+    padding: 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+
+  .card:hover {
+    border-color: var(--accent);
+  }
+
+  .card__title {
+    margin: 0 0 6px;
+    font-size: 1.15rem;
+  }
+
+  .card__title a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  /* вся карточка кликабельна, но ссылка одна — для доступности */
+  .card__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .card__text {
+    margin: 0;
+    color: var(--muted);
+  }
+</style>

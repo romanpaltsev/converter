@@ -1,0 +1,45 @@
+---
+// Переключатель языка: ведёт на ту же страницу на другом языке (для 404 — на главную).
+import { LOCALE_META, LOCALES, type Locale } from '../config/site';
+import { pagePath, type PageId } from '../i18n/routes';
+import { UI } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  pageId: PageId | null;
+}
+
+const { locale, pageId } = Astro.props;
+const targets = LOCALES.filter((l) => l !== locale).map((l) => ({
+  locale: l,
+  href: pagePath(pageId ?? 'home', l),
+  label: LOCALE_META[l].label,
+}));
+---
+
+<nav class="lang" aria-label={UI[locale].nav.switchLanguage}>
+  {
+    targets.map((t) => (
+      <a href={t.href} hreflang={t.locale} lang={LOCALE_META[t.locale].htmlLang}>
+        {t.label}
+      </a>
+    ))
+  }
+</nav>
+
+<style>
+  .lang a {
+    display: inline-block;
+    padding: 6px 10px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: 0.9rem;
+    text-decoration: none;
+    color: var(--text);
+  }
+
+  .lang a:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+</style>

@@ -1,0 +1,46 @@
+# Texts for /en/heic-to-png. Draft for the owner's review (see CONTENT.md).
+title: "HEIC to PNG Converter — Lossless, in Your Browser"
+description: "Convert HEIC to PNG without losing quality. Free, no sign-up, and your files are never uploaded. Great for editing, design and printing."
+h1: "HEIC to PNG Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "HEIC to PNG"
+card:
+  title: "HEIC → PNG"
+  text: "Lossless copies for editing, design and printing."
+app:
+  name: "HEIC to PNG Converter"
+  description: "An online HEIC to PNG converter that creates lossless images in your browser without uploading your photos."
+howTo:
+  title: "How to convert HEIC to PNG"
+  steps:
+    - "Click the box above or drag your HEIC files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each PNG separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your photos stay with you"
+      text: "Everything runs on your device. Photos are never uploaded to a server, so nobody else ever sees them."
+    - title: "No quality loss"
+      text: "PNG keeps every pixel exactly as it is — handy when the photo is headed for an editor or a printer."
+    - title: "You control the metadata"
+      text: "By default we keep the date the photo was taken and strip the location and other details. One checkbox keeps everything."
+    - title: "Batch conversion"
+      text: "Convert up to 100 photos at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What's the difference between PNG and JPG?"
+      a: "PNG is lossless: not a single pixel changes. JPG uses lossy compression but makes files several times smaller. JPG is usually better for sharing photos, PNG for editing and printing."
+    - q: "Why are the PNG files so large?"
+      a: "Lossless compression can't throw away fine detail, and photos are full of it. A 24 MP iPhone photo saved as PNG takes tens of megabytes. If file size matters, choose JPG."
+    - q: "What is a HEIC file?"
+      a: "HEIC is the photo format iPhones and iPads use by default. It stores photos compactly, but many apps and websites can't open it."
+    - q: "Is transparency preserved?"
+      a: "Yes. If a HEIC file has transparency (an alpha channel), it is carried over to the PNG. Regular camera photos don't have transparency."
+    - q: "Will rotation and colors be preserved?"
+      a: "Yes. Photos come out rotated the same way as in your phone's gallery, and the color profile (usually Display P3 on iPhones) is embedded in the PNG, so colors don't look washed out."
+    - q: "Is it safe to convert my photos here?"
+      a: "Yes. The site only downloads the converter itself; your photos are processed in your browser and are never sent to a server."
+    - q: "What happens to the location and the date taken?"
+      a: "By default the date and time the photo was taken are kept, while GPS location, phone model and other details are removed. Tick “Keep all metadata” to copy the full EXIF data, including location."

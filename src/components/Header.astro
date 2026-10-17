@@ -1,0 +1,67 @@
+---
+import { SITE_NAME, type Locale } from '../config/site';
+import { pagePath, type PageId } from '../i18n/routes';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import ProButton from './ProButton.astro';
+
+interface Props {
+  locale: Locale;
+  pageId: PageId | null;
+}
+
+const { locale, pageId } = Astro.props;
+---
+
+<header class="header">
+  <div class="container header__inner">
+    <a class="logo" href={pagePath('home', locale)}>
+      <svg class="logo__icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+        <rect x="2" y="2" width="20" height="20" rx="6" fill="currentColor"></rect>
+        <path class="logo__arrows" d="M7 9.5h7.5M11.5 6.5l3 3-3 3M17 14.5H9.5M12.5 11.5l-3 3 3 3" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+      </svg>
+      <span>{SITE_NAME[locale]}</span>
+    </a>
+    <div class="header__actions">
+      <ProButton />
+      <LanguageSwitcher locale={locale} pageId={pageId} />
+    </div>
+  </div>
+</header>
+
+<style>
+  .header {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 56px;
+  }
+
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .logo__icon {
+    color: var(--accent);
+  }
+
+  .logo__arrows {
+    stroke: var(--bg);
+  }
+
+  .header__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+</style>

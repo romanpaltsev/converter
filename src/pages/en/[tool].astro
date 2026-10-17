@@ -1,0 +1,13 @@
+---
+// Страницы-конвертеры строятся из реестра инструментов: слаг на этом языке → id инструмента.
+import ToolPage from '../../components/pages/ToolPage.astro';
+import { TOOLS } from '../../tools/registry';
+
+export function getStaticPaths() {
+  return TOOLS.map((tool) => ({ params: { tool: tool.slugs.en }, props: { toolId: tool.id } }));
+}
+
+const { toolId } = Astro.props;
+---
+
+<ToolPage toolId={toolId} locale="en" />

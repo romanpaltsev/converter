@@ -1,0 +1,44 @@
+---
+// Мета-теги страницы: title, description, canonical, hreflang, robots, Open Graph, JSON-LD.
+import { PUBLIC_INDEXING } from 'astro:env/server';
+import { LOCALE_META, LOCALES, SITE_NAME, type Locale } from '../config/site';
+import { absoluteUrl, alternates, pagePath, type PageId } from '../i18n/routes';
+import JsonLd from './JsonLd.astro';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+  /** null — страница без адреса в таблице маршрутов (404): без canonical и hreflang. */
+  pageId: PageId | null;
+  noindex?: boolean;
+  jsonLd?: unknown[];
+}
+
+const { locale, title, description, pageId, noindex = false, jsonLd = [] } = Astro.props;
+const site = import.meta.env.SITE;
+const canonical = pageId ? absoluteUrl(site, pagePath(pageId, locale)) : null;
+const links = pageId ? alternates(pageId, site) : [];
+// В тестовом режиме (PUBLIC_INDEXING=false) — noindex на всех страницах
+const robots = !PUBLIC_INDEXING || noindex ? 'noindex, nofollow' : null;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+{robots && <meta name="robots" content={robots} />}
+{canonical && <link rel="canonical" href={canonical} />}
+{links.map((link) => <link rel="alternate" hreflang={link.hreflang} href={link.href} />)}
+<meta name="color-scheme" content="light dark" />
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#101216" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={SITE_NAME[locale]} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+{canonical && <meta property="og:url" content={canonical} />}
+<meta property="og:locale" content={LOCALE_META[locale].ogLocale} />
+{LOCALES.filter((l) => l !== locale).map((l) => <meta property="og:locale:alternate" content={LOCALE_META[l].ogLocale} />)}
+<JsonLd data={jsonLd} />

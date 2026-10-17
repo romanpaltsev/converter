@@ -1,0 +1,67 @@
+---
+// Главная-хаб: короткое описание сервиса и карточки всех конвертеров.
+import { getEntry } from 'astro:content';
+import ToolCards from '../ToolCards.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { Locale } from '../../config/site';
+import { TOOLS } from '../../tools/registry';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const entry = await getEntry('pages', `${locale}/home`);
+if (entry?.data.page !== 'home') throw new Error(`Нет текстов главной (${locale})`);
+const c = entry.data;
+---
+
+<BaseLayout locale={locale} pageId="home" title={c.title} description={c.description}>
+  <section class="hero">
+    <h1>{c.h1}</h1>
+    <p class="lead">{c.intro}</p>
+  </section>
+  <section>
+    <h2>{c.toolsTitle}</h2>
+    <ToolCards locale={locale} toolIds={TOOLS.map((t) => t.id)} />
+  </section>
+  <ul class="features">
+    {
+      c.features.map((f) => (
+        <li>
+          <h3>{f.title}</h3>
+          <p>{f.text}</p>
+        </li>
+      ))
+    }
+  </ul>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: 32px 0 8px;
+  }
+
+  .lead {
+    color: var(--muted);
+    font-size: 1.1rem;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px 24px;
+    margin: 40px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .features h3 {
+    margin-bottom: 4px;
+  }
+
+  .features p {
+    margin: 0;
+    color: var(--muted);
+  }
+</style>

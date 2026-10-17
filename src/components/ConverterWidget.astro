@@ -1,0 +1,93 @@
+---
+// Виджет конвертера: разметка рендерится на сервере, поведение — src/converter/widget/controller.ts.
+// До выбора первого файла WASM не загружается.
+import '../styles/converter.css';
+import { MAX_FILES_PER_BATCH, type Locale } from '../config/site';
+import type { WidgetConfig } from '../converter/widget/config';
+import { UI } from '../i18n/ui';
+import { INPUT_FORMATS, OUTPUT_FORMATS, type ToolConfig } from '../tools/registry';
+
+interface Props {
+  tool: ToolConfig;
+  locale: Locale;
+}
+
+const { tool, locale } = Astro.props;
+const t = UI[locale].widget;
+const input = INPUT_FORMATS[tool.inputFormats[0]!];
+const outputs = tool.outputs.map((id) => ({ id, ...OUTPUT_FORMATS[id] }));
+const initial = OUTPUT_FORMATS[tool.defaultOutput];
+const config: WidgetConfig = {
+  toolId: tool.id,
+  locale,
+  decoder: input.decoder,
+  outputs,
+  defaultOutput: tool.defaultOutput,
+  maxFiles: MAX_FILES_PER_BATCH,
+  zipName: tool.slugs.en,
+  strings: t,
+};
+const id = `cv-${tool.id}`;
+---
+
+<section class="converter" data-converter aria-label={t.dropTitle}>
+  <script type="application/json" data-converter-config set:html={JSON.stringify(config).replace(/</g, '\\u003c')} />
+  <button type="button" class="dropzone" data-dropzone aria-describedby={`${id}-hint`}>
+    <svg class="dropzone__icon" viewBox="0 0 24 24" width="36" height="36" aria-hidden="true">
+      <path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <span class="dropzone__title">{t.dropTitle}</span>
+    <span class="dropzone__action">{t.dropAction}</span>
+    <span class="dropzone__hint" id={`${id}-hint`}>{t.dropHint}</span>
+  </button>
+  <input type="file" class="visually-hidden" data-input multiple accept={input.accept} tabindex="-1" aria-hidden="true" />
+
+  <form class="settings" data-settings aria-label={t.settings}>
+    <fieldset class="settings__format">
+      <legend class="settings__label">{t.format}</legend>
+      <div class="segmented">
+        {
+          outputs.map((output) => (
+            <label class="segmented__option">
+              <input type="radio" name="format" value={output.id} checked={output.id === tool.defaultOutput} />
+              <span>{output.label}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+    <div class="settings__quality" data-quality-row hidden={!initial.hasQuality}>
+      <label class="settings__label" for={`${id}-quality`}>{t.quality}</label>
+      <input id={`${id}-quality`} type="range" name="quality" min="1" max="100" step="1" value="90" data-quality />
+      <output for={`${id}-quality`} data-quality-value>90</output>
+    </div>
+    <div class="settings__meta">
+      <label class="checkbox">
+        <input type="checkbox" name="keepMetadata" aria-describedby={`${id}-meta-hint`} />
+        <span>{t.keepMetadata}</span>
+      </label>
+      <p class="settings__hint" id={`${id}-meta-hint`}>{t.keepMetadataHint}</p>
+    </div>
+    <p class="notice notice--warning" data-png-warning hidden={!initial.largeFiles}>{t.pngWarning}</p>
+  </form>
+
+  <noscript><p class="notice notice--error">{t.noscript}</p></noscript>
+  <p class="notice" data-notice aria-live="polite" hidden></p>
+  <p class="converter__status" data-status role="status" aria-live="polite"></p>
+
+  <div class="converter__results" data-results hidden>
+    <ul class="files" data-files></ul>
+    <p class="settings__hint" data-settings-hint hidden>{t.settingsChanged}</p>
+    <div class="converter__actions">
+      <button type="button" class="button button--primary" data-zip disabled>{t.downloadAll}</button>
+      <button type="button" class="button" data-reconvert hidden>{t.reconvert}</button>
+      <button type="button" class="button button--ghost" data-clear>{t.clear}</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { initConverters } from '../converter/widget/controller';
+
+  initConverters();
+</script>

@@ -1,0 +1,62 @@
+---
+import { SITE_NAME, type Locale } from '../config/site';
+import { pagePath, toolPageId } from '../i18n/routes';
+import { UI } from '../i18n/ui';
+import { TOOLS } from '../tools/registry';
+import { getEntry } from 'astro:content';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = UI[locale];
+const tools = await Promise.all(
+  TOOLS.map(async (tool) => {
+    const entry = await getEntry('tools', `${locale}/${tool.content}`);
+    return { href: pagePath(toolPageId(tool.id), locale), title: entry?.data.card.title ?? tool.id };
+  }),
+);
+---
+
+<footer class="footer">
+  <div class="container">
+    <p class="footer__privacy">{t.footer.privacy}</p>
+    <nav aria-label={t.nav.allTools}>
+      <ul class="footer__links">
+        {
+          tools.map((tool) => (
+            <li>
+              <a href={tool.href}>{tool.title}</a>
+            </li>
+          ))
+        }
+        <li><a href={pagePath('licenses', locale)}>{t.nav.licenses}</a></li>
+      </ul>
+    </nav>
+    <p class="footer__name">{SITE_NAME[locale]}</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: 56px;
+    padding: 24px 0 32px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    margin: 0 0 12px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer__name {
+    margin: 0;
+  }
+</style>

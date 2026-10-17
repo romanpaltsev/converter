@@ -1,0 +1,12 @@
+---
+// Структурированные данные. Тип application/ld+json не исполняется браузером, поэтому CSP его не блокирует.
+import { serializeJsonLd } from '../lib/seo';
+
+interface Props {
+  data: unknown[];
+}
+
+const { data } = Astro.props;
+---
+
+{data.map((item) => <script type="application/ld+json" set:html={serializeJsonLd(item)} />)}

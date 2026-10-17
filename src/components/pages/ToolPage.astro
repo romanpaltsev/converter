@@ -1,0 +1,197 @@
+---
+// Страница-конвертер: H1 и подзаголовок, виджет в первом экране, инструкция, «Почему здесь», FAQ, перелинковка.
+import { getEntry } from 'astro:content';
+import AdSlot from '../AdSlot.astro';
+import ConverterWidget from '../ConverterWidget.astro';
+import ToolCards from '../ToolCards.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { Locale } from '../../config/site';
+import { absoluteUrl, pagePath, toolPageId } from '../../i18n/routes';
+import { UI } from '../../i18n/ui';
+import { breadcrumbList, faqPage, webApplication } from '../../lib/seo';
+import { getTool } from '../../tools/registry';
+
+interface Props {
+  toolId: string;
+  locale: Locale;
+}
+
+const { toolId, locale } = Astro.props;
+const tool = getTool(toolId);
+const entry = await getEntry('tools', `${locale}/${tool.content}`);
+if (!entry) throw new Error(`Нет текстов ${locale}/${tool.content}`);
+const c = entry.data;
+const pageId = toolPageId(tool.id);
+const site = import.meta.env.SITE;
+const url = absoluteUrl(site, pagePath(pageId, locale));
+const jsonLd = [
+  webApplication({ name: c.app.name, description: c.app.description, url, locale }),
+  faqPage(c.faq.items),
+  breadcrumbList([
+    { name: UI[locale].nav.home, url: absoluteUrl(site, pagePath('home', locale)) },
+    { name: c.breadcrumb, url },
+  ]),
+];
+---
+
+<BaseLayout locale={locale} pageId={pageId} title={c.title} description={c.description} jsonLd={jsonLd}>
+  <nav class="breadcrumbs" aria-label={UI[locale].nav.breadcrumbs}>
+    <a href={pagePath('home', locale)}>{UI[locale].nav.home}</a>
+    <span aria-hidden="true">›</span>
+    <span aria-current="page">{c.breadcrumb}</span>
+  </nav>
+  <h1>{c.h1}</h1>
+  <p class="lead">{c.subtitle}</p>
+
+  <ConverterWidget tool={tool} locale={locale} />
+
+  <AdSlot locale={locale} placement="tool-after-widget" />
+
+  <section class="section">
+    <h2>{c.howTo.title}</h2>
+    <ol class="steps">
+      {c.howTo.steps.map((step) => <li>{step}</li>)}
+    </ol>
+  </section>
+
+  <section class="section">
+    <h2>{c.why.title}</h2>
+    <ul class="features">
+      {
+        c.why.items.map((item) => (
+          <li>
+            <h3>{item.title}</h3>
+            <p>{item.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="section">
+    <h2>{c.faq.title}</h2>
+    <div class="faq">
+      {
+        c.faq.items.map((item) => (
+          <details>
+            <summary>{item.q}</summary>
+            <p>{item.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <h2>{UI[locale].tool.relatedTitle}</h2>
+    <ToolCards locale={locale} toolIds={tool.related} />
+  </section>
+</BaseLayout>
+
+<style>
+  .breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 16px 0 12px;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .lead {
+    margin: -4px 0 16px;
+    color: var(--muted);
+    font-size: 1.05rem;
+  }
+
+  .section {
+    margin-top: 40px;
+  }
+
+  .steps {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  .steps li {
+    position: relative;
+    padding-left: 44px;
+    min-height: 32px;
+    counter-increment: step;
+  }
+
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: -2px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .features h3 {
+    margin-bottom: 4px;
+  }
+
+  .features p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .faq {
+    border-top: 1px solid var(--border);
+  }
+
+  .faq details {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .faq summary {
+    padding: 14px 32px 14px 0;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+    position: relative;
+  }
+
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq summary::after {
+    content: '+';
+    position: absolute;
+    right: 4px;
+    top: 10px;
+    font-size: 1.4rem;
+    color: var(--accent);
+  }
+
+  .faq details[open] summary::after {
+    content: '−';
+  }
+
+  .faq p {
+    margin: 0 0 14px;
+    color: var(--muted);
+  }
+</style>

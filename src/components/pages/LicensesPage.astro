@@ -1,0 +1,145 @@
+---
+// «Лицензии»: сторонние библиотеки, их лицензии, полные тексты, ссылки на исходники, упоминание патентов HEVC.
+import { getEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { Locale } from '../../config/site';
+import { COMPONENTS, IJG_NOTICE, LICENSE_TITLES, type LicenseTextId } from '../../content/licenses/components';
+import { absoluteUrl, pagePath } from '../../i18n/routes';
+import { UI } from '../../i18n/ui';
+import { breadcrumbList } from '../../lib/seo';
+import lgpl from '../../content/licenses/LGPL-3.0.txt?raw';
+import gpl from '../../content/licenses/GPL-3.0.txt?raw';
+import apache from '../../content/licenses/Apache-2.0.txt?raw';
+import libjpegTurbo from '../../content/licenses/libjpeg-turbo.txt?raw';
+import squooshBsd from '../../content/licenses/squoosh-BSD.txt?raw';
+import pngMit from '../../content/licenses/png-crate-MIT.txt?raw';
+import clientZipMit from '../../content/licenses/client-zip-MIT.txt?raw';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const entry = await getEntry('pages', `${locale}/licenses`);
+if (entry?.data.page !== 'licenses') throw new Error(`Нет текстов страницы лицензий (${locale})`);
+const c = entry.data;
+const TEXTS: Record<LicenseTextId, string> = {
+  'lgpl-3.0': lgpl,
+  'gpl-3.0': gpl,
+  'apache-2.0': apache,
+  'libjpeg-turbo': libjpegTurbo,
+  'squoosh-bsd': squooshBsd,
+  'png-mit': pngMit,
+  'client-zip-mit': clientZipMit,
+};
+const ORDER: LicenseTextId[] = ['lgpl-3.0', 'gpl-3.0', 'libjpeg-turbo', 'apache-2.0', 'squoosh-bsd', 'png-mit', 'client-zip-mit'];
+const site = import.meta.env.SITE;
+const jsonLd = [
+  breadcrumbList([
+    { name: UI[locale].nav.home, url: absoluteUrl(site, pagePath('home', locale)) },
+    { name: c.breadcrumb, url: absoluteUrl(site, pagePath('licenses', locale)) },
+  ]),
+];
+---
+
+<BaseLayout locale={locale} pageId="licenses" title={c.title} description={c.description} jsonLd={jsonLd}>
+  <h1 class="title">{c.h1}</h1>
+  <p>{c.intro}</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">{c.columns.name}</th>
+          <th scope="col">{c.columns.purpose}</th>
+          <th scope="col">{c.columns.license}</th>
+          <th scope="col">{c.columns.source}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          COMPONENTS.map((component) => (
+            <tr>
+              <td>
+                <strong>{component.name}</strong> {component.version !== '—' && <span class="version">{component.version}</span>}
+              </td>
+              <td>{component.purpose[locale]}</td>
+              <td>{component.license}</td>
+              <td>
+                <a href={component.source} rel="noopener">
+                  GitHub
+                </a>
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  <p>{c.lgpl}</p>
+  <p lang="en">{IJG_NOTICE}</p>
+  <p>{c.patents}</p>
+
+  <h2>{c.fullTexts}</h2>
+  {
+    ORDER.map((id) => (
+      <details class="license" open={id === 'lgpl-3.0'}>
+        <summary lang="en">{LICENSE_TITLES[id]}</summary>
+        <pre lang="en">{TEXTS[id]}</pre>
+      </details>
+    ))
+  }
+</BaseLayout>
+
+<style>
+  .title {
+    margin-top: 32px;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+    margin: 0 0 16px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+
+  th,
+  td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .version {
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .license {
+    margin: 8px 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-small);
+  }
+
+  .license summary {
+    padding: 10px 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .license pre {
+    margin: 0;
+    padding: 12px;
+    max-height: 420px;
+    overflow: auto;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    white-space: pre-wrap;
+    background: var(--surface);
+  }
+</style>

@@ -1,0 +1,48 @@
+# Texts for /en/heic-to-jpg. Draft for the owner's review (see CONTENT.md).
+title: "HEIC to JPG Converter — Free, Private, No Upload"
+description: "Convert HEIC photos from your iPhone to JPG right in your browser. Free, no sign-up, and your files never leave your device. Convert many photos at once."
+h1: "HEIC to JPG Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "HEIC to JPG"
+card:
+  title: "HEIC → JPG"
+  text: "Turn iPhone photos into the format that opens everywhere."
+app:
+  name: "HEIC to JPG Converter"
+  description: "An online HEIC to JPG converter that runs in your browser without uploading your photos."
+howTo:
+  title: "How to convert HEIC to JPG"
+  steps:
+    - "Click the box above or drag your HEIC files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each JPG separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your photos stay with you"
+      text: "Everything runs on your device. Photos are never uploaded to a server, so nobody else ever sees them."
+    - title: "You control the metadata"
+      text: "By default we keep the date the photo was taken and strip the location, phone model and other details. One checkbox keeps everything."
+    - title: "MozJPEG encoding"
+      text: "JPGs are made with MozJPEG, Mozilla's advanced JPEG encoder. Fine-tune the quality with the slider."
+    - title: "Batch conversion"
+      text: "Convert up to 100 photos at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is a HEIC file?"
+      a: "HEIC is the photo format iPhones and iPads use by default. It is based on HEVC compression and stores photos more compactly than JPG, but many apps, websites and older versions of Windows can't open it."
+    - q: "How do I open HEIC files on Windows?"
+      a: "Windows 10 and 11 need the HEIF Image Extensions and the HEVC Video Extensions from the Microsoft Store (the latter may be paid). Converting to JPG is simpler: every app can open a JPG."
+    - q: "How do I make my iPhone take photos in JPG instead of HEIC?"
+      a: "Go to Settings → Camera → Formats and choose Most Compatible. New photos will be saved as JPG; the ones you already have stay HEIC, and you can convert them here."
+    - q: "Will converting to JPG reduce quality?"
+      a: "JPG uses lossy compression, so the image changes slightly. At the default quality of 90 the difference is usually impossible to see, and the resolution stays the same. If you need a lossless copy, pick PNG."
+    - q: "Why is the JPG bigger than the original HEIC?"
+      a: "HEIC compresses photos more efficiently than JPG, so the same photo at similar quality takes up more space as a JPG. That's expected. Lower the quality slider if you need smaller files."
+    - q: "Is it safe to convert my photos here?"
+      a: "Yes. The site only downloads the converter itself; your photos are processed in your browser and are never sent to a server."
+    - q: "What happens to the location and the date taken?"
+      a: "By default the date and time the photo was taken are kept, while GPS location, phone model, serial numbers and other details are removed. Tick “Keep all metadata” to copy the full EXIF data, including location."
+    - q: "Will rotation and colors be preserved?"
+      a: "Yes. Photos come out rotated the same way as in your phone's gallery, and the color profile (usually Display P3 on iPhones) is carried over, so colors don't look washed out."

@@ -1,0 +1,31 @@
+---
+// Место под рекламный блок. При ADS_ENABLED=false не выводит ничего и не занимает места.
+import { ADS_ENABLED } from 'astro:env/server';
+import type { Locale } from '../config/site';
+
+interface Props {
+  locale: Locale;
+  /** Имя места размещения — для будущей разметки РСЯ. */
+  placement: string;
+}
+
+const { locale, placement } = Astro.props;
+const label = locale === 'ru' ? 'Реклама' : 'Advertisement';
+---
+
+{
+  ADS_ENABLED && (
+    <aside class="ad-slot" data-placement={placement} aria-label={label}>
+      <!-- сюда подключается рекламный блок -->
+    </aside>
+  )
+}
+
+<style>
+  .ad-slot {
+    min-height: 120px;
+    margin: 24px 0;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+  }
+</style>

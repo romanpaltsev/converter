@@ -1,0 +1,349 @@
+/* Стили виджета конвертера. Глобальные (не scoped): строки файлов создаёт JavaScript. */
+
+.converter {
+  display: grid;
+  gap: 16px;
+  margin: 8px 0 0;
+}
+
+.dropzone {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 168px;
+  padding: 24px 16px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background-color 0.15s;
+}
+
+.dropzone:hover,
+.dropzone.is-dragging {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.dropzone__icon {
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.dropzone__title {
+  font-size: 1.15rem;
+  font-weight: 650;
+}
+
+.dropzone__action {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.dropzone__hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.settings {
+  display: grid;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.settings__format {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.settings__label {
+  float: left; /* legend внутри flex-контейнера */
+  font-weight: 600;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--surface-strong);
+}
+
+.segmented__option {
+  position: relative;
+}
+
+.segmented__option input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.segmented__option span {
+  display: block;
+  min-width: 64px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  text-align: center;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.segmented__option input:checked + span {
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+.segmented__option input:focus-visible + span {
+  outline: 3px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.settings__quality {
+  display: grid;
+  grid-template-columns: auto 1fr 3ch;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings__quality[hidden],
+.notice[hidden],
+.settings__hint[hidden] {
+  display: none;
+}
+
+.settings__quality input[type='range'] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.settings__quality output {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.checkbox input {
+  width: 18px;
+  height: 18px;
+  margin: 3px 0 0;
+  accent-color: var(--accent);
+  flex: none;
+}
+
+.settings__hint {
+  margin: 4px 0 0 28px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.converter__results .settings__hint {
+  margin: 0;
+}
+
+.notice {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--radius-small);
+  background: var(--surface);
+  font-size: 0.95rem;
+}
+
+.notice--warning,
+.notice[data-kind='warning'] {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.notice--error,
+.notice[data-kind='error'] {
+  background: var(--error-bg);
+  color: var(--error);
+}
+
+.converter__status {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* пустая живая область остаётся в DOM (так её надёжнее озвучивают), но не занимает места */
+.converter__status:empty {
+  margin-top: -16px;
+}
+
+.converter__results {
+  display: grid;
+  gap: 12px;
+}
+
+.converter__results[hidden] {
+  display: none;
+}
+
+.files {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.file {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.file__thumb {
+  display: block;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-small);
+  background: var(--surface-strong);
+  overflow: hidden;
+}
+
+.file__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.file[data-status='converting'] .file__thumb {
+  background: linear-gradient(90deg, var(--surface-strong) 25%, var(--accent-soft) 50%, var(--surface-strong) 75%);
+  background-size: 200% 100%;
+  animation: cv-pulse 1.2s linear infinite;
+}
+
+@keyframes cv-pulse {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.file__body {
+  min-width: 0;
+}
+
+.file__name {
+  margin: 0;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file__meta,
+.file__note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.file[data-status='done'] .file__meta {
+  color: var(--success);
+}
+
+.file__note--error,
+.file[data-status='error'] .file__meta {
+  color: var(--error);
+}
+
+.converter__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.button[hidden] {
+  display: none;
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.button--primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.button--primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: var(--accent-text);
+}
+
+.button--ghost {
+  border-color: transparent;
+  background: transparent;
+}
+
+.button--small {
+  min-height: 36px;
+  padding: 6px 14px;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 420px) {
+  .file {
+    grid-template-columns: 40px 1fr;
+  }
+
+  .file__thumb {
+    width: 40px;
+    height: 40px;
+  }
+
+  .file__download {
+    grid-column: 1 / -1;
+  }
+}

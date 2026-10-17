@@ -1,5 +1,7 @@
 // Определение формата по сигнатуре файла, а не по расширению.
 
+import type { ErrorCode } from './types';
+
 export type SniffResult =
   | { kind: 'heic' }
   | { kind: 'avif' }
@@ -62,4 +64,22 @@ export function sniff(bytes: Uint8Array): SniffResult {
   const tiffHeader = ascii(bytes, 0, 4);
   if (tiffHeader === 'II*\0' || tiffHeader === 'MM\0*') return { kind: 'other-image', format: 'tiff' };
   return { kind: 'unknown' };
+}
+
+/** Код ошибки для файла, который не нужно (или нельзя) конвертировать; null — это HEIC. */
+export function sniffError(result: SniffResult): ErrorCode | null {
+  switch (result.kind) {
+    case 'heic':
+      return null;
+    case 'avif':
+      return 'avif-unsupported';
+    case 'jpeg':
+      return 'already-jpeg';
+    case 'png':
+      return 'already-png';
+    case 'other-image':
+      return 'unsupported-image';
+    default:
+      return 'not-image';
+  }
 }

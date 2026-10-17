@@ -1,0 +1,159 @@
+/* Глобальные стили: токены темы, базовая типографика. Тема — по prefers-color-scheme.
+   Контраст цветов текста и элементов управления — не ниже WCAG AA (проверяется axe в e2e). */
+
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --surface: #f4f6f9;
+  --surface-strong: #e9edf2;
+  --text: #16191d;
+  --muted: #555e69;
+  --border: #d3d9e0;
+  --accent: #1f55d1;
+  --accent-hover: #1a47b0;
+  --accent-text: #ffffff;
+  --accent-soft: #e8efff;
+  --success: #17703f;
+  --warning-bg: #fff6e0;
+  --warning-text: #6b4600;
+  --error: #b42318;
+  --error-bg: #fdeceb;
+  --focus: #1f55d1;
+  --radius: 12px;
+  --radius-small: 8px;
+  --shadow: 0 1px 2px rgb(16 24 40 / 6%), 0 1px 3px rgb(16 24 40 / 10%);
+  --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --content-width: 46rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #101216;
+    --surface: #181b21;
+    --surface-strong: #232830;
+    --text: #e9ebee;
+    --muted: #a7afba;
+    --border: #343a44;
+    --accent: #84a9ff;
+    --accent-hover: #a3bfff;
+    --accent-text: #0c1222;
+    --accent-soft: #1b2540;
+    --success: #6fd39d;
+    --warning-bg: #3a2c0c;
+    --warning-text: #f3cf86;
+    --error: #ff9b91;
+    --error-bg: #3b1714;
+    --focus: #a3bfff;
+    --shadow: none;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 1rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+  margin: 0 0 0.6em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(1.6rem, 1.2rem + 2vw, 2.25rem);
+  letter-spacing: -0.01em;
+}
+
+h2 {
+  font-size: clamp(1.3rem, 1.1rem + 1vw, 1.6rem);
+}
+
+h3 {
+  font-size: 1.1rem;
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+a {
+  color: var(--accent);
+  text-underline-offset: 0.15em;
+}
+
+a:hover {
+  color: var(--accent-hover);
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+img {
+  max-width: 100%;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: 8px;
+  transform: translateY(-200%);
+  padding: 8px 12px;
+  background: var(--accent);
+  color: var(--accent-text);
+  border-radius: var(--radius-small);
+  z-index: 10;
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

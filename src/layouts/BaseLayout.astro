@@ -1,0 +1,36 @@
+---
+// Общий макет всех страниц: <head> с SEO, шапка, основное содержимое, подвал.
+import '../styles/global.css';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import SeoHead from '../components/SeoHead.astro';
+import { LOCALE_META, type Locale } from '../config/site';
+import type { PageId } from '../i18n/routes';
+import { UI } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+  pageId: PageId | null;
+  title: string;
+  description: string;
+  noindex?: boolean;
+  jsonLd?: unknown[];
+}
+
+const { locale, pageId, title, description, noindex, jsonLd } = Astro.props;
+---
+
+<!doctype html>
+<html lang={LOCALE_META[locale].htmlLang}>
+  <head>
+    <SeoHead locale={locale} pageId={pageId} title={title} description={description} noindex={noindex} jsonLd={jsonLd} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{UI[locale].nav.skipToContent}</a>
+    <Header locale={locale} pageId={pageId} />
+    <main id="main" class="container">
+      <slot />
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>
