@@ -3,7 +3,7 @@
 import mozjpegEncode, { init as initMozjpeg } from '@jsquash/jpeg/encode.js';
 import mozjpegWasmUrl from '@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm?url';
 import { MAX_EXIF_TIFF_BYTES, insertJpegMetadata } from '../../metadata/jpeg-segments';
-import type { DecodedImage, Encoder } from '../types';
+import type { Encoder, RawImage } from '../types';
 import { compileWasm } from '../wasm';
 
 interface EmscriptenHeap {
@@ -25,7 +25,7 @@ function flattenOnWhite(rgba: Uint8Array): void {
   }
 }
 
-async function encode(image: DecodedImage, quality: number): Promise<Uint8Array> {
+async function encode(image: RawImage, quality: number): Promise<Uint8Array> {
   const data = new Uint8ClampedArray(image.rgba.buffer, image.rgba.byteOffset, image.rgba.byteLength);
   // jSquash нужны только data/width/height; настоящий ImageData не создаём, чтобы не копировать буфер
   const pixels = { data, width: image.width, height: image.height, colorSpace: 'srgb' } as ImageData;

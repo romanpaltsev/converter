@@ -37,13 +37,16 @@ export class ConvertError extends Error {
   }
 }
 
-/** Изображение после декодирования. Буфер rgba может указывать в память WASM и живёт до release(). */
-export interface DecodedImage {
+/** Пиксели для кодировщика: RGBA, 8 бит на канал, без выравнивания строк (stride = width * 4). */
+export interface RawImage {
   width: number;
   height: number;
-  /** RGBA, 8 бит на канал, без выравнивания строк (stride = width * 4). */
   rgba: Uint8Array;
   hasAlpha: boolean;
+}
+
+/** Изображение после декодирования. Буфер rgba может указывать в память WASM и живёт до release(). */
+export interface DecodedImage extends RawImage {
   /** ICC-профиль исходника (копия) или null. */
   icc: Uint8Array | null;
   /** Цвет в виде nclx (если задан боксом colr) или null. */
@@ -72,7 +75,7 @@ export interface Encoder {
   readonly extension: string;
   /** Ограничение на размер EXIF в контейнере (JPEG — 64 КБ). */
   readonly maxExifBytes: number;
-  encode(image: DecodedImage, options: ConvertOptions): Promise<Uint8Array>;
+  encode(image: RawImage, options: ConvertOptions): Promise<Uint8Array>;
   embed(file: Uint8Array, meta: { exif: Uint8Array | null; icc: Uint8Array | null }): Uint8Array;
   /** Текущий размер кучи WASM (для замеров памяти). */
   heapBytes(): number;

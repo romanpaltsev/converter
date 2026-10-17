@@ -13,8 +13,12 @@ function supportsModuleWorkers(): boolean {
   };
   try {
     const url = URL.createObjectURL(new Blob([''], { type: 'text/javascript' }));
-    new Worker(url, options).terminate();
-    URL.revokeObjectURL(url);
+    const worker = new Worker(url, options);
+    // пустой модуль даём загрузиться: если отозвать URL сразу, WebKit пишет в консоль ошибку загрузки
+    setTimeout(() => {
+      worker.terminate();
+      URL.revokeObjectURL(url);
+    }, 2000);
   } catch {
     // нас интересует только то, читалось ли свойство type
   }

@@ -84,7 +84,7 @@ const jsonLd = [
     ORDER.map((id) => (
       <details class="license" open={id === 'lgpl-3.0'}>
         <summary lang="en">{LICENSE_TITLES[id]}</summary>
-        <pre lang="en">{TEXTS[id]}</pre>
+        <pre lang="en" tabindex="0">{TEXTS[id]}</pre>
       </details>
     ))
   }

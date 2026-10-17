@@ -26,6 +26,8 @@ interface Item {
   name: string | null;
   blob: Blob | null;
   url: string | null;
+  /** Object URL маленького превью (делается в worker'е). */
+  previewUrl: string | null;
   error: ErrorCode | null;
   warnings: WarningCode[];
   row: HTMLLIElement;
@@ -83,7 +85,7 @@ export class ConverterWidget {
     this.qualityRow = element(root, '[data-quality-row]');
     this.qualityValue = element(root, '[data-quality-value]');
     this.pngWarning = element(root, '[data-png-warning]');
-    this.status = element(root, '[data-status]');
+    this.status = element(root, '[data-status-text]');
     this.notice = element(root, '[data-notice]');
     this.results = element(root, '[data-results]');
     this.list = element(root, '[data-files]');
@@ -162,7 +164,18 @@ export class ConverterWidget {
     if (files.length > max) this.showNotice(fill(this.t.batchLimit, { max }), 'warning');
     else this.hideNotice();
     for (const file of files.slice(0, max)) {
-      const item: Item = { file, status: 'queued', settings: null, name: null, blob: null, url: null, error: null, warnings: [], row: document.createElement('li') };
+      const item: Item = {
+        file,
+        status: 'queued',
+        settings: null,
+        name: null,
+        blob: null,
+        url: null,
+        previewUrl: null,
+        error: null,
+        warnings: [],
+        row: document.createElement('li'),
+      };
       this.items.push(item);
       this.renderRow(item);
       this.list.append(item.row);
@@ -224,6 +237,7 @@ export class ConverterWidget {
 
     item.blob = new Blob([outcome.buffer], { type: outcome.mime });
     item.url = URL.createObjectURL(item.blob);
+    item.previewUrl = URL.createObjectURL(new Blob([outcome.preview], { type: outcome.mime }));
     item.name = this.names.allocate(outputName(item.file.name, settings.output.extension));
     item.warnings = outcome.warnings;
     item.status = 'done';
@@ -263,15 +277,14 @@ export class ConverterWidget {
 
     const thumb = document.createElement('span');
     thumb.className = 'file__thumb';
-    if (item.status === 'done' && item.url) {
-      // превью из готового файла через <img> (не canvas): браузер сам уменьшит его при отрисовке
+    if (item.status === 'done' && item.previewUrl) {
+      // превью через <img> и object URL (не canvas); маленькую копию готовит worker
       const img = document.createElement('img');
-      img.src = item.url;
+      img.src = item.previewUrl;
       img.alt = '';
       img.width = 48;
       img.height = 48;
       img.decoding = 'async';
-      img.loading = 'lazy';
       thumb.append(img);
     }
 
@@ -324,9 +337,9 @@ export class ConverterWidget {
     const current = this.currentSettings();
     for (const item of this.items) {
       if (item.status !== 'done' || !item.settings || sameSettings(item.settings, current)) continue;
-      if (item.url) URL.revokeObjectURL(item.url);
+      this.revokeUrls(item);
       if (item.name) this.names.release(item.name);
-      Object.assign(item, { status: 'queued', settings: null, name: null, blob: null, url: null, warnings: [] });
+      Object.assign(item, { status: 'queued', settings: null, name: null, blob: null, url: null, previewUrl: null, warnings: [] });
       this.run.total++;
       this.renderRow(item);
     }
@@ -338,7 +351,7 @@ export class ConverterWidget {
     this.generation++;
     this.running = false;
     this.client?.recycle(); // прерываем текущую конвертацию
-    for (const item of this.items) if (item.url) URL.revokeObjectURL(item.url);
+    for (const item of this.items) this.revokeUrls(item);
     this.items = [];
     this.names.clear();
     this.run = { total: 0, done: 0, failed: 0 };
@@ -348,6 +361,11 @@ export class ConverterWidget {
     this.hideNotice();
     this.updateActions();
     this.dropzone.focus();
+  }
+
+  private revokeUrls(item: Item): void {
+    if (item.url) URL.revokeObjectURL(item.url);
+    if (item.previewUrl) URL.revokeObjectURL(item.previewUrl);
   }
 
   private async downloadAll(): Promise<void> {

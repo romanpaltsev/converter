@@ -59,11 +59,13 @@ async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): P
       const result = await convertImage(session, encoder, message.options);
       processed++;
       const buffer = result.bytes.buffer as ArrayBuffer;
+      const preview = result.preview.buffer as ArrayBuffer;
       post(
         {
           type: 'done',
           id,
           buffer,
+          preview,
           mime: encoder.mime,
           extension: encoder.extension,
           width: result.width,
@@ -72,7 +74,7 @@ async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): P
           warnings: result.warnings,
           stats: { heap: heapStats(decoder), timings: { read, ...result.timings } },
         },
-        [buffer],
+        [buffer, preview],
       );
     } finally {
       session.close();

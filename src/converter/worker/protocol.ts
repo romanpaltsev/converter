@@ -26,6 +26,7 @@ export type FromWorker =
       type: 'done';
       id: number;
       buffer: ArrayBuffer;
+      preview: ArrayBuffer;
       mime: string;
       extension: string;
       width: number;

@@ -7,6 +7,7 @@ import type { FromWorker, ToWorker, WorkerStats } from '../worker/protocol';
 export interface ConvertSuccess {
   ok: true;
   buffer: ArrayBuffer;
+  preview: ArrayBuffer;
   mime: string;
   extension: string;
   width: number;
@@ -86,6 +87,7 @@ export class WorkerClient {
         return {
           ok: true,
           buffer: reply.buffer,
+          preview: reply.preview,
           mime: reply.mime,
           extension: reply.extension,
           width: reply.width,

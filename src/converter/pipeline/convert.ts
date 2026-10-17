@@ -3,10 +3,13 @@
 import { chooseProfile } from '../color/nclx';
 import { loadProfile } from '../color/profiles';
 import { prepareExif } from '../metadata/exif-filter';
+import { downscale } from './preview';
 import type { ConvertOptions, DecoderSession, Encoder, WarningCode } from './types';
 
 export interface ConvertResult {
   bytes: Uint8Array;
+  /** Маленькое превью в том же формате (для строки файла в интерфейсе). */
+  preview: Uint8Array;
   width: number;
   height: number;
   warnings: WarningCode[];
@@ -32,10 +35,15 @@ export async function convertImage(session: DecoderSession, encoder: Encoder, op
     });
     warnings.push(...exif.warnings);
 
+    // превью — из исходных пикселей до кодирования (JPEG-кодировщик меняет буфер, накладывая альфу на белый)
+    const small = downscale({ data: image.rgba, width: image.width, height: image.height });
+    const preview = await encoder.encode({ rgba: small.data, width: small.width, height: small.height, hasAlpha: image.hasAlpha }, { ...options, quality: 75 });
+
     const encoded = await encoder.encode(image, options);
     const bytes = encoder.embed(encoded, { exif: exif.tiff, icc });
     return {
       bytes,
+      preview,
       width: image.width,
       height: image.height,
       warnings,
