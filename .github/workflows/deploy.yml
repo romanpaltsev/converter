@@ -1,0 +1,152 @@
+# CI и деплой: на push в main — сборка и все тесты; при успехе — деплой на VDS по SSH.
+# На pull request — только проверки. Секреты: VDS_HOST, VDS_USER, VDS_SSH_KEY, VDS_PATH
+# (необязательно: VDS_PORT, VDS_KNOWN_HOSTS). Пока секретов нет, деплой пропускается. Подробнее — DEPLOY.md.
+name: CI и деплой
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  # деплой не прерываем на полпути; проверки PR — можно
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: Сборка, типы, unit-тесты
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run test:unit
+      - run: npm run build
+      - run: npm run test:dist
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dist
+          path: dist
+          retention-days: 7
+
+  e2e:
+    name: E2E (${{ matrix.browser }})
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - run: npx playwright test --project=${{ matrix.browser }}
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-report-${{ matrix.browser }}
+          path: |
+            playwright-report
+            test-results
+          retention-days: 7
+
+  e2e-slow:
+    name: E2E медленные (50 × 24 Мп, 48 Мп)
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v8
+        with:
+          name: dist
+          path: dist
+      - run: npx playwright install --with-deps chromium webkit
+      - run: npm run test:e2e:slow
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: playwright-report-slow
+          path: |
+            playwright-report
+            test-results/**/*.zip
+          retention-days: 7
+
+  docker:
+    name: Docker-образ и smoke
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - run: bash scripts/smoke-docker.sh
+
+  deploy:
+    name: Деплой на VDS
+    needs: [build, e2e, e2e-slow, docker]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Проверка секретов
+        id: secrets
+        env:
+          VDS_HOST: ${{ secrets.VDS_HOST }}
+          VDS_USER: ${{ secrets.VDS_USER }}
+          VDS_SSH_KEY: ${{ secrets.VDS_SSH_KEY }}
+          VDS_PATH: ${{ secrets.VDS_PATH }}
+        run: |
+          if [ -n "$VDS_HOST" ] && [ -n "$VDS_USER" ] && [ -n "$VDS_SSH_KEY" ] && [ -n "$VDS_PATH" ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice title=Деплой пропущен::Секреты VDS_HOST, VDS_USER, VDS_SSH_KEY, VDS_PATH не заданы (см. DEPLOY.md)"
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: git pull и docker compose up на сервере
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          VDS_HOST: ${{ secrets.VDS_HOST }}
+          VDS_USER: ${{ secrets.VDS_USER }}
+          VDS_SSH_KEY: ${{ secrets.VDS_SSH_KEY }}
+          VDS_PATH: ${{ secrets.VDS_PATH }}
+          VDS_PORT: ${{ secrets.VDS_PORT }}
+          VDS_KNOWN_HOSTS: ${{ secrets.VDS_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          PORT="${VDS_PORT:-22}"
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$VDS_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          # ключ хоста: из секрета VDS_KNOWN_HOSTS (надёжнее) или ssh-keyscan при первом подключении
+          if [ -n "$VDS_KNOWN_HOSTS" ]; then
+            printf '%s\n' "$VDS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          else
+            ssh-keyscan -p "$PORT" -H "$VDS_HOST" > ~/.ssh/known_hosts 2>/dev/null
+          fi
+          ssh -i ~/.ssh/deploy_key -p "$PORT" -o BatchMode=yes "$VDS_USER@$VDS_HOST" \
+            "set -e; cd '$VDS_PATH' && git pull --ff-only && docker compose up -d --build && docker image prune -f"
