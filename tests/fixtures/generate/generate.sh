@@ -131,12 +131,14 @@ heif-enc -A -q 60 -o "$OUT/photo.avif" basic.png >/dev/null
 
 echo "== сырые EXIF-блоки (TIFF) для unit-тестов"
 mkdir -p "$OUT/exif"
-"${IM[@]}" -size 16x16 xc:gray exif-src.jpg
-exiftool -q -overwrite_original "${EXIF_DATES[@]}" "${EXIF_PRIVATE[@]}" "-Orientation#=6" \
-  "-ExifImageWidth=4032" "-ExifImageHeight=3024" "-ExifByteOrder=Big-endian (Motorola, MM)" exif-src.jpg
-exiftool -b -EXIF exif-src.jpg > "$OUT/exif/big-endian.tiff"
-exiftool -q -overwrite_original "-ExifByteOrder=Little-endian (Intel, II)" exif-src.jpg
-exiftool -b -EXIF exif-src.jpg > "$OUT/exif/little-endian.tiff"
+# порядок байтов ExifByteOrder действует только при создании EXIF, поэтому два отдельных исходника
+for order in "big-endian:Big-endian (Motorola, MM)" "little-endian:Little-endian (Intel, II)"; do
+  name=${order%%:*}
+  "${IM[@]}" -size 16x16 xc:gray "exif-$name.jpg"
+  exiftool -q -overwrite_original "-ExifByteOrder=${order#*:}" "${EXIF_DATES[@]}" "${EXIF_PRIVATE[@]}" "-Orientation#=6" \
+    "-ExifImageWidth=4032" "-ExifImageHeight=3024" "exif-$name.jpg"
+  exiftool -b -EXIF "exif-$name.jpg" > "$OUT/exif/$name.tiff"
+done
 
 echo "== самопроверка: heif-dec применяет irot/imir так же, как наш конвейер"
 for f in rotated transposed; do

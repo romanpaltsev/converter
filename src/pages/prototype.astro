@@ -1,0 +1,38 @@
+---
+// ВРЕМЕННЫЙ стенд прототипа конвейера (удаляется на шаге «виджет»).
+---
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Прототип конвейера</title>
+  </head>
+  <body>
+    <h1>Прототип: HEIC → JPG/PNG в worker</h1>
+    <form id="settings">
+      <label>Формат
+        <select name="encoder"><option value="jpeg">JPG</option><option value="png">PNG</option></select>
+      </label>
+      <label>Качество <input name="quality" type="number" min="1" max="100" value="90" /></label>
+      <label><input name="all" type="checkbox" /> все метаданные</label>
+      <input id="files" type="file" multiple accept=".heic,.heif,image/heic,image/heif" />
+    </form>
+    <p id="status" aria-live="polite">Ожидание файлов</p>
+    <table>
+      <thead>
+        <tr><th>Файл</th><th>Статус</th><th>Размер</th><th>Вход</th><th>Выход</th><th>read/decode/encode, мс</th><th>heap libheif/jpeg/png, МБ</th><th>workers</th><th></th></tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <script>
+      import '../converter/prototype/main';
+    </script>
+    <style>
+      body { font: 14px system-ui, sans-serif; margin: 16px; }
+      table { border-collapse: collapse; margin-top: 12px; }
+      td, th { border: 1px solid #999; padding: 4px 8px; text-align: left; }
+    </style>
+  </body>
+</html>
