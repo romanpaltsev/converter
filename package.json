@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "preview": "node scripts/serve-dist.mjs",
     "check": "astro check",
     "test": "npm run test:unit",
     "test:unit": "vitest run --project unit",
