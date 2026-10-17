@@ -19,7 +19,8 @@
     "test:e2e": "playwright test --project=chromium --project=firefox --project=webkit",
     "test:e2e:slow": "playwright test --project=slow-chromium --project=slow-webkit",
     "test:e2e:docker": "bash scripts/e2e-docker.sh --project=chromium --project=firefox --project=webkit",
-    "test:e2e:slow:docker": "bash scripts/e2e-docker.sh --project=slow-chromium --project=slow-webkit"
+    "test:e2e:slow:docker": "bash scripts/e2e-docker.sh --project=slow-chromium --project=slow-webkit",
+    "smoke:docker": "bash scripts/smoke-docker.sh"
   },
   "dependencies": {
     "@astrojs/sitemap": "3.7.4",

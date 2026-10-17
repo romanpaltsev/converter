@@ -1,6 +1,6 @@
 // Статический сервер для e2e-тестов и локального просмотра сборки.
 // Повторяет поведение nginx из nginx/default.conf: маршрутизацию, 404 на двух языках,
-// кэширование и заголовки безопасности (их берёт прямо из nginx/security-headers.conf).
+// кэширование и заголовки безопасности (их берёт прямо из nginx/snippets/security-headers.conf).
 import { createReadStream, readFileSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { extname, join, normalize, resolve } from 'node:path';
@@ -30,7 +30,7 @@ const MIME = {
 };
 
 function securityHeaders() {
-  const conf = readFileSync(join(ROOT_DIR, 'nginx/security-headers.conf'), 'utf8');
+  const conf = readFileSync(join(ROOT_DIR, 'nginx/snippets/security-headers.conf'), 'utf8');
   const headers = {};
   for (const match of conf.matchAll(/^\s*add_header\s+([\w-]+)\s+"([^"]*)"\s+always;/gm)) headers[match[1]] = match[2];
   if (!headers['Content-Security-Policy']) throw new Error('security-headers.conf: не найден CSP');

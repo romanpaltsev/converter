@@ -1,0 +1,15 @@
+# в контекст сборки образа попадает только то, что нужно для npm run build
+.git
+node_modules
+dist
+.astro
+.vitest
+coverage
+test-results
+playwright-report
+blob-report
+tests
+deploy
+*.md
+.env
+.env.*

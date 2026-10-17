@@ -1,0 +1,22 @@
+# Сайт в контейнере nginx. Порт открыт только на 127.0.0.1 — снаружи его проксирует nginx хоста.
+# Переменные — в .env рядом с этим файлом (пример: .env.example). Изменили — пересоберите: docker compose up -d --build
+services:
+  web:
+    build:
+      context: .
+      args:
+        SITE_URL: ${SITE_URL:-https://converter.hotbar.pro}
+        PUBLIC_INDEXING: ${PUBLIC_INDEXING:-false}
+        ADS_ENABLED: ${ADS_ENABLED:-false}
+        PRO_ENABLED: ${PRO_ENABLED:-false}
+    image: converter-web
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${HOST_PORT:-8090}:80"
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /var/run
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
