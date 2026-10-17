@@ -1,0 +1,24 @@
+# зависимости и сборка
+node_modules/
+dist/
+.astro/
+
+# локальные переменные окружения
+.env
+.env.*
+!.env.example
+
+# результаты тестов
+test-results/
+playwright-report/
+blob-report/
+.vitest/
+coverage/
+
+# реальные фото владельца — никогда не коммитим
+tests/fixtures/private/*
+!tests/fixtures/private/README.md
+
+# прочее
+.DS_Store
+*.log
