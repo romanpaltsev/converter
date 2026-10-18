@@ -33,6 +33,10 @@
 Локально Firefox и WebKit требуют системных библиотек (`npx playwright install --with-deps` нужен sudo).
 Без этого используйте `npm run test:e2e:docker` — прогон в официальном образе Playwright.
 
+Против развёрнутого сайта — те же тесты с `E2E_BASE_URL=https://converter.hotbar.pro` (локальный сервер тогда
+не запускается): `npx playwright test --project=chromium`, Firefox и WebKit — `npm run test:e2e:docker`.
+18.10.2026 — 141 из 141.
+
 ## Фикстуры
 
 Синтетические HEIC без личных данных лежат в `tests/fixtures/` (закоммичены). Их список и назначение —
@@ -73,6 +77,7 @@
 | `/heic-v-jpg`, `/heic-v-png`, `/en/heic-to-jpg`, `/` | 100 | 100 | 100 | 66 при `PUBLIC_INDEXING=false`, 100 при `true` |
 
 FCP 0,9 с, LCP 0,9–1,1 с, TBT 0 мс, CLS 0. SEO 66 в тестовом режиме — только из-за намеренного noindex.
+Против живого https://converter.hotbar.pro (HTTP/2, 18.10.2026) — те же оценки, FCP и LCP 0,8–0,9 с.
 
 ## Ручной чек-лист
 

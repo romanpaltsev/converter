@@ -148,5 +148,6 @@ jobs:
           else
             ssh-keyscan -p "$PORT" -H "$VDS_HOST" > ~/.ssh/known_hosts 2>/dev/null
           fi
+          # если ключ ограничен в authorized_keys (DEPLOY.md, шаг 3), сервер выполняет свою копию этой команды
           ssh -i ~/.ssh/deploy_key -p "$PORT" -o BatchMode=yes "$VDS_USER@$VDS_HOST" \
             "set -e; cd '$VDS_PATH' && git pull --ff-only && docker compose up -d --build && docker image prune -f"

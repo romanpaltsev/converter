@@ -25,10 +25,16 @@
 
 3. **Ключ для GitHub Actions** (на своём компьютере, без пароля):
    ```bash
-   ssh-keygen -t ed25519 -f converter_deploy -C "github-actions converter" -N ""
+   ssh-keygen -t ed25519 -f converter_deploy -C "github-actions-converter" -N ""
    ```
-   Публичную часть (`converter_deploy.pub`) — на сервер, в `/home/deploy/.ssh/authorized_keys`.
-   Приватную (`converter_deploy`) — в секрет `VDS_SSH_KEY` (шаг 8), после этого локальную копию можно удалить.
+   Публичную часть (`converter_deploy.pub`) — на сервер, в `/home/deploy/.ssh/authorized_keys`, одной строкой
+   с ограничением: по этому ключу сервер выполняет только команду деплоя, что бы ни прислал клиент
+   (группа `docker` равна правам root — утёкший из GitHub ключ не даст shell):
+   ```
+   restrict,command="cd /opt/converter && git pull --ff-only && docker compose up -d --build && docker image prune -f" ssh-ed25519 AAAA… github-actions-converter
+   ```
+   Это та же команда, что в workflow (шаг 9): меняете одну — поменяйте и другую.
+   Приватную часть (`converter_deploy`) — в секрет `VDS_SSH_KEY` (шаг 8), после этого локальную копию можно удалить.
 
 4. **Код.** Репозиторий публичный, ключ для чтения не нужен:
    ```bash
@@ -48,19 +54,20 @@
    curl -I http://127.0.0.1:8090/    # 200, есть Content-Security-Policy и X-Robots-Tag: noindex, nofollow
    ```
 
-7. **nginx хоста и HTTPS.** Пример готового блока — `deploy/converter.hotbar.pro.conf`.
-   До получения сертификата включите только HTTP-часть, чтобы Certbot прошёл проверку:
+7. **nginx хоста и HTTPS.** Готовые server-блоки — `deploy/converter.hotbar.pro.conf`. Блок 443 ссылается
+   на сертификат, которого ещё нет, поэтому сначала ставится только HTTP-часть (всё до строки `# ---- HTTPS`):
    ```bash
-   sudo cp deploy/converter.hotbar.pro.conf /etc/nginx/sites-available/converter.hotbar.pro.conf
-   # временно закомментируйте весь второй server { listen 443 … } в этом файле
-   sudo ln -s /etc/nginx/sites-available/converter.hotbar.pro.conf /etc/nginx/sites-enabled/
+   cd /opt/converter
+   sed '/^# ---- HTTPS/,$d' deploy/converter.hotbar.pro.conf | sudo tee /etc/nginx/sites-available/converter.hotbar.pro >/dev/null
+   sudo ln -s /etc/nginx/sites-available/converter.hotbar.pro /etc/nginx/sites-enabled/
    sudo nginx -t && sudo systemctl reload nginx
-   sudo certbot certonly --webroot -w /var/www/html -d converter.hotbar.pro
-   # раскомментируйте блок 443 (пути к сертификату в нём уже правильные)
+   sudo certbot certonly --nginx -d converter.hotbar.pro    # в первый раз Certbot спросит e-mail
+   sudo cp deploy/converter.hotbar.pro.conf /etc/nginx/sites-available/converter.hotbar.pro
    sudo nginx -t && sudo systemctl reload nginx
    ```
-   Продление сертификата Certbot настраивает сам (`systemctl list-timers | grep certbot`).
-   Если nginx старше 1.25.1, вместо `http2 on;` используйте `listen 443 ssl http2;`.
+   Плагин nginx для Certbot заодно создаёт `/etc/letsencrypt/options-ssl-nginx.conf` и `ssl-dhparams.pem`,
+   на которые ссылается блок 443. Продление Certbot настраивает сам (`systemctl list-timers | grep certbot`)
+   и после продления перезагружает nginx. Пример рассчитан на nginx 1.24 из Ubuntu 24.04: `http2` — параметр `listen`.
 
    Закрыть тестовую площадку паролем можно строками `auth_basic` в блоке 443 (в примере закомментированы).
 
@@ -100,15 +107,16 @@
 1. DNS нового домена → IP сервера.
 2. В `/opt/converter/.env`: `SITE_URL=https://новый-домен`, когда сайт готов к поиску — `PUBLIC_INDEXING=true`.
 3. Пересобрать: `docker compose up -d --build`.
-4. Новый server-блок: скопируйте `deploy/converter.hotbar.pro.conf`, замените имя домена в `server_name`
-   и путях к сертификату, включите и получите сертификат (как в шаге 7):
-   `sudo certbot certonly --webroot -w /var/www/html -d новый-домен -d www.новый-домен`.
+4. Новый server-блок: скопируйте `deploy/converter.hotbar.pro.conf`, замените имя домена в путях к сертификату
+   и в `server_name` (`server_name новый-домен www.новый-домен;`) и поставьте его, как в шаге 7: HTTP-часть →
+   `sudo certbot certonly --nginx -d новый-домен -d www.новый-домен` → весь файл.
 5. Старый тестовый домен — либо отключить, либо перенаправить на новый
    (`return 301 https://новый-домен$request_uri;` в его блоке 443).
 6. В Яндекс.Вебмастере и Google Search Console добавить сайт и отправить `https://новый-домен/sitemap-index.xml`.
 
 ## Обслуживание
 
+- Обновить вручную (если автодеплой не настроен): `cd /opt/converter && git pull --ff-only && docker compose up -d --build`.
 - Логи: `docker compose logs -f` (в папке проекта).
 - Откат: `git log --oneline` → `git checkout <коммит> && docker compose up -d --build`;
   чтобы автодеплой снова работал, верните ветку: `git checkout main` (или сделайте `git revert` и push).
