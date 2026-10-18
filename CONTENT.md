@@ -670,29 +670,29 @@
 
 Файл: `src/content/pages/ru/home.yaml`
 
-- **title:** Конвертер фото онлайн — HEIC в JPG и PNG прямо в браузере _(57 симв.)_
-- **description:** Бесплатные онлайн-конвертеры фото: HEIC в JPG и PNG. Без регистрации и без загрузки на сервер — всё работает в вашем браузере. _(126 симв.)_
-- **h1:** Конвертер фото прямо в браузере
-- **intro:** Переводите снимки с iPhone из HEIC в привычные форматы. Конвертация идёт на вашем устройстве: файлы не загружаются на сервер, а дата съёмки сохраняется.
+- **title:** Конвертер изображений онлайн — HEIC, JPG, PNG и WebP в браузере _(63 симв.)_
+- **description:** Бесплатные онлайн-конвертеры изображений: HEIC, JPG, PNG и WebP. Без регистрации и без загрузки на сервер — всё работает в вашем браузере. _(138 симв.)_
+- **h1:** Конвертер изображений прямо в браузере
+- **intro:** Переводите фото и картинки между форматами HEIC, JPG, PNG и WebP. Конвертация идёт на вашем устройстве: файлы не загружаются на сервер, а дата съёмки сохраняется.
 - **toolsTitle:** Конвертеры
 - **features:**
-  - **Без загрузки на сервер.** Фотографии обрабатываются в браузере и не покидают ваше устройство.
+  - **Без загрузки на сервер.** Изображения обрабатываются в браузере и не покидают ваше устройство.
   - **Без регистрации.** Откройте нужный конвертер и сразу выберите файлы.
-  - **Бесплатно.** Конвертируйте столько фото, сколько нужно.
+  - **Бесплатно.** Конвертируйте столько файлов, сколько нужно.
 
 #### English
 
 Файл: `src/content/pages/en/home.yaml`
 
-- **title:** Free Online Image Converter — HEIC to JPG and PNG _(49 симв.)_
-- **description:** Free online photo converters: HEIC to JPG and HEIC to PNG. No sign-up and no uploads — everything runs in your browser. _(119 симв.)_
-- **h1:** Convert photos right in your browser
-- **intro:** Turn iPhone HEIC photos into formats that open everywhere. Conversion happens on your device: files are never uploaded, and the date taken is kept.
+- **title:** Free Online Image Converter — HEIC, JPG, PNG and WebP _(53 симв.)_
+- **description:** Free online image converters for HEIC, JPG, PNG and WebP. No sign-up and no uploads — everything runs in your browser. _(118 симв.)_
+- **h1:** Convert images right in your browser
+- **intro:** Convert photos and pictures between HEIC, JPG, PNG and WebP. Conversion happens on your device: files are never uploaded, and the date taken is kept.
 - **toolsTitle:** Converters
 - **features:**
-  - **No uploads.** Photos are processed in your browser and never leave your device.
+  - **No uploads.** Images are processed in your browser and never leave your device.
   - **No sign-up.** Open a converter and pick your files — that's it.
-  - **Free.** Convert as many photos as you need.
+  - **Free.** Convert as many files as you need.
 
 ### Лицензии
 

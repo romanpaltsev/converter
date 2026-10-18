@@ -65,6 +65,9 @@ check "wasm: application/wasm" "application/wasm" "$(header content-type "$BASE/
 check "wasm: immutable" "public, max-age=31536000, immutable" "$(header cache-control "$BASE/_astro/$LIBHEIF")"
 check "wasm: gzip" "gzip" "$(header content-encoding "$BASE/_astro/$LIBHEIF" -H 'Accept-Encoding: gzip')"
 check "html: gzip" "gzip" "$(header content-encoding "$BASE/heic-v-jpg" -H 'Accept-Encoding: gzip')"
+for file in $(docker compose -p "$PROJECT" exec -T web sh -c 'ls /usr/share/nginx/html/_astro/ | grep "\.wasm$"'); do
+  check "$file: application/wasm" "application/wasm" "$(header content-type "$BASE/_astro/$file")"
+done
 
 if [[ "${1:-}" == "--e2e" ]]; then
   echo "== e2e против контейнера"

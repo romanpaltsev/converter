@@ -64,9 +64,9 @@
 ### Реальные фото владельца
 
 Положите файлы в `tests/fixtures/private/` (папка исключена из git, см. её README):
-12, 24 и 48 Мп с iPhone, Live Photo, «Портрет», HDR, серийная съёмка, HEIC с Samsung.
-Тест `tests/e2e/private.spec.ts` запускается, только если в папке есть HEIC: каждый файл конвертируется
-в JPG, проверяются Orientation = 1, отсутствие GPS, наличие ICC и стороны с учётом поворота.
+12, 24 и 48 Мп с iPhone, Live Photo, «Портрет», HDR, серийная съёмка, HEIC с Samsung; можно и JPG, PNG, WebP.
+Тест `tests/e2e/private.spec.ts` запускается, только если в папке есть изображения: HEIC, PNG и WebP конвертируются
+в JPG, JPG — в PNG; проверяются Orientation = 1, отсутствие GPS, наличие ICC и стороны с учётом поворота.
 
 ## Замеры
 
@@ -93,7 +93,7 @@
 
 | Страница | Performance | Accessibility | Best Practices | SEO |
 |---|---|---|---|---|
-| `/heic-v-jpg`, `/heic-v-png`, `/en/heic-to-jpg`, `/` | 100 | 100 | 100 | 66 при `PUBLIC_INDEXING=false`, 100 при `true` |
+| `/heic-v-jpg`, `/heic-v-png`, `/png-v-webp`, `/en/heic-to-jpg`, `/` | 100 | 100 | 100 | 66 при `PUBLIC_INDEXING=false`, 100 при `true` |
 
 FCP 0,9 с, LCP 0,9–1,1 с, TBT 0 мс, CLS 0. SEO 66 в тестовом режиме — только из-за намеренного noindex.
 Против живого https://converter.hotbar.pro (HTTP/2, 18.10.2026) — те же оценки, FCP и LCP 0,8–0,9 с.

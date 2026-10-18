@@ -1,8 +1,8 @@
 # CLAUDE.md — ключевые решения и устройство проекта
 
 Онлайн-конвертер файлов: статический сайт на Astro (ru/en), конвертация полностью в браузере
-(module Web Worker + WASM), файлы на сервер не загружаются. Первый инструмент — HEIC → JPG / PNG.
-Дальше по плану: JPG ↔ PNG, WebP, AVIF, HEIC → WebP, сжатие и изменение размера, позже PDF.
+(module Web Worker + WASM), файлы на сервер не загружаются. Сейчас: HEIC, JPG, PNG и WebP → JPG, PNG или WebP
+(9 страниц-конвертеров). Дальше по плану: AVIF → JPG/PNG, сжатие и изменение размера, позже PDF.
 Обзор и команды — README.md, деплой — DEPLOY.md, тесты и замеры — TESTING.md, тексты — CONTENT.md.
 
 ## Правила работы
@@ -37,12 +37,15 @@ src/i18n/ui.ts                короткие строки интерфейса
 src/content.config.ts         схемы текстов; тексты — src/content/{tools,pages}/{ru,en}/*.yaml
 src/pages/[tool].astro        страницы-конвертеры из реестра (ru), en/[tool].astro — то же для en
 src/components/pages/*.astro  страницы целиком: ToolPage, HomePage, LicensesPage, ContactsPage, NotFoundPage
-src/converter/pipeline/       sniff → декодер (decoders/) → RGBA → кодировщик (encoders/) → метаданные; превью
-src/converter/metadata/       TIFF/EXIF, фильтр EXIF, APP1/APP2 в JPEG, eXIf/iCCP в PNG, CRC32, zlib
+src/converter/pipeline/       sniff + checkInput (input.ts) → декодер (decoders/) → RGBA → поворот (orientation.ts) →
+                              кодировщик (encoders/) → метаданные; превью; headers.ts — размеры до декодирования
+src/converter/pipeline/codecs общий загрузчик модуля PNG (декодер и кодировщик — один экземпляр)
+src/converter/vendor/webp/    собранная libwebp 1.6.0 (WASM + glue, BUILD.txt); исходники сборки — codecs/webp/
+src/converter/metadata/       TIFF/EXIF, фильтр EXIF, APP1/APP2 в JPEG, eXIf/iCCP в PNG, чанки RIFF в WebP, CRC32, zlib
 src/converter/color/          ICC-профили (CC0) и выбор по nclx
 src/converter/worker/         convert.worker.ts (конвертация), zip.worker.ts (ZIP), protocol.ts
 src/converter/widget/         виджет: controller.ts (очередь, DOM), worker-client.ts (жизненный цикл worker'а)
-scripts/                      serve-dist (тестовый сервер как nginx), content-md, smoke-docker, e2e-docker, lighthouse, fixtures
+scripts/                      serve-dist (тестовый сервер как nginx), content-md, smoke-docker, e2e-docker, lighthouse, fixtures, codecs
 ```
 
 ## Как добавить новый инструмент
@@ -50,7 +53,7 @@ scripts/                      serve-dist (тестовый сервер как n
 **Новая пара уже поддерживаемых форматов** (например, страница «HEIF в JPG» с другим текстом):
 
 1. Добавьте объект в `TOOLS` в `src/tools/registry.ts`: `id`, `slugs` для ru и en (разные, без префикса `/en/`),
-   `inputFormats`, `defaultOutput`, `outputs`, `content` (имя YAML-файла). Порядок в `TOOLS` — по входному формату.
+   `inputFormats`, `defaultOutput`, `outputs` (обычно `ALL_OUTPUTS`), `content` (имя YAML-файла). Порядок в `TOOLS` — по входному формату.
    Перелинковка строится сама (`relatedTools()`: обратная пара → тот же вход → тот же выход).
 2. Создайте тексты `src/content/tools/ru/<content>.yaml` и `src/content/tools/en/<content>.yaml` по образцу
    существующих. Схема в `src/content.config.ts` проверяет поля и количество: 3 шага, 4 пункта «Почему здесь», 6–8 FAQ.

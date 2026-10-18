@@ -28,6 +28,8 @@ const PAGES = [
   '/contacts',
   '/en/contacts',
 ];
+// страницы-конвертеры собраны из одного шаблона — для axe достаточно представителей каждого вида
+const AXE_PAGES = ['/', '/en/', '/heic-v-jpg', '/en/png-to-webp', '/webp-v-png', '/licenses', '/en/contacts'];
 
 test.describe('заголовки ответа', () => {
   for (const path of PAGES) {
@@ -139,7 +141,7 @@ test.describe('интерфейс', () => {
 
 test.describe('доступность (axe, WCAG 2.1 AA)', () => {
   for (const scheme of ['light', 'dark'] as const) {
-    for (const path of PAGES) {
+    for (const path of AXE_PAGES) {
       test(`${path} (${scheme})`, async ({ page }) => {
         await page.emulateMedia({ colorScheme: scheme });
         await page.goto(path);

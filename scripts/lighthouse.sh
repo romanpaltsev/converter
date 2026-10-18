@@ -15,7 +15,7 @@ mkdir -p "$OUT"
 docker run --rm --network "container:${PROJECT}-web-1" --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$OUT:/out" \
   "mcr.microsoft.com/playwright:v${VERSION}-noble" bash -c '
     export CHROME_PATH=$(ls -d /ms-playwright/chromium-*/chrome-linux*/chrome | head -1)
-    for page in heic-v-jpg en/heic-to-jpg heic-v-png ""; do
+    for page in heic-v-jpg en/heic-to-jpg heic-v-png png-v-webp ""; do
       name=$(echo "${page:-home}" | tr / _)
       npx -y lighthouse@13.5.0 "http://localhost/$page" --quiet --chrome-flags="--headless=new --no-sandbox" \
         --only-categories=performance,accessibility,best-practices,seo --output=json --output=html --output-path="/out/$name"

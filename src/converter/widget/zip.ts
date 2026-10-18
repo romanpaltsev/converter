@@ -1,4 +1,4 @@
-// «Скачать всё»: ZIP без сжатия (JPG и PNG уже сжаты). Собирается в отдельном worker'е,
+// «Скачать всё»: ZIP без сжатия (JPG, PNG и WebP уже сжаты). Собирается в отдельном worker'е,
 // который создаётся только по нажатию кнопки.
 import type { ZipRequest, ZipResponse } from '../worker/zip.worker';
 
