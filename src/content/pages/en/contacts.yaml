@@ -1,0 +1,10 @@
+# Texts for the contact page (/en/contacts). Draft for the owner's review (see CONTENT.md).
+# The email address itself lives in src/config/site.ts (CONTACT_EMAIL).
+page: contacts
+title: "Contact"
+description: "How to reach the author of this converter: questions, conversion problems and requests for new formats."
+h1: "Contact"
+breadcrumb: "Contact"
+intro: "Get in touch if a file won't convert, you've found a bug or you'd like another format supported."
+emailLabel: "Email"
+note: "If a file won't convert, please mention your device, your browser and the message shown next to the file."

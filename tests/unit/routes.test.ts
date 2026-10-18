@@ -15,6 +15,8 @@ describe('таблица маршрутов', () => {
     expect(pagePath('tool:heic-to-png', 'en')).toBe('/en/heic-to-png');
     expect(pagePath('licenses', 'ru')).toBe('/licenses');
     expect(pagePath('licenses', 'en')).toBe('/en/licenses');
+    expect(pagePath('contacts', 'ru')).toBe('/contacts');
+    expect(pagePath('contacts', 'en')).toBe('/en/contacts');
   });
 
   test('у каждой страницы есть адрес на каждом языке, адреса уникальны', () => {
@@ -47,6 +49,7 @@ describe('таблица маршрутов', () => {
     ['/heic-v-jpg.html', 'tool:heic-to-jpg', 'ru'],
     ['/en/heic-to-png', 'tool:heic-to-png', 'en'],
     ['/en/licenses.html', 'licenses', 'en'],
+    ['/contacts/', 'contacts', 'ru'],
   ])('findPageByPath(%s) → %s/%s', (path, id, locale) => {
     const found = findPageByPath(path);
     expect(found?.page.id).toBe(id);

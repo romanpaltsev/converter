@@ -22,7 +22,7 @@ const tools = await Promise.all(
 <footer class="footer">
   <div class="container">
     <p class="footer__privacy">{t.footer.privacy}</p>
-    <nav aria-label={t.nav.allTools}>
+    <nav aria-label={t.nav.siteLinks}>
       <ul class="footer__links">
         {
           tools.map((tool) => (
@@ -32,6 +32,7 @@ const tools = await Promise.all(
           ))
         }
         <li><a href={pagePath('licenses', locale)}>{t.nav.licenses}</a></li>
+        <li><a href={pagePath('contacts', locale)}>{t.nav.contacts}</a></li>
       </ul>
     </nav>
     <p class="footer__name">{SITE_NAME[locale]}</p>

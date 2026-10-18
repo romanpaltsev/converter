@@ -49,12 +49,12 @@ npm run preview    # dist/ с теми же заголовками, что у ng
 ## Структура
 
 ```
-src/config/site.ts          название сайта, языки, лимит пачки
+src/config/site.ts          название сайта, языки, лимит пачки, почта для «Контактов»
 src/tools/registry.ts       реестр инструментов и форматов (новая страница-конвертер — запись здесь)
 src/i18n/                   таблица маршрутов ru/en, словари интерфейса
 src/content/                тексты страниц (YAML), лицензии
 src/components/, layouts/   вёрстка (Astro, без UI-фреймворков)
-src/pages/                  маршруты: /, /heic-v-jpg, /heic-v-png, /licenses, 404, en/…, robots.txt
+src/pages/                  маршруты: /, /heic-v-jpg, /heic-v-png, /licenses, /contacts, 404, en/…, robots.txt
 src/converter/pipeline/     конвейер: определение формата, декодеры, кодировщики, превью
 src/converter/metadata/     EXIF (TIFF), сегменты JPEG, чанки PNG, CRC32, zlib
 src/converter/color/        выбор и загрузка ICC-профилей

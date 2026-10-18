@@ -4,7 +4,7 @@
 import { DEFAULT_LOCALE, LOCALES, type Locale } from '../config/site';
 import { TOOLS } from '../tools/registry';
 
-export type PageId = 'home' | 'licenses' | `tool:${string}`;
+export type PageId = 'home' | 'licenses' | 'contacts' | `tool:${string}`;
 
 export interface PageRoute {
   id: PageId;
@@ -15,6 +15,7 @@ export const PAGES: PageRoute[] = [
   { id: 'home', paths: { ru: '/', en: '/en/' } },
   ...TOOLS.map((tool): PageRoute => ({ id: `tool:${tool.id}`, paths: { ru: `/${tool.slugs.ru}`, en: `/en/${tool.slugs.en}` } })),
   { id: 'licenses', paths: { ru: '/licenses', en: '/en/licenses' } },
+  { id: 'contacts', paths: { ru: '/contacts', en: '/en/contacts' } },
 ];
 
 export function getPage(id: PageId): PageRoute {

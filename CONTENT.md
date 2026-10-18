@@ -218,6 +218,34 @@
 - **patents:** The HEVC (H.265) format that HEIC is based on may be covered by patents.
 - **fullTexts:** Full license texts
 
+### Контакты
+
+Адрес почты: roman.palcev@gmail.com (`src/config/site.ts`, `CONTACT_EMAIL`).
+
+#### Русский
+
+Файл: `src/content/pages/ru/contacts.yaml`
+
+- **title:** Контакты _(8 симв.)_
+- **description:** Как связаться с автором конвертера: вопросы, ошибки конвертации и предложения новых форматов. _(93 симв.)_
+- **h1:** Контакты
+- **breadcrumb:** Контакты
+- **intro:** Пишите, если файл не конвертируется, вы нашли ошибку или хотите предложить новый формат.
+- **emailLabel:** Электронная почта
+- **note:** Если файл не получается сконвертировать, укажите в письме устройство, браузер и сообщение, которое показано в строке файла.
+
+#### English
+
+Файл: `src/content/pages/en/contacts.yaml`
+
+- **title:** Contact _(7 симв.)_
+- **description:** How to reach the author of this converter: questions, conversion problems and requests for new formats. _(103 симв.)_
+- **h1:** Contact
+- **breadcrumb:** Contact
+- **intro:** Get in touch if a file won't convert, you've found a bug or you'd like another format supported.
+- **emailLabel:** Email
+- **note:** If a file won't convert, please mention your device, your browser and the message shown next to the file.
+
 ## Строки интерфейса (виджет, шапка, 404)
 
 Файл: `src/i18n/ui.ts`
@@ -225,8 +253,9 @@
 | Ключ | RU | EN |
 |---|---|---|
 | `nav.home` | Главная | Home |
-| `nav.allTools` | Все конвертеры | All converters |
+| `nav.siteLinks` | Разделы сайта | Site sections |
 | `nav.licenses` | Лицензии | Licenses |
+| `nav.contacts` | Контакты | Contact |
 | `nav.switchLanguage` | Сменить язык | Change language |
 | `nav.skipToContent` | Перейти к содержимому | Skip to content |
 | `nav.breadcrumbs` | Навигационная цепочка | Breadcrumbs |

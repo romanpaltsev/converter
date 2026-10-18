@@ -2,7 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, openConverter, test } from './fixtures';
 import { fixture } from './files';
 
-const PAGES = ['/', '/en/', '/heic-v-jpg', '/en/heic-to-jpg', '/heic-v-png', '/en/heic-to-png', '/licenses', '/en/licenses'];
+const PAGES = ['/', '/en/', '/heic-v-jpg', '/en/heic-to-jpg', '/heic-v-png', '/en/heic-to-png', '/licenses', '/en/licenses', '/contacts', '/en/contacts'];
 
 test.describe('заголовки ответа', () => {
   for (const path of PAGES) {
@@ -41,6 +41,19 @@ test.describe('навигация', () => {
     await expect(page.locator('h1')).toHaveText('HEIC to JPG Converter');
     await page.getByRole('link', { name: 'Русский' }).click();
     await expect(page).toHaveURL('/heic-v-jpg');
+  });
+
+  test('«Контакты» из подвала: почта ссылкой mailto, на обоих языках', async ({ page }) => {
+    await page.goto('/heic-v-jpg');
+    await page.getByRole('contentinfo').getByRole('link', { name: 'Контакты' }).click();
+    await expect(page).toHaveURL('/contacts');
+    const mail = page.locator('main a[href^="mailto:"]');
+    await expect(mail).toHaveText(/^[^@\s]+@[^@\s]+\.[a-z]+$/);
+    expect(await mail.getAttribute('href')).toBe(`mailto:${await mail.textContent()}`);
+    await page.getByRole('link', { name: 'English' }).click();
+    await expect(page).toHaveURL('/en/contacts');
+    await expect(page.locator('h1')).toHaveText('Contact');
+    await expect(page.locator('main a[href^="mailto:"]')).toHaveText((await mail.textContent())!);
   });
 
   test('канонические адреса: лишний слеш и /en без слеша — 301', async ({ request }) => {

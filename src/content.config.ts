@@ -49,10 +49,20 @@ const licenses = z.object({
   fullTexts: text,
 });
 
+/** Сам адрес почты — CONTACT_EMAIL в src/config/site.ts. */
+const contacts = z.object({
+  page: z.literal('contacts'),
+  ...seo,
+  breadcrumb: text,
+  intro: text,
+  emailLabel: text,
+  note: text,
+});
+
 /** Прочие страницы: src/content/pages/<locale>/<page>.yaml. */
 const pages = defineCollection({
   loader: glob({ pattern: '**/*.yaml', base: './src/content/pages' }),
-  schema: z.discriminatedUnion('page', [home, licenses]),
+  schema: z.discriminatedUnion('page', [home, licenses, contacts]),
 });
 
 export const collections = { tools, pages };

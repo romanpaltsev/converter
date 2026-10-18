@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { LOCALES } from '../../src/config/site';
-import { PAGES } from '../../src/i18n/routes';
+import { CONTACT_EMAIL, LOCALES } from '../../src/config/site';
+import { PAGES, pagePath } from '../../src/i18n/routes';
 import { INDEXING, SITE, htmlFiles, readHtml, readText, urlPathFor } from './helpers';
 
 const pages = htmlFiles();
@@ -65,6 +65,18 @@ describe('сборка: страницы', () => {
     const { doc } = readHtml(file);
     expect(doc.querySelector('link[rel="canonical"]')).toBeNull();
     expect(doc.querySelectorAll('link[rel="alternate"]')).toHaveLength(0);
+  });
+});
+
+describe('сборка: контакты', () => {
+  test.each(LOCALES)('%s: почта ссылкой mailto', (locale) => {
+    const { doc } = readHtml(`${pagePath('contacts', locale).slice(1)}.html`);
+    expect(doc.querySelector(`main a[href="mailto:${CONTACT_EMAIL}"]`)?.text).toBe(CONTACT_EMAIL);
+  });
+
+  test.each(pages)('%s: в подвале ссылка на «Контакты» своего языка', (file) => {
+    const hrefs = readHtml(file).doc.querySelectorAll('footer a').map((a) => a.getAttribute('href'));
+    expect(hrefs).toContain(pagePath('contacts', file.startsWith('en/') ? 'en' : 'ru'));
   });
 });
 

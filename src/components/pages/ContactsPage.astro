@@ -1,0 +1,61 @@
+---
+// «Контакты»: почта владельца (адрес — CONTACT_EMAIL в config/site.ts, тексты — content/pages/<locale>/contacts.yaml).
+import { getEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { CONTACT_EMAIL, type Locale } from '../../config/site';
+import { absoluteUrl, pagePath } from '../../i18n/routes';
+import { UI } from '../../i18n/ui';
+import { breadcrumbList } from '../../lib/seo';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const entry = await getEntry('pages', `${locale}/contacts`);
+if (entry?.data.page !== 'contacts') throw new Error(`Нет текстов страницы контактов (${locale})`);
+const c = entry.data;
+const site = import.meta.env.SITE;
+const jsonLd = [
+  breadcrumbList([
+    { name: UI[locale].nav.home, url: absoluteUrl(site, pagePath('home', locale)) },
+    { name: c.breadcrumb, url: absoluteUrl(site, pagePath('contacts', locale)) },
+  ]),
+];
+---
+
+<BaseLayout locale={locale} pageId="contacts" title={c.title} description={c.description} jsonLd={jsonLd}>
+  <h1 class="title">{c.h1}</h1>
+  <p>{c.intro}</p>
+  <dl class="contacts">
+    <dt>{c.emailLabel}</dt>
+    <dd><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></dd>
+  </dl>
+  <p class="note">{c.note}</p>
+</BaseLayout>
+
+<style>
+  .title {
+    margin-top: 32px;
+  }
+
+  .contacts {
+    margin: 24px 0;
+  }
+
+  .contacts dt {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .contacts dd {
+    margin: 4px 0 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  .note {
+    color: var(--muted);
+  }
+</style>

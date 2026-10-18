@@ -30,13 +30,13 @@ client-zip 2.5.1, Vitest 5, Playwright 1.64, Node 24 LTS, nginx 1.30. Верси
 ## Устройство
 
 ```
-src/config/site.ts            название (плейсхолдер), языки, лимит пачки (100)
+src/config/site.ts            название (плейсхолдер), языки, лимит пачки (100), почта владельца (CONTACT_EMAIL)
 src/tools/registry.ts         реестр инструментов + таблицы входных и выходных форматов
 src/i18n/routes.ts            явная таблица страниц ru/en → canonical, hreflang, переключатель, sitemap
 src/i18n/ui.ts                короткие строки интерфейса (en типизирован по ru)
 src/content.config.ts         схемы текстов; тексты — src/content/{tools,pages}/{ru,en}/*.yaml
 src/pages/[tool].astro        страницы-конвертеры из реестра (ru), en/[tool].astro — то же для en
-src/components/pages/*.astro  страницы целиком: ToolPage, HomePage, LicensesPage, NotFoundPage
+src/components/pages/*.astro  страницы целиком: ToolPage, HomePage, LicensesPage, ContactsPage, NotFoundPage
 src/converter/pipeline/       sniff → декодер (decoders/) → RGBA → кодировщик (encoders/) → метаданные; превью
 src/converter/metadata/       TIFF/EXIF, фильтр EXIF, APP1/APP2 в JPEG, eXIf/iCCP в PNG, CRC32, zlib
 src/converter/color/          ICC-профили (CC0) и выбор по nclx

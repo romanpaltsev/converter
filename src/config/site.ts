@@ -17,3 +17,6 @@ export const LOCALE_META: Record<Locale, { htmlLang: string; ogLocale: string; l
 
 /** Сколько файлов берём из одного выбора. */
 export const MAX_FILES_PER_BATCH = 100;
+
+/** Почта владельца на странице «Контакты». */
+export const CONTACT_EMAIL = 'roman.palcev@gmail.com';

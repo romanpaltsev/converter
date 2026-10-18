@@ -7,8 +7,9 @@ import type { ErrorCode, WarningCode } from '../converter/pipeline/types';
 const ru = {
   nav: {
     home: 'Главная',
-    allTools: 'Все конвертеры',
+    siteLinks: 'Разделы сайта',
     licenses: 'Лицензии',
+    contacts: 'Контакты',
     switchLanguage: 'Сменить язык',
     skipToContent: 'Перейти к содержимому',
     breadcrumbs: 'Навигационная цепочка',
@@ -84,8 +85,9 @@ export type UiStrings = Dictionary<typeof ru>;
 const en: UiStrings = {
   nav: {
     home: 'Home',
-    allTools: 'All converters',
+    siteLinks: 'Site sections',
     licenses: 'Licenses',
+    contacts: 'Contact',
     switchLanguage: 'Change language',
     skipToContent: 'Skip to content',
     breadcrumbs: 'Breadcrumbs',

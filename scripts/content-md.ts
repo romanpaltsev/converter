@@ -5,6 +5,7 @@
 import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
+import { CONTACT_EMAIL } from '../src/config/site.ts';
 import { UI } from '../src/i18n/ui.ts';
 import { TOOLS } from '../src/tools/registry.ts';
 
@@ -93,6 +94,7 @@ export function buildContentMd(): string {
   if (toolContents.size > 0) throw new Error(`Тексты без инструмента в реестре: ${[...toolContents].join(', ')}`);
   lines.push('## Другие страницы', '', '### Главная', '', ...pageSection('home'));
   lines.push('### Лицензии', '', ...pageSection('licenses'));
+  lines.push('### Контакты', '', `Адрес почты: ${CONTACT_EMAIL} (\`src/config/site.ts\`, \`CONTACT_EMAIL\`).`, '', ...pageSection('contacts'));
   lines.push('## Строки интерфейса (виджет, шапка, 404)', '', `Файл: \`src/i18n/ui.ts\``, '', ...uiSection());
   return lines.join('\n').replace(/\n{3,}/g, '\n\n').trimEnd() + '\n';
 }
