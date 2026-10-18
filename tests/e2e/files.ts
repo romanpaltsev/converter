@@ -69,6 +69,42 @@ export function pngInfo(bytes: Uint8Array): PngInfo {
   return { width: view.getUint32(16), height: view.getUint32(20), chunks, icc, exif };
 }
 
+export interface WebpInfo {
+  chunks: string[];
+  /** Флаги VP8X: ICC 0x20, альфа 0x10, EXIF 0x08. */
+  flags: number;
+  width: number;
+  height: number;
+  icc: Uint8Array | null;
+  exif: Uint8Array | null;
+}
+
+/** Независимый разбор RIFF/WebP для проверок (размер RIFF, выравнивание, VP8X). */
+export function webpInfo(bytes: Uint8Array): WebpInfo {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const text = (at: number) => String.fromCharCode(...bytes.subarray(at, at + 4));
+  if (text(0) !== 'RIFF' || text(8) !== 'WEBP') throw new Error('не WebP');
+  if (view.getUint32(4, true) !== bytes.length - 8) throw new Error('неверный размер RIFF');
+  const info: WebpInfo = { chunks: [], flags: 0, width: 0, height: 0, icc: null, exif: null };
+  let pos = 12;
+  while (pos + 8 <= bytes.length) {
+    const type = text(pos);
+    const size = view.getUint32(pos + 4, true);
+    const data = bytes.subarray(pos + 8, pos + 8 + size);
+    info.chunks.push(type);
+    if (type === 'VP8X') {
+      info.flags = data[0]!;
+      info.width = 1 + (data[4]! | (data[5]! << 8) | (data[6]! << 16));
+      info.height = 1 + (data[7]! | (data[8]! << 8) | (data[9]! << 16));
+    }
+    if (type === 'ICCP') info.icc = data.slice();
+    if (type === 'EXIF') info.exif = data.slice();
+    pos += 8 + size + (size & 1);
+  }
+  if (pos !== bytes.length) throw new Error('лишние байты в конце RIFF');
+  return info;
+}
+
 export interface ExifSummary {
   Orientation?: number;
   DateTimeOriginal?: string;

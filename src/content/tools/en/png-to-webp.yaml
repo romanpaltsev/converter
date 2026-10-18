@@ -1,0 +1,46 @@
+# Texts for /en/png-to-webp. Draft for the owner's review (see CONTENT.md).
+title: "PNG to WebP Converter — Keeps Transparency, Lossy or Lossless"
+description: "Convert PNG to WebP right in your browser. Transparency is kept, lossless mode is available, and your files never leave your device. Free."
+h1: "PNG to WebP Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "PNG to WebP"
+card:
+  title: "PNG → WebP"
+  text: "Keeps transparency — for websites and app interfaces."
+app:
+  name: "PNG to WebP Converter"
+  description: "An online lossy and lossless PNG to WebP converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert PNG to WebP"
+  steps:
+    - "Click the box above or drag your PNG files onto it — you can add many at once."
+    - "Pick a quality or switch on Lossless, then wait a moment while your browser converts them."
+    - "Download each WebP separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them."
+    - title: "Transparency preserved"
+      text: "WebP supports transparency just like PNG — in both lossy and lossless mode."
+    - title: "Lossy or lossless"
+      text: "Lossless for graphics, icons and screenshots; lossy for photos when file size matters more."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Why convert PNG to WebP?"
+      a: "Every modern browser supports WebP, it keeps transparency like PNG, and the files are usually smaller. That's why websites use it instead of PNG."
+    - q: "Is transparency preserved?"
+      a: "Yes — with both lossy and lossless compression."
+    - q: "Lossy or lossless — which should I choose?"
+      a: "Lossless for logos, icons, screenshots and graphics with text: every pixel is kept exactly. Lossy for photos and complex images: the file will be much smaller."
+    - q: "Will the WebP be smaller than the PNG?"
+      a: "Usually, especially with lossy compression. Each file's row shows its size before and after conversion."
+    - q: "What if the PNG is animated?"
+      a: "Animation isn't kept: the first frame is saved, and the file's row shows a warning."
+    - q: "What happens to the metadata?"
+      a: "By default the capture date is kept if the PNG has one, while the location and other details are removed. Tick “Keep all metadata” to copy the full EXIF data. The color profile is always kept."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

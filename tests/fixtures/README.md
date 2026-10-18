@@ -37,6 +37,7 @@
 | `rotated.webp`, `exif-prefixed.webp` | хранятся повёрнутыми, Orientation 6; во втором чанк EXIF с префиксом «Exif\0\0» |
 | `lossless-alpha.webp`, `lossy-alpha.webp` | красный круг на прозрачном фоне: VP8L и VP8X + ALPH |
 | `animated.webp` | два кадра, первый — квадранты 640×480 |
+| `too-wide.png` | 16400×8 — шире предела WebP (16 383 точки) |
 | `exif/big-endian.tiff`, `exif/little-endian.tiff` | сырые EXIF-блоки (TIFF) с датами, GPS, Make/Model, Orientation = 6 — для unit-тестов |
 
 Реальные снимки владельца — только в `private/` (исключена из git).

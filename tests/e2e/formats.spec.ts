@@ -1,6 +1,8 @@
-// JPG, PNG и WebP на входе: метаданные, поворот по EXIF, прозрачность, варианты форматов и «любой вход на любой странице».
+// JPG, PNG и WebP на входе и WebP на выходе: метаданные, поворот по EXIF, прозрачность, варианты форматов,
+// «любой вход на любой странице».
+import { readFileSync } from 'node:fs';
 import { convertFiles as convert, downloadFile as download, expect, openConverter, test } from './fixtures';
-import { decodeInBrowser, dominant, hasXmp, iccProfile, jpegIcc, jpegInfo, pngInfo, readExif } from './files';
+import { decodeInBrowser, dominant, fixture, hasXmp, iccProfile, jpegIcc, jpegInfo, pngInfo, readExif, webpInfo } from './files';
 
 const P3 = iccProfile('DisplayP3Compat-v2-magic.icc');
 const SRGB = iccProfile('sRGB-v2-magic.icc');
@@ -159,6 +161,66 @@ test.describe('WebP → PNG', () => {
     const photo = pngInfo(await download(page, 'exif-gps.png'));
     expect(photo.icc).toEqual(P3);
     expect(await readExif(photo.exif)).toMatchObject({ Orientation: 1, ...DATES, hasGps: false });
+  });
+});
+
+test.describe('WebP на выходе', () => {
+  test('JPG → WebP: VP8X, ICCP и EXIF без GPS, поворот, без профиля — sRGB', async ({ page }) => {
+    await openConverter(page, '/jpg-v-webp');
+    await expect(page.locator('[data-lossless-row]')).toBeVisible();
+    await convert(page, ['exif-gps.jpg', 'rotated.jpg', 'photo.jpg']);
+
+    const bytes = await download(page, 'exif-gps.webp');
+    const photo = webpInfo(bytes);
+    expect(photo.chunks).toEqual(['VP8X', 'ICCP', 'VP8 ', 'EXIF']);
+    expect([photo.width, photo.height, photo.flags]).toEqual([1200, 800, 0x28]);
+    expect(photo.icc).toEqual(P3);
+    const exif = await readExif(photo.exif);
+    expect(exif).toMatchObject({ Orientation: 1, ...DATES, hasGps: false });
+    expect(exif?.Make).toBeUndefined();
+    expect((await decodeInBrowser(page, bytes, 'image/webp', [[600, 400]])).width).toBe(1200);
+
+    const rotated = await download(page, 'rotated.webp');
+    expect((await decodeInBrowser(page, rotated, 'image/webp', QUADRANTS)).pixels.map(dominant)).toEqual(['r', 'g', 'b', 'y']);
+    expect(webpInfo(await download(page, 'photo.webp')).icc).toEqual(SRGB);
+  });
+
+  test('PNG → WebP: прозрачность сохраняется; «Без потерь» — VP8L с теми же пикселями', async ({ page }) => {
+    await openConverter(page, '/png-v-webp');
+    const POINTS: [number, number][] = [
+      [5, 5],
+      [400, 300],
+      [400, 90],
+    ];
+    await convert(page, ['alpha.png']);
+    const lossy = await download(page, 'alpha.webp');
+    expect(webpInfo(lossy).chunks).toContain('ALPH');
+    expect((await decodeInBrowser(page, lossy, 'image/webp', POINTS)).pixels.map(dominant).slice(0, 2)).toEqual(['t', 'r']);
+
+    await expect(page.locator('[data-quality-row]')).toBeVisible();
+    await page.getByLabel('Без потерь').check();
+    await expect(page.locator('[data-quality-row]')).toBeHidden();
+    await page.getByRole('button', { name: 'Конвертировать заново с новыми настройками' }).click();
+    await expect(page.locator('.file[data-status="done"]')).toHaveCount(1);
+    const lossless = await download(page, 'alpha.webp');
+    expect(webpInfo(lossless).chunks).toContain('VP8L');
+    const source = await decodeInBrowser(page, readFileSync(fixture('alpha.png')), 'image/png', POINTS);
+    expect((await decodeInBrowser(page, lossless, 'image/webp', POINTS)).pixels).toEqual(source.pixels);
+  });
+
+  test('HEIC → WebP: профиль P3 из nclx, предупреждение HDR, даты без GPS', async ({ page }) => {
+    await openConverter(page, '/heic-v-webp');
+    await convert(page, ['nclx-p3.heic', 'hdr-pq.heic', 'exif-gps.heic']);
+    expect(webpInfo(await download(page, 'nclx-p3.webp')).icc).toEqual(P3);
+    await expect(page.locator('.file').filter({ hasText: 'hdr-pq.webp' })).toContainText('HDR-снимок');
+    expect(await readExif(webpInfo(await download(page, 'exif-gps.webp')).exif)).toMatchObject({ ...DATES, hasGps: false });
+  });
+
+  test('WebP при выходе WebP — «уже»; изображение шире 16 383 точек — понятная ошибка', async ({ page }) => {
+    await openConverter(page, '/png-v-webp');
+    await convert(page, ['basic.webp', 'too-wide.png']);
+    await expect(page.locator('.file').nth(0)).toContainText('Файл уже в формате WebP');
+    await expect(page.locator('.file').nth(1)).toContainText('WebP вмещает изображения не больше 16 383 точек');
   });
 });
 

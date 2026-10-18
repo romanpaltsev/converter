@@ -16,6 +16,8 @@ type Status = 'queued' | 'converting' | 'done' | 'error';
 interface Settings {
   output: OutputOption;
   quality: number;
+  /** Галочка «Без потерь» (действует только для форматов с hasLossless). */
+  lossless: boolean;
   keepMetadata: boolean;
 }
 
@@ -34,8 +36,14 @@ interface Item {
   row: HTMLLIElement;
 }
 
+const isLossless = (s: Settings) => s.output.hasLossless && s.lossless;
+
+/** Совпадают ли настройки по-существу: качество не важно без потерь, галочка «Без потерь» — у форматов без неё. */
 const sameSettings = (a: Settings, b: Settings) =>
-  a.output.id === b.output.id && a.keepMetadata === b.keepMetadata && (!a.output.hasQuality || a.quality === b.quality);
+  a.output.id === b.output.id &&
+  a.keepMetadata === b.keepMetadata &&
+  isLossless(a) === isLossless(b) &&
+  (!a.output.hasQuality || isLossless(a) || a.quality === b.quality);
 
 /** Сконвертированный файл или «уже в этом формате» — после смены настроек их можно сконвертировать заново. */
 function isOutdated(item: Item, current: Settings): boolean {
@@ -62,6 +70,7 @@ export class ConverterWidget {
   private readonly input: HTMLInputElement;
   private readonly form: HTMLFormElement;
   private readonly qualityRow: HTMLElement;
+  private readonly losslessRow: HTMLElement;
   private readonly qualityValue: HTMLOutputElement;
   private readonly pngWarning: HTMLElement;
   private readonly status: HTMLElement;
@@ -91,6 +100,7 @@ export class ConverterWidget {
     this.input = element(root, '[data-input]');
     this.form = element(root, '[data-settings]');
     this.qualityRow = element(root, '[data-quality-row]');
+    this.losslessRow = element(root, '[data-lossless-row]');
     this.qualityValue = element(root, '[data-quality-value]');
     this.pngWarning = element(root, '[data-png-warning]');
     this.status = element(root, '[data-status-text]');
@@ -151,12 +161,18 @@ export class ConverterWidget {
   private currentSettings(): Settings {
     const data = new FormData(this.form);
     const output = this.config.outputs.find((o) => o.id === data.get('format')) ?? this.config.outputs[0]!;
-    return { output, quality: Number(data.get('quality') ?? 90), keepMetadata: data.get('keepMetadata') !== null };
+    return {
+      output,
+      quality: Number(data.get('quality') ?? 90),
+      lossless: data.get('lossless') !== null,
+      keepMetadata: data.get('keepMetadata') !== null,
+    };
   }
 
   private syncSettings(): void {
     const settings = this.currentSettings();
-    this.qualityRow.hidden = !settings.output.hasQuality;
+    this.qualityRow.hidden = !settings.output.hasQuality || isLossless(settings);
+    this.losslessRow.hidden = !settings.output.hasLossless;
     this.pngWarning.hidden = !settings.output.largeFiles;
     this.qualityValue.value = String(settings.quality);
     this.updateActions();
@@ -238,6 +254,7 @@ export class ConverterWidget {
     const outcome = await this.client.convert(item.file, input.decoder, {
       encoder: settings.output.encoder,
       quality: settings.quality,
+      lossless: isLossless(settings),
       metadata: settings.keepMetadata ? 'all' : 'dates',
     });
     if (generation !== this.generation) return;

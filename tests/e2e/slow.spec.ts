@@ -1,7 +1,7 @@
 // Медленные проверки из критериев готовности: npm run test:e2e:slow.
 import { copyFileSync, mkdirSync } from 'node:fs';
 import { expect, openConverter, test } from './fixtures';
-import { downloadBytes, fixture, jpegIcc, jpegInfo, readExif } from './files';
+import { downloadBytes, fixture, jpegIcc, jpegInfo, readExif, webpInfo } from './files';
 
 const BATCH = 50;
 
@@ -72,4 +72,19 @@ test('@slow-webkit файл 48 Мп конвертируется в WebKit', asy
   expect(jpegInfo(bytes)).toMatchObject({ width: 8064, height: 6048 });
   expect(await readExif(bytes)).toMatchObject({ Orientation: 1, DateTimeOriginal: '2024:07:15 14:23:05', hasGps: false });
   expect(jpegIcc(bytes)).not.toBeNull();
+});
+
+test('@slow-webkit файл 48 Мп → WebP в WebKit (большой кадр без многократного перекодирования)', async ({ page }) => {
+  await openConverter(page, '/heic-v-webp');
+  const started = Date.now();
+  await page.setInputFiles('[data-input]', [fixture('grid-48mp.heic')]);
+  await expect(page.locator('.file[data-status="done"]')).toHaveCount(1, { timeout: 10 * 60_000 });
+  const seconds = (Date.now() - started) / 1000;
+  console.log(`48 Мп → WebP: ${seconds.toFixed(0)} с`);
+  const pending = page.waitForEvent('download');
+  await page.locator('.file__download').click();
+  const info = webpInfo(await downloadBytes(await pending));
+  expect([info.width, info.height]).toEqual([8064, 6048]);
+  expect(info.icc).not.toBeNull();
+  expect(await readExif(info.exif)).toMatchObject({ Orientation: 1, DateTimeOriginal: '2024:07:15 14:23:05', hasGps: false });
 });

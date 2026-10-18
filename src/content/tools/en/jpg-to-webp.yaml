@@ -1,0 +1,46 @@
+# Texts for /en/jpg-to-webp. Draft for the owner's review (see CONTENT.md).
+title: "JPG to WebP Converter — Web-Ready Images, Free"
+description: "Convert JPG to WebP right in your browser. Adjustable quality, up to 100 files at once, and your files never leave your device. Free, no sign-up."
+h1: "JPG to WebP Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "JPG to WebP"
+card:
+  title: "JPG → WebP"
+  text: "Images for your website: adjustable quality, many files at once."
+app:
+  name: "JPG to WebP Converter"
+  description: "An online JPG to WebP converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert JPG to WebP"
+  steps:
+    - "Click the box above or drag your JPG files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each WebP separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them."
+    - title: "Quality under control"
+      text: "Set the quality with the slider; each file's row shows its size before and after conversion."
+    - title: "Rotation and colors preserved"
+      text: "If a photo is rotated via EXIF, the WebP comes out already rotated. The color profile is carried over, so colors don't shift."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Why convert JPG to WebP?"
+      a: "Every modern browser supports WebP, which is why websites use it: at comparable quality, photos usually take up less space as WebP than as JPG, so pages load faster."
+    - q: "Will the WebP be smaller than the original JPG?"
+      a: "Usually, but not always: if the JPG is already heavily compressed, the savings can be small. Each file's row shows the size before and after — lower the quality slider if you need a smaller file."
+    - q: "Will the quality get better?"
+      a: "No. Converting can't bring back detail the JPG lost, and lossy compression changes the image a little more. At the default quality of 90 the difference is usually invisible."
+    - q: "Should I turn on Lossless?"
+      a: "For photos that start out as JPG, usually not: a lossless file ends up larger than the original. Lossless is useful for graphics, screenshots and images you'll keep editing."
+    - q: "Are rotation and colors preserved?"
+      a: "Yes. If the camera stored the rotation in EXIF, the WebP comes out already rotated correctly. The color profile (such as Display P3) is copied into the WebP."
+    - q: "What happens to the metadata?"
+      a: "By default the capture date is kept, while the location, camera model and other details are removed. Tick “Keep all metadata” to copy the full EXIF data, including location."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

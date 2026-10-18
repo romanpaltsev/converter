@@ -242,6 +242,9 @@ quadrants 640 480 anim-1.png
 "${IM[@]}" anim-1.png -negate png24:anim-2.png
 img2webp -loop 0 -d 500 anim-1.png anim-2.png -o "$OUT/animated.webp" >/dev/null
 
+echo "== too-wide.png: 16400x8 — шире предела WebP (16383)"
+"${IM[@]}" -size 16400x8 xc:'#e00000' "${PNG_STABLE[@]}" png24:"$OUT/too-wide.png"
+
 echo "== самопроверка WebP"
 for f in exif-gps basic rotated exif-prefixed lossless-alpha lossy-alpha animated; do
   printf '%s: ' "$f"; webpinfo -quiet "$OUT/$f.webp" >/dev/null && echo ok

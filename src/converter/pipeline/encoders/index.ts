@@ -5,6 +5,7 @@ import type { Encoder, EncoderId } from '../types';
 const loaders: Record<EncoderId, () => Promise<Encoder>> = {
   jpeg: () => import('./jpeg').then((m) => m.loadJpegEncoder()),
   png: () => import('./png').then((m) => m.loadPngEncoder()),
+  webp: () => import('./webp').then((m) => m.loadWebpEncoder()),
 };
 
 const cache = new Map<EncoderId, Promise<Encoder>>();

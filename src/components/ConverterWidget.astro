@@ -74,6 +74,10 @@ const id = `cv-${tool.id}`;
       <input id={`${id}-quality`} type="range" name="quality" min="1" max="100" step="1" value="90" data-quality />
       <output for={`${id}-quality`} data-quality-value>90</output>
     </div>
+    <label class="checkbox settings__lossless" data-lossless-row hidden={!initial.hasLossless}>
+      <input type="checkbox" name="lossless" />
+      <span>{t.lossless}</span>
+    </label>
     <div class="settings__meta">
       <label class="checkbox">
         <input type="checkbox" name="keepMetadata" aria-describedby={`${id}-meta-hint`} />

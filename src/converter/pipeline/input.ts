@@ -20,6 +20,7 @@ const JPEG_FRAMES = new Set([0xc0, 0xc1, 0xc2]);
 const SAME_FORMAT: Partial<Record<SniffKind, { encoder: EncoderId; error: ErrorCode }>> = {
   jpeg: { encoder: 'jpeg', error: 'already-jpeg' },
   png: { encoder: 'png', error: 'already-png' },
+  webp: { encoder: 'webp', error: 'already-webp' },
 };
 
 export type InputCheck = { ok: true; decoder: DecoderId } | { ok: false; code: ErrorCode };

@@ -2,4 +2,4 @@ libwebp 1.6.0, emcc (Emscripten gcc/clang-like replacement + linker emulating GN
 033d9c394e776da6633b438719b51e2c620ef88ca3fa0ec93627de21095b4729  webp_dec.mjs
 d321f4f7c5249f1f0bc2fccf8180c76b0e6aa4a5e42c026721f67198a12faeb6  webp_dec.wasm
 91163263f16bcd1da2ad6f0ea2cf322870828f9ae5826602be2910aaefbf033a  webp_enc.mjs
-fba8c6a0ba1ce3f731223c92941e0b5e3c0c1695672ce6b4b64763ac697f89b5  webp_enc.wasm
+74cdf72cf342e16e3bcf9d29e6f9abc8a498e507ce20fbe6abe970691a139433  webp_enc.wasm

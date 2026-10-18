@@ -121,6 +121,7 @@
 }
 
 .settings__quality[hidden],
+.settings__lossless[hidden],
 .notice[hidden],
 .settings__hint[hidden] {
   display: none;

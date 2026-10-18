@@ -88,7 +88,7 @@ export const COMPONENTS: ThirdPartyComponent[] = [
   {
     name: 'libwebp',
     version: '1.6.0',
-    purpose: { ru: 'декодирование WebP', en: 'WebP decoding' },
+    purpose: { ru: 'декодирование и кодирование WebP', en: 'WebP decoding and encoding' },
     license: 'BSD-3-Clause + PATENTS',
     texts: ['libwebp-bsd', 'libwebp-patents'],
     source: 'https://github.com/webmproject/libwebp/tree/v1.6.0',

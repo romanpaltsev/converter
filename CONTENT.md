@@ -156,6 +156,78 @@
 - **Is it safe to convert my photos here?** Yes. The site only downloads the converter itself; your photos are processed in your browser and are never sent to a server.
 - **What happens to the location and the date taken?** By default the date and time the photo was taken are kept, while GPS location, phone model and other details are removed. Tick “Keep all metadata” to copy the full EXIF data, including location.
 
+### heic-to-webp
+
+#### Русский — `/heic-v-webp`
+
+Файл: `src/content/tools/ru/heic-to-webp.yaml`
+
+- **title:** HEIC в WebP онлайн — для сайтов, бесплатно и без загрузки _(57 симв.)_
+- **description:** Конвертируйте фото HEIC с iPhone в WebP прямо в браузере: с потерями или без, бесплатно и без регистрации. Файлы не загружаются на сервер. _(138 симв.)_
+- **H1:** Конвертер HEIC в WebP
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** HEIC в WebP
+- **Карточка:** HEIC → WebP — Фото с iPhone — в формат для сайтов и веб-приложений.
+- **JSON-LD:** Конвертер HEIC в WebP — Онлайн-конвертер фотографий HEIC в WebP, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать HEIC в WebP**
+
+1. Нажмите на область выше или перетащите на неё HEIC-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте WebP по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Фотографии не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **С потерями или без.** Настройте качество ползунком или включите режим «Без потерь», если нужна точная копия.
+- **Метаданные под вашим контролем.** По умолчанию сохраняется дата съёмки, а геолокация, модель телефона и другие сведения удаляются. Если нужно, сохраните всё одной галочкой.
+- **Сразу много файлов.** Добавьте до 100 фото за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое WebP и зачем он нужен?** WebP — формат изображений от Google, который понимают все современные браузеры. Его используют на сайтах: при сопоставимом качестве фотографии в WebP обычно занимают меньше места, чем в JPG, и страницы загружаются быстрее.
+- **Откроется ли WebP на телефоне и компьютере?** WebP поддерживают все современные браузеры, а также Android, iOS и macOS. Некоторые программы и старые фоторедакторы его не открывают — для них лучше выбрать JPG.
+- **С потерями или без потерь — что выбрать?** Для фотографий обычно достаточно сжатия с потерями: при качестве 90 (значение по умолчанию) разница на глаз не видна. Режим «Без потерь» сохраняет пиксели точно, но файлы получаются заметно больше.
+- **Что такое HEIC?** HEIC — формат фотографий, в котором по умолчанию снимают iPhone и iPad. Он хранит снимки компактно, но открывается не везде: многие сайты и программы его не понимают.
+- **Сохранятся ли поворот и цвета снимка?** Да. Фото будет повёрнуто так же, как в галерее телефона, а цветовой профиль (на iPhone это обычно Display P3) переносится в WebP.
+- **Что происходит с геолокацией и датой съёмки?** По умолчанию дата и время съёмки сохраняются, а геолокация, модель телефона, серийные номера и другие служебные данные удаляются. Если отметить «Сохранить все метаданные», в WebP перенесутся все данные EXIF, включая координаты.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а фотографии обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/heic-to-webp`
+
+Файл: `src/content/tools/en/heic-to-webp.yaml`
+
+- **title:** HEIC to WebP Converter — For the Web, Free, No Upload _(53 симв.)_
+- **description:** Convert HEIC photos from your iPhone to WebP right in your browser, lossy or lossless. Free, no sign-up, and your files never leave your device. _(144 симв.)_
+- **H1:** HEIC to WebP Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** HEIC to WebP
+- **Карточка:** HEIC → WebP — iPhone photos in a format made for websites and web apps.
+- **JSON-LD:** HEIC to WebP Converter — An online HEIC to WebP converter that runs in your browser without uploading your photos.
+
+**How to convert HEIC to WebP**
+
+1. Click the box above or drag your HEIC files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each WebP separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your photos stay with you.** Everything runs on your device. Photos are never uploaded to a server, so nobody else ever sees them.
+- **Lossy or lossless.** Set the quality with the slider, or switch on Lossless when you need an exact copy.
+- **You control the metadata.** By default we keep the date the photo was taken and strip the location, phone model and other details. One checkbox keeps everything.
+- **Batch conversion.** Convert up to 100 photos at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **What is WebP, and why use it?** WebP is an image format from Google that every modern browser supports. Websites use it because, at comparable quality, photos usually take up less space as WebP than as JPG, so pages load faster.
+- **Will WebP open on my phone and computer?** Every modern browser supports WebP, and so do Android, iOS and macOS. Some apps and older photo editors can't open it — pick JPG for those.
+- **Lossy or lossless — which should I choose?** For photos, lossy compression is usually enough: at the default quality of 90 the difference is invisible. Lossless keeps every pixel exactly, but the files are much larger.
+- **What is a HEIC file?** HEIC is the photo format iPhones and iPads use by default. It stores photos compactly, but many websites and apps can't open it.
+- **Will rotation and colors be preserved?** Yes. Photos come out rotated the same way as in your phone's gallery, and the color profile (usually Display P3 on iPhones) is carried over to the WebP.
+- **What happens to the location and the date taken?** By default the date and time the photo was taken are kept, while GPS location, phone model, serial numbers and other details are removed. Tick “Keep all metadata” to copy the full EXIF data, including location.
+- **Is it safe to convert my photos here?** Yes. The site only downloads the converter itself; your photos are processed in your browser and are never sent to a server.
+
 ### jpg-to-png
 
 #### Русский — `/jpg-v-png`
@@ -230,6 +302,78 @@
 - **Which JPGs aren't supported?** A few rare variants: CMYK JPEGs (usually print layouts), 12-bit, lossless and arithmetic-coded JPEGs. For those the converter shows a clear message.
 - **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
 
+### jpg-to-webp
+
+#### Русский — `/jpg-v-webp`
+
+Файл: `src/content/tools/ru/jpg-to-webp.yaml`
+
+- **title:** JPG в WebP онлайн — картинки для сайта, бесплатно _(49 симв.)_
+- **description:** Конвертируйте JPG в WebP прямо в браузере: качество настраивается, до 100 файлов за раз, файлы не загружаются на сервер. Бесплатно и без регистрации. _(149 симв.)_
+- **H1:** Конвертер JPG в WebP
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** JPG в WebP
+- **Карточка:** JPG → WebP — Картинки для сайта: настраиваемое качество, много файлов сразу.
+- **JSON-LD:** Конвертер JPG в WebP — Онлайн-конвертер изображений JPG в WebP, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать JPG в WebP**
+
+1. Нажмите на область выше или перетащите на неё JPG-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте WebP по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Изображения не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Качество под контролем.** Настройте качество ползунком; размер до и после конвертации виден в строке каждого файла.
+- **Поворот и цвета как в оригинале.** Если фото повёрнуто с помощью EXIF, WebP получится уже повёрнутым. Цветовой профиль переносится, поэтому цвета не меняются.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Зачем переводить JPG в WebP?** WebP поддерживают все современные браузеры, поэтому его используют на сайтах: при сопоставимом качестве фотографии в WebP обычно занимают меньше места, чем в JPG, и страницы загружаются быстрее.
+- **Будет ли WebP меньше исходного JPG?** Обычно да, но не всегда: если исходный JPG уже сильно сжат, выигрыш бывает небольшим. Размер до и после показан в строке файла — при необходимости уменьшите качество ползунком.
+- **Станет ли качество лучше?** Нет. Конвертация не возвращает детали, потерянные при сжатии JPG, а сжатие с потерями ещё немного меняет картинку. При качестве 90 (значение по умолчанию) разница обычно не видна.
+- **Стоит ли включать «Без потерь»?** Для фотографий из JPG — обычно нет: файл без потерь получится больше исходного. Этот режим полезен для графики, скриншотов и картинок, которые будут дальше редактировать.
+- **Сохранятся ли поворот и цвета?** Да. Если камера записала поворот в EXIF, WebP получится уже повёрнутым как надо. Цветовой профиль (например, Display P3) переносится в WebP.
+- **Что происходит с метаданными?** По умолчанию сохраняется дата съёмки, а геолокация, модель камеры и другие сведения удаляются. Если отметить «Сохранить все метаданные», в WebP перенесутся все данные EXIF, включая координаты.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/jpg-to-webp`
+
+Файл: `src/content/tools/en/jpg-to-webp.yaml`
+
+- **title:** JPG to WebP Converter — Web-Ready Images, Free _(46 симв.)_
+- **description:** Convert JPG to WebP right in your browser. Adjustable quality, up to 100 files at once, and your files never leave your device. Free, no sign-up. _(145 симв.)_
+- **H1:** JPG to WebP Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** JPG to WebP
+- **Карточка:** JPG → WebP — Images for your website: adjustable quality, many files at once.
+- **JSON-LD:** JPG to WebP Converter — An online JPG to WebP converter that runs in your browser without uploading your images.
+
+**How to convert JPG to WebP**
+
+1. Click the box above or drag your JPG files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each WebP separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Quality under control.** Set the quality with the slider; each file's row shows its size before and after conversion.
+- **Rotation and colors preserved.** If a photo is rotated via EXIF, the WebP comes out already rotated. The color profile is carried over, so colors don't shift.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **Why convert JPG to WebP?** Every modern browser supports WebP, which is why websites use it: at comparable quality, photos usually take up less space as WebP than as JPG, so pages load faster.
+- **Will the WebP be smaller than the original JPG?** Usually, but not always: if the JPG is already heavily compressed, the savings can be small. Each file's row shows the size before and after — lower the quality slider if you need a smaller file.
+- **Will the quality get better?** No. Converting can't bring back detail the JPG lost, and lossy compression changes the image a little more. At the default quality of 90 the difference is usually invisible.
+- **Should I turn on Lossless?** For photos that start out as JPG, usually not: a lossless file ends up larger than the original. Lossless is useful for graphics, screenshots and images you'll keep editing.
+- **Are rotation and colors preserved?** Yes. If the camera stored the rotation in EXIF, the WebP comes out already rotated correctly. The color profile (such as Display P3) is copied into the WebP.
+- **What happens to the metadata?** By default the capture date is kept, while the location, camera model and other details are removed. Tick “Keep all metadata” to copy the full EXIF data, including location.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
 ### png-to-jpg
 
 #### Русский — `/png-v-jpg`
@@ -300,6 +444,78 @@
 - **What happens to a transparent background?** JPG has no transparency, so transparent areas turn white. If you need transparency, keep the PNG.
 - **What if the PNG is animated?** JPG can't hold animation: the first frame is saved, and the file's row shows a warning.
 - **What happens to the metadata?** By default the capture date is kept if the PNG has one, while the location and other details are removed. Tick “Keep all metadata” to copy the full EXIF data. PNG text comments aren't carried over to the JPG.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
+### png-to-webp
+
+#### Русский — `/png-v-webp`
+
+Файл: `src/content/tools/ru/png-to-webp.yaml`
+
+- **title:** PNG в WebP онлайн — с прозрачностью, с потерями или без _(55 симв.)_
+- **description:** Конвертируйте PNG в WebP прямо в браузере: прозрачность сохраняется, есть режим без потерь, файлы не загружаются на сервер. Бесплатно. _(134 симв.)_
+- **H1:** Конвертер PNG в WebP
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** PNG в WebP
+- **Карточка:** PNG → WebP — С прозрачностью — для сайтов и интерфейсов.
+- **JSON-LD:** Конвертер PNG в WebP — Онлайн-конвертер изображений PNG в WebP с потерями и без, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать PNG в WebP**
+
+1. Нажмите на область выше или перетащите на неё PNG-файлы — можно сразу несколько.
+2. Выберите качество или включите «Без потерь» и подождите: конвертация идёт прямо в браузере.
+3. Скачайте WebP по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Изображения не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Прозрачность сохраняется.** WebP поддерживает прозрачность, как PNG, — и в режиме с потерями, и без потерь.
+- **С потерями или без.** Без потерь — для графики, иконок и скриншотов; с потерями — для фотографий, когда важнее размер.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Зачем переводить PNG в WebP?** WebP поддерживают все современные браузеры, он хранит прозрачность, как PNG, а файлы обычно получаются меньше. Поэтому на сайтах его используют вместо PNG.
+- **Сохранится ли прозрачность?** Да — и при сжатии с потерями, и без потерь.
+- **С потерями или без потерь — что выбрать?** Без потерь — для логотипов, иконок, скриншотов и графики с текстом: пиксели сохраняются точно. С потерями — для фотографий и сложных изображений: файл будет заметно меньше.
+- **Будет ли WebP меньше PNG?** Обычно да, особенно при сжатии с потерями. Размер до и после показан в строке каждого файла.
+- **А если PNG анимированный?** Анимация не переносится: сохранится первый кадр, а в строке файла появится предупреждение.
+- **Что происходит с метаданными?** По умолчанию сохраняется дата съёмки, если она есть в PNG, а геолокация и другие сведения удаляются. Если отметить «Сохранить все метаданные», перенесутся все данные EXIF. Цветовой профиль переносится всегда.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/png-to-webp`
+
+Файл: `src/content/tools/en/png-to-webp.yaml`
+
+- **title:** PNG to WebP Converter — Keeps Transparency, Lossy or Lossless _(61 симв.)_
+- **description:** Convert PNG to WebP right in your browser. Transparency is kept, lossless mode is available, and your files never leave your device. Free. _(138 симв.)_
+- **H1:** PNG to WebP Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** PNG to WebP
+- **Карточка:** PNG → WebP — Keeps transparency — for websites and app interfaces.
+- **JSON-LD:** PNG to WebP Converter — An online lossy and lossless PNG to WebP converter that runs in your browser without uploading your images.
+
+**How to convert PNG to WebP**
+
+1. Click the box above or drag your PNG files onto it — you can add many at once.
+2. Pick a quality or switch on Lossless, then wait a moment while your browser converts them.
+3. Download each WebP separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Transparency preserved.** WebP supports transparency just like PNG — in both lossy and lossless mode.
+- **Lossy or lossless.** Lossless for graphics, icons and screenshots; lossy for photos when file size matters more.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **Why convert PNG to WebP?** Every modern browser supports WebP, it keeps transparency like PNG, and the files are usually smaller. That's why websites use it instead of PNG.
+- **Is transparency preserved?** Yes — with both lossy and lossless compression.
+- **Lossy or lossless — which should I choose?** Lossless for logos, icons, screenshots and graphics with text: every pixel is kept exactly. Lossy for photos and complex images: the file will be much smaller.
+- **Will the WebP be smaller than the PNG?** Usually, especially with lossy compression. Each file's row shows its size before and after conversion.
+- **What if the PNG is animated?** Animation isn't kept: the first frame is saved, and the file's row shows a warning.
+- **What happens to the metadata?** By default the capture date is kept if the PNG has one, while the location and other details are removed. Tick “Keep all metadata” to copy the full EXIF data. The color profile is always kept.
 - **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
 
 ### webp-to-jpg
@@ -558,6 +774,7 @@
 | `widget.settings` | Настройки | Settings |
 | `widget.format` | Формат | Format |
 | `widget.quality` | Качество | Quality |
+| `widget.lossless` | Без потерь | Lossless |
 | `widget.keepMetadata` | Сохранить все метаданные (включая геолокацию) | Keep all metadata (including location) |
 | `widget.keepMetadataHint` | По умолчанию дата съёмки сохраняется, а геолокация удаляется | By default the capture date is kept and the location is removed |
 | `widget.pngWarning` | PNG сохраняет снимок без потерь, поэтому файлы получаются большими: фото на 24 Мп весит десятки мегабайт. | PNG is lossless, so files are large: a 24 MP photo takes tens of megabytes. |
@@ -591,6 +808,8 @@
 | `widget.errors.avif-unsupported` | Формат AVIF пока не поддерживается. | AVIF is not supported yet. |
 | `widget.errors.already-jpeg` | Файл уже в формате JPG — выберите другой формат выше. | This file is already a JPG — pick another format above. |
 | `widget.errors.already-png` | Файл уже в формате PNG — выберите другой формат выше. | This file is already a PNG — pick another format above. |
+| `widget.errors.already-webp` | Файл уже в формате WebP — выберите другой формат выше. | This file is already a WebP — pick another format above. |
+| `widget.errors.too-large-for-webp` | WebP вмещает изображения не больше 16 383 точек по стороне — выберите JPG или PNG. | WebP can't store images larger than 16,383 px per side — choose JPG or PNG. |
 | `widget.errors.unsupported-image` | Этот формат изображений пока не поддерживается. Поддерживаются {formats}. | This image format isn't supported yet. Supported: {formats}. |
 | `widget.errors.cmyk-unsupported` | JPEG в цветовой модели CMYK (для печати) пока не поддерживается. | CMYK JPEGs (used for print) aren't supported yet. |
 | `widget.errors.decode-failed` | Не удалось прочитать файл — возможно, он повреждён. | Could not read the file — it may be damaged. |

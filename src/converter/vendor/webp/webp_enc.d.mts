@@ -5,7 +5,16 @@ export interface WebpEncoderModule {
   _malloc(size: number): number;
   _free(ptr: number): void;
   /** Файл WebP или 0; result — 2 × int32: размер и код WebPEncodingError. */
-  _webp_encode_rgba(rgba: number, width: number, height: number, quality: number, lossless: number, level: number, result: number): number;
+  _webp_encode_rgba(
+    rgba: number,
+    width: number,
+    height: number,
+    quality: number,
+    lossless: number,
+    level: number,
+    partitionLimit: number,
+    result: number,
+  ): number;
   _webp_free(ptr: number): void;
   _webp_encoder_version(): number;
 }

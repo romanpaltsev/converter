@@ -4,12 +4,17 @@ import type { MetadataMode } from '../metadata/exif-filter';
 import type { Nclx } from '../color/nclx';
 
 export type DecoderId = 'heic' | 'jpeg' | 'png' | 'webp';
-export type EncoderId = 'jpeg' | 'png';
+export type EncoderId = 'jpeg' | 'png' | 'webp';
+
+/** WebP вмещает изображения не больше 16 383 точек по стороне. */
+export const WEBP_MAX_DIMENSION = 16383;
 
 export interface ConvertOptions {
   encoder: EncoderId;
-  /** Качество JPEG 1–100; для PNG не используется. */
+  /** Качество 1–100 для JPEG и WebP с потерями; для PNG не используется. */
   quality: number;
+  /** WebP без потерь; для других форматов не используется. */
+  lossless: boolean;
   metadata: MetadataMode;
 }
 
@@ -19,6 +24,8 @@ export type ErrorCode =
   | 'avif-unsupported'
   | 'already-jpeg'
   | 'already-png'
+  | 'already-webp'
+  | 'too-large-for-webp'
   | 'unsupported-image'
   | 'cmyk-unsupported'
   | 'decode-failed'

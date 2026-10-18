@@ -1,5 +1,6 @@
-// Чанки контейнера WebP (RIFF): чтение метаданных входа.
+// Чанки контейнера WebP (RIFF): чтение метаданных входа и запись ICCP/EXIF в результат кодировщика.
 
+import { readWebpHeader } from '../pipeline/headers';
 import { tiffFromExifChunk } from './heif-exif';
 
 export interface WebpChunk {
@@ -41,4 +42,46 @@ export function readWebpMetadata(webp: Uint8Array): WebpMetadata {
   const icc = chunks.find((c) => c.type === 'ICCP')?.data.slice() ?? null;
   const exif = chunks.find((c) => c.type === 'EXIF');
   return { icc, exif: exif ? tiffFromExifChunk(exif.data) : null };
+}
+
+function buildChunk(type: string, data: Uint8Array): Uint8Array {
+  const out = new Uint8Array(8 + data.length + (data.length & 1)); // нулевой байт выравнивания до чётной длины
+  for (let i = 0; i < 4; i++) out[i] = type.charCodeAt(i);
+  new DataView(out.buffer).setUint32(4, data.length, true);
+  out.set(data, 8);
+  return out;
+}
+
+/**
+ * Встраивает ICC-профиль и EXIF в WebP от кодировщика (VP8, VP8L или VP8X + ALPH + VP8): файл пересобирается
+ * в расширенном формате VP8X → ICCP → ALPH → VP8/VP8L → EXIF. EXIF пишется без префикса «Exif\0\0», как у ExifTool.
+ */
+export function insertWebpMetadata(webp: Uint8Array, meta: { exif: Uint8Array | null; icc: Uint8Array | null }): Uint8Array {
+  if (!meta.exif && !meta.icc) return webp;
+  const header = readWebpHeader(webp);
+  if (!header) throw new WebpError('WebP: нет заголовка изображения');
+  const image = readWebpChunks(webp).filter((c) => c.type === 'ALPH' || c.type === 'VP8 ' || c.type === 'VP8L');
+  const hasAlpha = header.hasAlpha || image.some((c) => c.type === 'ALPH');
+
+  const vp8x = new Uint8Array(10);
+  vp8x[0] = (meta.icc ? 0x20 : 0) | (hasAlpha ? 0x10 : 0) | (meta.exif ? 0x08 : 0);
+  const width = header.width - 1;
+  const height = header.height - 1;
+  vp8x.set([width & 0xff, (width >> 8) & 0xff, width >> 16, height & 0xff, (height >> 8) & 0xff, height >> 16], 4);
+
+  const parts = [buildChunk('VP8X', vp8x)];
+  if (meta.icc) parts.push(buildChunk('ICCP', meta.icc));
+  for (const chunk of image) parts.push(buildChunk(chunk.type, chunk.data));
+  if (meta.exif) parts.push(buildChunk('EXIF', meta.exif));
+
+  const size = parts.reduce((sum, p) => sum + p.length, 4);
+  const out = new Uint8Array(8 + size);
+  out.set([0x52, 0x49, 0x46, 0x46, 0, 0, 0, 0, 0x57, 0x45, 0x42, 0x50]); // «RIFF», размер, «WEBP»
+  new DataView(out.buffer).setUint32(4, size, true);
+  let pos = 12;
+  for (const part of parts) {
+    out.set(part, pos);
+    pos += part.length;
+  }
+  return out;
 }

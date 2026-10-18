@@ -18,6 +18,9 @@ describe('сборка: разметка виджета', () => {
     // ползунок скрыт для PNG, предупреждение о размере — наоборот
     expect(root.querySelector('[data-quality-row]')?.hasAttribute('hidden')).toBe(tool.defaultOutput === 'png');
     expect(root.querySelector('[data-png-warning]')?.hasAttribute('hidden')).toBe(tool.defaultOutput !== 'png');
+    // «Без потерь» — только у WebP
+    expect(root.querySelector('[data-lossless-row]')?.hasAttribute('hidden')).toBe(tool.defaultOutput !== 'webp');
+    expect(root.querySelector('input[name="lossless"]')?.hasAttribute('checked')).toBe(false);
     const config = JSON.parse(root.querySelector('script[data-converter-config]')!.text);
     expect(config.maxFiles).toBe(100);
     expect(config.outputs.map((o: { id: string }) => o.id)).toEqual(tool.outputs);

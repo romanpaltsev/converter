@@ -10,6 +10,7 @@ export interface OutputOption {
   extension: string;
   encoder: EncoderId;
   hasQuality: boolean;
+  hasLossless: boolean;
   largeFiles: boolean;
 }
 

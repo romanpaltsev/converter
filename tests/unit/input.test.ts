@@ -16,6 +16,7 @@ describe('checkInput', () => {
   test('вход в формате выбранного выхода — «уже …»', () => {
     expect(checkInput(head('photo.jpg'), 'jpeg')).toEqual({ ok: false, code: 'already-jpeg' });
     expect(checkInput(head('not-heic.heic'), 'png')).toEqual({ ok: false, code: 'already-png' });
+    expect(checkInput(head('basic.webp'), 'webp')).toEqual({ ok: false, code: 'already-webp' });
   });
 
   test('JPG и PNG в другие форматы — свои декодеры', () => {

@@ -46,7 +46,10 @@ export async function convertImage(session: DecoderSession, encoder: Encoder, op
 
     // превью — из исходных пикселей до кодирования (JPEG-кодировщик меняет буфер, накладывая альфу на белый)
     const small = downscale({ data: pixels.rgba, width: pixels.width, height: pixels.height });
-    const preview = await encoder.encode({ rgba: small.data, width: small.width, height: small.height, hasAlpha: pixels.hasAlpha }, { ...options, quality: 75 });
+    const preview = await encoder.encode(
+      { rgba: small.data, width: small.width, height: small.height, hasAlpha: pixels.hasAlpha },
+      { ...options, quality: 75, lossless: false },
+    );
 
     const encoded = await encoder.encode(pixels, options);
     const bytes = encoder.embed(encoded, { exif: exif.tiff, icc });

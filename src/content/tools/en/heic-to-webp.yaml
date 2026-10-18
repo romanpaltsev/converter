@@ -1,0 +1,46 @@
+# Texts for /en/heic-to-webp. Draft for the owner's review (see CONTENT.md).
+title: "HEIC to WebP Converter — For the Web, Free, No Upload"
+description: "Convert HEIC photos from your iPhone to WebP right in your browser, lossy or lossless. Free, no sign-up, and your files never leave your device."
+h1: "HEIC to WebP Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "HEIC to WebP"
+card:
+  title: "HEIC → WebP"
+  text: "iPhone photos in a format made for websites and web apps."
+app:
+  name: "HEIC to WebP Converter"
+  description: "An online HEIC to WebP converter that runs in your browser without uploading your photos."
+howTo:
+  title: "How to convert HEIC to WebP"
+  steps:
+    - "Click the box above or drag your HEIC files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each WebP separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your photos stay with you"
+      text: "Everything runs on your device. Photos are never uploaded to a server, so nobody else ever sees them."
+    - title: "Lossy or lossless"
+      text: "Set the quality with the slider, or switch on Lossless when you need an exact copy."
+    - title: "You control the metadata"
+      text: "By default we keep the date the photo was taken and strip the location, phone model and other details. One checkbox keeps everything."
+    - title: "Batch conversion"
+      text: "Convert up to 100 photos at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is WebP, and why use it?"
+      a: "WebP is an image format from Google that every modern browser supports. Websites use it because, at comparable quality, photos usually take up less space as WebP than as JPG, so pages load faster."
+    - q: "Will WebP open on my phone and computer?"
+      a: "Every modern browser supports WebP, and so do Android, iOS and macOS. Some apps and older photo editors can't open it — pick JPG for those."
+    - q: "Lossy or lossless — which should I choose?"
+      a: "For photos, lossy compression is usually enough: at the default quality of 90 the difference is invisible. Lossless keeps every pixel exactly, but the files are much larger."
+    - q: "What is a HEIC file?"
+      a: "HEIC is the photo format iPhones and iPads use by default. It stores photos compactly, but many websites and apps can't open it."
+    - q: "Will rotation and colors be preserved?"
+      a: "Yes. Photos come out rotated the same way as in your phone's gallery, and the color profile (usually Display P3 on iPhones) is carried over to the WebP."
+    - q: "What happens to the location and the date taken?"
+      a: "By default the date and time the photo was taken are kept, while GPS location, phone model, serial numbers and other details are removed. Tick “Keep all metadata” to copy the full EXIF data, including location."
+    - q: "Is it safe to convert my photos here?"
+      a: "Yes. The site only downloads the converter itself; your photos are processed in your browser and are never sent to a server."

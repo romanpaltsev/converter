@@ -4,7 +4,7 @@ import { convertImage } from '../pipeline/convert';
 import { loadDecoder } from '../pipeline/decoders';
 import { loadEncoder } from '../pipeline/encoders';
 import { checkInput } from '../pipeline/input';
-import { ConvertError, type ErrorCode } from '../pipeline/types';
+import { ConvertError, type ErrorCode, WEBP_MAX_DIMENSION } from '../pipeline/types';
 import type { FromWorker, ToWorker } from './protocol';
 
 interface WorkerScope {
@@ -59,6 +59,10 @@ async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): P
     modules.set(encoder.module, encoder);
     const session = decoder.open(bytes);
     try {
+      // ограничение WebP проверяем до декодирования (бывает у панорам)
+      if (message.options.encoder === 'webp' && Math.max(session.width, session.height) > WEBP_MAX_DIMENSION) {
+        throw new ConvertError('too-large-for-webp');
+      }
       const pixels = session.width * session.height;
       if (processed > 0 && pixels > message.freshWorkerAbovePixels) {
         post({ type: 'needs-fresh-worker', id, pixels });
