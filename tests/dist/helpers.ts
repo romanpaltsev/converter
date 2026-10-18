@@ -2,6 +2,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { type HTMLElement, parse } from 'node-html-parser';
+import { TOOLS } from '../../src/tools/registry';
 
 export const DIST = fileURLToPath(new URL('../../dist/', import.meta.url));
 export const SITE = (process.env.SITE_URL || 'https://converter.hotbar.pro').replace(/\/+$/, '');
@@ -25,6 +26,9 @@ export function readHtml(file: string): { raw: string; doc: HTMLElement } {
 export function readText(file: string): string {
   return readFileSync(join(DIST, file), 'utf8');
 }
+
+/** Файлы страниц-конвертеров в dist (на всех языках). */
+export const TOOL_PAGES = TOOLS.flatMap((tool) => [`${tool.slugs.ru}.html`, `en/${tool.slugs.en}.html`]);
 
 /** Адрес страницы, который отдаёт nginx для файла из dist. */
 export function urlPathFor(file: string): string {

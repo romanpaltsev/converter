@@ -2,7 +2,8 @@
 // Разметку отдаёт сервер (ConverterWidget.astro), здесь — только поведение. Строки — из конфигурации.
 
 import { track } from '../../lib/analytics';
-import { SNIFF_BYTES, sniff, sniffError } from '../pipeline/sniff';
+import { checkInput } from '../pipeline/input';
+import { SNIFF_BYTES } from '../pipeline/sniff';
 import type { ErrorCode, WarningCode } from '../pipeline/types';
 import { type OutputOption, type WidgetConfig, readConfig } from './config';
 import { NameAllocator, outputName } from './filenames';
@@ -35,6 +36,13 @@ interface Item {
 
 const sameSettings = (a: Settings, b: Settings) =>
   a.output.id === b.output.id && a.keepMetadata === b.keepMetadata && (!a.output.hasQuality || a.quality === b.quality);
+
+/** Сконвертированный файл или «уже в этом формате» — после смены настроек их можно сконвертировать заново. */
+function isOutdated(item: Item, current: Settings): boolean {
+  if (!item.settings) return false;
+  if (item.status === 'done') return !sameSettings(item.settings, current);
+  return item.status === 'error' && (item.error?.startsWith('already-') ?? false) && item.settings.output.id !== current.output.id;
+}
 
 /** Подстановка {name} в строку из словаря. */
 function fill(template: string, values: Record<string, string | number>): string {
@@ -206,18 +214,18 @@ export class ConverterWidget {
     // формат по сигнатуре проверяем сразу, без загрузки WASM
     const head = new Uint8Array(await item.file.slice(0, SNIFF_BYTES).arrayBuffer());
     if (generation !== this.generation) return;
-    const notHeic = sniffError(sniff(head));
-    if (notHeic) return this.fail(item, notHeic);
-
     const settings = this.currentSettings();
     item.settings = settings;
+    const input = checkInput(head, settings.output.encoder);
+    if (!input.ok) return this.fail(item, input.code);
+
     item.status = 'converting';
     this.renderRow(item);
 
-    this.client ??= new WorkerClient(this.config.decoder);
+    this.client ??= new WorkerClient();
     if (!this.loadedOnce) this.setStatus(this.t.loading);
     try {
-      await this.client.load(settings.output.encoder);
+      await this.client.load(input.decoder, settings.output.encoder);
       this.loadedOnce = true;
     } catch {
       if (generation !== this.generation) return;
@@ -227,7 +235,7 @@ export class ConverterWidget {
     if (generation !== this.generation) return;
     this.setStatus(fill(this.t.progress, { current: this.run.done + this.run.failed + 1, total: this.run.total }));
 
-    const outcome = await this.client.convert(item.file, {
+    const outcome = await this.client.convert(item.file, input.decoder, {
       encoder: settings.output.encoder,
       quality: settings.quality,
       metadata: settings.keepMetadata ? 'all' : 'dates',
@@ -303,7 +311,7 @@ export class ConverterWidget {
     }
     body.append(name, meta);
 
-    const notes = item.status === 'error' && item.error ? [this.t.errors[item.error]] : item.warnings.map((w) => this.t.warnings[w]);
+    const notes = item.status === 'error' && item.error ? [this.errorText(item.error)] : item.warnings.map((w) => this.t.warnings[w]);
     for (const text of notes) {
       const note = document.createElement('p');
       note.className = item.status === 'error' ? 'file__note file__note--error' : 'file__note';
@@ -323,11 +331,16 @@ export class ConverterWidget {
     }
   }
 
+  private errorText(code: ErrorCode): string {
+    const text = this.t.errors[code];
+    return code === 'already-jpeg' && this.config.iphoneHint ? `${text} ${this.t.iphoneJpegHint}` : text;
+  }
+
   private updateActions(): void {
     const done = this.items.filter((item) => item.status === 'done');
     this.zipButton.disabled = this.zipping || done.length === 0;
     const current = this.currentSettings();
-    const outdated = done.some((item) => item.settings && !sameSettings(item.settings, current));
+    const outdated = this.items.some((item) => isOutdated(item, current));
     this.reconvertButton.hidden = !outdated;
     this.settingsHint.hidden = !outdated;
     this.clearButton.disabled = this.items.length === 0;
@@ -336,10 +349,10 @@ export class ConverterWidget {
   private reconvert(): void {
     const current = this.currentSettings();
     for (const item of this.items) {
-      if (item.status !== 'done' || !item.settings || sameSettings(item.settings, current)) continue;
+      if (!isOutdated(item, current)) continue;
       this.revokeUrls(item);
       if (item.name) this.names.release(item.name);
-      Object.assign(item, { status: 'queued', settings: null, name: null, blob: null, url: null, previewUrl: null, warnings: [] });
+      Object.assign(item, { status: 'queued', settings: null, name: null, blob: null, url: null, previewUrl: null, error: null, warnings: [] });
       this.run.total++;
       this.renderRow(item);
     }

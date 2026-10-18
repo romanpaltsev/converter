@@ -127,7 +127,7 @@ test.describe('доступность (axe, WCAG 2.1 AA)', () => {
     test(`виджет с результатами и ошибками (${scheme})`, async ({ page }) => {
       await page.emulateMedia({ colorScheme: scheme });
       await openConverter(page, '/heic-v-jpg');
-      await page.setInputFiles('[data-input]', ['basic.heic', 'not-heic.heic', 'hdr-pq.heic'].map(fixture));
+      await page.setInputFiles('[data-input]', ['basic.heic', 'garbage.heic', 'hdr-pq.heic'].map(fixture));
       await expect(page.locator('.file:is([data-status="done"], [data-status="error"])')).toHaveCount(3);
       await page.getByRole('radio', { name: 'PNG' }).check(); // показывает предупреждение и «Конвертировать заново»
       const result = await new AxeBuilder({ page }).include('[data-converter]').withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();

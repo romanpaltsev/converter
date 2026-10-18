@@ -216,7 +216,7 @@ class HeicSession implements DecoderSession {
     }
   }
 
-  decode(): DecodedImage {
+  async decode(): Promise<DecodedImage> {
     const { lib } = this;
     // метаданные копируем до декодирования: они не зависят от пикселей
     const icc = this.readIcc();
@@ -248,9 +248,11 @@ class HeicSession implements DecoderSession {
       height,
       rgba: lib.HEAPU8.subarray(plane, plane + rowBytes * height),
       hasAlpha,
+      orientation: 1, // irot/imir уже применены libheif
       icc,
       nclx,
       exif,
+      warnings: [],
       release: () => {
         if (!released) lib._heif_image_release(image);
         released = true;
@@ -270,5 +272,5 @@ class HeicSession implements DecoderSession {
 
 export async function loadHeicDecoder(): Promise<Decoder> {
   const lib = await loadLibheif();
-  return { open: (bytes) => new HeicSession(lib, bytes), heapBytes: () => lib.HEAPU8.length };
+  return { module: 'libheif', open: (bytes) => new HeicSession(lib, bytes), heapBytes: () => lib.HEAPU8.length };
 }

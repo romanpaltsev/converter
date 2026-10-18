@@ -2,9 +2,9 @@
 // Виджет конвертера: разметка рендерится на сервере, поведение — src/converter/widget/controller.ts.
 // До выбора первого файла WASM не загружается.
 import '../styles/converter.css';
-import { MAX_FILES_PER_BATCH, type Locale } from '../config/site';
+import { LOCALE_META, MAX_FILES_PER_BATCH, type Locale } from '../config/site';
 import type { WidgetConfig } from '../converter/widget/config';
-import { UI } from '../i18n/ui';
+import { UI, format } from '../i18n/ui';
 import { INPUT_FORMATS, OUTPUT_FORMATS, type ToolConfig } from '../tools/registry';
 
 interface Props {
@@ -13,18 +13,31 @@ interface Props {
 }
 
 const { tool, locale } = Astro.props;
-const t = UI[locale].widget;
-const input = INPUT_FORMATS[tool.inputFormats[0]!];
+const list = (items: string[]) => new Intl.ListFormat(LOCALE_META[locale].htmlLang, { type: 'conjunction' }).format(items);
+const inputs = tool.inputFormats.map((id) => INPUT_FORMATS[id]);
+// шаблоны строк заполняем здесь: формат страницы и список всех поддерживаемых форматов
+const supported = list(Object.values(INPUT_FORMATS).map((f) => f.label));
+const base = UI[locale].widget;
+const t = {
+  ...base,
+  dropTitle: format(base.dropTitle, { format: list(inputs.map((f) => f.label)) }),
+  errors: {
+    ...base.errors,
+    'not-image': format(base.errors['not-image'], { formats: supported }),
+    'unsupported-image': format(base.errors['unsupported-image'], { formats: supported }),
+  },
+};
+const accept = inputs.map((f) => f.accept).join(',');
 const outputs = tool.outputs.map((id) => ({ id, ...OUTPUT_FORMATS[id] }));
 const initial = OUTPUT_FORMATS[tool.defaultOutput];
 const config: WidgetConfig = {
   toolId: tool.id,
   locale,
-  decoder: input.decoder,
   outputs,
   defaultOutput: tool.defaultOutput,
   maxFiles: MAX_FILES_PER_BATCH,
   zipName: tool.slugs.en,
+  iphoneHint: tool.inputFormats.includes('heic'),
   strings: t,
 };
 const id = `cv-${tool.id}`;
@@ -40,7 +53,7 @@ const id = `cv-${tool.id}`;
     <span class="dropzone__action">{t.dropAction}</span>
     <span class="dropzone__hint" id={`${id}-hint`}>{t.dropHint}</span>
   </button>
-  <input type="file" class="visually-hidden" data-input multiple accept={input.accept} tabindex="-1" aria-hidden="true" />
+  <input type="file" class="visually-hidden" data-input multiple accept={accept} tabindex="-1" aria-hidden="true" />
 
   <form class="settings" data-settings aria-label={t.settings}>
     <fieldset class="settings__format">

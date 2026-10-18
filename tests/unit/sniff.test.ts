@@ -50,7 +50,7 @@ describe('sniff: другие форматы', () => {
   test('JPEG', () => expect(sniff(Uint8Array.of(0xff, 0xd8, 0xff, 0xe0, 0, 0x10))).toEqual({ kind: 'jpeg' }));
   test('PNG', () => expect(sniff(Uint8Array.of(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a))).toEqual({ kind: 'png' }));
   test('GIF', () => expect(sniff(new TextEncoder().encode('GIF89a......'))).toEqual({ kind: 'other-image', format: 'gif' }));
-  test('WebP', () => expect(sniff(new TextEncoder().encode('RIFF\0\0\0\0WEBPVP8 '))).toEqual({ kind: 'other-image', format: 'webp' }));
+  test('WebP', () => expect(sniff(new TextEncoder().encode('RIFF\0\0\0\0WEBPVP8 '))).toEqual({ kind: 'webp' }));
   test('TIFF', () => expect(sniff(Uint8Array.of(0x4d, 0x4d, 0, 42, 0, 0, 0, 8))).toEqual({ kind: 'other-image', format: 'tiff' }));
   test('пусто и мусор', () => {
     expect(sniff(new Uint8Array(0))).toEqual({ kind: 'unknown' });

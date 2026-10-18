@@ -261,13 +261,13 @@
 | `nav.breadcrumbs` | Навигационная цепочка | Breadcrumbs |
 | `footer.privacy` | Файлы обрабатываются прямо в браузере и никуда не загружаются. | Files are processed right in your browser and never uploaded anywhere. |
 | `tool.relatedTitle` | Другие конвертеры | More converters |
-| `widget.dropTitle` | Перетащите HEIC-файлы сюда | Drop HEIC files here |
+| `widget.dropTitle` | Перетащите {format}-файлы сюда | Drop {format} files here |
 | `widget.dropAction` | или нажмите, чтобы выбрать | or click to choose |
 | `widget.dropHint` | Можно сразу много файлов — до 100 за раз | Add many files at once — up to 100 |
 | `widget.dropActive` | Отпустите, чтобы добавить файлы | Release to add files |
 | `widget.settings` | Настройки | Settings |
 | `widget.format` | Формат | Format |
-| `widget.quality` | Качество JPG | JPG quality |
+| `widget.quality` | Качество | Quality |
 | `widget.keepMetadata` | Сохранить все метаданные (включая геолокацию) | Keep all metadata (including location) |
 | `widget.keepMetadataHint` | По умолчанию дата съёмки сохраняется, а геолокация удаляется | By default the capture date is kept and the location is removed |
 | `widget.pngWarning` | PNG сохраняет снимок без потерь, поэтому файлы получаются большими: фото на 24 Мп весит десятки мегабайт. | PNG is lossless, so files are large: a 24 MP photo takes tens of megabytes. |
@@ -292,17 +292,18 @@
 | `widget.clear` | Очистить | Clear |
 | `widget.reconvert` | Конвертировать заново с новыми настройками | Convert again with the new settings |
 | `widget.settingsChanged` | Новые настройки применятся к следующим файлам. | New settings will apply to the next files. |
+| `widget.iphoneJpegHint` | Если вы выбирали фото на iPhone, система могла сама преобразовать его в JPEG. | If you picked it on an iPhone, iOS may have converted it to JPEG. |
 | `widget.units.b` | Б | B |
 | `widget.units.kb` | КБ | KB |
 | `widget.units.mb` | МБ | MB |
 | `widget.units.gb` | ГБ | GB |
-| `widget.errors.not-image` | Это не HEIC-файл. Поддерживаются фото в формате HEIC/HEIF. | This is not a HEIC file. HEIC/HEIF photos are supported. |
+| `widget.errors.not-image` | Не удалось распознать файл как изображение. Поддерживаются {formats}. | This file doesn't look like an image. Supported: {formats}. |
 | `widget.errors.avif-unsupported` | Формат AVIF пока не поддерживается. | AVIF is not supported yet. |
-| `widget.errors.already-jpeg` | Файл уже в формате JPEG — конвертировать не нужно. Если вы выбирали фото на iPhone, система могла сама преобразовать его в JPEG. | This file is already a JPEG — no conversion needed. If you picked it on an iPhone, iOS may have converted it to JPEG for you. |
-| `widget.errors.already-png` | Файл уже в формате PNG — конвертировать не нужно. | This file is already a PNG — no conversion needed. |
-| `widget.errors.unsupported-image` | Это изображение другого формата, а не HEIC. | This image is in another format, not HEIC. |
+| `widget.errors.already-jpeg` | Файл уже в формате JPG — выберите другой формат выше. | This file is already a JPG — pick another format above. |
+| `widget.errors.already-png` | Файл уже в формате PNG — выберите другой формат выше. | This file is already a PNG — pick another format above. |
+| `widget.errors.unsupported-image` | Этот формат изображений пока не поддерживается. Поддерживаются {formats}. | This image format isn't supported yet. Supported: {formats}. |
 | `widget.errors.decode-failed` | Не удалось прочитать файл — возможно, он повреждён. | Could not read the file — it may be damaged. |
-| `widget.errors.unsupported-variant` | Этот вариант HEIC не поддерживается. | This kind of HEIC file is not supported. |
+| `widget.errors.unsupported-variant` | Этот вариант формата не поддерживается. | This variant of the format isn't supported. |
 | `widget.errors.out-of-memory` | Браузеру не хватило памяти для этого файла. Закройте другие вкладки и попробуйте снова. | The browser ran out of memory for this file. Close other tabs and try again. |
 | `widget.errors.internal` | Что-то пошло не так. Попробуйте ещё раз. | Something went wrong. Please try again. |
 | `widget.warnings.hdr-tone` | HDR-снимок: цвета могут немного отличаться от оригинала. | HDR photo: colors may differ slightly from the original. |

@@ -21,8 +21,8 @@ test('ошибка на не-HEIC файле не останавливает о�
     'error',
     'done',
   ]);
-  await expect(rows.nth(0)).toContainText('уже в формате PNG');
-  await expect(rows.nth(2)).toContainText('Это не HEIC-файл');
+  await expect(rows.nth(0)).toContainText('Этот формат изображений пока не поддерживается');
+  await expect(rows.nth(2)).toContainText('Не удалось распознать файл как изображение');
   await expect(rows.nth(3)).toContainText('AVIF пока не поддерживается');
   await expect(rows.nth(4)).toContainText('iPhone'); // пояснение про автоматическое перекодирование в JPEG
   await expect(page.locator('[data-status-text]')).toHaveText('Готово: 2 из 6. Не удалось: 4.');
@@ -30,7 +30,7 @@ test('ошибка на не-HEIC файле не останавливает о�
 
 test('«Скачать всё (ZIP)»: все готовые файлы, одинаковые имена с суффиксами', async ({ page }) => {
   await openConverter(page, '/heic-v-jpg');
-  await page.setInputFiles('[data-input]', ['basic.heic', 'basic.heic', 'rotated.heic', 'not-heic.heic'].map(fixture));
+  await page.setInputFiles('[data-input]', ['basic.heic', 'basic.heic', 'rotated.heic', 'garbage.heic'].map(fixture));
   await waitForRows(page, 4);
   const pending = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Скачать всё (ZIP)' }).click();
@@ -47,7 +47,7 @@ test('больше 100 файлов: берём первые 100 и сообща
   mkdirSync(dir, { recursive: true });
   const paths = Array.from({ length: 101 }, (_, i) => {
     const path = `${dir}/file-${String(i + 1).padStart(3, '0')}.heic`;
-    copyFileSync(fixture('not-heic.heic'), path); // не-HEIC: ошибки мгновенные, WASM не нужен
+    copyFileSync(fixture('garbage.heic'), path); // не изображение: ошибки мгновенные, WASM не нужен
     return path;
   });
   await openConverter(page, '/heic-v-jpg');

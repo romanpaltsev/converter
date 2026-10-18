@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { htmlFiles, readHtml } from './helpers';
+import { TOOL_PAGES, htmlFiles, readHtml } from './helpers';
 
 const pages = htmlFiles();
 const DATA_TYPES = new Set(['application/ld+json', 'application/json']);
@@ -28,10 +28,11 @@ describe('сборка: совместимость со строгим CSP', () 
   });
 
   test('клиентский JS только на страницах-конвертерах, WASM в HTML не подключается', () => {
+    expect(pages.filter((file) => TOOL_PAGES.includes(file)).sort()).toEqual([...TOOL_PAGES].sort());
     for (const file of pages) {
       const { raw, doc } = readHtml(file);
       const scripts = doc.querySelectorAll('script[src]');
-      if (/heic-(v|to)-/.test(file)) expect(scripts.length, file).toBe(1);
+      if (TOOL_PAGES.includes(file)) expect(scripts.length, file).toBe(1);
       else expect(scripts, `на ${file} не должно быть JS`).toHaveLength(0);
       expect(raw).not.toMatch(/\.wasm/);
     }

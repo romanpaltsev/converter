@@ -2,7 +2,7 @@
 
 import mozjpegEncode, { init as initMozjpeg } from '@jsquash/jpeg/encode.js';
 import mozjpegWasmUrl from '@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm?url';
-import { MAX_EXIF_TIFF_BYTES, insertJpegMetadata } from '../../metadata/jpeg-segments';
+import { MAX_EXIF_TIFF_BYTES, MAX_ICC_BYTES, insertJpegMetadata } from '../../metadata/jpeg-segments';
 import type { Encoder, RawImage } from '../types';
 import { compileWasm } from '../wasm';
 
@@ -46,9 +46,11 @@ export async function loadJpegEncoder(): Promise<Encoder> {
   // пробное кодирование 1×1: ошибки инициализации проявятся сейчас, а не на первом файле
   await mozjpegEncode({ data: new Uint8ClampedArray(4), width: 1, height: 1, colorSpace: 'srgb' } as ImageData);
   return {
+    module: 'mozjpeg-enc',
     mime: 'image/jpeg',
     extension: 'jpg',
     maxExifBytes: MAX_EXIF_TIFF_BYTES,
+    maxIccBytes: MAX_ICC_BYTES,
     async encode(image, options) {
       if (image.hasAlpha) flattenOnWhite(image.rgba);
       return encode(image, options.quality);

@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { CONTACT_EMAIL, LOCALES } from '../../src/config/site';
 import { PAGES, pagePath } from '../../src/i18n/routes';
-import { INDEXING, SITE, htmlFiles, readHtml, readText, urlPathFor } from './helpers';
+import { INDEXING, SITE, TOOL_PAGES, htmlFiles, readHtml, readText, urlPathFor } from './helpers';
 
 const pages = htmlFiles();
 const notFound = pages.filter((f) => /(^|\/)404\.html$/.test(f));
@@ -86,7 +86,7 @@ describe('сборка: JSON-LD', () => {
       .doc.querySelectorAll('script[type="application/ld+json"]')
       .map((s) => JSON.parse(s.text) as Record<string, unknown>);
 
-  test.each(regular.filter((f) => /heic-(v|to)-/.test(f)))('%s: WebApplication, FAQPage, BreadcrumbList', (file) => {
+  test.each(TOOL_PAGES)('%s: WebApplication, FAQPage, BreadcrumbList', (file) => {
     const data = types(file);
     expect(data.map((d) => d['@type']).sort()).toEqual(['BreadcrumbList', 'FAQPage', 'WebApplication']);
     const faq = data.find((d) => d['@type'] === 'FAQPage') as { mainEntity: unknown[] };

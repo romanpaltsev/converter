@@ -29,11 +29,19 @@ export type ErrorCode =
 export type WarningCode = 'hdr-tone' | 'exif-unreadable' | 'exif-makernote-dropped' | 'exif-reduced-to-dates' | 'icc-too-large';
 
 export class ConvertError extends Error {
+  /** После ошибки экземпляр WASM-модуля нельзя использовать дальше (нужен новый worker и повторная попытка). */
+  readonly fatal: boolean;
+  /** Модуль работоспособен, но мог потерять память — worker пересоздаётся без повторной попытки. */
+  readonly recycle: boolean;
+
   constructor(
     readonly code: ErrorCode,
     message?: string,
+    options: { fatal?: boolean; recycle?: boolean } = {},
   ) {
     super(message ?? code);
+    this.fatal = options.fatal ?? code === 'out-of-memory';
+    this.recycle = options.recycle ?? false;
   }
 }
 
@@ -47,12 +55,16 @@ export interface RawImage {
 
 /** Изображение после декодирования. Буфер rgba может указывать в память WASM и живёт до release(). */
 export interface DecodedImage extends RawImage {
+  /** EXIF Orientation, которую ещё нужно применить к пикселям (1 — уже как надо). */
+  orientation: number;
   /** ICC-профиль исходника (копия) или null. */
   icc: Uint8Array | null;
   /** Цвет в виде nclx (если задан боксом colr) или null. */
   nclx: Nclx | null;
   /** EXIF исходника как структура TIFF (копия) или null. */
   exif: Uint8Array | null;
+  /** Предупреждения декодера (например, взят только первый кадр анимации). */
+  warnings: WarningCode[];
   release(): void;
 }
 
@@ -60,23 +72,28 @@ export interface DecoderSession {
   /** Размер изображения до декодирования — по нему решаем, нужен ли «свежий» worker. */
   readonly width: number;
   readonly height: number;
-  decode(): DecodedImage;
+  decode(): Promise<DecodedImage>;
   close(): void;
 }
 
 export interface Decoder {
+  /** Имя WASM-модуля: по нему считается память worker'а (у декодера и кодировщика модуль бывает общий). */
+  readonly module: string;
   open(bytes: Uint8Array): DecoderSession;
-  /** Текущий размер кучи WASM (для замеров памяти). */
+  /** Текущий размер кучи WASM. */
   heapBytes(): number;
 }
 
 export interface Encoder {
+  readonly module: string;
   readonly mime: string;
   readonly extension: string;
   /** Ограничение на размер EXIF в контейнере (JPEG — 64 КБ). */
   readonly maxExifBytes: number;
+  /** Ограничение на размер ICC-профиля (JPEG — 255 сегментов APP2). */
+  readonly maxIccBytes: number;
   encode(image: RawImage, options: ConvertOptions): Promise<Uint8Array>;
   embed(file: Uint8Array, meta: { exif: Uint8Array | null; icc: Uint8Array | null }): Uint8Array;
-  /** Текущий размер кучи WASM (для замеров памяти). */
+  /** Текущий размер кучи WASM. */
   heapBytes(): number;
 }

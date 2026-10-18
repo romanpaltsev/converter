@@ -6,6 +6,8 @@ export const MAX_EXIF_TIFF_BYTES = 65527;
 /** Максимум данных профиля в одном APP2: 65535 − 2 (длина) − 14 («ICC_PROFILE\0» + номер + количество). */
 export const MAX_ICC_CHUNK_BYTES = 65519;
 const MAX_ICC_CHUNKS = 255;
+/** Самый большой ICC-профиль, который помещается в JPEG (255 сегментов APP2). */
+export const MAX_ICC_BYTES = MAX_ICC_CHUNK_BYTES * MAX_ICC_CHUNKS;
 
 const EXIF_HEADER = [0x45, 0x78, 0x69, 0x66, 0x00, 0x00]; // "Exif\0\0"
 const ICC_HEADER = [...'ICC_PROFILE'].map((c) => c.charCodeAt(0)).concat(0);

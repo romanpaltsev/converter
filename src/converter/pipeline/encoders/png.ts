@@ -10,9 +10,11 @@ import { compileWasm } from '../wasm';
 export async function loadPngEncoder(): Promise<Encoder> {
   const { memory } = await initPng(await compileWasm(pngWasmUrl));
   return {
+    module: 'squoosh-png',
     mime: 'image/png',
     extension: 'png',
     maxExifBytes: Number.POSITIVE_INFINITY,
+    maxIccBytes: Number.POSITIVE_INFINITY,
     async encode(image) {
       // всегда RGBA 8 бит: кодировщик принимает только такой вход
       return encodePng(image.rgba, image.width, image.height, 8);

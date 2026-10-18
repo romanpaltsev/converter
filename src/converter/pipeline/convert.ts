@@ -1,10 +1,11 @@
-// Конвейер одного файла: декодер → RGBA → кодировщик → вставка EXIF и ICC.
+// Конвейер одного файла: декодер → RGBA → поворот по EXIF → кодировщик → вставка EXIF и ICC.
 
 import { chooseProfile } from '../color/nclx';
 import { loadProfile } from '../color/profiles';
 import { prepareExif } from '../metadata/exif-filter';
+import { applyOrientation } from './orientation';
 import { downscale } from './preview';
-import type { ConvertOptions, DecoderSession, Encoder, WarningCode } from './types';
+import type { ConvertOptions, DecoderSession, Encoder, RawImage, WarningCode } from './types';
 
 export interface ConvertResult {
   bytes: Uint8Array;
@@ -18,34 +19,42 @@ export interface ConvertResult {
 
 export async function convertImage(session: DecoderSession, encoder: Encoder, options: ConvertOptions): Promise<ConvertResult> {
   const started = performance.now();
-  const image = session.decode();
+  const image = await session.decode();
   const decoded = performance.now();
   try {
-    const warnings: WarningCode[] = [];
+    const warnings: WarningCode[] = [...image.warnings];
+    // поворот по EXIF применяем к пикселям, в результате Orientation = 1
+    const oriented = applyOrientation({ data: image.rgba, width: image.width, height: image.height }, image.orientation);
+    const pixels: RawImage = { rgba: oriented.data, width: oriented.width, height: oriented.height, hasAlpha: image.hasAlpha };
+
     // ICC исходника переносим всегда; если цвет задан nclx (или не задан) — встраиваем эквивалентный профиль
     const color = chooseProfile(image.nclx);
     if (color.hdr) warnings.push('hdr-tone');
-    const icc = image.icc ?? (await loadProfile(color.profile));
+    let icc: Uint8Array | null = image.icc ?? (await loadProfile(color.profile));
+    if (icc.length > encoder.maxIccBytes) {
+      warnings.push('icc-too-large');
+      icc = null;
+    }
 
     const exif = prepareExif(image.exif, {
       mode: options.metadata,
-      width: image.width,
-      height: image.height,
+      width: pixels.width,
+      height: pixels.height,
       maxBytes: encoder.maxExifBytes,
     });
     warnings.push(...exif.warnings);
 
     // превью — из исходных пикселей до кодирования (JPEG-кодировщик меняет буфер, накладывая альфу на белый)
-    const small = downscale({ data: image.rgba, width: image.width, height: image.height });
-    const preview = await encoder.encode({ rgba: small.data, width: small.width, height: small.height, hasAlpha: image.hasAlpha }, { ...options, quality: 75 });
+    const small = downscale({ data: pixels.rgba, width: pixels.width, height: pixels.height });
+    const preview = await encoder.encode({ rgba: small.data, width: small.width, height: small.height, hasAlpha: pixels.hasAlpha }, { ...options, quality: 75 });
 
-    const encoded = await encoder.encode(image, options);
+    const encoded = await encoder.encode(pixels, options);
     const bytes = encoder.embed(encoded, { exif: exif.tiff, icc });
     return {
       bytes,
       preview,
-      width: image.width,
-      height: image.height,
+      width: pixels.width,
+      height: pixels.height,
       warnings,
       timings: { decode: decoded - started, encode: performance.now() - decoded },
     };

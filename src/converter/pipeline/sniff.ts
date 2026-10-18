@@ -1,14 +1,15 @@
 // Определение формата по сигнатуре файла, а не по расширению.
 
-import type { ErrorCode } from './types';
-
 export type SniffResult =
   | { kind: 'heic' }
   | { kind: 'avif' }
   | { kind: 'jpeg' }
   | { kind: 'png' }
-  | { kind: 'other-image'; format: 'gif' | 'webp' | 'bmp' | 'tiff' }
+  | { kind: 'webp' }
+  | { kind: 'other-image'; format: 'gif' | 'bmp' | 'tiff' }
   | { kind: 'unknown' };
+
+export type SniffKind = SniffResult['kind'];
 
 /** Сколько байт начала файла нужно для определения формата (с запасом на длинный список брендов ftyp). */
 export const SNIFF_BYTES = 256;
@@ -59,27 +60,9 @@ export function sniff(bytes: Uint8Array): SniffResult {
   if (b(0) === 0xff && b(1) === 0xd8 && b(2) === 0xff) return { kind: 'jpeg' };
   if (b(0) === 0x89 && ascii(bytes, 1, 3) === 'PNG' && b(4) === 0x0d && b(5) === 0x0a) return { kind: 'png' };
   if (ascii(bytes, 0, 4) === 'GIF8') return { kind: 'other-image', format: 'gif' };
-  if (ascii(bytes, 0, 4) === 'RIFF' && ascii(bytes, 8, 4) === 'WEBP') return { kind: 'other-image', format: 'webp' };
+  if (ascii(bytes, 0, 4) === 'RIFF' && ascii(bytes, 8, 4) === 'WEBP') return { kind: 'webp' };
   if (ascii(bytes, 0, 2) === 'BM' && bytes.length >= 26) return { kind: 'other-image', format: 'bmp' };
   const tiffHeader = ascii(bytes, 0, 4);
   if (tiffHeader === 'II*\0' || tiffHeader === 'MM\0*') return { kind: 'other-image', format: 'tiff' };
   return { kind: 'unknown' };
-}
-
-/** Код ошибки для файла, который не нужно (или нельзя) конвертировать; null — это HEIC. */
-export function sniffError(result: SniffResult): ErrorCode | null {
-  switch (result.kind) {
-    case 'heic':
-      return null;
-    case 'avif':
-      return 'avif-unsupported';
-    case 'jpeg':
-      return 'already-jpeg';
-    case 'png':
-      return 'already-png';
-    case 'other-image':
-      return 'unsupported-image';
-    default:
-      return 'not-image';
-  }
 }

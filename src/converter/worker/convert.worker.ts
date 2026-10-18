@@ -3,8 +3,8 @@
 import { convertImage } from '../pipeline/convert';
 import { loadDecoder } from '../pipeline/decoders';
 import { loadEncoder } from '../pipeline/encoders';
-import { SNIFF_BYTES, sniff, sniffError } from '../pipeline/sniff';
-import { ConvertError, type Decoder, type Encoder, type EncoderId, type ErrorCode } from '../pipeline/types';
+import { checkInput } from '../pipeline/input';
+import { ConvertError, type ErrorCode } from '../pipeline/types';
 import type { FromWorker, ToWorker } from './protocol';
 
 interface WorkerScope {
@@ -27,15 +27,17 @@ function classifyUnexpected(error: unknown): { code: ErrorCode; fatal: true } {
   return { code: error instanceof WebAssembly.RuntimeError ? 'decode-failed' : 'internal', fatal: true };
 }
 
-/** Загруженные кодеки — для замеров памяти. */
-const loadedEncoders = new Map<EncoderId, Encoder>();
+/** Загруженные WASM-модули по имени (у декодера и кодировщика PNG модуль общий — считаем его один раз). */
+const modules = new Map<string, { heapBytes(): number }>();
 
-function heapStats(decoder: Decoder) {
-  return {
-    decoder: decoder.heapBytes(),
-    jpeg: loadedEncoders.get('jpeg')?.heapBytes() ?? 0,
-    png: loadedEncoders.get('png')?.heapBytes() ?? 0,
-  };
+function heapStats(): Record<string, number> {
+  return Object.fromEntries([...modules].map(([name, module]) => [name, module.heapBytes()]));
+}
+
+function reservedHeap(): number {
+  let total = 0;
+  for (const module of modules.values()) total += module.heapBytes();
+  return total;
 }
 
 async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): Promise<void> {
@@ -44,11 +46,17 @@ async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): P
     const readStarted = performance.now();
     const bytes = new Uint8Array(await message.file.arrayBuffer());
     const read = performance.now() - readStarted;
-    const notHeic = sniffError(sniff(bytes.subarray(0, SNIFF_BYTES)));
-    if (notHeic) throw new ConvertError(notHeic);
+    const input = checkInput(bytes, message.options.encoder);
+    if (!input.ok) throw new ConvertError(input.code);
+    // кучи прошлых файлов не уменьшаются: если их уже много, следующий файл — в свежем worker'е
+    if (processed > 0 && reservedHeap() > message.freshWorkerAboveHeapBytes) {
+      post({ type: 'needs-fresh-worker', id, pixels: 0 });
+      return;
+    }
 
-    const [decoder, encoder] = await Promise.all([loadDecoder('heic'), loadEncoder(message.options.encoder)]);
-    loadedEncoders.set(message.options.encoder, encoder);
+    const [decoder, encoder] = await Promise.all([loadDecoder(input.decoder), loadEncoder(message.options.encoder)]);
+    modules.set(decoder.module, decoder);
+    modules.set(encoder.module, encoder);
     const session = decoder.open(bytes);
     try {
       const pixels = session.width * session.height;
@@ -72,7 +80,7 @@ async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): P
           height: result.height,
           pixels,
           warnings: result.warnings,
-          stats: { heap: heapStats(decoder), timings: { read, ...result.timings } },
+          stats: { heap: heapStats(), timings: { read, ...result.timings } },
         },
         [buffer, preview],
       );
@@ -81,10 +89,10 @@ async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): P
     }
   } catch (error) {
     if (error instanceof ConvertError) {
-      post({ type: 'error', id, code: error.code, fatal: error.code === 'out-of-memory', message: error.message });
+      post({ type: 'error', id, code: error.code, fatal: error.fatal, recycle: error.recycle, message: error.message });
     } else {
       const { code, fatal } = classifyUnexpected(error);
-      post({ type: 'error', id, code, fatal, message: String(error) });
+      post({ type: 'error', id, code, fatal, recycle: true, message: String(error) });
     }
   }
 }
@@ -92,8 +100,13 @@ async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): P
 scope.onmessage = (event) => {
   const message = event.data;
   if (message.type === 'load') {
-    Promise.all([loadDecoder(message.decoder), ...message.encoders.map(loadEncoder)]).then(
-      () => post({ type: 'loaded' }),
+    const decoders = message.decoders.map((id) => loadDecoder(id));
+    const encoders = message.encoders.map((id) => loadEncoder(id));
+    Promise.all([...decoders, ...encoders]).then(
+      (loaded) => {
+        for (const module of loaded) modules.set(module.module, module);
+        post({ type: 'loaded' });
+      },
       (error: unknown) => post({ type: 'load-failed', message: String(error) }),
     );
   } else if (message.type === 'convert') {

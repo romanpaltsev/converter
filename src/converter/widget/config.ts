@@ -2,7 +2,7 @@
 
 import type { Locale } from '../../config/site';
 import type { UiStrings } from '../../i18n/ui';
-import type { DecoderId, EncoderId } from '../pipeline/types';
+import type { EncoderId } from '../pipeline/types';
 
 export interface OutputOption {
   id: string;
@@ -16,12 +16,13 @@ export interface OutputOption {
 export interface WidgetConfig {
   toolId: string;
   locale: Locale;
-  decoder: DecoderId;
   outputs: OutputOption[];
   defaultOutput: string;
   maxFiles: number;
   /** Имя ZIP-архива без расширения. */
   zipName: string;
+  /** Страница для снимков с iPhone: к ошибке «уже JPG» добавляется пояснение про автоматическое перекодирование. */
+  iphoneHint: boolean;
   strings: UiStrings['widget'];
 }
 
