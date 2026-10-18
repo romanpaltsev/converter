@@ -1,6 +1,6 @@
 # Конвертер
 
-Бесплатный онлайн-конвертер изображений: **HEIC → JPG / PNG** и **JPG ↔ PNG**. Конвертация идёт полностью
+Бесплатный онлайн-конвертер изображений: **HEIC → JPG / PNG**, **JPG ↔ PNG** и **WebP → JPG / PNG**. Конвертация идёт полностью
 в браузере (WebAssembly в Web Worker): файлы не загружаются на сервер. Интерфейс на русском и английском.
 
 Тестовая площадка: https://converter.hotbar.pro (закрыта от индексации). Название «Конвертер» — плейсхолдер,
@@ -8,7 +8,7 @@
 
 ## Возможности
 
-- HEIC/HEIF, JPG и PNG → JPG (MozJPEG, качество 1–100) или PNG; до 100 файлов за раз, перетаскивание и выбор.
+- HEIC/HEIF, JPG, PNG и WebP → JPG (MozJPEG, качество 1–100) или PNG; до 100 файлов за раз, перетаскивание и выбор.
 - Формат определяется по сигнатуре, любая страница принимает любой поддерживаемый формат; AVIF, GIF и прочее —
   понятная ошибка в строке файла, очередь идёт дальше.
 - Поворот (irot/imir у HEIC, EXIF Orientation у JPG и PNG) применяется к пикселям, в EXIF всегда Orientation = 1.
@@ -44,7 +44,8 @@ npm run preview    # dist/ с теми же заголовками, что у ng
 | `npm run test:e2e:slow` | медленные: 50 × 24 Мп в Chromium, 48 Мп в WebKit (`:docker` — в образе) |
 | `npm run smoke:docker` | сборка Docker-образа, проверки curl'ом; `-- --e2e` — ещё и все e2e против контейнера |
 | `npm run lighthouse` | Lighthouse (мобильный) против Docker-образа |
-| `npm run fixtures` | пересоздать синтетические HEIC-фикстуры (Docker) |
+| `npm run fixtures` | пересоздать синтетические фикстуры (Docker); `-- jpeg-png` — только одну секцию |
+| `npm run codecs` | пересобрать libwebp в WebAssembly (`codecs/webp` → `src/converter/vendor/webp`, Docker) |
 | `npm run content` | пересобрать `CONTENT.md` из текстов |
 
 ## Структура
@@ -61,6 +62,7 @@ src/converter/metadata/     EXIF (TIFF), сегменты JPEG, чанки PNG, 
 src/converter/color/        выбор и загрузка ICC-профилей
 src/converter/worker/       Web Worker'ы: конвертация и сборка ZIP
 src/converter/widget/       виджет на странице (TypeScript без фреймворков)
+src/converter/vendor/webp/   собранная libwebp (WASM); исходники сборки — codecs/webp/
 nginx/, Dockerfile, docker-compose.yml, deploy/   деплой
 tests/unit, tests/dist, tests/e2e, tests/fixtures
 ```

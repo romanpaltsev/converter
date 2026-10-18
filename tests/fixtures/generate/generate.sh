@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Генерация синтетических фикстур (без личных данных).
 # Запуск: npm run fixtures [-- секции] (собирает Docker-образ и выполняет этот скрипт внутри него).
-# Секции через запятую: heic, jpeg-png (по умолчанию — все). Секция пересоздаёт только свои файлы:
+# Секции через запятую: heic, jpeg-png, webp (по умолчанию — все). Секция пересоздаёт только свои файлы:
 # HEIC-фикстуры не меняются побайтно, когда добавляются фикстуры других форматов.
 # Внутри контейнера: /out — tests/fixtures, /icc — src/converter/color/icc.
 set -euo pipefail
@@ -209,6 +209,44 @@ echo "== самопроверка JPEG/PNG"
 exiftool -s -s -s -Orientation "$OUT/rotated.jpg" "$OUT/rotated.png" "$OUT/mirrored.jpg"
 exiftool -s -G1 -GPSLatitude -ICC_Profile:ProfileDescription -XMP-dc:Subject -PNG:Comment "$OUT/exif-gps.png"
 for f in 12bit lossless arith cmyk; do printf '%s: ' "$f"; "${IM[@]}" identify -format '%[jpeg:colorspace] %z bit\n' "$OUT/$f.jpg" 2>/dev/null || echo "?"; done
+fi
+
+if want webp; then
+quadrants 600 800 display.png
+quadrants 1200 800 wide.png
+photo 1200 800 webp-photo.png "WebP + EXIF"
+"${IM[@]}" display.png -rotate -90 -alpha off -depth 8 png24:display-stored.png
+
+echo "== exif-gps.webp: VP8 + ICCP Display P3 (webpmux) + EXIF: даты, GPS, камера (exiftool)"
+cwebp -quiet -q 80 webp-photo.png -o photo.webp
+webpmux -set icc "$ICC_P3" photo.webp -o "$OUT/exif-gps.webp"
+exiftool -q -overwrite_original "${EXIF_DATES[@]}" "${EXIF_PRIVATE[@]}" "-Orientation#=1" "$OUT/exif-gps.webp"
+
+echo "== basic.webp: простой VP8 без VP8X и метаданных"
+cwebp -quiet -q 80 wide.png -o "$OUT/basic.webp"
+
+echo "== rotated.webp: EXIF Orientation 6 (exiftool); exif-prefixed.webp: чанк EXIF с префиксом «Exif\0\0»"
+cwebp -quiet -q 90 display-stored.png -o rotated-plain.webp
+cp rotated-plain.webp "$OUT/rotated.webp"
+exiftool -q -overwrite_original "${EXIF_DATES[@]}" "-Orientation#=6" "$OUT/rotated.webp"
+{ printf 'Exif\0\0'; cat /out/exif/little-endian.tiff; } > exif-prefixed.bin
+webpmux -set exif exif-prefixed.bin rotated-plain.webp -o "$OUT/exif-prefixed.webp"
+
+echo "== lossless-alpha.webp (VP8L), lossy-alpha.webp (VP8X + ALPH)"
+"${IM[@]}" -size 800x600 xc:none -fill '#e00000' -draw 'circle 400,300 400,80' png32:circle.png
+cwebp -quiet -lossless circle.png -o "$OUT/lossless-alpha.webp"
+cwebp -quiet -q 80 circle.png -o "$OUT/lossy-alpha.webp"
+
+echo "== animated.webp: два кадра, первый — квадранты 640x480"
+quadrants 640 480 anim-1.png
+"${IM[@]}" anim-1.png -negate png24:anim-2.png
+img2webp -loop 0 -d 500 anim-1.png anim-2.png -o "$OUT/animated.webp" >/dev/null
+
+echo "== самопроверка WebP"
+for f in exif-gps basic rotated exif-prefixed lossless-alpha lossy-alpha animated; do
+  printf '%s: ' "$f"; webpinfo -quiet "$OUT/$f.webp" >/dev/null && echo ok
+done
+exiftool -s -s -s -Orientation "$OUT/rotated.webp" "$OUT/exif-prefixed.webp"
 fi
 
 ls -la "$OUT"

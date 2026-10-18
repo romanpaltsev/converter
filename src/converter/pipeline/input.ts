@@ -10,6 +10,7 @@ export const DECODER_BY_KIND: Partial<Record<SniffKind, DecoderId>> = {
   heic: 'heic',
   jpeg: 'jpeg',
   png: 'png',
+  webp: 'webp',
 };
 
 /** Виды JPEG, которые читает MozJPEG из jSquash: baseline, extended и progressive (арифметическое кодирование — нет). */

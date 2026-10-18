@@ -31,9 +31,14 @@ describe('checkInput', () => {
     expect(checkInput(fixture('progressive.jpg'), 'png')).toEqual({ ok: true, decoder: 'jpeg' });
   });
 
+  test('WebP — декодер webp', () => {
+    expect(checkInput(head('basic.webp'), 'jpeg')).toEqual({ ok: true, decoder: 'webp' });
+    expect(checkInput(head('animated.webp'), 'png')).toEqual({ ok: true, decoder: 'webp' });
+  });
+
   test('форматы без декодера — «пока не поддерживается»', () => {
-    expect(checkInput(text('RIFF\0\0\0\0WEBPVP8 '), 'jpeg')).toEqual({ ok: false, code: 'unsupported-image' });
     expect(checkInput(text('GIF89a......'), 'png')).toEqual({ ok: false, code: 'unsupported-image' });
+    expect(checkInput(Uint8Array.of(0x4d, 0x4d, 0, 42, 0, 0, 0, 8), 'jpeg')).toEqual({ ok: false, code: 'unsupported-image' });
   });
 
   test('AVIF и не изображения', () => {

@@ -78,3 +78,35 @@ export function readPngHeader(bytes: Uint8Array): PngHeader | null {
     interlaced: bytes[28] === 1,
   };
 }
+
+export interface WebpHeader {
+  width: number;
+  height: number;
+  hasAlpha: boolean;
+  animated: boolean;
+}
+
+const fourcc = (bytes: Uint8Array, at: number) => String.fromCharCode(bytes[at]!, bytes[at + 1]!, bytes[at + 2]!, bytes[at + 3]!);
+
+/** Размер холста WebP: из VP8X, а для простых файлов — из заголовка кадра VP8 (с потерями) или VP8L (без потерь). */
+export function readWebpHeader(bytes: Uint8Array): WebpHeader | null {
+  if (bytes.length < 30 || fourcc(bytes, 0) !== 'RIFF' || fourcc(bytes, 8) !== 'WEBP') return null;
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const u24 = (at: number) => bytes[at]! | (bytes[at + 1]! << 8) | (bytes[at + 2]! << 16);
+  switch (fourcc(bytes, 12)) {
+    case 'VP8X': {
+      const flags = bytes[20]!;
+      return { width: u24(24) + 1, height: u24(27) + 1, hasAlpha: (flags & 0x10) !== 0, animated: (flags & 0x02) !== 0 };
+    }
+    case 'VP8 ': // ключевой кадр: 3 байта тега, стартовый код 9D 01 2A, затем 14-битные ширина и высота
+      if (bytes[23] !== 0x9d || bytes[24] !== 0x01 || bytes[25] !== 0x2a) return null;
+      return { width: view.getUint16(26, true) & 0x3fff, height: view.getUint16(28, true) & 0x3fff, hasAlpha: false, animated: false };
+    case 'VP8L': {
+      if (bytes[20] !== 0x2f) return null; // сигнатура потока без потерь
+      const bits = view.getUint32(21, true);
+      return { width: (bits & 0x3fff) + 1, height: ((bits >>> 14) & 0x3fff) + 1, hasAlpha: ((bits >>> 28) & 1) === 1, animated: false };
+    }
+    default:
+      return null;
+  }
+}

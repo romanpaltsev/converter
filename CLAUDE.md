@@ -109,6 +109,14 @@ scripts/                      serve-dist (тестовый сервер как n
   первый кадр с предупреждением. Декодер и кодировщик — один экземпляр wasm-bindgen (`codecs/squoosh-png.ts`).
   Метаданные: iCCP (распаковка `DecompressionStream`), eXIf (в том числе после IDAT), cICP → nclx; CRC входа не
   проверяем. Текстовые чанки и XMP не переносятся.
+- **WebP — своя сборка libwebp 1.6.0** (решение 18.10.2026): в @jsquash/webp libwebp от 24.11.2020 — до исправления
+  CVE-2023-4863 в декодере lossless, а декодер разбирает файлы пользователя. Исходники сборки — `codecs/webp/`
+  (Dockerfile с emsdk 6.0.12 и sha256 архива libwebp, `build.sh`, C-обёртки), результат закоммичен в
+  `src/converter/vendor/webp/` (`BUILD.txt` — версии и sha256), пересборка — `npm run codecs`. Декодер пишет RGBA
+  прямо в свою кучу (view без копии, как у libheif), у анимации — первый кадр через `WebPAnimDecoder` с предупреждением.
+  В libwebp 1.6.0 сломана SIMD-сборка под Emscripten (AVX2 добавили в начало списка, и проверка «индекс ≥ 2» выкидывает
+  SSE2) — `build.sh` правит `cmake/cpu.cmake`: для Emscripten SSE4.1 + SSE2, без AVX2. Размер в gzip: декодер 74 КБ,
+  кодировщик 143 КБ. Метаданные входа — `metadata/webp-chunks.ts` (ICCP, EXIF с префиксом «Exif\0\0» и без).
 - **Память при смешанных форматах**: кроме порога 30 Мп — свежий worker, если кучи загруженных модулей в сумме
   больше 1 ГиБ (кучи не уменьшаются); после ошибки внутри WASM (`ConvertError.recycle`) — новый worker без повторной
   попытки. `WorkerClient.load()` досылает в worker только недостающие модули.

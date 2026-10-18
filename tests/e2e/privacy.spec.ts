@@ -13,7 +13,7 @@ test('до выбора файла WASM и worker не загружаются, �
   });
   await openConverter(page, '/heic-v-jpg');
   await page.waitForLoadState('networkidle');
-  expect(network.requests.filter((r) => /^\/_astro\/.*(\.wasm|worker|heic-|jpeg-|png-)/.test(r.url))).toEqual([]);
+  expect(network.requests.filter((r) => /^\/_astro\/.*(\.wasm|worker|heic-|jpeg-|png-|webp)/.test(r.url))).toEqual([]);
 
   await page.setInputFiles('[data-input]', [fixture('basic.heic')]);
   await expect(page.locator('.file[data-status="done"]')).toHaveCount(1);

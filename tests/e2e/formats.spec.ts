@@ -1,4 +1,4 @@
-// JPG и PNG на входе: метаданные, поворот по EXIF, прозрачность, варианты форматов и «любой вход на любой странице».
+// JPG, PNG и WebP на входе: метаданные, поворот по EXIF, прозрачность, варианты форматов и «любой вход на любой странице».
 import { convertFiles as convert, downloadFile as download, expect, openConverter, test } from './fixtures';
 import { decodeInBrowser, dominant, hasXmp, iccProfile, jpegIcc, jpegInfo, pngInfo, readExif } from './files';
 
@@ -114,13 +114,62 @@ test.describe('JPG → PNG', () => {
   });
 });
 
+test.describe('WebP → JPG', () => {
+  test('ICC и даты, поворот по EXIF (с префиксом «Exif» и без), прозрачность на белом, у анимации — первый кадр', async ({ page }) => {
+    await openConverter(page, '/webp-v-jpg');
+    await convert(page, ['exif-gps.webp', 'rotated.webp', 'exif-prefixed.webp', 'lossless-alpha.webp', 'lossy-alpha.webp', 'animated.webp', 'basic.webp']);
+    await expect(page.locator('.file[data-status="done"]')).toHaveCount(7);
+
+    const photo = await download(page, 'exif-gps.jpg');
+    expect(jpegInfo(photo)).toMatchObject({ width: 1200, height: 800 });
+    expect(jpegIcc(photo)).toEqual(P3);
+    const exif = await readExif(photo);
+    expect(exif).toMatchObject({ Orientation: 1, ...DATES, hasGps: false });
+    expect(exif?.Make).toBeUndefined();
+
+    for (const name of ['rotated.jpg', 'exif-prefixed.jpg']) {
+      const bytes = await download(page, name);
+      expect(jpegInfo(bytes), name).toMatchObject({ width: 600, height: 800 });
+      expect((await decodeInBrowser(page, bytes, 'image/jpeg', QUADRANTS)).pixels.map(dominant), name).toEqual(['r', 'g', 'b', 'y']);
+    }
+    for (const name of ['lossless-alpha.jpg', 'lossy-alpha.jpg']) {
+      const decoded = await decodeInBrowser(page, await download(page, name), 'image/jpeg', [
+        [5, 5],
+        [400, 300],
+      ]);
+      expect(decoded.pixels.map(dominant), name).toEqual(['w', 'r']);
+    }
+    expect(jpegInfo(await download(page, 'animated.jpg'))).toMatchObject({ width: 640, height: 480 });
+    await expect(page.locator('.file').filter({ hasText: 'animated.jpg' })).toContainText('сохранён первый кадр');
+    expect(jpegIcc(await download(page, 'basic.jpg'))).toEqual(SRGB);
+  });
+});
+
+test.describe('WebP → PNG', () => {
+  test('прозрачность сохраняется; ICC и EXIF без GPS переносятся в PNG', async ({ page }) => {
+    await openConverter(page, '/webp-v-png');
+    await convert(page, ['lossless-alpha.webp', 'lossy-alpha.webp', 'exif-gps.webp']);
+    for (const name of ['lossless-alpha.png', 'lossy-alpha.png']) {
+      const decoded = await decodeInBrowser(page, await download(page, name), 'image/png', [
+        [5, 5],
+        [400, 300],
+      ]);
+      expect(decoded.pixels.map(dominant), name).toEqual(['t', 'r']);
+    }
+    const photo = pngInfo(await download(page, 'exif-gps.png'));
+    expect(photo.icc).toEqual(P3);
+    expect(await readExif(photo.exif)).toMatchObject({ Orientation: 1, ...DATES, hasGps: false });
+  });
+});
+
 test.describe('любой вход на любой странице', () => {
-  test('PNG на странице HEIC → JPG конвертируется; JPG при выходе JPG — «уже», с пояснением про iPhone', async ({ page }) => {
+  test('PNG и WebP на странице HEIC → JPG конвертируются; JPG при выходе JPG — «уже», с пояснением про iPhone', async ({ page }) => {
     await openConverter(page, '/heic-v-jpg');
-    await convert(page, ['alpha.png', 'photo.jpg']);
+    await convert(page, ['alpha.png', 'basic.webp', 'photo.jpg']);
     await expect(page.locator('.file').nth(0)).toHaveAttribute('data-status', 'done');
-    await expect(page.locator('.file').nth(1)).toContainText('Файл уже в формате JPG');
-    await expect(page.locator('.file').nth(1)).toContainText('iPhone');
+    await expect(page.locator('.file').nth(1)).toHaveAttribute('data-status', 'done');
+    await expect(page.locator('.file').nth(2)).toContainText('Файл уже в формате JPG');
+    await expect(page.locator('.file').nth(2)).toContainText('iPhone');
   });
 
   test('на страницах без HEIC — без пояснения про iPhone; смена формата конвертирует такие строки заново', async ({ page }) => {

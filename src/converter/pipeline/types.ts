@@ -3,7 +3,7 @@
 import type { MetadataMode } from '../metadata/exif-filter';
 import type { Nclx } from '../color/nclx';
 
-export type DecoderId = 'heic' | 'jpeg' | 'png';
+export type DecoderId = 'heic' | 'jpeg' | 'png' | 'webp';
 export type EncoderId = 'jpeg' | 'png';
 
 export interface ConvertOptions {

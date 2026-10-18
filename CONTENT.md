@@ -302,6 +302,150 @@
 - **What happens to the metadata?** By default the capture date is kept if the PNG has one, while the location and other details are removed. Tick “Keep all metadata” to copy the full EXIF data. PNG text comments aren't carried over to the JPG.
 - **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
 
+### webp-to-jpg
+
+#### Русский — `/webp-v-jpg`
+
+Файл: `src/content/tools/ru/webp-to-jpg.yaml`
+
+- **title:** WebP в JPG онлайн — бесплатно, без загрузки на сервер _(53 симв.)_
+- **description:** Конвертируйте картинки WebP в JPG прямо в браузере: бесплатно, без регистрации, файлы не загружаются на сервер. JPG откроется в любой программе. _(144 симв.)_
+- **H1:** Конвертер WebP в JPG
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** WebP в JPG
+- **Карточка:** WebP → JPG — Картинки с сайтов — в формат, который открывается везде.
+- **JSON-LD:** Конвертер WebP в JPG — Онлайн-конвертер изображений WebP в JPG, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать WebP в JPG**
+
+1. Нажмите на область выше или перетащите на неё WebP-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте JPG по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Изображения не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Прозрачность — на белом фоне.** В JPG нет прозрачности, поэтому прозрачные области WebP аккуратно ложатся на белый фон, а не становятся чёрными.
+- **Сжатие MozJPEG.** JPG создаётся кодировщиком MozJPEG от Mozilla. Качество настраивается ползунком.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое WebP?** WebP — формат изображений от Google, который используют многие сайты: картинки в нём занимают меньше места. Но его открывают не все программы, фоторедакторы и сервисы, поэтому скачанную с сайта картинку часто удобнее перевести в JPG.
+- **Почему картинка с сайта скачивается в WebP?** Сайты отдают картинки в WebP, чтобы страницы грузились быстрее, и браузер сохраняет файл в том же формате. Конвертация в JPG делает картинку пригодной для любых программ.
+- **Теряется ли качество?** JPG сжимает с потерями, поэтому картинка немного меняется. При качестве 90 (значение по умолчанию) разница обычно не видна. Если исходный WebP был без потерь и нужна точная копия, выберите PNG.
+- **Почему JPG больше, чем WebP?** WebP обычно сжимает эффективнее JPG, поэтому та же картинка в JPG при сопоставимом качестве весит больше. Это нормально; уменьшите качество ползунком, если нужен файл поменьше.
+- **Что будет с прозрачностью и анимацией?** В JPG нет прозрачности, поэтому прозрачные области становятся белыми. Анимация тоже не переносится: сохранится первый кадр, а в строке файла появится предупреждение.
+- **Что происходит с метаданными?** По умолчанию сохраняется дата съёмки, если она есть в WebP, а геолокация и другие сведения удаляются. Если отметить «Сохранить все метаданные», перенесутся все данные EXIF. Цветовой профиль переносится всегда.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/webp-to-jpg`
+
+Файл: `src/content/tools/en/webp-to-jpg.yaml`
+
+- **title:** WebP to JPG Converter — Free, Private, No Upload _(48 симв.)_
+- **description:** Convert WebP images to JPG right in your browser. Free, no sign-up, and your files never leave your device. The JPG opens in any app. _(133 симв.)_
+- **H1:** WebP to JPG Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** WebP to JPG
+- **Карточка:** WebP → JPG — Images saved from websites, in a format that opens everywhere.
+- **JSON-LD:** WebP to JPG Converter — An online WebP to JPG converter that runs in your browser without uploading your images.
+
+**How to convert WebP to JPG**
+
+1. Click the box above or drag your WebP files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each JPG separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Transparency goes white.** JPG has no transparency, so transparent areas of the WebP are placed neatly on a white background instead of turning black.
+- **MozJPEG encoding.** JPGs are made with MozJPEG, Mozilla's advanced JPEG encoder. Fine-tune the quality with the slider.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **What is WebP?** WebP is an image format from Google that many websites use because it keeps images small. Not every app, photo editor or service can open it, though, so an image saved from a website is often easier to use as a JPG.
+- **Why do images from websites download as WebP?** Websites serve images as WebP so pages load faster, and your browser saves the file in the same format. Converting it to JPG makes it work in any app.
+- **Will I lose quality?** JPG compression is lossy, so the image changes slightly. At the default quality of 90 the difference is usually invisible. If the original WebP was lossless and you need an exact copy, pick PNG.
+- **Why is the JPG bigger than the WebP?** WebP usually compresses more efficiently than JPG, so the same image at similar quality takes up more space as a JPG. That's expected — lower the quality slider if you need a smaller file.
+- **What happens to transparency and animation?** JPG has no transparency, so transparent areas turn white. Animation isn't kept either: the first frame is saved, and the file's row shows a warning.
+- **What happens to the metadata?** By default the capture date is kept if the WebP has one, while the location and other details are removed. Tick “Keep all metadata” to copy the full EXIF data. The color profile is always kept.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
+### webp-to-png
+
+#### Русский — `/webp-v-png`
+
+Файл: `src/content/tools/ru/webp-to-png.yaml`
+
+- **title:** WebP в PNG онлайн — с прозрачностью и без потерь _(48 симв.)_
+- **description:** Конвертируйте WebP в PNG без новых потерь качества: прозрачность сохраняется, файлы не загружаются на сервер. Бесплатно и без регистрации. _(138 симв.)_
+- **H1:** Конвертер WebP в PNG
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** WebP в PNG
+- **Карточка:** WebP → PNG — С прозрачностью и без потерь — для редактирования и дизайна.
+- **JSON-LD:** Конвертер WebP в PNG — Онлайн-конвертер изображений WebP в PNG без потерь, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать WebP в PNG**
+
+1. Нажмите на область выше или перетащите на неё WebP-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте PNG по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Изображения не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Прозрачность сохраняется.** PNG поддерживает прозрачность так же, как WebP, поэтому прозрачный фон останется прозрачным.
+- **Без новых потерь.** PNG сохраняет пиксели без изменений: при конвертации качество не ухудшается.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое WebP?** WebP — формат изображений от Google, популярный на сайтах: картинки в нём занимают мало места. Но многие программы и редакторы его до сих пор не открывают, поэтому картинку удобнее перевести в распространённый формат, например PNG.
+- **Когда лучше PNG, а когда JPG?** PNG — если важны прозрачность или точная копия без потерь: для логотипов, иконок, скриншотов и картинок, которые будут дальше редактировать. JPG — для фотографий, когда важен небольшой размер файла.
+- **Сохранится ли прозрачность?** Да. PNG поддерживает прозрачность, поэтому прозрачные области WebP останутся прозрачными.
+- **Почему PNG больше, чем WebP?** PNG сжимает без потерь, а WebP часто хранит картинки с потерями и сжимает эффективнее, поэтому PNG обычно весит больше. Для фотографий, где важнее размер, выберите JPG.
+- **А если WebP анимированный?** Анимация в PNG не переносится: сохранится первый кадр, а в строке файла появится предупреждение.
+- **Что происходит с метаданными?** По умолчанию сохраняется дата съёмки, если она есть в WebP, а геолокация и другие сведения удаляются. Если отметить «Сохранить все метаданные», перенесутся все данные EXIF. Цветовой профиль переносится всегда.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/webp-to-png`
+
+Файл: `src/content/tools/en/webp-to-png.yaml`
+
+- **title:** WebP to PNG Converter — With Transparency, No Quality Loss _(58 симв.)_
+- **description:** Convert WebP to PNG without losing any more quality. Transparency is kept and your files never leave your device. Free, no sign-up. _(131 симв.)_
+- **H1:** WebP to PNG Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** WebP to PNG
+- **Карточка:** WebP → PNG — Lossless, with transparency — ready for editing and design.
+- **JSON-LD:** WebP to PNG Converter — An online lossless WebP to PNG converter that runs in your browser without uploading your images.
+
+**How to convert WebP to PNG**
+
+1. Click the box above or drag your WebP files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each PNG separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Transparency preserved.** PNG supports transparency just like WebP, so a transparent background stays transparent.
+- **No further quality loss.** PNG keeps the pixels exactly as they are, so converting doesn't degrade the image.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **What is WebP?** WebP is Google's image format, popular on websites because images stay small. Many apps and editors still can't open it, which is why converting to a common format such as PNG helps.
+- **PNG or JPG — which should I pick?** Pick PNG when you need transparency or an exact, lossless copy: logos, icons, screenshots and images you'll keep editing. Pick JPG for photos when a small file matters more.
+- **Is transparency preserved?** Yes. PNG supports transparency, so transparent areas of the WebP stay transparent.
+- **Why is the PNG bigger than the WebP?** PNG is lossless, while WebP often stores images lossily and compresses them more efficiently, so the PNG is usually larger. For photos where size matters, choose JPG.
+- **What if the WebP is animated?** Animation isn't carried over to PNG: the first frame is saved, and the file's row shows a warning.
+- **What happens to the metadata?** By default the capture date is kept if the WebP has one, while the location and other details are removed. Tick “Keep all metadata” to copy the full EXIF data. The color profile is always kept.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
 ## Другие страницы
 
 ### Главная

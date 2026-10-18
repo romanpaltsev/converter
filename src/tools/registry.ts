@@ -15,6 +15,7 @@ export const INPUT_FORMATS = {
   },
   jpeg: { label: 'JPG', accept: '.jpg,.jpeg,.jfif,.jpe,image/jpeg', decoder: 'jpeg' },
   png: { label: 'PNG', accept: '.png,.apng,image/png,image/apng', decoder: 'png' },
+  webp: { label: 'WebP', accept: '.webp,image/webp', decoder: 'webp' },
 } as const satisfies Record<string, { label: string; accept: string; decoder: DecoderId }>;
 
 export const OUTPUT_FORMATS = {
@@ -70,6 +71,22 @@ export const TOOLS: ToolConfig[] = [
     defaultOutput: 'jpeg',
     outputs: ['jpeg', 'png'],
     content: 'png-to-jpg',
+  },
+  {
+    id: 'webp-to-jpg',
+    slugs: { ru: 'webp-v-jpg', en: 'webp-to-jpg' },
+    inputFormats: ['webp'],
+    defaultOutput: 'jpeg',
+    outputs: ['jpeg', 'png'],
+    content: 'webp-to-jpg',
+  },
+  {
+    id: 'webp-to-png',
+    slugs: { ru: 'webp-v-png', en: 'webp-to-png' },
+    inputFormats: ['webp'],
+    defaultOutput: 'png',
+    outputs: ['jpeg', 'png'],
+    content: 'webp-to-png',
   },
 ];
 

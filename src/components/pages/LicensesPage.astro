@@ -14,6 +14,9 @@ import libjpegTurbo from '../../content/licenses/libjpeg-turbo.txt?raw';
 import squooshBsd from '../../content/licenses/squoosh-BSD.txt?raw';
 import pngMit from '../../content/licenses/png-crate-MIT.txt?raw';
 import clientZipMit from '../../content/licenses/client-zip-MIT.txt?raw';
+import libwebpBsd from '../../content/licenses/libwebp-BSD.txt?raw';
+import libwebpPatents from '../../content/licenses/libwebp-PATENTS.txt?raw';
+import emscripten from '../../content/licenses/emscripten-MIT-NCSA.txt?raw';
 
 interface Props {
   locale: Locale;
@@ -30,9 +33,23 @@ const TEXTS: Record<LicenseTextId, string> = {
   'libjpeg-turbo': libjpegTurbo,
   'squoosh-bsd': squooshBsd,
   'png-mit': pngMit,
+  'libwebp-bsd': libwebpBsd,
+  'libwebp-patents': libwebpPatents,
+  emscripten,
   'client-zip-mit': clientZipMit,
 };
-const ORDER: LicenseTextId[] = ['lgpl-3.0', 'gpl-3.0', 'libjpeg-turbo', 'apache-2.0', 'squoosh-bsd', 'png-mit', 'client-zip-mit'];
+const ORDER: LicenseTextId[] = [
+  'lgpl-3.0',
+  'gpl-3.0',
+  'libjpeg-turbo',
+  'apache-2.0',
+  'squoosh-bsd',
+  'png-mit',
+  'libwebp-bsd',
+  'libwebp-patents',
+  'emscripten',
+  'client-zip-mit',
+];
 const site = import.meta.env.SITE;
 const jsonLd = [
   breadcrumbList([

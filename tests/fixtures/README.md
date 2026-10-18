@@ -32,6 +32,11 @@
 | `alpha.png`, `palette-trns.png` | RGBA и палитра с прозрачностью tRNS (красный круг на прозрачном фоне) |
 | `16bit.png`, `gray.png`, `interlaced.png` | 16 бит на канал, оттенки серого, чересстрочный (Adam7) |
 | `animated.png` | APNG из двух кадров, основной — квадранты 640×480 |
+| `exif-gps.webp` | 1200×800, VP8X: ICCP Display P3 (webpmux), EXIF с датами, GPS и камерой (exiftool) |
+| `basic.webp` | простой VP8 без VP8X и метаданных (→ sRGB) |
+| `rotated.webp`, `exif-prefixed.webp` | хранятся повёрнутыми, Orientation 6; во втором чанк EXIF с префиксом «Exif\0\0» |
+| `lossless-alpha.webp`, `lossy-alpha.webp` | красный круг на прозрачном фоне: VP8L и VP8X + ALPH |
+| `animated.webp` | два кадра, первый — квадранты 640×480 |
 | `exif/big-endian.tiff`, `exif/little-endian.tiff` | сырые EXIF-блоки (TIFF) с датами, GPS, Make/Model, Orientation = 6 — для unit-тестов |
 
 Реальные снимки владельца — только в `private/` (исключена из git).

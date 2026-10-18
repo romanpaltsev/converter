@@ -3,7 +3,17 @@
 
 import type { Locale } from '../../config/site';
 
-export type LicenseTextId = 'lgpl-3.0' | 'gpl-3.0' | 'apache-2.0' | 'libjpeg-turbo' | 'squoosh-bsd' | 'png-mit' | 'client-zip-mit';
+export type LicenseTextId =
+  | 'lgpl-3.0'
+  | 'gpl-3.0'
+  | 'apache-2.0'
+  | 'libjpeg-turbo'
+  | 'squoosh-bsd'
+  | 'png-mit'
+  | 'libwebp-bsd'
+  | 'libwebp-patents'
+  | 'emscripten'
+  | 'client-zip-mit';
 
 export interface ThirdPartyComponent {
   name: string;
@@ -76,6 +86,25 @@ export const COMPONENTS: ThirdPartyComponent[] = [
     source: 'https://github.com/image-rs/image-png',
   },
   {
+    name: 'libwebp',
+    version: '1.6.0',
+    purpose: { ru: 'декодирование WebP', en: 'WebP decoding' },
+    license: 'BSD-3-Clause + PATENTS',
+    texts: ['libwebp-bsd', 'libwebp-patents'],
+    source: 'https://github.com/webmproject/libwebp/tree/v1.6.0',
+  },
+  {
+    name: 'Emscripten',
+    version: '6.0.12',
+    purpose: {
+      ru: 'сборка libwebp в WebAssembly: среда выполнения и стандартная библиотека C',
+      en: 'WebAssembly build of libwebp: runtime and C standard library',
+    },
+    license: 'MIT / NCSA',
+    texts: ['emscripten'],
+    source: 'https://github.com/emscripten-core/emscripten/tree/6.0.12',
+  },
+  {
     name: 'client-zip',
     version: '2.5.1',
     purpose: { ru: 'сборка ZIP-архива', en: 'creating ZIP archives' },
@@ -100,6 +129,9 @@ export const LICENSE_TITLES: Record<LicenseTextId, string> = {
   'libjpeg-turbo': 'libjpeg-turbo / MozJPEG licenses (IJG, Modified BSD, zlib)',
   'squoosh-bsd': 'Squoosh codecs (BSD-3-Clause, Google)',
   'png-mit': 'png crate (MIT)',
+  'libwebp-bsd': 'libwebp (BSD-3-Clause, Google)',
+  'libwebp-patents': 'libwebp — Additional IP Rights Grant (Patents)',
+  emscripten: 'Emscripten (MIT / University of Illinois NCSA)',
   'client-zip-mit': 'client-zip (MIT)',
 };
 

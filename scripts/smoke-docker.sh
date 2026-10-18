@@ -24,8 +24,9 @@ status() { curl -s -o /dev/null -w '%{http_code}' "$@"; }
 header() { curl -s -D - -o /dev/null "${@:2}" | tr -d '\r' | grep -i "^$1:" | head -1 | cut -d' ' -f2-; }
 
 echo "== страницы"
-for path in / /heic-v-jpg /heic-v-png /jpg-v-png /png-v-jpg /licenses /contacts \
-  /en/ /en/heic-to-jpg /en/heic-to-png /en/jpg-to-png /en/png-to-jpg /en/licenses /en/contacts /robots.txt /sitemap-index.xml /favicon.svg; do
+for path in / /heic-v-jpg /heic-v-png /jpg-v-png /png-v-jpg /webp-v-jpg /webp-v-png /licenses /contacts \
+  /en/ /en/heic-to-jpg /en/heic-to-png /en/jpg-to-png /en/png-to-jpg /en/webp-to-jpg /en/webp-to-png /en/licenses /en/contacts \
+  /robots.txt /sitemap-index.xml /favicon.svg; do
   check "GET $path" 200 "$(status "$BASE$path")"
 done
 

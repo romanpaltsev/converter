@@ -1,0 +1,46 @@
+# Texts for /en/webp-to-png. Draft for the owner's review (see CONTENT.md).
+title: "WebP to PNG Converter — With Transparency, No Quality Loss"
+description: "Convert WebP to PNG without losing any more quality. Transparency is kept and your files never leave your device. Free, no sign-up."
+h1: "WebP to PNG Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "WebP to PNG"
+card:
+  title: "WebP → PNG"
+  text: "Lossless, with transparency — ready for editing and design."
+app:
+  name: "WebP to PNG Converter"
+  description: "An online lossless WebP to PNG converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert WebP to PNG"
+  steps:
+    - "Click the box above or drag your WebP files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each PNG separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them."
+    - title: "Transparency preserved"
+      text: "PNG supports transparency just like WebP, so a transparent background stays transparent."
+    - title: "No further quality loss"
+      text: "PNG keeps the pixels exactly as they are, so converting doesn't degrade the image."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is WebP?"
+      a: "WebP is Google's image format, popular on websites because images stay small. Many apps and editors still can't open it, which is why converting to a common format such as PNG helps."
+    - q: "PNG or JPG — which should I pick?"
+      a: "Pick PNG when you need transparency or an exact, lossless copy: logos, icons, screenshots and images you'll keep editing. Pick JPG for photos when a small file matters more."
+    - q: "Is transparency preserved?"
+      a: "Yes. PNG supports transparency, so transparent areas of the WebP stay transparent."
+    - q: "Why is the PNG bigger than the WebP?"
+      a: "PNG is lossless, while WebP often stores images lossily and compresses them more efficiently, so the PNG is usually larger. For photos where size matters, choose JPG."
+    - q: "What if the WebP is animated?"
+      a: "Animation isn't carried over to PNG: the first frame is saved, and the file's row shows a warning."
+    - q: "What happens to the metadata?"
+      a: "By default the capture date is kept if the WebP has one, while the location and other details are removed. Tick “Keep all metadata” to copy the full EXIF data. The color profile is always kept."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

@@ -17,10 +17,12 @@ describe('реестр инструментов', () => {
   test('перелинковка: обратная пара, тот же вход, тот же выход', () => {
     const table = Object.fromEntries(TOOLS.map((tool) => [tool.id, relatedTools(tool).map((t) => t.id)]));
     expect(table).toEqual({
-      'heic-to-jpg': ['heic-to-png', 'png-to-jpg'],
-      'heic-to-png': ['heic-to-jpg', 'jpg-to-png'],
-      'jpg-to-png': ['png-to-jpg', 'heic-to-png'],
-      'png-to-jpg': ['jpg-to-png', 'heic-to-jpg'],
+      'heic-to-jpg': ['heic-to-png', 'png-to-jpg', 'webp-to-jpg'],
+      'heic-to-png': ['heic-to-jpg', 'jpg-to-png', 'webp-to-png'],
+      'jpg-to-png': ['png-to-jpg', 'heic-to-png', 'webp-to-png'],
+      'png-to-jpg': ['jpg-to-png', 'heic-to-jpg', 'webp-to-jpg'],
+      'webp-to-jpg': ['webp-to-png', 'heic-to-jpg', 'png-to-jpg'],
+      'webp-to-png': ['webp-to-jpg', 'heic-to-png', 'jpg-to-png'],
     });
   });
 
