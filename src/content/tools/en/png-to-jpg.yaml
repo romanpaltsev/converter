@@ -1,0 +1,46 @@
+# Texts for /en/png-to-jpg. Draft for the owner's review (see CONTENT.md).
+title: "PNG to JPG Converter — Free and Private, in Your Browser"
+description: "Convert PNG images to JPG right in your browser. Free, no sign-up, and your files never leave your device. Transparent areas turn white; quality is adjustable."
+h1: "PNG to JPG Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "PNG to JPG"
+card:
+  title: "PNG → JPG"
+  text: "When you need a JPG: for websites, email and printing photos."
+app:
+  name: "PNG to JPG Converter"
+  description: "An online PNG to JPG converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert PNG to JPG"
+  steps:
+    - "Click the box above or drag your PNG files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each JPG separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them."
+    - title: "Transparency goes white"
+      text: "JPG has no transparency, so transparent areas are placed neatly on a white background instead of turning black."
+    - title: "MozJPEG encoding"
+      text: "JPGs are made with MozJPEG, Mozilla's advanced JPEG encoder. Fine-tune the quality with the slider."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Why convert PNG to JPG?"
+      a: "Almost every app, website and service accepts JPG, and photos usually take up much less space as JPG than as PNG. That helps when you need to email a file, upload it to a site with a size limit or print it."
+    - q: "Will the file get smaller?"
+      a: "For photos, usually yes: JPG uses lossy compression. Diagrams, screenshots with text and images with large flat areas are often stored more compactly as PNG, though, so for those a JPG may not be smaller."
+    - q: "Will I lose quality?"
+      a: "JPG compression is lossy, so the image changes slightly. At the default quality of 90 the difference is usually invisible on photos. Text and thin lines can show visible artifacts — keep such images as PNG."
+    - q: "What happens to a transparent background?"
+      a: "JPG has no transparency, so transparent areas turn white. If you need transparency, keep the PNG."
+    - q: "What if the PNG is animated?"
+      a: "JPG can't hold animation: the first frame is saved, and the file's row shows a warning."
+    - q: "What happens to the metadata?"
+      a: "By default the capture date is kept if the PNG has one, while the location and other details are removed. Tick “Keep all metadata” to copy the full EXIF data. PNG text comments aren't carried over to the JPG."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

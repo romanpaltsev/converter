@@ -9,7 +9,7 @@ import type { Locale } from '../../config/site';
 import { absoluteUrl, pagePath, toolPageId } from '../../i18n/routes';
 import { UI } from '../../i18n/ui';
 import { breadcrumbList, faqPage, webApplication } from '../../lib/seo';
-import { getTool } from '../../tools/registry';
+import { getTool, relatedTools } from '../../tools/registry';
 
 interface Props {
   toolId: string;
@@ -84,7 +84,7 @@ const jsonLd = [
 
   <section class="section">
     <h2>{UI[locale].tool.relatedTitle}</h2>
-    <ToolCards locale={locale} toolIds={tool.related} />
+    <ToolCards locale={locale} toolIds={relatedTools(tool).map((t) => t.id)} />
   </section>
 </BaseLayout>
 

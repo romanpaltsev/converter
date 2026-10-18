@@ -14,6 +14,13 @@ const URLS: Record<ProfileId, string> = {
 
 const cache = new Map<ProfileId, Promise<Uint8Array>>();
 
+/** Похоже ли на ICC-профиль: размер в заголовке совпадает с длиной, на месте сигнатура «acsp». */
+export function isPlausibleIcc(icc: Uint8Array): boolean {
+  if (icc.length < 132) return false;
+  const size = new DataView(icc.buffer, icc.byteOffset, 4).getUint32(0);
+  return size === icc.length && String.fromCharCode(icc[36]!, icc[37]!, icc[38]!, icc[39]!) === 'acsp';
+}
+
 export function loadProfile(id: ProfileId): Promise<Uint8Array> {
   let promise = cache.get(id);
   if (!promise) {

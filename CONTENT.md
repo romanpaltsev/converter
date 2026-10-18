@@ -156,6 +156,152 @@
 - **Is it safe to convert my photos here?** Yes. The site only downloads the converter itself; your photos are processed in your browser and are never sent to a server.
 - **What happens to the location and the date taken?** By default the date and time the photo was taken are kept, while GPS location, phone model and other details are removed. Tick “Keep all metadata” to copy the full EXIF data, including location.
 
+### jpg-to-png
+
+#### Русский — `/jpg-v-png`
+
+Файл: `src/content/tools/ru/jpg-to-png.yaml`
+
+- **title:** JPG в PNG онлайн — бесплатно, без загрузки на сервер _(52 симв.)_
+- **description:** Конвертируйте JPG в PNG прямо в браузере: бесплатно, без регистрации, файлы не загружаются на сервер. Сохраняются поворот, цветовой профиль и дата съёмки. _(154 симв.)_
+- **H1:** Конвертер JPG в PNG
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** JPG в PNG
+- **Карточка:** JPG → PNG — Чтобы дальше редактировать картинку без новых потерь качества.
+- **JSON-LD:** Конвертер JPG в PNG — Онлайн-конвертер изображений JPG в PNG, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать JPG в PNG**
+
+1. Нажмите на область выше или перетащите на неё JPG-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте PNG по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Изображения не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Поворот и цвета как в оригинале.** Если фото повёрнуто с помощью EXIF, PNG получится уже повёрнутым. Цветовой профиль переносится, поэтому цвета не меняются.
+- **Метаданные под вашим контролем.** По умолчанию сохраняется дата съёмки, а геолокация, модель камеры и другие сведения удаляются. Если нужно, сохраните всё одной галочкой.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Зачем переводить JPG в PNG?** PNG хранит изображение без потерь: JPG при каждом новом сохранении теряет немного качества, а PNG — нет. Поэтому PNG удобен, если картинку дальше будут редактировать, или если сайт либо программа принимают только PNG.
+- **Станет ли качество лучше?** Нет. Конвертация не возвращает детали, которые JPG потерял при сжатии: PNG сохранит изображение ровно таким, какое оно сейчас, и дальше не будет его портить.
+- **Почему PNG весит больше, чем JPG?** PNG сжимает без потерь, а фотографии с мелкими деталями так сжимаются хуже, поэтому файл обычно получается в несколько раз больше. Для фото, которые не нужно редактировать, удобнее оставить JPG.
+- **Появится ли прозрачный фон?** Нет. В JPG нет прозрачности, поэтому фон останется таким же, как на исходной картинке. Прозрачность можно добавить потом в графическом редакторе — PNG её поддерживает.
+- **Сохранятся ли поворот и цвета?** Да. Если камера записала поворот в EXIF, PNG получится уже повёрнутым как надо. Цветовой профиль (например, Display P3) переносится в PNG.
+- **Что происходит с геолокацией и датой съёмки?** По умолчанию дата и время съёмки сохраняются, а геолокация, модель камеры, серийные номера и другие служебные данные удаляются. Если отметить «Сохранить все метаданные», в PNG перенесутся все данные EXIF, включая координаты.
+- **Какие JPG не поддерживаются?** Редкие варианты формата: JPEG в цветовой модели CMYK (обычно это макеты для печати), 12-битные, lossless и с арифметическим кодированием. Для них конвертер покажет понятное сообщение.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/jpg-to-png`
+
+Файл: `src/content/tools/en/jpg-to-png.yaml`
+
+- **title:** JPG to PNG Converter — Free, Private, No Upload _(47 симв.)_
+- **description:** Convert JPG images to PNG right in your browser. Free, no sign-up, and your files never leave your device. Rotation, color profile and capture date are kept. _(157 симв.)_
+- **H1:** JPG to PNG Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** JPG to PNG
+- **Карточка:** JPG → PNG — Keep editing an image without losing any more quality.
+- **JSON-LD:** JPG to PNG Converter — An online JPG to PNG converter that runs in your browser without uploading your images.
+
+**How to convert JPG to PNG**
+
+1. Click the box above or drag your JPG files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each PNG separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Rotation and colors preserved.** If a photo is rotated via EXIF, the PNG comes out already rotated. The color profile is carried over, so colors don't shift.
+- **You control the metadata.** By default we keep the date the photo was taken and strip the location, camera model and other details. One checkbox keeps everything.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **Why convert JPG to PNG?** PNG is lossless: a JPG loses a little quality every time it's saved again, a PNG doesn't. That makes PNG handy for images you're going to edit, or for sites and apps that only accept PNG.
+- **Will the quality get better?** No. Converting can't bring back detail the JPG lost when it was compressed. The PNG keeps the image exactly as it is now and won't degrade it any further.
+- **Why is the PNG bigger than the JPG?** PNG compression is lossless, and detailed photos don't compress well that way, so the file is usually several times larger. For photos you don't plan to edit, JPG is the more practical format.
+- **Will the background become transparent?** No. JPG has no transparency, so the background stays exactly as it was. You can add transparency later in an image editor — PNG supports it.
+- **Are rotation and colors preserved?** Yes. If the camera stored the rotation in EXIF, the PNG comes out already rotated correctly. The color profile (such as Display P3) is copied into the PNG.
+- **What happens to the location and the date taken?** By default the date and time the photo was taken are kept, while GPS location, camera model, serial numbers and other details are removed. Tick “Keep all metadata” to copy the full EXIF data, including location.
+- **Which JPGs aren't supported?** A few rare variants: CMYK JPEGs (usually print layouts), 12-bit, lossless and arithmetic-coded JPEGs. For those the converter shows a clear message.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
+### png-to-jpg
+
+#### Русский — `/png-v-jpg`
+
+Файл: `src/content/tools/ru/png-to-jpg.yaml`
+
+- **title:** PNG в JPG онлайн — бесплатно и прямо в браузере _(47 симв.)_
+- **description:** Конвертируйте PNG в JPG прямо в браузере: бесплатно, без регистрации, файлы не загружаются на сервер. Прозрачный фон станет белым, качество настраивается. _(154 симв.)_
+- **H1:** Конвертер PNG в JPG
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** PNG в JPG
+- **Карточка:** PNG → JPG — Когда нужен JPG: для сайтов, почты и печати фотографий.
+- **JSON-LD:** Конвертер PNG в JPG — Онлайн-конвертер изображений PNG в JPG, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать PNG в JPG**
+
+1. Нажмите на область выше или перетащите на неё PNG-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте JPG по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Изображения не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Прозрачность — на белом фоне.** В JPG нет прозрачности, поэтому прозрачные области аккуратно ложатся на белый фон, а не становятся чёрными.
+- **Сжатие MozJPEG.** JPG создаётся кодировщиком MozJPEG от Mozilla. Качество настраивается ползунком.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Зачем переводить PNG в JPG?** JPG понимают практически все программы, сайты и сервисы, а фотографии в нём обычно занимают заметно меньше места, чем в PNG. Это удобно, если файл нужно отправить по почте, загрузить на сайт с ограничением размера или напечатать.
+- **Станет ли файл меньше?** Для фотографий — обычно да: JPG сжимает их с потерями. А схемы, скриншоты с текстом и картинки с крупными однотонными областями PNG часто хранит компактнее — для них JPG может оказаться не меньше.
+- **Теряется ли качество?** JPG сжимает изображение с потерями, поэтому картинка немного меняется. При качестве 90 (значение по умолчанию) на фотографиях разница обычно не видна. На тексте и тонких линиях могут появиться заметные артефакты — такие картинки лучше оставить в PNG.
+- **Что будет с прозрачным фоном?** В JPG нет прозрачности, поэтому прозрачные области становятся белыми. Если прозрачность нужна, оставьте PNG.
+- **А если PNG анимированный?** Анимация в JPG не переносится: сохранится первый кадр, а в строке файла появится предупреждение.
+- **Что происходит с метаданными?** По умолчанию сохраняется дата съёмки, если она есть в PNG, а геолокация и другие сведения удаляются. Если отметить «Сохранить все метаданные», перенесутся все данные EXIF. Текстовые комментарии PNG в JPG не переносятся.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/png-to-jpg`
+
+Файл: `src/content/tools/en/png-to-jpg.yaml`
+
+- **title:** PNG to JPG Converter — Free and Private, in Your Browser _(56 симв.)_
+- **description:** Convert PNG images to JPG right in your browser. Free, no sign-up, and your files never leave your device. Transparent areas turn white; quality is adjustable. _(159 симв.)_
+- **H1:** PNG to JPG Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** PNG to JPG
+- **Карточка:** PNG → JPG — When you need a JPG: for websites, email and printing photos.
+- **JSON-LD:** PNG to JPG Converter — An online PNG to JPG converter that runs in your browser without uploading your images.
+
+**How to convert PNG to JPG**
+
+1. Click the box above or drag your PNG files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each JPG separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Transparency goes white.** JPG has no transparency, so transparent areas are placed neatly on a white background instead of turning black.
+- **MozJPEG encoding.** JPGs are made with MozJPEG, Mozilla's advanced JPEG encoder. Fine-tune the quality with the slider.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **Why convert PNG to JPG?** Almost every app, website and service accepts JPG, and photos usually take up much less space as JPG than as PNG. That helps when you need to email a file, upload it to a site with a size limit or print it.
+- **Will the file get smaller?** For photos, usually yes: JPG uses lossy compression. Diagrams, screenshots with text and images with large flat areas are often stored more compactly as PNG, though, so for those a JPG may not be smaller.
+- **Will I lose quality?** JPG compression is lossy, so the image changes slightly. At the default quality of 90 the difference is usually invisible on photos. Text and thin lines can show visible artifacts — keep such images as PNG.
+- **What happens to a transparent background?** JPG has no transparency, so transparent areas turn white. If you need transparency, keep the PNG.
+- **What if the PNG is animated?** JPG can't hold animation: the first frame is saved, and the file's row shows a warning.
+- **What happens to the metadata?** By default the capture date is kept if the PNG has one, while the location and other details are removed. Tick “Keep all metadata” to copy the full EXIF data. PNG text comments aren't carried over to the JPG.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
 ## Другие страницы
 
 ### Главная
@@ -302,6 +448,7 @@
 | `widget.errors.already-jpeg` | Файл уже в формате JPG — выберите другой формат выше. | This file is already a JPG — pick another format above. |
 | `widget.errors.already-png` | Файл уже в формате PNG — выберите другой формат выше. | This file is already a PNG — pick another format above. |
 | `widget.errors.unsupported-image` | Этот формат изображений пока не поддерживается. Поддерживаются {formats}. | This image format isn't supported yet. Supported: {formats}. |
+| `widget.errors.cmyk-unsupported` | JPEG в цветовой модели CMYK (для печати) пока не поддерживается. | CMYK JPEGs (used for print) aren't supported yet. |
 | `widget.errors.decode-failed` | Не удалось прочитать файл — возможно, он повреждён. | Could not read the file — it may be damaged. |
 | `widget.errors.unsupported-variant` | Этот вариант формата не поддерживается. | This variant of the format isn't supported. |
 | `widget.errors.out-of-memory` | Браузеру не хватило памяти для этого файла. Закройте другие вкладки и попробуйте снова. | The browser ran out of memory for this file. Close other tabs and try again. |
@@ -311,6 +458,8 @@
 | `widget.warnings.exif-makernote-dropped` | Служебные данные камеры (MakerNote) не поместились и удалены. | Camera maker data (MakerNote) did not fit and was removed. |
 | `widget.warnings.exif-reduced-to-dates` | Метаданные не поместились — сохранены только даты. | Metadata did not fit — only the dates were kept. |
 | `widget.warnings.icc-too-large` | Цветовой профиль слишком большой и не сохранён. | The color profile is too large and was not kept. |
+| `widget.warnings.icc-unreadable` | Цветовой профиль исходника не удалось прочитать — использован sRGB. | The original color profile couldn't be read — sRGB was used. |
+| `widget.warnings.first-frame-only` | Анимация не переносится — сохранён первый кадр. | Animation isn't kept — the first frame was saved. |
 | `notFound.title` | Страница не найдена | Page not found |
 | `notFound.text` | Такой страницы нет. Возможно, адрес изменился или в нём опечатка. | This page does not exist. The address may have changed or contain a typo. |
 | `notFound.toHome` | На главную | Go to the home page |

@@ -4,6 +4,8 @@ import type { Decoder, DecoderId } from '../types';
 
 const loaders: Record<DecoderId, () => Promise<Decoder>> = {
   heic: () => import('./heic').then((m) => m.loadHeicDecoder()),
+  jpeg: () => import('./jpeg').then((m) => m.loadJpegDecoder()),
+  png: () => import('./png').then((m) => m.loadPngDecoder()),
 };
 
 const cache = new Map<DecoderId, Promise<Decoder>>();

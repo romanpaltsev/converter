@@ -1,7 +1,7 @@
 // Фильтрация EXIF по режиму метаданных.
 // Подробности и обоснование правил — в CLAUDE.md, раздел «Метаданные».
 
-import { type ExifData, type TiffEntry, TAG, TiffError, longEntry, parseTiff, shortEntry, writeTiff } from './tiff';
+import { type ExifData, type TiffEntry, TAG, TiffError, longEntry, parseTiff, readNumber, shortEntry, writeTiff } from './tiff';
 
 export type MetadataMode = 'dates' | 'all';
 
@@ -44,6 +44,20 @@ export function isAppleMakerNote(entry: TiffEntry): boolean {
     if (entry.value[i] !== APPLE_MAKERNOTE_PREFIX.charCodeAt(i)) return false;
   }
   return true;
+}
+
+/** EXIF Orientation (1–8); 1, если тега нет или EXIF не читается. */
+export function readOrientation(tiff: Uint8Array | null): number {
+  if (!tiff) return 1;
+  try {
+    const data = parseTiff(tiff);
+    const entry = data.ifd0.find((e) => e.tag === TAG.Orientation);
+    const value = entry ? readNumber(entry, data.littleEndian) : null;
+    return value !== null && value >= 1 && value <= 8 ? value : 1;
+  } catch (error) {
+    if (error instanceof TiffError) return 1;
+    throw error;
+  }
 }
 
 export interface FilterOptions {

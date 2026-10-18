@@ -3,7 +3,7 @@
 import type { MetadataMode } from '../metadata/exif-filter';
 import type { Nclx } from '../color/nclx';
 
-export type DecoderId = 'heic';
+export type DecoderId = 'heic' | 'jpeg' | 'png';
 export type EncoderId = 'jpeg' | 'png';
 
 export interface ConvertOptions {
@@ -20,13 +20,21 @@ export type ErrorCode =
   | 'already-jpeg'
   | 'already-png'
   | 'unsupported-image'
+  | 'cmyk-unsupported'
   | 'decode-failed'
   | 'unsupported-variant'
   | 'out-of-memory'
   | 'internal';
 
 /** Предупреждения не мешают конвертации, но показываются в строке файла. */
-export type WarningCode = 'hdr-tone' | 'exif-unreadable' | 'exif-makernote-dropped' | 'exif-reduced-to-dates' | 'icc-too-large';
+export type WarningCode =
+  | 'hdr-tone'
+  | 'exif-unreadable'
+  | 'exif-makernote-dropped'
+  | 'exif-reduced-to-dates'
+  | 'icc-too-large'
+  | 'icc-unreadable'
+  | 'first-frame-only';
 
 export class ConvertError extends Error {
   /** После ошибки экземпляр WASM-модуля нельзя использовать дальше (нужен новый worker и повторная попытка). */

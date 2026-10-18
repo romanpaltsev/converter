@@ -1,6 +1,5 @@
-import type { Page } from '@playwright/test';
-import { expect, openConverter, test } from './fixtures';
-import { decodeInBrowser, dominant, downloadBytes, fixture, hasXmp, iccProfile, jpegIcc, jpegInfo, pngInfo, readExif } from './files';
+import { convertFiles as convert, downloadFile as download, expect, openConverter, test } from './fixtures';
+import { decodeInBrowser, dominant, hasXmp, iccProfile, jpegIcc, jpegInfo, pngInfo, readExif } from './files';
 
 const P3 = iccProfile('DisplayP3Compat-v2-magic.icc');
 const SRGB = iccProfile('sRGB-v2-magic.icc');
@@ -10,20 +9,6 @@ const QUADRANTS: [number, number][] = [
   [150, 600],
   [450, 600],
 ];
-
-async function convert(page: Page, names: string[]): Promise<void> {
-  await page.setInputFiles('[data-input]', names.map(fixture));
-  await expect(page.locator('.file:is([data-status="done"], [data-status="error"])')).toHaveCount(names.length, { timeout: 120_000 });
-}
-
-async function download(page: Page, name: string): Promise<Buffer> {
-  const row = page.locator('.file').filter({ has: page.getByText(name, { exact: true }) });
-  const pending = page.waitForEvent('download');
-  await row.locator('.file__download').click();
-  const file = await pending;
-  expect(file.suggestedFilename()).toBe(name);
-  return downloadBytes(file);
-}
 
 test.describe('HEIC → JPG', () => {
   test('размеры, ориентация, ICC; по умолчанию даты есть, GPS и камеры нет', async ({ page }) => {

@@ -1,14 +1,13 @@
 // Кодирование PNG (Rust `png` из набора jSquash). Вызываем wasm-bindgen-функцию напрямую:
 // обёртка @jsquash/png берёт data.buffer целиком и сломается на view в памяти декодера.
 
-import initPng, { encode as encodePng } from '@jsquash/png/codec/pkg/squoosh_png.js';
-import pngWasmUrl from '@jsquash/png/codec/pkg/squoosh_png_bg.wasm?url';
+import { encode as encodePng } from '@jsquash/png/codec/pkg/squoosh_png.js';
 import { insertPngMetadata } from '../../metadata/png-chunks';
+import { loadSquooshPng } from '../codecs/squoosh-png';
 import type { Encoder } from '../types';
-import { compileWasm } from '../wasm';
 
 export async function loadPngEncoder(): Promise<Encoder> {
-  const { memory } = await initPng(await compileWasm(pngWasmUrl));
+  const memory = await loadSquooshPng();
   return {
     module: 'squoosh-png',
     mime: 'image/png',

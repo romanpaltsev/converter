@@ -50,8 +50,8 @@ scripts/                      serve-dist (тестовый сервер как n
 **Новая пара уже поддерживаемых форматов** (например, страница «HEIF в JPG» с другим текстом):
 
 1. Добавьте объект в `TOOLS` в `src/tools/registry.ts`: `id`, `slugs` для ru и en (разные, без префикса `/en/`),
-   `inputFormats`, `defaultOutput`, `outputs`, `content` (имя YAML-файла), `related` (перелинковка). Добавьте
-   новый id в `related` соседних инструментов.
+   `inputFormats`, `defaultOutput`, `outputs`, `content` (имя YAML-файла). Порядок в `TOOLS` — по входному формату.
+   Перелинковка строится сама (`relatedTools()`: обратная пара → тот же вход → тот же выход).
 2. Создайте тексты `src/content/tools/ru/<content>.yaml` и `src/content/tools/en/<content>.yaml` по образцу
    существующих. Схема в `src/content.config.ts` проверяет поля и количество: 3 шага, 4 пункта «Почему здесь», 6–8 FAQ.
    Английский текст пишется как оригинальный, под англоязычные запросы.
@@ -100,6 +100,15 @@ scripts/                      serve-dist (тестовый сервер как n
   (по первым 256 байтам, без WASM) и worker'а.
 - **Ориентация**: декодер возвращает EXIF Orientation, `convert.ts` поворачивает пиксели (`applyOrientation()`),
   в EXIF пишется 1. У HEIC всегда 1 — libheif применяет irot/imir сам.
+- **JPEG на входе** — декодер MozJPEG из @jsquash/jpeg; фабрику модуля вызываем напрямую (свой `printErr`: иначе libjpeg
+  пишет в console.error; ошибка libjpeg — это `exit(1)` и исключение `ExitStatus`, модуль остаётся рабочим, но embind
+  теряет копию входа → `recycle`). Флаг `preserveOrientation: true` в jSquash означает «повернуть» — передаём `false`,
+  поворачиваем сами. Не читает: CMYK/YCCK, 12 бит, lossless (SOF3) и арифметическое кодирование — отсекаем по
+  заголовку кадра в `checkInput()` (`readJpegFrame()` в `pipeline/headers.ts`), без загрузки WASM.
+- **PNG на входе** — Rust `png` из @jsquash/png: на выходе всегда RGBA 8 бит (палитра, tRNS, серый, 16 бит), у APNG —
+  первый кадр с предупреждением. Декодер и кодировщик — один экземпляр wasm-bindgen (`codecs/squoosh-png.ts`).
+  Метаданные: iCCP (распаковка `DecompressionStream`), eXIf (в том числе после IDAT), cICP → nclx; CRC входа не
+  проверяем. Текстовые чанки и XMP не переносятся.
 - **Память при смешанных форматах**: кроме порога 30 Мп — свежий worker, если кучи загруженных модулей в сумме
   больше 1 ГиБ (кучи не уменьшаются); после ошибки внутри WASM (`ConvertError.recycle`) — новый worker без повторной
   попытки. `WorkerClient.load()` досылает в worker только недостающие модули.

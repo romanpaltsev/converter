@@ -1,0 +1,48 @@
+# Texts for /en/jpg-to-png. Draft for the owner's review (see CONTENT.md).
+title: "JPG to PNG Converter — Free, Private, No Upload"
+description: "Convert JPG images to PNG right in your browser. Free, no sign-up, and your files never leave your device. Rotation, color profile and capture date are kept."
+h1: "JPG to PNG Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "JPG to PNG"
+card:
+  title: "JPG → PNG"
+  text: "Keep editing an image without losing any more quality."
+app:
+  name: "JPG to PNG Converter"
+  description: "An online JPG to PNG converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert JPG to PNG"
+  steps:
+    - "Click the box above or drag your JPG files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each PNG separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them."
+    - title: "Rotation and colors preserved"
+      text: "If a photo is rotated via EXIF, the PNG comes out already rotated. The color profile is carried over, so colors don't shift."
+    - title: "You control the metadata"
+      text: "By default we keep the date the photo was taken and strip the location, camera model and other details. One checkbox keeps everything."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Why convert JPG to PNG?"
+      a: "PNG is lossless: a JPG loses a little quality every time it's saved again, a PNG doesn't. That makes PNG handy for images you're going to edit, or for sites and apps that only accept PNG."
+    - q: "Will the quality get better?"
+      a: "No. Converting can't bring back detail the JPG lost when it was compressed. The PNG keeps the image exactly as it is now and won't degrade it any further."
+    - q: "Why is the PNG bigger than the JPG?"
+      a: "PNG compression is lossless, and detailed photos don't compress well that way, so the file is usually several times larger. For photos you don't plan to edit, JPG is the more practical format."
+    - q: "Will the background become transparent?"
+      a: "No. JPG has no transparency, so the background stays exactly as it was. You can add transparency later in an image editor — PNG supports it."
+    - q: "Are rotation and colors preserved?"
+      a: "Yes. If the camera stored the rotation in EXIF, the PNG comes out already rotated correctly. The color profile (such as Display P3) is copied into the PNG."
+    - q: "What happens to the location and the date taken?"
+      a: "By default the date and time the photo was taken are kept, while GPS location, camera model, serial numbers and other details are removed. Tick “Keep all metadata” to copy the full EXIF data, including location."
+    - q: "Which JPGs aren't supported?"
+      a: "A few rare variants: CMYK JPEGs (usually print layouts), 12-bit, lossless and arithmetic-coded JPEGs. For those the converter shows a clear message."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

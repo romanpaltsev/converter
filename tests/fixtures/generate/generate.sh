@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 # Генерация синтетических фикстур (без личных данных).
-# Запуск: npm run fixtures (собирает Docker-образ и выполняет этот скрипт внутри него).
+# Запуск: npm run fixtures [-- секции] (собирает Docker-образ и выполняет этот скрипт внутри него).
+# Секции через запятую: heic, jpeg-png (по умолчанию — все). Секция пересоздаёт только свои файлы:
+# HEIC-фикстуры не меняются побайтно, когда добавляются фикстуры других форматов.
 # Внутри контейнера: /out — tests/fixtures, /icc — src/converter/color/icc.
 set -euo pipefail
+
+SECTIONS=${1:-all}
+want() { [[ "$SECTIONS" == all || ",$SECTIONS," == *",$1,"* ]]; }
 
 OUT=/out
 ICC_P3=/icc/DisplayP3Compat-v2-magic.icc
@@ -67,6 +72,10 @@ heic() { # выход вход [опции heif-enc...]
   heif-enc -q 60 "$@" -o "$OUT/$out" "$in" >/dev/null
 }
 
+# PNG без чанков с датой создания — иначе фикстуры меняются при каждой генерации
+PNG_STABLE=(-define png:exclude-chunks=date,time)
+
+if want heic; then
 echo "== basic.heic: sRGB (nclx по умолчанию), без EXIF"
 quadrants 1200 800 basic.png
 heic basic.heic basic.png
@@ -145,6 +154,62 @@ for f in rotated transposed; do
   heif-dec "$OUT/$f.heic" "$f-check.png" >/dev/null
   "${IM[@]}" "$f-check.png" -format "$f: %wx%h TL=%[pixel:p{50,50}] BR=%[pixel:p{550,750}]\n" info:
 done
+fi
 
-ls -la "$OUT" "$OUT/exif"
+if want jpeg-png; then
+# На экране у всех «повёрнутых» фикстур — 600x800 с квадрантами; хранятся они повёрнутыми, а поворот задаёт EXIF.
+quadrants 600 800 display.png
+quadrants 1200 800 wide.png
+photo 1200 800 jpeg-photo.png "JPEG + EXIF"
+
+echo "== exif-gps.jpg: ICC Display P3, даты, GPS, Make/Model, XMP"
+"${IM[@]}" jpeg-photo.png -profile "$ICC_P3" -quality 90 "$OUT/exif-gps.jpg"
+exiftool -q -overwrite_original "${EXIF_DATES[@]}" "${EXIF_PRIVATE[@]}" "-Orientation#=1" "$OUT/exif-gps.jpg"
+
+echo "== rotated.jpg (Orientation 6), transposed.jpg (5), mirrored.jpg (2)"
+"${IM[@]}" display.png -rotate -90 -quality 95 "$OUT/rotated.jpg"
+exiftool -q -overwrite_original "${EXIF_DATES[@]}" "-Orientation#=6" "$OUT/rotated.jpg"
+"${IM[@]}" display.png -transpose -quality 95 "$OUT/transposed.jpg"
+exiftool -q -overwrite_original "${EXIF_DATES[@]}" "-Orientation#=5" "$OUT/transposed.jpg"
+"${IM[@]}" display.png -flop -quality 95 "$OUT/mirrored.jpg"
+exiftool -q -overwrite_original "${EXIF_DATES[@]}" "-Orientation#=2" "$OUT/mirrored.jpg"
+
+echo "== gray.jpg, progressive.jpg, cmyk.jpg"
+"${IM[@]}" wide.png -colorspace Gray -quality 90 "$OUT/gray.jpg"
+"${IM[@]}" wide.png -interlace JPEG -quality 90 "$OUT/progressive.jpg"
+"${IM[@]}" wide.png -colorspace CMYK -quality 90 "$OUT/cmyk.jpg"
+
+echo "== 12bit.jpg, lossless.jpg, arith.jpg (cjpeg из libjpeg-turbo)"
+"${IM[@]}" wide.png -depth 8 ppm:wide.ppm
+cjpeg -precision 12 wide.ppm > "$OUT/12bit.jpg"
+cjpeg -lossless 1 wide.ppm > "$OUT/lossless.jpg"
+cjpeg -arithmetic -quality 90 wide.ppm > "$OUT/arith.jpg"
+
+echo "== exif-gps.png: iCCP Display P3, eXIf (даты, GPS, камера), XMP в iTXt, комментарий в tEXt"
+"${IM[@]}" wide.png -profile "$ICC_P3" "${PNG_STABLE[@]}" png24:"$OUT/exif-gps.png"
+exiftool -q -overwrite_original "${EXIF_DATES[@]}" "${EXIF_PRIVATE[@]}" "-Orientation#=1" "-PNG:Comment=synthetic-text-marker" "$OUT/exif-gps.png"
+
+echo "== rotated.png: eXIf Orientation 6"
+"${IM[@]}" display.png -rotate -90 "${PNG_STABLE[@]}" png24:"$OUT/rotated.png"
+exiftool -q -overwrite_original "${EXIF_DATES[@]}" "-Orientation#=6" "$OUT/rotated.png"
+
+echo "== alpha.png, palette-trns.png (палитра + tRNS), 16bit.png, gray.png, interlaced.png"
+"${IM[@]}" -size 800x600 xc:none -fill '#e00000' -draw 'circle 400,300 400,80' "${PNG_STABLE[@]}" png32:"$OUT/alpha.png"
+"${IM[@]}" "$OUT/alpha.png" "${PNG_STABLE[@]}" png8:"$OUT/palette-trns.png"
+"${IM[@]}" -size 1200x800 gradient:'#102040-#f0c080' -depth 16 "${PNG_STABLE[@]}" png48:"$OUT/16bit.png"
+"${IM[@]}" wide.png -colorspace Gray -depth 8 -define png:color-type=0 "${PNG_STABLE[@]}" "$OUT/gray.png"
+"${IM[@]}" wide.png -interlace PNG "${PNG_STABLE[@]}" png24:"$OUT/interlaced.png"
+
+echo "== animated.png: APNG из двух кадров (основной — квадранты 640x480)"
+quadrants 640 480 frame-1.png
+"${IM[@]}" frame-1.png -negate "${PNG_STABLE[@]}" png24:frame-2.png
+apngasm "$OUT/animated.png" frame-1.png frame-2.png 1 2 >/dev/null
+
+echo "== самопроверка JPEG/PNG"
+exiftool -s -s -s -Orientation "$OUT/rotated.jpg" "$OUT/rotated.png" "$OUT/mirrored.jpg"
+exiftool -s -G1 -GPSLatitude -ICC_Profile:ProfileDescription -XMP-dc:Subject -PNG:Comment "$OUT/exif-gps.png"
+for f in 12bit lossless arith cmyk; do printf '%s: ' "$f"; "${IM[@]}" identify -format '%[jpeg:colorspace] %z bit\n' "$OUT/$f.jpg" 2>/dev/null || echo "?"; done
+fi
+
+ls -la "$OUT"
 rm -rf "$TMP"

@@ -60,6 +60,7 @@ const ru = {
       'already-jpeg': 'Файл уже в формате JPG — выберите другой формат выше.',
       'already-png': 'Файл уже в формате PNG — выберите другой формат выше.',
       'unsupported-image': 'Этот формат изображений пока не поддерживается. Поддерживаются {formats}.',
+      'cmyk-unsupported': 'JPEG в цветовой модели CMYK (для печати) пока не поддерживается.',
       'decode-failed': 'Не удалось прочитать файл — возможно, он повреждён.',
       'unsupported-variant': 'Этот вариант формата не поддерживается.',
       'out-of-memory': 'Браузеру не хватило памяти для этого файла. Закройте другие вкладки и попробуйте снова.',
@@ -71,6 +72,8 @@ const ru = {
       'exif-makernote-dropped': 'Служебные данные камеры (MakerNote) не поместились и удалены.',
       'exif-reduced-to-dates': 'Метаданные не поместились — сохранены только даты.',
       'icc-too-large': 'Цветовой профиль слишком большой и не сохранён.',
+      'icc-unreadable': 'Цветовой профиль исходника не удалось прочитать — использован sRGB.',
+      'first-frame-only': 'Анимация не переносится — сохранён первый кадр.',
     } satisfies Record<WarningCode, string>,
   },
   notFound: {
@@ -139,6 +142,7 @@ const en: UiStrings = {
       'already-jpeg': 'This file is already a JPG — pick another format above.',
       'already-png': 'This file is already a PNG — pick another format above.',
       'unsupported-image': "This image format isn't supported yet. Supported: {formats}.",
+      'cmyk-unsupported': "CMYK JPEGs (used for print) aren't supported yet.",
       'decode-failed': 'Could not read the file — it may be damaged.',
       'unsupported-variant': "This variant of the format isn't supported.",
       'out-of-memory': 'The browser ran out of memory for this file. Close other tabs and try again.',
@@ -150,6 +154,8 @@ const en: UiStrings = {
       'exif-makernote-dropped': 'Camera maker data (MakerNote) did not fit and was removed.',
       'exif-reduced-to-dates': 'Metadata did not fit — only the dates were kept.',
       'icc-too-large': 'The color profile is too large and was not kept.',
+      'icc-unreadable': "The original color profile couldn't be read — sRGB was used.",
+      'first-frame-only': "Animation isn't kept — the first frame was saved.",
     },
   },
   notFound: {

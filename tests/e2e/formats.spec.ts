@@ -1,0 +1,140 @@
+// JPG и PNG на входе: метаданные, поворот по EXIF, прозрачность, варианты форматов и «любой вход на любой странице».
+import { convertFiles as convert, downloadFile as download, expect, openConverter, test } from './fixtures';
+import { decodeInBrowser, dominant, hasXmp, iccProfile, jpegIcc, jpegInfo, pngInfo, readExif } from './files';
+
+const P3 = iccProfile('DisplayP3Compat-v2-magic.icc');
+const SRGB = iccProfile('sRGB-v2-magic.icc');
+// квадранты повёрнутых фикстур на экране 600×800: красный, зелёный / синий, жёлтый
+const QUADRANTS: [number, number][] = [
+  [150, 200],
+  [450, 200],
+  [150, 600],
+  [450, 600],
+];
+const WIDE_QUADRANTS: [number, number][] = [
+  [300, 200],
+  [900, 200],
+  [300, 600],
+  [900, 600],
+];
+const DATES = {
+  DateTimeOriginal: '2024:07:15 14:23:05',
+  CreateDate: '2024:07:15 14:23:05',
+  OffsetTimeOriginal: '+03:00',
+  SubSecTimeOriginal: '123',
+};
+
+test.describe('PNG → JPG', () => {
+  test('ICC, даты без GPS и камеры, поворот по eXIf, прозрачность на белом', async ({ page }) => {
+    await openConverter(page, '/png-v-jpg');
+    await convert(page, ['exif-gps.png', 'rotated.png', 'alpha.png', 'palette-trns.png']);
+
+    const photo = await download(page, 'exif-gps.jpg');
+    expect(jpegInfo(photo)).toMatchObject({ width: 1200, height: 800 });
+    expect(jpegIcc(photo)).toEqual(P3);
+    const exif = await readExif(photo);
+    expect(exif).toMatchObject({ Orientation: 1, ...DATES, hasGps: false });
+    expect(exif?.Make).toBeUndefined();
+    expect(exif?.SerialNumber).toBeUndefined();
+    expect(hasXmp(photo)).toBe(false);
+
+    const rotated = await download(page, 'rotated.jpg');
+    expect(jpegInfo(rotated)).toMatchObject({ width: 600, height: 800 });
+    expect((await readExif(rotated))?.Orientation).toBe(1);
+    expect((await decodeInBrowser(page, rotated, 'image/jpeg', QUADRANTS)).pixels.map(dominant)).toEqual(['r', 'g', 'b', 'y']);
+
+    for (const name of ['alpha.jpg', 'palette-trns.jpg']) {
+      const decoded = await decodeInBrowser(page, await download(page, name), 'image/jpeg', [
+        [5, 5],
+        [400, 300],
+      ]);
+      expect(decoded.pixels.map(dominant), name).toEqual(['w', 'r']);
+    }
+  });
+
+  test('серый, 16 бит, чересстрочный; у APNG — первый кадр и предупреждение', async ({ page }) => {
+    await openConverter(page, '/png-v-jpg');
+    await convert(page, ['gray.png', '16bit.png', 'interlaced.png', 'animated.png']);
+    await expect(page.locator('.file[data-status="done"]')).toHaveCount(4);
+    expect(jpegIcc(await download(page, 'gray.jpg'))).toEqual(SRGB); // профиля нет — sRGB
+    expect(jpegInfo(await download(page, '16bit.jpg'))).toMatchObject({ width: 1200, height: 800 });
+    const interlaced = await decodeInBrowser(page, await download(page, 'interlaced.jpg'), 'image/jpeg', WIDE_QUADRANTS);
+    expect(interlaced.pixels.map(dominant)).toEqual(['r', 'g', 'b', 'y']);
+    expect(jpegInfo(await download(page, 'animated.jpg'))).toMatchObject({ width: 640, height: 480 });
+    await expect(page.locator('.file').filter({ hasText: 'animated.jpg' })).toContainText('сохранён первый кадр');
+  });
+});
+
+test.describe('JPG → PNG', () => {
+  test('iCCP и eXIf без GPS, повороты 6, 5 и 2, без профиля — sRGB', async ({ page }) => {
+    await openConverter(page, '/jpg-v-png');
+    await convert(page, ['exif-gps.jpg', 'rotated.jpg', 'transposed.jpg', 'mirrored.jpg', 'photo.jpg']);
+
+    const photo = pngInfo(await download(page, 'exif-gps.png'));
+    expect([photo.width, photo.height]).toEqual([1200, 800]);
+    expect(photo.chunks.slice(0, 3)).toEqual(['IHDR', 'iCCP', 'eXIf']);
+    expect(photo.icc).toEqual(P3);
+    const exif = await readExif(photo.exif);
+    expect(exif).toMatchObject({ Orientation: 1, ...DATES, hasGps: false });
+    expect(exif?.Model).toBeUndefined();
+
+    for (const name of ['rotated.png', 'transposed.png', 'mirrored.png']) {
+      const bytes = await download(page, name);
+      expect(pngInfo(bytes), name).toMatchObject({ width: 600, height: 800 });
+      expect((await decodeInBrowser(page, bytes, 'image/png', QUADRANTS)).pixels.map(dominant), name).toEqual(['r', 'g', 'b', 'y']);
+    }
+    expect(pngInfo(await download(page, 'photo.png')).icc).toEqual(SRGB);
+  });
+
+  test('«Сохранить все метаданные»: GPS и камера переносятся в PNG', async ({ page }) => {
+    await openConverter(page, '/en/jpg-to-png');
+    await page.getByLabel('Keep all metadata (including location)').check();
+    await convert(page, ['exif-gps.jpg']);
+    const exif = await readExif(pngInfo(await download(page, 'exif-gps.png')).exif);
+    expect(exif).toMatchObject({ Orientation: 1, Make: 'Apple', Model: 'iPhone 15 Pro', hasGps: true });
+    expect(exif?.latitude).toBeCloseTo(55.7539, 4);
+  });
+
+  test('варианты JPEG: серый и прогрессивный — да; CMYK, 12 бит, lossless и арифметический — понятные ошибки', async ({ page }) => {
+    await openConverter(page, '/jpg-v-png');
+    await convert(page, ['gray.jpg', 'progressive.jpg', 'cmyk.jpg', '12bit.jpg', 'lossless.jpg', 'arith.jpg']);
+    const rows = page.locator('.file');
+    await expect(rows.evaluateAll((list) => list.map((row) => (row as HTMLElement).dataset.status))).resolves.toEqual([
+      'done',
+      'done',
+      'error',
+      'error',
+      'error',
+      'error',
+    ]);
+    await expect(rows.nth(2)).toContainText('CMYK');
+    for (const i of [3, 4, 5]) await expect(rows.nth(i)).toContainText('Этот вариант формата не поддерживается');
+    const progressive = await decodeInBrowser(page, await download(page, 'progressive.png'), 'image/png', WIDE_QUADRANTS);
+    expect(progressive.pixels.map(dominant)).toEqual(['r', 'g', 'b', 'y']);
+  });
+});
+
+test.describe('любой вход на любой странице', () => {
+  test('PNG на странице HEIC → JPG конвертируется; JPG при выходе JPG — «уже», с пояснением про iPhone', async ({ page }) => {
+    await openConverter(page, '/heic-v-jpg');
+    await convert(page, ['alpha.png', 'photo.jpg']);
+    await expect(page.locator('.file').nth(0)).toHaveAttribute('data-status', 'done');
+    await expect(page.locator('.file').nth(1)).toContainText('Файл уже в формате JPG');
+    await expect(page.locator('.file').nth(1)).toContainText('iPhone');
+  });
+
+  test('на страницах без HEIC — без пояснения про iPhone; смена формата конвертирует такие строки заново', async ({ page }) => {
+    await openConverter(page, '/png-v-jpg');
+    await convert(page, ['photo.jpg']);
+    const row = page.locator('.file');
+    await expect(row).toContainText('Файл уже в формате JPG');
+    await expect(row).not.toContainText('iPhone');
+
+    const reconvert = page.getByRole('button', { name: 'Конвертировать заново с новыми настройками' });
+    await expect(reconvert).toBeHidden();
+    await page.getByRole('radio', { name: 'PNG' }).check();
+    await reconvert.click();
+    await expect(row).toHaveAttribute('data-status', 'done');
+    await expect(page.getByText('photo.png', { exact: true })).toBeVisible();
+  });
+});

@@ -1,6 +1,7 @@
 // Общие фикстуры e2e: в каждом тесте автоматически ловим нарушения CSP, ошибки в консоли
 // и следим, что сеть используется только для статики сайта.
 import { type Page, test as base, expect } from '@playwright/test';
+import { downloadBytes, fixture } from './files';
 
 export interface NetworkLog {
   /** Все запросы контекста (страница и worker'ы). */
@@ -42,4 +43,20 @@ export { expect };
 export async function openConverter(page: Page, path: string): Promise<void> {
   await page.goto(path);
   await expect(page.locator('[data-converter][data-ready="true"]')).toBeVisible();
+}
+
+/** Добавляет фикстуры и ждёт, пока каждая строка закончится (готово или ошибка). */
+export async function convertFiles(page: Page, names: string[]): Promise<void> {
+  await page.setInputFiles('[data-input]', names.map(fixture));
+  await expect(page.locator('.file:is([data-status="done"], [data-status="error"])')).toHaveCount(names.length, { timeout: 120_000 });
+}
+
+/** Скачивает результат по имени файла из строки. */
+export async function downloadFile(page: Page, name: string): Promise<Buffer> {
+  const row = page.locator('.file').filter({ has: page.getByText(name, { exact: true }) });
+  const pending = page.waitForEvent('download');
+  await row.locator('.file__download').click();
+  const file = await pending;
+  expect(file.suggestedFilename()).toBe(name);
+  return downloadBytes(file);
 }

@@ -43,7 +43,7 @@ export const COMPONENTS: ThirdPartyComponent[] = [
   {
     name: 'MozJPEG (libjpeg-turbo)',
     version: '3.3.1',
-    purpose: { ru: 'кодирование JPEG', en: 'JPEG encoding' },
+    purpose: { ru: 'кодирование и декодирование JPEG', en: 'JPEG encoding and decoding' },
     license: 'IJG, BSD-3-Clause, zlib',
     texts: ['libjpeg-turbo'],
     source: 'https://github.com/mozilla/mozjpeg/tree/v3.3.1',
@@ -59,7 +59,7 @@ export const COMPONENTS: ThirdPartyComponent[] = [
   {
     name: '@jsquash/png',
     version: '3.1.1',
-    purpose: { ru: 'кодирование PNG', en: 'PNG encoding' },
+    purpose: { ru: 'кодирование и декодирование PNG', en: 'PNG encoding and decoding' },
     license: 'Apache 2.0',
     texts: ['apache-2.0', 'squoosh-bsd'],
     source: 'https://github.com/jamsinclair/jSquash',

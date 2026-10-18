@@ -18,7 +18,8 @@ export interface PngChunk {
 
 export class PngError extends Error {}
 
-export function readPngChunks(png: Uint8Array): PngChunk[] {
+/** Чанки PNG до IEND. verifyCrc = false — без проверки CRC (на файлах в десятки мегабайт она заметно дорогая). */
+export function readPngChunks(png: Uint8Array, { verifyCrc = true } = {}): PngChunk[] {
   if (!SIGNATURE.every((b, i) => png[i] === b)) throw new PngError('PNG: неверная сигнатура');
   const view = new DataView(png.buffer, png.byteOffset, png.byteLength);
   const chunks: PngChunk[] = [];
@@ -30,7 +31,7 @@ export function readPngChunks(png: Uint8Array): PngChunk[] {
     const data = png.subarray(pos + 8, pos + 8 + length);
     const crc = view.getUint32(pos + 8 + length);
     const type = String.fromCharCode(...typeBytes);
-    chunks.push({ type, offset: pos, data, crc, crcValid: crc === crc32(typeBytes, data) });
+    chunks.push({ type, offset: pos, data, crc, crcValid: verifyCrc ? crc === crc32(typeBytes, data) : true });
     pos += 12 + length;
     if (type === 'IEND') break;
   }
@@ -68,7 +69,7 @@ export interface PngMetadata {
 const COLOR_CHUNKS = new Set(['iCCP', 'sRGB', 'gAMA', 'cHRM', 'cICP']);
 
 export function insertPngMetadata(png: Uint8Array, meta: PngMetadata): Uint8Array {
-  const chunks = readPngChunks(png);
+  const chunks = readPngChunks(png, { verifyCrc: false });
   if (chunks[0]?.type !== 'IHDR') throw new PngError('PNG: первым должен быть IHDR');
   const extra: Uint8Array[] = [];
   if (meta.icc) extra.push(buildPngChunk('iCCP', buildIccpData(meta.icc)));

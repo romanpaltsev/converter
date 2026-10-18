@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { filterExif, isAppleMakerNote, prepareExif } from '../../src/converter/metadata/exif-filter';
+import { filterExif, isAppleMakerNote, prepareExif, readOrientation } from '../../src/converter/metadata/exif-filter';
 import { type ExifData, TAG, parseTiff, writeTiff } from '../../src/converter/metadata/tiff';
 import { readExif } from './helpers/exif';
 import { fixture } from './helpers/fixtures';
@@ -107,5 +107,14 @@ describe('prepareExif: крайние случаи', () => {
     const result = prepareExif(big, { mode: 'all', width: 1, height: 1, maxBytes: 65527 });
     expect(result.warnings).toEqual(['exif-reduced-to-dates']);
     expect(parseTiff(result.tiff!).gps).toHaveLength(0);
+  });
+});
+
+describe('readOrientation', () => {
+  test.each(['big-endian.tiff', 'little-endian.tiff'])('%s → 6', (name) => expect(readOrientation(fixture(`exif/${name}`))).toBe(6));
+
+  test('нет EXIF или он битый — 1', () => {
+    expect(readOrientation(null)).toBe(1);
+    expect(readOrientation(new TextEncoder().encode('MM\0*garbage'))).toBe(1);
   });
 });

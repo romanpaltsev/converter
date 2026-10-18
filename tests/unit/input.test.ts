@@ -18,9 +18,20 @@ describe('checkInput', () => {
     expect(checkInput(head('not-heic.heic'), 'png')).toEqual({ ok: false, code: 'already-png' });
   });
 
+  test('JPG и PNG в другие форматы — свои декодеры', () => {
+    expect(checkInput(head('photo.jpg'), 'png')).toEqual({ ok: true, decoder: 'jpeg' });
+    expect(checkInput(head('not-heic.heic'), 'jpeg')).toEqual({ ok: true, decoder: 'png' });
+  });
+
+  test('варианты JPEG, которые MozJPEG не читает, видны по заголовку', () => {
+    expect(checkInput(fixture('cmyk.jpg'), 'png')).toEqual({ ok: false, code: 'cmyk-unsupported' });
+    expect(checkInput(fixture('12bit.jpg'), 'png')).toEqual({ ok: false, code: 'unsupported-variant' });
+    expect(checkInput(fixture('lossless.jpg'), 'png')).toEqual({ ok: false, code: 'unsupported-variant' });
+    expect(checkInput(fixture('arith.jpg'), 'png')).toEqual({ ok: false, code: 'unsupported-variant' });
+    expect(checkInput(fixture('progressive.jpg'), 'png')).toEqual({ ok: true, decoder: 'jpeg' });
+  });
+
   test('форматы без декодера — «пока не поддерживается»', () => {
-    expect(checkInput(head('photo.jpg'), 'png')).toEqual({ ok: false, code: 'unsupported-image' });
-    expect(checkInput(head('not-heic.heic'), 'jpeg')).toEqual({ ok: false, code: 'unsupported-image' });
     expect(checkInput(text('RIFF\0\0\0\0WEBPVP8 '), 'jpeg')).toEqual({ ok: false, code: 'unsupported-image' });
     expect(checkInput(text('GIF89a......'), 'png')).toEqual({ ok: false, code: 'unsupported-image' });
   });

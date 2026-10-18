@@ -2,7 +2,22 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, openConverter, test } from './fixtures';
 import { fixture } from './files';
 
-const PAGES = ['/', '/en/', '/heic-v-jpg', '/en/heic-to-jpg', '/heic-v-png', '/en/heic-to-png', '/licenses', '/en/licenses', '/contacts', '/en/contacts'];
+const PAGES = [
+  '/',
+  '/en/',
+  '/heic-v-jpg',
+  '/en/heic-to-jpg',
+  '/heic-v-png',
+  '/en/heic-to-png',
+  '/jpg-v-png',
+  '/en/jpg-to-png',
+  '/png-v-jpg',
+  '/en/png-to-jpg',
+  '/licenses',
+  '/en/licenses',
+  '/contacts',
+  '/en/contacts',
+];
 
 test.describe('заголовки ответа', () => {
   for (const path of PAGES) {

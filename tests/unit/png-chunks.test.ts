@@ -72,3 +72,12 @@ describe('insertPngMetadata', () => {
     expect(() => insertPngMetadata(new Uint8Array(20), { exif: tiff, icc })).toThrow(PngError);
   });
 });
+
+describe('readPngChunks без проверки CRC', () => {
+  test('битый CRC не считается ошибкой, если проверка выключена', () => {
+    const png = fixture('alpha.png').slice();
+    png[png.length - 13] ^= 0xff; // последний байт CRC чанка перед IEND
+    expect(readPngChunks(png).some((c) => !c.crcValid)).toBe(true);
+    expect(readPngChunks(png, { verifyCrc: false }).every((c) => c.crcValid)).toBe(true);
+  });
+});

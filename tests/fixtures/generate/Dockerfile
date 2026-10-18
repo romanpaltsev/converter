@@ -5,5 +5,6 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends \
       libheif-examples libheif-plugin-x265 libheif-plugin-aomenc \
       libimage-exiftool-perl imagemagick fonts-dejavu-core ca-certificates \
+      libjpeg-turbo-progs webp apngasm \
  && rm -rf /var/lib/apt/lists/*
 WORKDIR /work
