@@ -3,7 +3,7 @@
 Все файлы здесь синтетические (без личных данных), генерируются командой `npm run fixtures`
 (Docker-образ `tests/fixtures/generate`: Debian forky, heif-enc 1.23.6, exiftool, ImageMagick, cjpeg, apngasm).
 Результат закоммичен, перегенерировать нужно только при изменении `generate/generate.sh`. Генератор разбит на секции:
-Секции: `heic`, `jpeg-png`, `webp`, `avif`. `npm run fixtures -- jpeg-png` пересоздаёт только JPEG/PNG, не трогая HEIC (heif-enc другой версии изменил бы их побайтно).
+Секции: `heic`, `jpeg-png`, `webp`, `avif`, `gif`. `npm run fixtures -- jpeg-png` пересоздаёт только JPEG/PNG, не трогая HEIC (heif-enc другой версии изменил бы их побайтно).
 
 | Файл | Что проверяем |
 |---|---|
@@ -42,6 +42,10 @@
 | `nclx-p3.avif`, `10bit.avif`, `hdr-pq.avif` | цвет только в nclx (Display P3); 10 бит; 10 бит BT.2020 + PQ |
 | `alpha.avif` | красный круг на прозрачном фоне (альфа — вспомогательное изображение) |
 | `animated.avif` | последовательность из двух кадров (бренд `avis`) + основное изображение — квадранты 640×480 |
+| `basic.gif`, `interlaced.gif` | квадранты 1200×800, палитра из 4 цветов; второй — чересстрочный (пиксели те же) |
+| `alpha.gif` | красный круг на прозрачном фоне 800×600 (прозрачный индекс палитры) |
+| `animated.gif` | два кадра 640×480, первый — квадранты |
+| `offset.gif` | холст 400×300, кадр 200×100 со смещением +100+50 — вокруг прозрачно |
 | `too-wide.png` | 16400×8 — шире предела WebP (16 383 точки) |
 | `exif/big-endian.tiff`, `exif/little-endian.tiff` | сырые EXIF-блоки (TIFF) с датами, GPS, Make/Model, Orientation = 6 — для unit-тестов |
 

@@ -17,6 +17,7 @@ export const INPUT_FORMATS = {
   jpeg: { label: 'JPG', accept: '.jpg,.jpeg,.jfif,.jpe,image/jpeg', decoder: 'jpeg' },
   png: { label: 'PNG', accept: '.png,.apng,image/png,image/apng', decoder: 'png' },
   webp: { label: 'WebP', accept: '.webp,image/webp', decoder: 'webp' },
+  gif: { label: 'GIF', accept: '.gif,image/gif', decoder: 'gif' },
 } as const satisfies Record<string, { label: string; accept: string; decoder: DecoderId }>;
 
 export const OUTPUT_FORMATS = {
@@ -61,7 +62,7 @@ export interface ToolConfig {
 const ALL_OUTPUTS: OutputFormatId[] = ['jpeg', 'png', 'webp'];
 /** Сжатие и изменение размера: по умолчанию формат сохраняется. */
 const SAME_OR_ANY: OutputChoiceId[] = ['original', 'jpeg', 'png', 'webp'];
-const ALL_INPUTS: InputFormatId[] = ['heic', 'avif', 'jpeg', 'png', 'webp'];
+const ALL_INPUTS: InputFormatId[] = ['heic', 'avif', 'jpeg', 'png', 'webp', 'gif'];
 
 /** Сначала сжатие и размер, затем конвертеры по входному формату: так идут карточки на главной и ссылки в подвале. */
 export const TOOLS: ToolConfig[] = [
@@ -196,6 +197,26 @@ export const TOOLS: ToolConfig[] = [
     outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'webp-to-png',
+  },
+  {
+    id: 'gif-to-jpg',
+    mode: 'convert',
+    slugs: { ru: 'gif-v-jpg', en: 'gif-to-jpg' },
+    inputFormats: ['gif'],
+    defaultOutput: 'jpeg',
+    outputs: ALL_OUTPUTS,
+    defaultQuality: 90,
+    content: 'gif-to-jpg',
+  },
+  {
+    id: 'gif-to-png',
+    mode: 'convert',
+    slugs: { ru: 'gif-v-png', en: 'gif-to-png' },
+    inputFormats: ['gif'],
+    defaultOutput: 'png',
+    outputs: ALL_OUTPUTS,
+    defaultQuality: 90,
+    content: 'gif-to-png',
   },
 ];
 

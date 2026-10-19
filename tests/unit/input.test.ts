@@ -26,7 +26,8 @@ describe('checkInput', () => {
     expect(checkInput(head('basic.webp'), 'original', true)).toEqual({ ok: true, decoder: 'webp', encoder: 'webp' });
     expect(checkInput(head('basic.heic'), 'original', true)).toEqual({ ok: true, decoder: 'heic', encoder: 'jpeg' });
     expect(checkInput(head('photo.avif'), 'original', true)).toEqual({ ok: true, decoder: 'avif', encoder: 'jpeg' });
-    expect(checkInput(text('GIF89a......'), 'original', true)).toEqual({ ok: false, code: 'unsupported-image' });
+    expect(checkInput(head('basic.gif'), 'original', true)).toEqual({ ok: true, decoder: 'gif', encoder: 'png' });
+    expect(checkInput(Uint8Array.of(0x4d, 0x4d, 0, 42, 0, 0, 0, 8), 'original', true)).toEqual({ ok: false, code: 'unsupported-image' });
   });
 
   test('JPG и PNG в другие форматы — свои декодеры', () => {
@@ -48,8 +49,13 @@ describe('checkInput', () => {
   });
 
   test('форматы без декодера — «пока не поддерживается»', () => {
-    expect(checkInput(text('GIF89a......'), 'png')).toEqual({ ok: false, code: 'unsupported-image' });
+    expect(checkInput(text('8BPS......'), 'png')).toEqual({ ok: false, code: 'not-image' });
     expect(checkInput(Uint8Array.of(0x4d, 0x4d, 0, 42, 0, 0, 0, 8), 'jpeg')).toEqual({ ok: false, code: 'unsupported-image' });
+  });
+
+  test('GIF — свой декодер, в любой формат (GIF на выходе нет)', () => {
+    expect(checkInput(head('basic.gif'), 'jpeg')).toEqual({ ok: true, decoder: 'gif', encoder: 'jpeg' });
+    expect(checkInput(head('animated.gif'), 'png')).toEqual({ ok: true, decoder: 'gif', encoder: 'png' });
   });
 
   test('AVIF — декодер avif, в том числе анимированный (avis)', () => {

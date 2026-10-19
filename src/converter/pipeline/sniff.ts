@@ -6,7 +6,8 @@ export type SniffResult =
   | { kind: 'jpeg' }
   | { kind: 'png' }
   | { kind: 'webp' }
-  | { kind: 'other-image'; format: 'gif' | 'bmp' | 'tiff' }
+  | { kind: 'gif' }
+  | { kind: 'other-image'; format: 'bmp' | 'tiff' }
   | { kind: 'unknown' };
 
 export type SniffKind = SniffResult['kind'];
@@ -59,7 +60,7 @@ export function sniff(bytes: Uint8Array): SniffResult {
   const b = (i: number) => bytes[i] ?? -1;
   if (b(0) === 0xff && b(1) === 0xd8 && b(2) === 0xff) return { kind: 'jpeg' };
   if (b(0) === 0x89 && ascii(bytes, 1, 3) === 'PNG' && b(4) === 0x0d && b(5) === 0x0a) return { kind: 'png' };
-  if (ascii(bytes, 0, 4) === 'GIF8') return { kind: 'other-image', format: 'gif' };
+  if (ascii(bytes, 0, 4) === 'GIF8') return { kind: 'gif' };
   if (ascii(bytes, 0, 4) === 'RIFF' && ascii(bytes, 8, 4) === 'WEBP') return { kind: 'webp' };
   if (ascii(bytes, 0, 2) === 'BM' && bytes.length >= 26) return { kind: 'other-image', format: 'bmp' };
   const tiffHeader = ascii(bytes, 0, 4);

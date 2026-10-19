@@ -1,0 +1,44 @@
+# Texts for /en/gif-to-jpg. Draft for the owner's review (see CONTENT.md).
+title: "GIF to JPG Converter — Free, Private, No Upload"
+description: "Convert GIF images to JPG right in your browser. Free, no sign-up, and your files never leave your device. Convert many images at once."
+h1: "GIF to JPG Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "GIF to JPG"
+card:
+  title: "GIF → JPG"
+  text: "Turn a GIF into a regular image that's accepted everywhere."
+app:
+  name: "GIF to JPG Converter"
+  description: "An online GIF to JPG converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert GIF to JPG"
+  steps:
+    - "Click the box above or drag your GIF files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each JPG separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them."
+    - title: "Transparency on white"
+      text: "JPG has no transparency, so transparent areas of the GIF are placed on a white background instead of turning black."
+    - title: "MozJPEG encoding"
+      text: "JPGs are created with Mozilla's MozJPEG encoder. You can adjust the quality with the slider."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What happens to an animated GIF?"
+      a: "A JPG holds a single image, so the first frame of the animation is saved — the one you see before it starts playing. The file's row tells you about it."
+    - q: "Will the image look better?"
+      a: "No. A GIF has at most 256 colors, and converting can't bring back missing shades: the JPG looks just like the original GIF."
+    - q: "Will the JPG be smaller than the GIF?"
+      a: "For photos and images with smooth gradients, usually yes. Diagrams, logos and drawings with large flat areas are often more compact as GIF; each file's row shows how the size changed."
+    - q: "What if I need transparency?"
+      a: "JPG has no transparent areas — they turn white. To keep transparency, choose PNG or WebP."
+    - q: "Are the colors preserved?"
+      a: "Yes. The GIF's palette colors are copied as they are, and the JPG gets an sRGB profile, so the image looks the same in every app."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

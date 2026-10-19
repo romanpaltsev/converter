@@ -1,0 +1,44 @@
+# Texts for /en/gif-to-png. Draft for the owner's review (see CONTENT.md).
+title: "GIF to PNG Converter — Keeps Transparency, No Upload"
+description: "Convert GIF images to PNG right in your browser. Transparency is kept and your files never leave your device. Free, no sign-up."
+h1: "GIF to PNG Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "GIF to PNG"
+card:
+  title: "GIF → PNG"
+  text: "Lossless, with transparency — for websites and editing."
+app:
+  name: "GIF to PNG Converter"
+  description: "An online GIF to PNG converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert GIF to PNG"
+  steps:
+    - "Click the box above or drag your GIF files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each PNG separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them."
+    - title: "Transparency is kept"
+      text: "Transparent areas of the GIF stay transparent in the PNG, so you can place the image on any background."
+    - title: "Lossless"
+      text: "PNG stores every pixel exactly, so the image doesn't change by a single shade."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What happens to an animated GIF?"
+      a: "The first frame of the animation is saved — the one you see before it starts playing. The PNG won't be animated, and the file's row tells you about it."
+    - q: "Is transparency preserved?"
+      a: "Yes. Transparent GIF pixels stay transparent in the PNG. If the GIF is smaller than its canvas, the empty part of the canvas is transparent too — just like in a browser."
+    - q: "Will the quality change?"
+      a: "No. PNG is lossless, so every pixel stays exactly as it was in the GIF."
+    - q: "Why can the PNG be bigger than the GIF?"
+      a: "A GIF has at most 256 colors, while the PNG here is saved in full color, so the file is sometimes a bit larger. The image itself doesn't change."
+    - q: "Why convert GIF to PNG?"
+      a: "Every editor and website understands PNG, it's handy for further editing, and it isn't limited to 256 colors — so your edits won't get dithered."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

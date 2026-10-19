@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Генерация синтетических фикстур (без личных данных).
 # Запуск: npm run fixtures [-- секции] (собирает Docker-образ и выполняет этот скрипт внутри него).
-# Секции через запятую: heic, jpeg-png, webp, avif (по умолчанию — все). Секция пересоздаёт только свои файлы:
+# Секции через запятую: heic, jpeg-png, webp, avif, gif (по умолчанию — все). Секция пересоздаёт только свои файлы:
 # HEIC-фикстуры не меняются побайтно, когда добавляются фикстуры других форматов.
 # Внутри контейнера: /out — tests/fixtures, /icc — src/converter/color/icc.
 set -euo pipefail
@@ -296,6 +296,28 @@ for f in exif-gps rotated nclx-p3 10bit hdr-pq alpha animated; do
 done
 heif-dec "$OUT/rotated.avif" avif-rotated-check.png >/dev/null
 "${IM[@]}" avif-rotated-check.png -format "rotated: %wx%h TL=%[pixel:p{50,50}] BR=%[pixel:p{550,750}]\n" info:
+fi
+
+if want gif; then
+echo "== basic.gif, interlaced.gif: квадранты 1200x800 (4 цвета палитры без дизеринга)"
+quadrants 1200 800 gif-quad.png
+"${IM[@]}" gif-quad.png +dither -colors 4 "gif:$OUT/basic.gif"
+"${IM[@]}" gif-quad.png +dither -colors 4 -interlace GIF "gif:$OUT/interlaced.gif"
+
+echo "== alpha.gif: красный круг на прозрачном фоне 800x600 (прозрачный индекс палитры)"
+"${IM[@]}" -size 800x600 xc:none -fill '#e00000' -draw 'circle 400,300 400,80' +antialias "gif:$OUT/alpha.gif"
+
+echo "== animated.gif: два кадра 640x480, первый — квадранты"
+quadrants 640 480 gif-anim-1.png
+"${IM[@]}" gif-anim-1.png -negate png24:gif-anim-2.png
+"${IM[@]}" -delay 50 gif-anim-1.png gif-anim-2.png +dither -colors 8 -loop 0 "gif:$OUT/animated.gif"
+
+echo "== offset.gif: холст 400x300, единственный кадр 200x100 со смещением +100+50 (вокруг — прозрачно)"
+"${IM[@]}" -size 200x100 xc:'#e00000' -repage 400x300+100+50 "gif:$OUT/offset.gif"
+
+echo "== самопроверка GIF"
+magick identify "$OUT/basic.gif" "$OUT/interlaced.gif" "$OUT/alpha.gif" "$OUT/offset.gif"
+magick identify -format '%f: кадр %s, %wx%h%X%Y, interlace=%[interlace]\n' "$OUT/animated.gif" "$OUT/interlaced.gif"
 fi
 
 ls -la "$OUT"

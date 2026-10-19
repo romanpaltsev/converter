@@ -954,6 +954,146 @@
 - **What happens to the metadata?** By default the capture date is kept if the WebP has one, while the location and other details are removed. Tick “Keep all metadata” to copy the full EXIF data. The color profile is always kept.
 - **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
 
+### gif-to-jpg
+
+#### Русский — `/gif-v-jpg`
+
+Файл: `src/content/tools/ru/gif-to-jpg.yaml`
+
+- **title:** GIF в JPG онлайн — бесплатно, без загрузки на сервер _(52 симв.)_
+- **description:** Конвертируйте картинки GIF в JPG прямо в браузере: бесплатно, без регистрации, файлы не загружаются на сервер. Можно сразу много файлов. _(136 симв.)_
+- **H1:** Конвертер GIF в JPG
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** GIF в JPG
+- **Карточка:** GIF → JPG — Картинку GIF — в обычное фото, которое принимают везде.
+- **JSON-LD:** Конвертер GIF в JPG — Онлайн-конвертер изображений GIF в JPG, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать GIF в JPG**
+
+1. Нажмите на область выше или перетащите на неё GIF-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте JPG по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Изображения не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Прозрачность — на белом фоне.** В JPG нет прозрачности, поэтому прозрачные области GIF ложатся на белый фон, а не становятся чёрными.
+- **Сжатие MozJPEG.** JPG создаётся кодировщиком MozJPEG от Mozilla. Качество настраивается ползунком.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что будет с анимированным GIF?** JPG хранит только одно изображение, поэтому сохранится первый кадр анимации — тот, что виден до начала проигрывания. В строке файла появится пояснение.
+- **Станет ли картинка лучше?** Нет. GIF хранит не больше 256 цветов, и конвертация не вернёт недостающие оттенки: JPG будет выглядеть так же, как исходный GIF.
+- **Будет ли JPG меньше, чем GIF?** Для фотографий и картинок с плавными переходами — обычно да. Для схем, логотипов и рисунков с крупными однотонными областями GIF бывает компактнее; в строке каждого файла видно, как изменился размер.
+- **Что делать, если нужна прозрачность?** В JPG прозрачных областей нет — они станут белыми. Чтобы сохранить прозрачность, выберите формат PNG или WebP.
+- **Сохранятся ли цвета?** Да. Цвета палитры GIF переносятся как есть, а в JPG встраивается профиль sRGB, поэтому картинка выглядит одинаково во всех программах.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/gif-to-jpg`
+
+Файл: `src/content/tools/en/gif-to-jpg.yaml`
+
+- **title:** GIF to JPG Converter — Free, Private, No Upload _(47 симв.)_
+- **description:** Convert GIF images to JPG right in your browser. Free, no sign-up, and your files never leave your device. Convert many images at once. _(135 симв.)_
+- **H1:** GIF to JPG Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** GIF to JPG
+- **Карточка:** GIF → JPG — Turn a GIF into a regular image that's accepted everywhere.
+- **JSON-LD:** GIF to JPG Converter — An online GIF to JPG converter that runs in your browser without uploading your images.
+
+**How to convert GIF to JPG**
+
+1. Click the box above or drag your GIF files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each JPG separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Transparency on white.** JPG has no transparency, so transparent areas of the GIF are placed on a white background instead of turning black.
+- **MozJPEG encoding.** JPGs are created with Mozilla's MozJPEG encoder. You can adjust the quality with the slider.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **What happens to an animated GIF?** A JPG holds a single image, so the first frame of the animation is saved — the one you see before it starts playing. The file's row tells you about it.
+- **Will the image look better?** No. A GIF has at most 256 colors, and converting can't bring back missing shades: the JPG looks just like the original GIF.
+- **Will the JPG be smaller than the GIF?** For photos and images with smooth gradients, usually yes. Diagrams, logos and drawings with large flat areas are often more compact as GIF; each file's row shows how the size changed.
+- **What if I need transparency?** JPG has no transparent areas — they turn white. To keep transparency, choose PNG or WebP.
+- **Are the colors preserved?** Yes. The GIF's palette colors are copied as they are, and the JPG gets an sRGB profile, so the image looks the same in every app.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
+### gif-to-png
+
+#### Русский — `/gif-v-png`
+
+Файл: `src/content/tools/ru/gif-to-png.yaml`
+
+- **title:** GIF в PNG онлайн — с прозрачностью, без загрузки на сервер _(58 симв.)_
+- **description:** Конвертируйте картинки GIF в PNG прямо в браузере: прозрачность сохраняется, файлы не загружаются на сервер. Бесплатно и без регистрации. _(137 симв.)_
+- **H1:** Конвертер GIF в PNG
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** GIF в PNG
+- **Карточка:** GIF → PNG — Без потерь и с прозрачностью — для сайтов и редактирования.
+- **JSON-LD:** Конвертер GIF в PNG — Онлайн-конвертер изображений GIF в PNG, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать GIF в PNG**
+
+1. Нажмите на область выше или перетащите на неё GIF-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте PNG по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Изображения не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Прозрачность сохраняется.** Прозрачные области GIF остаются прозрачными в PNG — картинку можно класть на любой фон.
+- **Без потерь.** PNG хранит каждый пиксель точно, поэтому изображение не меняется ни на один оттенок.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что будет с анимированным GIF?** Сохранится первый кадр анимации — тот, что виден до начала проигрывания. Анимацию PNG-файл здесь не получит, в строке файла появится пояснение.
+- **Сохранится ли прозрачность?** Да. Прозрачные пиксели GIF остаются прозрачными в PNG. Если GIF меньше своего холста, свободная часть холста тоже будет прозрачной — так же, как в браузере.
+- **Изменится ли качество?** Нет. PNG хранит изображение без потерь, поэтому все пиксели останутся точно такими же, как в GIF.
+- **Почему PNG бывает больше GIF?** GIF хранит не больше 256 цветов, а PNG здесь сохраняется полноцветным, поэтому файл иногда получается немного больше. Изображение при этом не меняется.
+- **Зачем переводить GIF в PNG?** PNG понимают все редакторы и сайты, он удобен для дальнейшей обработки и не ограничен 256 цветами — правки не будут портиться дизерингом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/gif-to-png`
+
+Файл: `src/content/tools/en/gif-to-png.yaml`
+
+- **title:** GIF to PNG Converter — Keeps Transparency, No Upload _(52 симв.)_
+- **description:** Convert GIF images to PNG right in your browser. Transparency is kept and your files never leave your device. Free, no sign-up. _(127 симв.)_
+- **H1:** GIF to PNG Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** GIF to PNG
+- **Карточка:** GIF → PNG — Lossless, with transparency — for websites and editing.
+- **JSON-LD:** GIF to PNG Converter — An online GIF to PNG converter that runs in your browser without uploading your images.
+
+**How to convert GIF to PNG**
+
+1. Click the box above or drag your GIF files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each PNG separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Transparency is kept.** Transparent areas of the GIF stay transparent in the PNG, so you can place the image on any background.
+- **Lossless.** PNG stores every pixel exactly, so the image doesn't change by a single shade.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **What happens to an animated GIF?** The first frame of the animation is saved — the one you see before it starts playing. The PNG won't be animated, and the file's row tells you about it.
+- **Is transparency preserved?** Yes. Transparent GIF pixels stay transparent in the PNG. If the GIF is smaller than its canvas, the empty part of the canvas is transparent too — just like in a browser.
+- **Will the quality change?** No. PNG is lossless, so every pixel stays exactly as it was in the GIF.
+- **Why can the PNG be bigger than the GIF?** A GIF has at most 256 colors, while the PNG here is saved in full color, so the file is sometimes a bit larger. The image itself doesn't change.
+- **Why convert GIF to PNG?** Every editor and website understands PNG, it's handy for further editing, and it isn't limited to 256 colors — so your edits won't get dithered.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
 ## Другие страницы
 
 ### Главная
@@ -1064,7 +1204,7 @@
 | `widget.dropTitle` | Перетащите {format}-файлы сюда | Drop {format} files here |
 | `widget.dropTitleAny` | Перетащите изображения сюда | Drop images here |
 | `widget.originalFormat` | Исходный | Original |
-| `widget.originalHint` | Формат файла сохраняется; HEIC и AVIF сохраняются в JPG. | The file keeps its format; HEIC and AVIF are saved as JPG. |
+| `widget.originalHint` | Формат файла сохраняется; HEIC и AVIF сохраняются в JPG, GIF — в PNG. | The file keeps its format; HEIC and AVIF are saved as JPG, GIF as PNG. |
 | `widget.compression` | Сжатие | Compression |
 | `widget.byQuality` | По качеству | By quality |
 | `widget.byTarget` | До размера | To file size |
