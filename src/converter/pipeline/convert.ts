@@ -5,6 +5,7 @@ import { loadProfile } from '../color/profiles';
 import { prepareExif } from '../metadata/exif-filter';
 import { applyOrientation } from './orientation';
 import { downscale } from './preview';
+import { encodeToTarget } from './target-size';
 import type { ConvertOptions, DecoderSession, Encoder, RawImage, WarningCode } from './types';
 
 export interface ConvertResult {
@@ -13,6 +14,8 @@ export interface ConvertResult {
   preview: Uint8Array;
   width: number;
   height: number;
+  /** Качество, с которым закодирован файл (подобранное под целевой размер или с ползунка); null — без потерь. */
+  quality: number | null;
   warnings: WarningCode[];
   timings: { decode: number; encode: number };
 }
@@ -51,13 +54,29 @@ export async function convertImage(session: DecoderSession, encoder: Encoder, op
       { ...options, quality: 75, lossless: false },
     );
 
-    const encoded = await encoder.encode(pixels, options);
-    const bytes = encoder.embed(encoded, { exif: exif.tiff, icc });
+    const meta = { exif: exif.tiff, icc };
+    const lossy = options.encoder !== 'png' && !options.lossless;
+    let bytes: Uint8Array;
+    let quality: number | null = lossy ? options.quality : null;
+    if (options.targetBytes !== null && lossy) {
+      const target = await encodeToTarget(
+        async (q) => encoder.embed(await encoder.encode(pixels, { ...options, quality: q }), meta),
+        options.targetBytes,
+      );
+      bytes = target.bytes;
+      quality = target.quality;
+      if (!target.reached) warnings.push('target-not-reached');
+    } else {
+      // PNG и WebP без потерь качества не имеют — целевой размер к ним не применить
+      if (options.targetBytes !== null) warnings.push('target-lossless');
+      bytes = encoder.embed(await encoder.encode(pixels, options), meta);
+    }
     return {
       bytes,
       preview,
       width: pixels.width,
       height: pixels.height,
+      quality,
       warnings,
       timings: { decode: decoded - started, encode: performance.now() - decoded },
     };

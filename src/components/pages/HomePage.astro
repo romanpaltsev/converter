@@ -22,8 +22,12 @@ const c = entry.data;
     <p class="lead">{c.intro}</p>
   </section>
   <section>
+    <h2>{c.editToolsTitle}</h2>
+    <ToolCards locale={locale} toolIds={TOOLS.filter((t) => t.mode !== 'convert').map((t) => t.id)} />
+  </section>
+  <section class="section">
     <h2>{c.toolsTitle}</h2>
-    <ToolCards locale={locale} toolIds={TOOLS.map((t) => t.id)} />
+    <ToolCards locale={locale} toolIds={TOOLS.filter((t) => t.mode === 'convert').map((t) => t.id)} />
   </section>
   <ul class="features">
     {

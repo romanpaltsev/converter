@@ -2,8 +2,8 @@ import { describe, expect, test } from 'vitest';
 import { INPUT_FORMATS, OUTPUT_FORMATS, TOOLS, relatedTools } from '../../src/tools/registry';
 
 describe('реестр инструментов', () => {
-  test('слаги: ru «x-v-y», en «x-to-y»; входной формат не совпадает с целевым', () => {
-    for (const tool of TOOLS) {
+  test('слаги конвертеров: ru «x-v-y», en «x-to-y»; входной формат не совпадает с целевым', () => {
+    for (const tool of TOOLS.filter((t) => t.mode === 'convert')) {
       expect(tool.slugs.ru).toMatch(/^[a-z]+-v-[a-z]+$/);
       expect(tool.slugs.en).toMatch(/^[a-z]+-to-[a-z]+$/);
       expect(tool.id).toBe(tool.slugs.en);
@@ -14,9 +14,21 @@ describe('реестр инструментов', () => {
     }
   });
 
+  test('сжатие и размер: любой вход, по умолчанию «Исходный», перелинковка задана вручную', () => {
+    const editors = TOOLS.filter((t) => t.mode !== 'convert');
+    expect(editors.map((t) => t.id)).toEqual(['compress-image']);
+    for (const tool of editors) {
+      expect(tool.inputFormats).toEqual(Object.keys(INPUT_FORMATS));
+      expect(tool.defaultOutput).toBe('original');
+      expect(tool.outputs).toEqual(['original', ...Object.keys(OUTPUT_FORMATS)]);
+      for (const id of tool.related ?? []) expect(TOOLS.map((t) => t.id)).toContain(id);
+    }
+  });
+
   test('перелинковка: обратная пара, тот же вход, тот же выход', () => {
     const table = Object.fromEntries(TOOLS.map((tool) => [tool.id, relatedTools(tool).map((t) => t.id)]));
     expect(table).toEqual({
+      'compress-image': ['heic-to-jpg', 'png-to-jpg', 'jpg-to-webp', 'png-to-webp'],
       'heic-to-jpg': ['heic-to-png', 'heic-to-webp', 'avif-to-jpg', 'png-to-jpg'],
       'heic-to-png': ['heic-to-jpg', 'heic-to-webp', 'avif-to-png', 'jpg-to-png'],
       'heic-to-webp': ['heic-to-jpg', 'heic-to-png', 'jpg-to-webp', 'png-to-webp'],

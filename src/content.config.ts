@@ -34,6 +34,8 @@ const home = z.object({
   page: z.literal('home'),
   ...seo,
   intro: text,
+  /** Раздел «Сжатие и размер» (инструменты, которые не меняют формат). */
+  editToolsTitle: text,
   toolsTitle: text,
   features: z.array(z.object({ title: text, text })).min(2).max(4),
 });

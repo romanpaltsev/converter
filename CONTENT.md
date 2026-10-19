@@ -10,6 +10,80 @@
 
 ## Страницы-конвертеры
 
+### compress-image
+
+#### Русский — `/szhat-foto`
+
+Файл: `src/content/tools/ru/compress-image.yaml`
+
+- **title:** Сжать фото онлайн — до нужного размера, без загрузки на сервер _(62 симв.)_
+- **description:** Уменьшите вес фото и картинок JPG, PNG, WebP, HEIC и AVIF прямо в браузере: по качеству или до нужного размера в КБ и МБ. Бесплатно, без регистрации. _(149 симв.)_
+- **H1:** Сжать фото онлайн
+- **Подзаголовок:** По качеству или до нужного размера. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** Сжать фото
+- **Карточка:** Сжать фото — Уменьшить вес снимка — по качеству или до нужного размера в КБ и МБ.
+- **JSON-LD:** Сжатие фото онлайн — Онлайн-сервис для сжатия фотографий и картинок, который работает в браузере без загрузки файлов на сервер.
+
+**Как сжать фото**
+
+1. Выберите режим: «По качеству» — ползунком, или «До размера» — укажите, сколько килобайт или мегабайт должен весить файл.
+2. Нажмите на область выше или перетащите на неё фото — можно сразу несколько. Сжатие идёт прямо в браузере.
+3. Скачайте файлы по одному или все сразу ZIP-архивом. В строке каждого файла видно, насколько он уменьшился.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Сжатие выполняется на вашем устройстве. Фотографии не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Точно в нужный размер.** Нужен файл не больше 500 КБ или 1 МБ для анкеты или сайта? Укажите размер — качество подберётся само.
+- **Формат сохраняется.** JPG остаётся JPG, PNG — PNG, WebP — WebP. Фото HEIC с iPhone и AVIF сохраняются в JPG. При желании формат можно сменить.
+- **Сразу много файлов.** Сожмите до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Как сжать фото до нужного размера, например до 1 МБ?** Выберите режим «До размера», введите число и единицу — КБ или МБ — и добавьте фото. Конвертер несколько раз пересожмёт снимок с разным качеством и сохранит вариант с наибольшим качеством, который укладывается в заданный размер.
+- **Почему файл получился меньше, чем я указал?** Размер подбирается так, чтобы точно не превысить лимит, поэтому файл обычно немного меньше заданного. Килобайт и мегабайт считаются десятичными (1 МБ = 1 000 000 байт), чтобы файл прошёл проверку на любом сайте.
+- **Что делать, если файл не сжимается до нужного размера?** Если даже при минимальном качестве файл больше лимита, сохранится самый маленький вариант, а в строке файла появится подсказка. Тогда уменьшите изображение в пикселях — от разрешения размер файла зависит сильнее всего.
+- **Сильно ли ухудшится качество?** При качестве 75 (значение по умолчанию) разница с оригиналом на фотографиях обычно почти не заметна, а файл получается заметно легче. Чем ниже качество, тем меньше файл и тем заметнее артефакты сжатия.
+- **Можно ли сжать PNG?** Да, но PNG хранит изображение без потерь, поэтому сильно уменьшить его нельзя. Если прозрачность не нужна, выберите JPG; если нужна — WebP: он сохраняет прозрачность и весит в разы меньше.
+- **Почему файл не стал меньше?** Если исходник уже был сильно сжат, повторное сжатие почти ничего не даёт. Уменьшите качество или выберите формат WebP — в строке файла видно, как изменился размер.
+- **Что происходит с геолокацией и датой съёмки?** По умолчанию дата и время съёмки сохраняются, а геолокация, модель телефона и другие служебные данные удаляются — заодно это немного уменьшает файл. Чтобы перенести все метаданные, отметьте «Сохранить все метаданные».
+- **Безопасно ли это?** Да. С сайта загружается только сам инструмент, а фотографии обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/compress-image`
+
+Файл: `src/content/tools/en/compress-image.yaml`
+
+- **title:** Compress Images Online — To a Target Size, No Upload _(52 симв.)_
+- **description:** Reduce the file size of JPG, PNG, WebP, HEIC and AVIF images right in your browser: by quality or to an exact size in KB or MB. Free, no sign-up. _(145 симв.)_
+- **H1:** Compress Images Online
+- **Подзаголовок:** By quality or to a target file size. Your files never leave your device.
+- **Хлебные крошки:** Compress images
+- **Карточка:** Compress images — Make photos lighter — by quality or to a target size in KB or MB.
+- **JSON-LD:** Image Compressor — An online image compressor that runs in your browser without uploading your photos.
+
+**How to compress an image**
+
+1. Pick a mode: “By quality” with the slider, or “To file size” — enter how many kilobytes or megabytes the file may take.
+2. Click the box above or drag your images onto it — you can add many at once. Everything happens in your browser.
+3. Download the files one by one or all at once as a ZIP. Each file's row shows how much smaller it got.
+
+**Why use this compressor**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Hit an exact file size.** Need a file under 500 KB or 1 MB for a form or a website? Enter the limit and the quality is picked for you.
+- **The format stays the same.** JPG stays JPG, PNG stays PNG, WebP stays WebP. HEIC photos from an iPhone and AVIF images are saved as JPG. You can switch formats if you like.
+- **Batch compression.** Compress up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **How do I compress a photo to a specific size, like 1 MB?** Choose “To file size”, enter the number and the unit — KB or MB — and add your photos. The compressor encodes each image a few times at different qualities and keeps the highest quality that fits the limit.
+- **Why is the file smaller than the size I entered?** The size is chosen so the file never goes over the limit, so it usually ends up a bit smaller. Kilobytes and megabytes are decimal (1 MB = 1,000,000 bytes) so the file passes the check on any website.
+- **What if the image can't be compressed to that size?** If the file is still too large even at the lowest quality, the smallest version is saved and its row shows a hint. Reduce the image's dimensions in that case — resolution affects file size the most.
+- **Will the quality drop a lot?** At the default quality of 75 the difference is usually hard to notice on photos, while the file gets much lighter. The lower the quality, the smaller the file and the more visible the compression artifacts.
+- **Can I compress a PNG?** Yes, but PNG is lossless, so it can't shrink much. If you don't need transparency, choose JPG; if you do, choose WebP — it keeps transparency and is many times smaller.
+- **Why didn't the file get smaller?** If the original was already heavily compressed, compressing it again gains little. Lower the quality or choose WebP — each file's row shows how its size changed.
+- **What happens to the location and the date taken?** By default the capture date is kept, while the location, phone model and other details are removed — which also trims the file a little. Tick “Keep all metadata” to copy everything.
+- **Is it safe to compress my photos here?** Yes. The site only downloads the tool itself; your images are processed in your browser and are never sent to a server.
+
 ### heic-to-jpg
 
 #### Русский — `/heic-v-jpg`
@@ -817,7 +891,8 @@
 - **title:** Конвертер изображений онлайн — HEIC, AVIF, JPG, PNG и WebP в браузере _(69 симв.)_
 - **description:** Бесплатные онлайн-конвертеры изображений: HEIC, AVIF, JPG, PNG и WebP. Без регистрации и без загрузки на сервер — всё работает в вашем браузере. _(144 симв.)_
 - **h1:** Конвертер изображений прямо в браузере
-- **intro:** Переводите фото и картинки между форматами HEIC, AVIF, JPG, PNG и WebP. Конвертация идёт на вашем устройстве: файлы не загружаются на сервер, а дата съёмки сохраняется.
+- **intro:** Переводите фото и картинки между форматами HEIC, AVIF, JPG, PNG и WebP и сжимайте их до нужного размера. Всё происходит на вашем устройстве: файлы не загружаются на сервер, а дата съёмки сохраняется.
+- **editToolsTitle:** Сжатие и размер
 - **toolsTitle:** Конвертеры
 - **features:**
   - **Без загрузки на сервер.** Изображения обрабатываются в браузере и не покидают ваше устройство.
@@ -831,7 +906,8 @@
 - **title:** Free Online Image Converter — HEIC, AVIF, JPG, PNG and WebP _(59 симв.)_
 - **description:** Free online image converters for HEIC, AVIF, JPG, PNG and WebP. No sign-up and no uploads — everything runs in your browser. _(124 симв.)_
 - **h1:** Convert images right in your browser
-- **intro:** Convert photos and pictures between HEIC, AVIF, JPG, PNG and WebP. Conversion happens on your device: files are never uploaded, and the date taken is kept.
+- **intro:** Convert photos and pictures between HEIC, AVIF, JPG, PNG and WebP, and compress them to the size you need. Everything happens on your device: files are never uploaded, and the date taken is kept.
+- **editToolsTitle:** Compress and resize
 - **toolsTitle:** Converters
 - **features:**
   - **No uploads.** Images are processed in your browser and never leave your device.
@@ -912,6 +988,20 @@
 | `footer.privacy` | Файлы обрабатываются прямо в браузере и никуда не загружаются. | Files are processed right in your browser and never uploaded anywhere. |
 | `tool.relatedTitle` | Другие конвертеры | More converters |
 | `widget.dropTitle` | Перетащите {format}-файлы сюда | Drop {format} files here |
+| `widget.dropTitleAny` | Перетащите изображения сюда | Drop images here |
+| `widget.originalFormat` | Исходный | Original |
+| `widget.originalHint` | Формат файла сохраняется; HEIC и AVIF сохраняются в JPG. | The file keeps its format; HEIC and AVIF are saved as JPG. |
+| `widget.compression` | Сжатие | Compression |
+| `widget.byQuality` | По качеству | By quality |
+| `widget.byTarget` | До размера | To file size |
+| `widget.targetSize` | Не больше | At most |
+| `widget.targetUnit` | Единица размера | Size unit |
+| `widget.targetHint` | Качество подберётся само: файл вместе с метаданными не превысит этот размер. | Quality is picked automatically so the file, metadata included, stays within this size. |
+| `widget.pngCompressWarning` | PNG сжимается только без потерь, поэтому файл уменьшится ненамного. Чтобы файл стал заметно меньше, выберите JPG или WebP. | PNG is compressed losslessly only, so the file won't shrink much. For a much smaller file, choose JPG or WebP. |
+| `widget.progressProcess` | Обрабатываем {current} из {total}… | Processing {current} of {total}… |
+| `widget.processing` | Обрабатывается… | Processing… |
+| `widget.reprocess` | Обработать заново с новыми настройками | Process again with the new settings |
+| `widget.qualityUsed` | качество {quality} | quality {quality} |
 | `widget.dropAction` | или нажмите, чтобы выбрать | or click to choose |
 | `widget.dropHint` | Можно сразу много файлов — до 100 за раз | Add many files at once — up to 100 |
 | `widget.dropActive` | Отпустите, чтобы добавить файлы | Release to add files |
@@ -966,6 +1056,9 @@
 | `widget.warnings.icc-too-large` | Цветовой профиль слишком большой и не сохранён. | The color profile is too large and was not kept. |
 | `widget.warnings.icc-unreadable` | Цветовой профиль исходника не удалось прочитать — использован sRGB. | The original color profile couldn't be read — sRGB was used. |
 | `widget.warnings.first-frame-only` | Анимация не переносится — сохранён первый кадр. | Animation isn't kept — the first frame was saved. |
+| `widget.warnings.target-not-reached` | Даже с минимальным качеством файл больше заданного размера — сохранён самый маленький вариант. Уменьшите изображение в пикселях. | Even at the lowest quality the file is larger than the limit — the smallest version was saved. Try reducing the image's dimensions. |
+| `widget.warnings.target-lossless` | У PNG и WebP без потерь нет настройки качества, поэтому подобрать размер нельзя. Выберите JPG или WebP. | PNG and lossless WebP have no quality setting, so the size can't be matched. Choose JPG or WebP. |
+| `widget.warnings.not-smaller` | Файл не стал меньше: исходник уже хорошо сжат. | The file didn't get smaller: the original is already well compressed. |
 | `notFound.title` | Страница не найдена | Page not found |
 | `notFound.text` | Такой страницы нет. Возможно, адрес изменился или в нём опечатка. | This page does not exist. The address may have changed or contain a typo. |
 | `notFound.toHome` | На главную | Go to the home page |

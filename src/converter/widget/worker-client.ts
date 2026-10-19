@@ -12,6 +12,7 @@ export interface ConvertSuccess {
   extension: string;
   width: number;
   height: number;
+  quality: number | null;
   warnings: WarningCode[];
   stats: WorkerStats;
 }
@@ -96,6 +97,7 @@ export class WorkerClient {
           extension: reply.extension,
           width: reply.width,
           height: reply.height,
+          quality: reply.quality,
           warnings: reply.warnings,
           stats: reply.stats,
         };

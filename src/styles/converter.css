@@ -156,7 +156,61 @@
   gap: 16px;
 }
 
+.settings__target {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 6px 16px;
+}
+
+.settings__target .settings__hint {
+  grid-column: 2;
+}
+
+/* поля ввода. Без <select>: в WebKit его внутренние элементы ставят инлайн-стили, и строгий CSP (без unsafe-inline)
+   выдаёт нарушение style-src-attr — выбор из вариантов делаем переключателем .segmented */
+.field-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.field-group .segmented__option span {
+  min-width: 48px;
+}
+
+.field {
+  min-height: 40px;
+  padding: 6px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  transition:
+    border-color 0.2s var(--ease),
+    box-shadow 0.2s var(--ease);
+}
+
+.field--number {
+  width: 7.5rem;
+}
+
+.field:hover {
+  border-color: var(--accent);
+}
+
+.field:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
 .settings__quality[hidden],
+.settings__target[hidden],
+.settings__format[hidden],
 .settings__lossless[hidden],
 .notice[hidden],
 .settings__hint[hidden] {
@@ -196,8 +250,14 @@
   font-size: 0.875rem;
 }
 
-.converter__results .settings__hint {
+.converter__results .settings__hint,
+.settings__hint--flush {
   margin: 0;
+}
+
+/* подсказка под переключателем: по колонке элементов управления, а не подписей */
+.settings__hint--aligned {
+  margin: -6px 0 0 calc(5.5rem + 16px);
 }
 
 .notice {
@@ -421,6 +481,33 @@
 
   .settings__label {
     min-width: 0;
+  }
+
+  /* переключатели формата и режима — на всю ширину, варианты поровну */
+  .settings__format .segmented {
+    display: flex;
+    width: 100%;
+  }
+
+  .settings__format .segmented__option {
+    flex: 1;
+  }
+
+  .settings__format .segmented__option span {
+    min-width: 0;
+    padding: 6px 8px;
+  }
+
+  .settings__target {
+    grid-template-columns: 1fr;
+  }
+
+  .settings__hint--aligned {
+    margin-left: 0;
+  }
+
+  .settings__target .settings__hint {
+    grid-column: auto;
   }
 }
 

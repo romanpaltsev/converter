@@ -32,7 +32,9 @@ async function encode(image: RawImage, quality: number): Promise<Uint8Array> {
   // baseline вместо progressive: по замерам прототипа кодирование вдвое быстрее (24 Мп: ~2,5 с против ~5 с),
   // файл больше всего на ~4 %, памяти не больше. Остальное — по умолчанию jSquash:
   // оптимизация Хаффмана, trellis, 4:2:0 (как в исходном HEVC — 4:4:4 ничего бы не добавил)
-  return new Uint8Array(await mozjpegEncode(pixels, { quality, progressive: false }));
+  // baseline: true — таблицы квантования не больше 255: иначе при качестве ниже ~25 libjpeg пишет 16-битные таблицы
+  // (это уже не baseline-JPEG, его откроет не всякая программа) и ругается в консоль
+  return new Uint8Array(await mozjpegEncode(pixels, { quality, progressive: false, baseline: true }));
 }
 
 export async function loadJpegEncoder(): Promise<Encoder> {

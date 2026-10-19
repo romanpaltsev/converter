@@ -2,13 +2,14 @@
 
 import type { Locale } from '../../config/site';
 import type { UiStrings } from '../../i18n/ui';
-import type { EncoderId } from '../pipeline/types';
+import type { OutputTarget } from '../pipeline/types';
+import type { ToolMode } from '../../tools/registry';
 
 export interface OutputOption {
   id: string;
   label: string;
-  extension: string;
-  encoder: EncoderId;
+  /** Кодировщик или 'original' — формат входа (HEIC и AVIF — JPG), выясняется по сигнатуре каждого файла. */
+  encoder: OutputTarget;
   hasQuality: boolean;
   hasLossless: boolean;
   largeFiles: boolean;
@@ -16,6 +17,7 @@ export interface OutputOption {
 
 export interface WidgetConfig {
   toolId: string;
+  mode: ToolMode;
   locale: Locale;
   outputs: OutputOption[];
   defaultOutput: string;

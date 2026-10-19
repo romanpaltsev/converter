@@ -19,7 +19,14 @@ interface Settings {
   /** Галочка «Без потерь» (действует только для форматов с hasLossless). */
   lossless: boolean;
   keepMetadata: boolean;
+  /** Страница «Сжать фото»: целевой размер в байтах вместо качества с ползунка; иначе null. */
+  targetBytes: number | null;
 }
+
+/** Целевой размер — в десятичных килобайтах и мегабайтах: файл «до 1 МБ» пройдёт и лимит 1 000 000, и 1 048 576 байт. */
+const TARGET_UNITS: Record<string, number> = { kb: 1000, mb: 1000 * 1000 };
+const MIN_TARGET_BYTES = 10 * 1000;
+const DEFAULT_TARGET_BYTES = 500 * 1000;
 
 interface Item {
   file: File;
@@ -33,17 +40,21 @@ interface Item {
   previewUrl: string | null;
   error: ErrorCode | null;
   warnings: WarningCode[];
+  /** Качество, подобранное под целевой размер (показывается в строке файла). */
+  quality: number | null;
   row: HTMLLIElement;
 }
 
 const isLossless = (s: Settings) => s.output.hasLossless && s.lossless;
+/** Форматы с потерями: только у них есть качество и целевой размер. */
+const isLossy = (s: Settings) => s.output.hasQuality && !isLossless(s);
 
-/** Совпадают ли настройки по-существу: качество не важно без потерь, галочка «Без потерь» — у форматов без неё. */
+/** Совпадают ли настройки по-существу: качество не важно без потерь и при целевом размере, галочка «Без потерь» — у форматов без неё. */
 const sameSettings = (a: Settings, b: Settings) =>
   a.output.id === b.output.id &&
   a.keepMetadata === b.keepMetadata &&
   isLossless(a) === isLossless(b) &&
-  (!a.output.hasQuality || isLossless(a) || a.quality === b.quality);
+  (!isLossy(a) || (a.targetBytes === b.targetBytes && (a.targetBytes !== null || a.quality === b.quality)));
 
 /** Сконвертированный файл или «уже в этом формате» — после смены настроек их можно сконвертировать заново. */
 function isOutdated(item: Item, current: Settings): boolean {
@@ -72,6 +83,11 @@ export class ConverterWidget {
   private readonly qualityRow: HTMLElement;
   private readonly losslessRow: HTMLElement;
   private readonly qualityValue: HTMLOutputElement;
+  /** Только на страницах сжатия и размера. */
+  private readonly originalHint: HTMLElement | null;
+  /** Только на странице «Сжать фото»: переключатель «По качеству / До размера» и поле целевого размера. */
+  private readonly compressionRow: HTMLElement | null;
+  private readonly targetRow: HTMLElement | null;
   private readonly pngWarning: HTMLElement;
   private readonly status: HTMLElement;
   private readonly notice: HTMLElement;
@@ -102,6 +118,9 @@ export class ConverterWidget {
     this.qualityRow = element(root, '[data-quality-row]');
     this.losslessRow = element(root, '[data-lossless-row]');
     this.qualityValue = element(root, '[data-quality-value]');
+    this.originalHint = root.querySelector('[data-original-hint]');
+    this.compressionRow = root.querySelector('[data-compression-row]');
+    this.targetRow = root.querySelector('[data-target-row]');
     this.pngWarning = element(root, '[data-png-warning]');
     this.status = element(root, '[data-status-text]');
     this.notice = element(root, '[data-notice]');
@@ -166,12 +185,25 @@ export class ConverterWidget {
       quality: Number(data.get('quality') ?? 90),
       lossless: data.get('lossless') !== null,
       keepMetadata: data.get('keepMetadata') !== null,
+      targetBytes: data.get('compression') === 'target' ? this.targetBytes(data) : null,
     };
+  }
+
+  /** Целевой размер из поля и единицы; пустое или неверное значение — по умолчанию, слишком маленькое — минимум. */
+  private targetBytes(data: FormData): number {
+    const value = Number(String(data.get('targetSize') ?? '').replace(',', '.'));
+    const unit = TARGET_UNITS[String(data.get('targetUnit'))] ?? TARGET_UNITS.kb!;
+    if (!Number.isFinite(value) || value <= 0) return DEFAULT_TARGET_BYTES;
+    return Math.max(MIN_TARGET_BYTES, Math.round(value * unit));
   }
 
   private syncSettings(): void {
     const settings = this.currentSettings();
-    this.qualityRow.hidden = !settings.output.hasQuality || isLossless(settings);
+    const lossy = isLossy(settings);
+    if (this.originalHint) this.originalHint.hidden = settings.output.id !== 'original';
+    if (this.compressionRow) this.compressionRow.hidden = !lossy;
+    if (this.targetRow) this.targetRow.hidden = !lossy || settings.targetBytes === null;
+    this.qualityRow.hidden = !lossy || settings.targetBytes !== null;
     this.losslessRow.hidden = !settings.output.hasLossless;
     this.pngWarning.hidden = !settings.output.largeFiles;
     this.qualityValue.value = String(settings.quality);
@@ -198,6 +230,7 @@ export class ConverterWidget {
         previewUrl: null,
         error: null,
         warnings: [],
+        quality: null,
         row: document.createElement('li'),
       };
       this.items.push(item);
@@ -232,7 +265,7 @@ export class ConverterWidget {
     if (generation !== this.generation) return;
     const settings = this.currentSettings();
     item.settings = settings;
-    const input = checkInput(head, settings.output.encoder);
+    const input = checkInput(head, settings.output.encoder, this.config.mode !== 'convert');
     if (!input.ok) return this.fail(item, input.code);
 
     item.status = 'converting';
@@ -241,7 +274,7 @@ export class ConverterWidget {
     this.client ??= new WorkerClient();
     if (!this.loadedOnce) this.setStatus(this.t.loading);
     try {
-      await this.client.load(input.decoder, settings.output.encoder);
+      await this.client.load(input.decoder, input.encoder);
       this.loadedOnce = true;
     } catch {
       if (generation !== this.generation) return;
@@ -252,10 +285,12 @@ export class ConverterWidget {
     this.setStatus(fill(this.t.progress, { current: this.run.done + this.run.failed + 1, total: this.run.total }));
 
     const outcome = await this.client.convert(item.file, input.decoder, {
-      encoder: settings.output.encoder,
+      encoder: input.encoder,
       quality: settings.quality,
       lossless: isLossless(settings),
       metadata: settings.keepMetadata ? 'all' : 'dates',
+      targetBytes: settings.targetBytes,
+      allowSameFormat: this.config.mode !== 'convert',
     });
     if (generation !== this.generation) return;
     if (!outcome.ok) return this.fail(item, outcome.code);
@@ -263,8 +298,13 @@ export class ConverterWidget {
     item.blob = new Blob([outcome.buffer], { type: outcome.mime });
     item.url = URL.createObjectURL(item.blob);
     item.previewUrl = URL.createObjectURL(new Blob([outcome.preview], { type: outcome.mime }));
-    item.name = this.names.allocate(outputName(item.file.name, settings.output.extension));
+    item.name = this.names.allocate(outputName(item.file.name, outcome.extension));
+    item.quality = settings.targetBytes !== null ? outcome.quality : null;
     item.warnings = outcome.warnings;
+    // при сжатии честно говорим, что файл не уменьшился (если причина не названа уже — «у PNG нет качества»)
+    if (this.config.mode === 'compress' && item.blob.size >= item.file.size && !item.warnings.includes('target-lossless')) {
+      item.warnings.push('not-smaller');
+    }
     item.status = 'done';
     this.run.done++;
     this.renderRow(item);
@@ -292,6 +332,14 @@ export class ConverterWidget {
 
   private size(bytes: number): string {
     return formatBytes(bytes, this.config.locale, this.t.units);
+  }
+
+  /** Изменение размера файла в процентах со знаком: «−85 %», «+12 %». */
+  private change(before: number, after: number): string {
+    const ratio = before > 0 ? (after - before) / before : 0;
+    return new Intl.NumberFormat(this.config.locale, { style: 'percent', maximumFractionDigits: 0, signDisplay: 'exceptZero' })
+      .format(ratio)
+      .replace('-', '\u2212');
   }
 
   private renderRow(item: Item): void {
@@ -324,7 +372,11 @@ export class ConverterWidget {
     if (item.status === 'converting') meta.textContent = this.t.converting;
     if (item.status === 'error') meta.textContent = this.t.failed;
     if (item.status === 'done' && item.blob) {
-      meta.textContent = `${this.t.done} · ${fill(this.t.sizes, { before: this.size(item.file.size), after: this.size(item.blob.size) })}`;
+      const parts = [this.t.done, fill(this.t.sizes, { before: this.size(item.file.size), after: this.size(item.blob.size) })];
+      // при сжатии и изменении размера важна разница в размере: «−85 %»
+      if (this.config.mode !== 'convert') parts[1] += ` (${this.change(item.file.size, item.blob.size)})`;
+      if (item.quality !== null) parts.push(fill(this.t.qualityUsed, { quality: item.quality }));
+      meta.textContent = parts.join(' · ');
     }
     body.append(name, meta);
 
@@ -372,7 +424,17 @@ export class ConverterWidget {
       if (!isOutdated(item, current)) continue;
       this.revokeUrls(item);
       if (item.name) this.names.release(item.name);
-      Object.assign(item, { status: 'queued', settings: null, name: null, blob: null, url: null, previewUrl: null, error: null, warnings: [] });
+      Object.assign(item, {
+        status: 'queued',
+        settings: null,
+        name: null,
+        blob: null,
+        url: null,
+        previewUrl: null,
+        error: null,
+        warnings: [],
+        quality: null,
+      });
       this.run.total++;
       this.renderRow(item);
     }

@@ -1,0 +1,48 @@
+# Texts for /en/compress-image. Draft for the owner's review (see CONTENT.md).
+title: "Compress Images Online — To a Target Size, No Upload"
+description: "Reduce the file size of JPG, PNG, WebP, HEIC and AVIF images right in your browser: by quality or to an exact size in KB or MB. Free, no sign-up."
+h1: "Compress Images Online"
+subtitle: "By quality or to a target file size. Your files never leave your device."
+breadcrumb: "Compress images"
+card:
+  title: "Compress images"
+  text: "Make photos lighter — by quality or to a target size in KB or MB."
+app:
+  name: "Image Compressor"
+  description: "An online image compressor that runs in your browser without uploading your photos."
+howTo:
+  title: "How to compress an image"
+  steps:
+    - "Pick a mode: “By quality” with the slider, or “To file size” — enter how many kilobytes or megabytes the file may take."
+    - "Click the box above or drag your images onto it — you can add many at once. Everything happens in your browser."
+    - "Download the files one by one or all at once as a ZIP. Each file's row shows how much smaller it got."
+why:
+  title: "Why use this compressor"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them."
+    - title: "Hit an exact file size"
+      text: "Need a file under 500 KB or 1 MB for a form or a website? Enter the limit and the quality is picked for you."
+    - title: "The format stays the same"
+      text: "JPG stays JPG, PNG stays PNG, WebP stays WebP. HEIC photos from an iPhone and AVIF images are saved as JPG. You can switch formats if you like."
+    - title: "Batch compression"
+      text: "Compress up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "How do I compress a photo to a specific size, like 1 MB?"
+      a: "Choose “To file size”, enter the number and the unit — KB or MB — and add your photos. The compressor encodes each image a few times at different qualities and keeps the highest quality that fits the limit."
+    - q: "Why is the file smaller than the size I entered?"
+      a: "The size is chosen so the file never goes over the limit, so it usually ends up a bit smaller. Kilobytes and megabytes are decimal (1 MB = 1,000,000 bytes) so the file passes the check on any website."
+    - q: "What if the image can't be compressed to that size?"
+      a: "If the file is still too large even at the lowest quality, the smallest version is saved and its row shows a hint. Reduce the image's dimensions in that case — resolution affects file size the most."
+    - q: "Will the quality drop a lot?"
+      a: "At the default quality of 75 the difference is usually hard to notice on photos, while the file gets much lighter. The lower the quality, the smaller the file and the more visible the compression artifacts."
+    - q: "Can I compress a PNG?"
+      a: "Yes, but PNG is lossless, so it can't shrink much. If you don't need transparency, choose JPG; if you do, choose WebP — it keeps transparency and is many times smaller."
+    - q: "Why didn't the file get smaller?"
+      a: "If the original was already heavily compressed, compressing it again gains little. Lower the quality or choose WebP — each file's row shows how its size changed."
+    - q: "What happens to the location and the date taken?"
+      a: "By default the capture date is kept, while the location, phone model and other details are removed — which also trims the file a little. Tick “Keep all metadata” to copy everything."
+    - q: "Is it safe to compress my photos here?"
+      a: "Yes. The site only downloads the tool itself; your images are processed in your browser and are never sent to a server."

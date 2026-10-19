@@ -12,7 +12,7 @@ describe('сборка: разметка виджета', () => {
     expect(root.querySelector('input[type="file"]')?.hasAttribute('multiple')).toBe(true);
     expect(root.querySelector('button[data-dropzone]')).toBeTruthy();
     expect(root.querySelector('input[name="format"][checked]')?.getAttribute('value')).toBe(tool.defaultOutput);
-    expect(root.querySelector('input[name="quality"]')?.getAttribute('value')).toBe('90');
+    expect(root.querySelector('input[name="quality"]')?.getAttribute('value')).toBe(String(tool.defaultQuality));
     expect(root.querySelector('input[name="keepMetadata"]')?.hasAttribute('checked')).toBe(false);
     expect(root.querySelector('[data-status-text][role="status"][aria-live="polite"]')).toBeTruthy();
     // ползунок скрыт для PNG, предупреждение о размере — наоборот
@@ -24,7 +24,12 @@ describe('сборка: разметка виджета', () => {
     const config = JSON.parse(root.querySelector('script[data-converter-config]')!.text);
     expect(config.maxFiles).toBe(100);
     expect(config.outputs.map((o: { id: string }) => o.id)).toEqual(tool.outputs);
-    expect(config.iphoneHint).toBe(tool.inputFormats.includes('heic'));
+    expect(config.iphoneHint).toBe(tool.mode === 'convert' && tool.inputFormats.includes('heic'));
+    expect(config.mode).toBe(tool.mode);
+    // сжатие: переключатель «По качеству / До размера» и скрытое до выбора поле целевого размера
+    expect(Boolean(root.querySelector('input[name="compression"][value="quality"][checked]'))).toBe(tool.mode === 'compress');
+    expect(root.querySelector('[data-target-row]')?.hasAttribute('hidden') ?? null).toBe(tool.mode === 'compress' ? true : null);
+    expect(Boolean(root.querySelector('[data-original-hint]'))).toBe(tool.mode !== 'convert');
     expect(config).not.toHaveProperty('decoder');
     // шаблоны строк заполнены при сборке
     expect(JSON.stringify(config.strings)).not.toMatch(/\{formats?\}/);

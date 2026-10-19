@@ -46,7 +46,7 @@ async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): P
     const readStarted = performance.now();
     const bytes = new Uint8Array(await message.file.arrayBuffer());
     const read = performance.now() - readStarted;
-    const input = checkInput(bytes, message.options.encoder);
+    const input = checkInput(bytes, message.options.encoder, message.options.allowSameFormat);
     if (!input.ok) throw new ConvertError(input.code);
     // кучи прошлых файлов не уменьшаются: если их уже много, следующий файл — в свежем worker'е
     if (processed > 0 && reservedHeap() > message.freshWorkerAboveHeapBytes) {
@@ -82,6 +82,7 @@ async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): P
           extension: encoder.extension,
           width: result.width,
           height: result.height,
+          quality: result.quality,
           pixels,
           warnings: result.warnings,
           stats: { heap: heapStats(), timings: { read, ...result.timings } },

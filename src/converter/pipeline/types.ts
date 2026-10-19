@@ -5,6 +5,8 @@ import type { Nclx } from '../color/nclx';
 
 export type DecoderId = 'heic' | 'avif' | 'jpeg' | 'png' | 'webp';
 export type EncoderId = 'jpeg' | 'png' | 'webp';
+/** Выбор формата в интерфейсе: конкретный кодировщик или «как у исходника» (страницы сжатия и размера). */
+export type OutputTarget = EncoderId | 'original';
 
 /** WebP вмещает изображения не больше 16 383 точек по стороне. */
 export const WEBP_MAX_DIMENSION = 16383;
@@ -16,6 +18,13 @@ export interface ConvertOptions {
   /** WebP без потерь; для других форматов не используется. */
   lossless: boolean;
   metadata: MetadataMode;
+  /**
+   * Целевой размер файла в байтах (страница «Сжать фото»): качество подбирается так, чтобы файл с метаданными
+   * не превышал его. null — качество с ползунка. Для форматов без качества (PNG, WebP без потерь) не используется.
+   */
+  targetBytes: number | null;
+  /** Вход и выход могут совпадать по формату (сжатие и изменение размера, а не конвертация). */
+  allowSameFormat: boolean;
 }
 
 /** Коды ошибок; тексты для пользователя — в словарях интерфейса. */
@@ -40,7 +49,11 @@ export type WarningCode =
   | 'exif-reduced-to-dates'
   | 'icc-too-large'
   | 'icc-unreadable'
-  | 'first-frame-only';
+  | 'first-frame-only'
+  | 'target-not-reached'
+  | 'target-lossless'
+  /** Ставит виджет, а не worker: при сжатии результат не меньше исходника. */
+  | 'not-smaller';
 
 export class ConvertError extends Error {
   /** После ошибки экземпляр WASM-модуля нельзя использовать дальше (нужен новый worker и повторная попытка). */

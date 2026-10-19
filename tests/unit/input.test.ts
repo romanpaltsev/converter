@@ -9,8 +9,8 @@ const text = (s: string) => new TextEncoder().encode(s);
 
 describe('checkInput', () => {
   test('HEIC читается декодером heic при любом выходе', () => {
-    expect(checkInput(head('basic.heic'), 'jpeg')).toEqual({ ok: true, decoder: 'heic' });
-    expect(checkInput(head('basic.heic'), 'png')).toEqual({ ok: true, decoder: 'heic' });
+    expect(checkInput(head('basic.heic'), 'jpeg')).toEqual({ ok: true, decoder: 'heic', encoder: 'jpeg' });
+    expect(checkInput(head('basic.heic'), 'png')).toEqual({ ok: true, decoder: 'heic', encoder: 'png' });
   });
 
   test('вход в формате выбранного выхода — «уже …»', () => {
@@ -19,9 +19,19 @@ describe('checkInput', () => {
     expect(checkInput(head('basic.webp'), 'webp')).toEqual({ ok: false, code: 'already-webp' });
   });
 
+  test('сжатие и изменение размера: тот же формат разрешён, «Исходный» — формат входа, HEIC и AVIF → JPG', () => {
+    expect(checkInput(head('photo.jpg'), 'jpeg', true)).toEqual({ ok: true, decoder: 'jpeg', encoder: 'jpeg' });
+    expect(checkInput(head('photo.jpg'), 'original', true)).toEqual({ ok: true, decoder: 'jpeg', encoder: 'jpeg' });
+    expect(checkInput(head('not-heic.heic'), 'original', true)).toEqual({ ok: true, decoder: 'png', encoder: 'png' });
+    expect(checkInput(head('basic.webp'), 'original', true)).toEqual({ ok: true, decoder: 'webp', encoder: 'webp' });
+    expect(checkInput(head('basic.heic'), 'original', true)).toEqual({ ok: true, decoder: 'heic', encoder: 'jpeg' });
+    expect(checkInput(head('photo.avif'), 'original', true)).toEqual({ ok: true, decoder: 'avif', encoder: 'jpeg' });
+    expect(checkInput(text('GIF89a......'), 'original', true)).toEqual({ ok: false, code: 'unsupported-image' });
+  });
+
   test('JPG и PNG в другие форматы — свои декодеры', () => {
-    expect(checkInput(head('photo.jpg'), 'png')).toEqual({ ok: true, decoder: 'jpeg' });
-    expect(checkInput(head('not-heic.heic'), 'jpeg')).toEqual({ ok: true, decoder: 'png' });
+    expect(checkInput(head('photo.jpg'), 'png')).toEqual({ ok: true, decoder: 'jpeg', encoder: 'png' });
+    expect(checkInput(head('not-heic.heic'), 'jpeg')).toEqual({ ok: true, decoder: 'png', encoder: 'jpeg' });
   });
 
   test('варианты JPEG, которые MozJPEG не читает, видны по заголовку', () => {
@@ -29,12 +39,12 @@ describe('checkInput', () => {
     expect(checkInput(fixture('12bit.jpg'), 'png')).toEqual({ ok: false, code: 'unsupported-variant' });
     expect(checkInput(fixture('lossless.jpg'), 'png')).toEqual({ ok: false, code: 'unsupported-variant' });
     expect(checkInput(fixture('arith.jpg'), 'png')).toEqual({ ok: false, code: 'unsupported-variant' });
-    expect(checkInput(fixture('progressive.jpg'), 'png')).toEqual({ ok: true, decoder: 'jpeg' });
+    expect(checkInput(fixture('progressive.jpg'), 'png')).toEqual({ ok: true, decoder: 'jpeg', encoder: 'png' });
   });
 
   test('WebP — декодер webp', () => {
-    expect(checkInput(head('basic.webp'), 'jpeg')).toEqual({ ok: true, decoder: 'webp' });
-    expect(checkInput(head('animated.webp'), 'png')).toEqual({ ok: true, decoder: 'webp' });
+    expect(checkInput(head('basic.webp'), 'jpeg')).toEqual({ ok: true, decoder: 'webp', encoder: 'jpeg' });
+    expect(checkInput(head('animated.webp'), 'png')).toEqual({ ok: true, decoder: 'webp', encoder: 'png' });
   });
 
   test('форматы без декодера — «пока не поддерживается»', () => {
@@ -43,8 +53,8 @@ describe('checkInput', () => {
   });
 
   test('AVIF — декодер avif, в том числе анимированный (avis)', () => {
-    expect(checkInput(head('photo.avif'), 'jpeg')).toEqual({ ok: true, decoder: 'avif' });
-    expect(checkInput(head('animated.avif'), 'webp')).toEqual({ ok: true, decoder: 'avif' });
+    expect(checkInput(head('photo.avif'), 'jpeg')).toEqual({ ok: true, decoder: 'avif', encoder: 'jpeg' });
+    expect(checkInput(head('animated.avif'), 'webp')).toEqual({ ok: true, decoder: 'avif', encoder: 'webp' });
   });
 
   test('не изображения', () => {
