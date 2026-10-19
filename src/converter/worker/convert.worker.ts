@@ -142,6 +142,27 @@ async function handleStrip(message: Extract<ToWorker, { type: 'strip' }>): Promi
   }
 }
 
+/** «Посмотреть EXIF»: модуль грузится только на этой странице; миниатюра передаётся без копирования. */
+async function handleInspect(message: Extract<ToWorker, { type: 'inspect' }>): Promise<void> {
+  const { id } = message;
+  try {
+    const bytes = new Uint8Array(await message.file.arrayBuffer());
+    const { kind } = sniff(bytes);
+    if (kind === 'unknown') throw new ConvertError('not-image');
+    const footprint = 3 * bytes.length;
+    if (footprint > message.memoryLimit) {
+      post({ type: 'needs-memory', id, footprint, fresh: footprint });
+      return;
+    }
+    post({ type: 'started', id, footprint, fresh: footprint });
+    const { inspectFile } = await import('../metadata/inspect');
+    const report = await inspectFile(bytes, kind);
+    post({ type: 'inspected', id, report }, report.thumbnail ? [report.thumbnail.buffer as ArrayBuffer] : []);
+  } catch (error) {
+    postError(id, error);
+  }
+}
+
 scope.onmessage = (event) => {
   const message = event.data;
   if (message.type === 'load') {
@@ -158,5 +179,7 @@ scope.onmessage = (event) => {
     void handleConvert(message);
   } else if (message.type === 'strip') {
     void handleStrip(message);
+  } else if (message.type === 'inspect') {
+    void handleInspect(message);
   }
 };

@@ -1,0 +1,48 @@
+# Texts for /en/exif-viewer. Draft for the owner's review (see CONTENT.md).
+title: "EXIF Viewer Online — See Photo Metadata, Date and Location"
+description: "Find out when, where and with which camera a photo was taken: view EXIF, GPS location and other metadata of JPG, HEIC, PNG and WebP files right in your browser."
+h1: "EXIF viewer"
+subtitle: "Date, camera, settings and location — right in your browser. Your files never leave your device."
+breadcrumb: "EXIF viewer"
+card:
+  title: "EXIF viewer"
+  text: "See the date, camera and location stored in a photo's metadata."
+app:
+  name: "EXIF Viewer"
+  description: "An online EXIF viewer that reads photo metadata right in your browser, without uploading the files."
+howTo:
+  title: "How to view photo metadata"
+  steps:
+    - "Click the box above or drop your photos onto it — several at once is fine. JPG, HEIC, PNG, WebP, AVIF, TIFF and more are supported."
+    - "Each file gets a card: when and with what it was taken, exposure settings, the location on a map and the color profile. “All EXIF tags” shows the complete list."
+    - "If a photo reveals too much, click “Download without metadata” to get a copy without EXIF, location and XMP."
+why:
+  title: "Why use this EXIF viewer"
+  items:
+    - title: "Photos stay on your device"
+      text: "Metadata is read right in your browser. Nobody but you sees the photos or what's stored in them."
+    - title: "Readable, not just raw tags"
+      text: "Date, camera, shutter speed, aperture and ISO are shown in plain words, with the full tag list one click away."
+    - title: "Location on a map"
+      text: "If a photo has GPS coordinates, open them in Google Maps or OpenStreetMap — only when you click the link yourself."
+    - title: "Remove it right away"
+      text: "Spotted a location or a serial number? Download a copy without metadata in one click; the image itself isn't re-encoded."
+faq:
+  title: "FAQ"
+  items:
+    - q: "What is EXIF data?"
+      a: "EXIF is information a camera or phone writes into a photo: the date and time, device model, shutter speed, aperture, ISO, focal length, orientation and — if location is on — the GPS coordinates."
+    - q: "How can I find out where a photo was taken?"
+      a: "Add the photo: if it has coordinates, its card shows a “Location” line with map links. If there's no such line, the location wasn't recorded or was removed — messaging apps and social networks often do that."
+    - q: "How do I find the date a photo was taken?"
+      a: "The capture date and time are in the “Taken” line. That's the time recorded by the camera, independent of when the file was created or modified on disk."
+    - q: "Why does my photo have no metadata?"
+      a: "Many messaging apps and social networks strip EXIF when sending, and screenshots or images from the web often have none at all. In that case you'll see “No metadata found”."
+    - q: "Can I view the EXIF of iPhone HEIC photos?"
+      a: "Yes. HEIC, AVIF, JPG, PNG, WebP, TIFF and JPEG XL are read right in your browser — even in browsers that can't display HEIC themselves."
+    - q: "What is the “embedded thumbnail”?"
+      a: "Some cameras and apps store a small copy of the photo inside EXIF. After cropping, it can still show the original uncropped frame, so it's worth checking before you share."
+    - q: "How do I remove the metadata?"
+      a: "Click “Download without metadata” on the file's card, or open “Remove EXIF data” to process many photos at once and choose what to keep, such as the capture date."
+    - q: "Is it safe?"
+      a: "Yes. Files are read in your browser and never sent to a server. Coordinates go to a map website only if you open a map link yourself."

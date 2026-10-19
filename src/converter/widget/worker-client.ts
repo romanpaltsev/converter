@@ -2,6 +2,7 @@
 // Сколько worker'ов работает одновременно, когда файл ждёт памяти и когда worker пересоздаётся, решает пул
 // (worker-pool.ts): память WASM после роста не уменьшается.
 
+import type { MetadataReport } from '../metadata/inspect/types';
 import type { RemovedKind, StripMode } from '../metadata/strip/types';
 import type { ConvertOptions, DecoderId, EncoderId, ErrorCode, WarningCode } from '../pipeline/types';
 import type { FromWorker, ToWorker, WorkerStats } from '../worker/protocol';
@@ -49,6 +50,8 @@ export interface StripSuccess {
 }
 
 export type StripOutcome = StripSuccess | ConvertFailure | NeedsMemory;
+
+export type InspectOutcome = { status: 'done'; report: MetadataReport } | ConvertFailure | NeedsMemory;
 
 type OnStarted = (footprint: number, fresh: number) => void;
 
@@ -154,6 +157,16 @@ export class WorkerClient implements PoolClient {
     this.heapBytes = 0;
     this.decoders.clear();
     this.encoders.clear();
+  }
+
+  /** «Посмотреть EXIF»: модули WASM не нужны. */
+  async inspect(file: Blob, memoryLimit: number, onStarted: OnStarted): Promise<InspectOutcome> {
+    const reply = await this.request((id) => ({ type: 'inspect', id, file, memoryLimit }), onStarted);
+    if (reply.type === 'inspected') {
+      this.files++;
+      return { status: 'done', report: reply.report };
+    }
+    return failure(reply);
   }
 
   private request(build: (id: number) => ToWorker, onStarted: OnStarted): Promise<FromWorker> {

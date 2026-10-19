@@ -19,6 +19,8 @@ const inputs = tool.inputFormats.map((id) => INPUT_FORMATS[id]);
 const converts = tool.mode === 'convert';
 // «Удалить метаданные»: без выбора формата и качества — только что удалять
 const strips = tool.mode === 'strip';
+// «Посмотреть EXIF»: только чтение — ни настроек, ни архива с результатами
+const inspects = tool.mode === 'inspect';
 // шаблоны строк заполняем здесь: формат страницы и список всех поддерживаемых форматов
 const supported = list(Object.values(INPUT_FORMATS).map((f) => f.label));
 const base = UI[locale].widget;
@@ -76,160 +78,166 @@ const DEFAULT_LONG_SIDE = 1920;
   </button>
   <input type="file" class="visually-hidden" data-input multiple accept={accept} tabindex="-1" aria-hidden="true" />
 
-  <form class="settings" data-settings aria-label={t.settings}>
+  <form class="settings" data-settings aria-label={t.settings} hidden={inspects}>
     {
-      strips ? (
+      !inspects && (
         <Fragment>
-          <fieldset class="settings__format">
-            <legend class="settings__label">{t.stripWhat}</legend>
-            <div class="segmented segmented--stack">
-              {STRIP_MODES.map((mode) => (
-                <label class="segmented__option">
-                  <input type="radio" name="stripMode" value={mode} checked={mode === 'all'} />
-                  <span>{t.stripModes[mode]}</span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-          <p class="settings__hint settings__hint--aligned" data-strip-hint>{t.stripHints.all}</p>
-        </Fragment>
-      ) : (
-        <fieldset class="settings__format">
-          <legend class="settings__label">{t.format}</legend>
-          <div class="segmented">
-            {outputs.map((output) => (
-              <label class="segmented__option">
-                <input type="radio" name="format" value={output.id} checked={output.id === tool.defaultOutput} />
-                <span>{output.label}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-      )
-    }
-    {tool.outputs.includes('ico') && <p class="settings__hint settings__hint--aligned" data-ico-hint hidden={tool.defaultOutput !== 'ico'}>{t.icoHint}</p>}
-    {!converts && !strips && <p class="settings__hint settings__hint--aligned" data-original-hint hidden={tool.defaultOutput !== 'original'}>{t.originalHint}</p>}
-    {
-      tool.mode === 'compress' && (
-        <fieldset class="settings__format" data-compression-row>
-          <legend class="settings__label">{t.compression}</legend>
-          <div class="segmented">
-            <label class="segmented__option">
-              <input type="radio" name="compression" value="quality" checked />
-              <span>{t.byQuality}</span>
-            </label>
-            <label class="segmented__option">
-              <input type="radio" name="compression" value="target" />
-              <span>{t.byTarget}</span>
-            </label>
-          </div>
-        </fieldset>
-      )
-    }
-    {
-      tool.mode === 'resize' && (
-        <Fragment>
-          <fieldset class="settings__format">
-            <legend class="settings__label">{t.resize}</legend>
-            <div class="segmented segmented--stack">
-              {RESIZE_MODES.map((mode) => (
-                <label class="segmented__option">
-                  <input type="radio" name="resizeMode" value={mode.value} checked={mode.value === 'long-side'} />
-                  <span>{mode.label}</span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-          <p class="settings__hint settings__hint--aligned">{t.resizeHint}</p>
-          <div class="settings__target" data-resize-long>
-            <label class="settings__label" for={`${id}-long`}>{t.longSide}</label>
-            <div class="field-group">
-              <span class="field-unit">
-                <input id={`${id}-long`} class="field field--number" type="text" name="longSide" value={DEFAULT_LONG_SIDE} inputmode="numeric" autocomplete="off" />
-                <span class="field-unit__label">{t.pixels}</span>
-              </span>
-              <div class="chips" role="group" aria-label={t.presets}>
-                {LONG_SIDE_PRESETS.map((size) => (
-                  <button type="button" class="chip" data-preset={size} aria-pressed={size === DEFAULT_LONG_SIDE ? 'true' : 'false'}>
-                    {size}
-                  </button>
-                ))}
+          {
+            strips ? (
+              <Fragment>
+                <fieldset class="settings__format">
+                  <legend class="settings__label">{t.stripWhat}</legend>
+                  <div class="segmented segmented--stack">
+                    {STRIP_MODES.map((mode) => (
+                      <label class="segmented__option">
+                        <input type="radio" name="stripMode" value={mode} checked={mode === 'all'} />
+                        <span>{t.stripModes[mode]}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+                <p class="settings__hint settings__hint--aligned" data-strip-hint>{t.stripHints.all}</p>
+              </Fragment>
+            ) : (
+              <fieldset class="settings__format">
+                <legend class="settings__label">{t.format}</legend>
+                <div class="segmented">
+                  {outputs.map((output) => (
+                    <label class="segmented__option">
+                      <input type="radio" name="format" value={output.id} checked={output.id === tool.defaultOutput} />
+                      <span>{output.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            )
+          }
+          {tool.outputs.includes('ico') && <p class="settings__hint settings__hint--aligned" data-ico-hint hidden={tool.defaultOutput !== 'ico'}>{t.icoHint}</p>}
+          {!converts && !strips && <p class="settings__hint settings__hint--aligned" data-original-hint hidden={tool.defaultOutput !== 'original'}>{t.originalHint}</p>}
+          {
+            tool.mode === 'compress' && (
+              <fieldset class="settings__format" data-compression-row>
+                <legend class="settings__label">{t.compression}</legend>
+                <div class="segmented">
+                  <label class="segmented__option">
+                    <input type="radio" name="compression" value="quality" checked />
+                    <span>{t.byQuality}</span>
+                  </label>
+                  <label class="segmented__option">
+                    <input type="radio" name="compression" value="target" />
+                    <span>{t.byTarget}</span>
+                  </label>
+                </div>
+              </fieldset>
+            )
+          }
+          {
+            tool.mode === 'resize' && (
+              <Fragment>
+                <fieldset class="settings__format">
+                  <legend class="settings__label">{t.resize}</legend>
+                  <div class="segmented segmented--stack">
+                    {RESIZE_MODES.map((mode) => (
+                      <label class="segmented__option">
+                        <input type="radio" name="resizeMode" value={mode.value} checked={mode.value === 'long-side'} />
+                        <span>{mode.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+                <p class="settings__hint settings__hint--aligned">{t.resizeHint}</p>
+                <div class="settings__target" data-resize-long>
+                  <label class="settings__label" for={`${id}-long`}>{t.longSide}</label>
+                  <div class="field-group">
+                    <span class="field-unit">
+                      <input id={`${id}-long`} class="field field--number" type="text" name="longSide" value={DEFAULT_LONG_SIDE} inputmode="numeric" autocomplete="off" />
+                      <span class="field-unit__label">{t.pixels}</span>
+                    </span>
+                    <div class="chips" role="group" aria-label={t.presets}>
+                      {LONG_SIDE_PRESETS.map((size) => (
+                        <button type="button" class="chip" data-preset={size} aria-pressed={size === DEFAULT_LONG_SIDE ? 'true' : 'false'}>
+                          {size}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <div class="settings__quality settings__quality--wide" data-resize-percent hidden>
+                  <label class="settings__label" for={`${id}-percent`}>{t.scale}</label>
+                  <input id={`${id}-percent`} type="range" name="percent" min="5" max="100" step="5" value="50" />
+                  <output for={`${id}-percent`} data-percent-value>50 %</output>
+                </div>
+                <div class="settings__target" data-resize-box hidden>
+                  <span class="settings__label" aria-hidden="true"></span>
+                  <div class="field-group">
+                    <label class="field-caption">
+                      <span>{t.width}</span>
+                      <input class="field field--number" type="text" name="boxWidth" value="1920" inputmode="numeric" autocomplete="off" />
+                    </label>
+                    <span class="field-times" aria-hidden="true">×</span>
+                    <label class="field-caption">
+                      <span>{t.height}</span>
+                      <input class="field field--number" type="text" name="boxHeight" value="1080" inputmode="numeric" autocomplete="off" />
+                    </label>
+                    <span class="field-unit__label field-times">{t.pixels}</span>
+                  </div>
+                  <label class="checkbox settings__target-span">
+                    <input type="checkbox" name="keepAspect" checked />
+                    <span>{t.keepAspect}</span>
+                  </label>
+                  <p class="settings__hint settings__hint--flush settings__target-span">{t.boxHint}</p>
+                </div>
+              </Fragment>
+            )
+          }
+          {
+            !strips && (
+              <div class="settings__quality" data-quality-row hidden={!initial.hasQuality}>
+                <label class="settings__label" for={`${id}-quality`}>{t.quality}</label>
+                <input id={`${id}-quality`} type="range" name="quality" min="1" max="100" step="1" value={tool.defaultQuality} data-quality />
+                <output for={`${id}-quality`} data-quality-value>{tool.defaultQuality}</output>
               </div>
-            </div>
-          </div>
-          <div class="settings__quality settings__quality--wide" data-resize-percent hidden>
-            <label class="settings__label" for={`${id}-percent`}>{t.scale}</label>
-            <input id={`${id}-percent`} type="range" name="percent" min="5" max="100" step="5" value="50" />
-            <output for={`${id}-percent`} data-percent-value>50 %</output>
-          </div>
-          <div class="settings__target" data-resize-box hidden>
-            <span class="settings__label" aria-hidden="true"></span>
-            <div class="field-group">
-              <label class="field-caption">
-                <span>{t.width}</span>
-                <input class="field field--number" type="text" name="boxWidth" value="1920" inputmode="numeric" autocomplete="off" />
-              </label>
-              <span class="field-times" aria-hidden="true">×</span>
-              <label class="field-caption">
-                <span>{t.height}</span>
-                <input class="field field--number" type="text" name="boxHeight" value="1080" inputmode="numeric" autocomplete="off" />
-              </label>
-              <span class="field-unit__label field-times">{t.pixels}</span>
-            </div>
-            <label class="checkbox settings__target-span">
-              <input type="checkbox" name="keepAspect" checked />
-              <span>{t.keepAspect}</span>
-            </label>
-            <p class="settings__hint settings__hint--flush settings__target-span">{t.boxHint}</p>
-          </div>
-        </Fragment>
-      )
-    }
-    {
-      !strips && (
-        <div class="settings__quality" data-quality-row hidden={!initial.hasQuality}>
-          <label class="settings__label" for={`${id}-quality`}>{t.quality}</label>
-          <input id={`${id}-quality`} type="range" name="quality" min="1" max="100" step="1" value={tool.defaultQuality} data-quality />
-          <output for={`${id}-quality`} data-quality-value>{tool.defaultQuality}</output>
-        </div>
-      )
-    }
-    {
-      tool.mode === 'compress' && (
-        <div class="settings__target" data-target-row hidden>
-          <label class="settings__label" for={`${id}-target`}>{t.targetSize}</label>
-          <div class="field-group">
-            <input id={`${id}-target`} class="field field--number" type="text" name="targetSize" value="500" inputmode="decimal" autocomplete="off" aria-describedby={`${id}-target-hint`} />
-            <div class="segmented" role="radiogroup" aria-label={t.targetUnit}>
-              <label class="segmented__option">
-                <input type="radio" name="targetUnit" value="kb" checked />
-                <span>{t.units.kb}</span>
-              </label>
-              <label class="segmented__option">
-                <input type="radio" name="targetUnit" value="mb" />
-                <span>{t.units.mb}</span>
-              </label>
-            </div>
-          </div>
-          <p class="settings__hint settings__hint--flush" id={`${id}-target-hint`}>{t.targetHint}</p>
-        </div>
-      )
-    }
-    {
-      !strips && (
-        <Fragment>
-          <label class="checkbox settings__lossless" data-lossless-row hidden={!initial.hasLossless}>
-            <input type="checkbox" name="lossless" />
-            <span>{t.lossless}</span>
-          </label>
-          <div class="settings__meta" data-meta-row hidden={tool.defaultOutput === 'ico'}>
-            <label class="checkbox">
-              <input type="checkbox" name="keepMetadata" aria-describedby={`${id}-meta-hint`} />
-              <span>{t.keepMetadata}</span>
-            </label>
-            <p class="settings__hint" id={`${id}-meta-hint`}>{t.keepMetadataHint}</p>
-          </div>
-          <p class="notice notice--warning" data-png-warning hidden={!initial.largeFiles}>{converts ? t.pngWarning : t.pngCompressWarning}</p>
+            )
+          }
+          {
+            tool.mode === 'compress' && (
+              <div class="settings__target" data-target-row hidden>
+                <label class="settings__label" for={`${id}-target`}>{t.targetSize}</label>
+                <div class="field-group">
+                  <input id={`${id}-target`} class="field field--number" type="text" name="targetSize" value="500" inputmode="decimal" autocomplete="off" aria-describedby={`${id}-target-hint`} />
+                  <div class="segmented" role="radiogroup" aria-label={t.targetUnit}>
+                    <label class="segmented__option">
+                      <input type="radio" name="targetUnit" value="kb" checked />
+                      <span>{t.units.kb}</span>
+                    </label>
+                    <label class="segmented__option">
+                      <input type="radio" name="targetUnit" value="mb" />
+                      <span>{t.units.mb}</span>
+                    </label>
+                  </div>
+                </div>
+                <p class="settings__hint settings__hint--flush" id={`${id}-target-hint`}>{t.targetHint}</p>
+              </div>
+            )
+          }
+          {
+            !strips && (
+              <Fragment>
+                <label class="checkbox settings__lossless" data-lossless-row hidden={!initial.hasLossless}>
+                  <input type="checkbox" name="lossless" />
+                  <span>{t.lossless}</span>
+                </label>
+                <div class="settings__meta" data-meta-row hidden={tool.defaultOutput === 'ico'}>
+                  <label class="checkbox">
+                    <input type="checkbox" name="keepMetadata" aria-describedby={`${id}-meta-hint`} />
+                    <span>{t.keepMetadata}</span>
+                  </label>
+                  <p class="settings__hint" id={`${id}-meta-hint`}>{t.keepMetadataHint}</p>
+                </div>
+                <p class="notice notice--warning" data-png-warning hidden={!initial.largeFiles}>{converts ? t.pngWarning : t.pngCompressWarning}</p>
+              </Fragment>
+            )
+          }
         </Fragment>
       )
     }
@@ -243,7 +251,7 @@ const DEFAULT_LONG_SIDE = 1920;
     <ul class="files" data-files></ul>
     <p class="settings__hint" data-settings-hint hidden>{t.settingsChanged}</p>
     <div class="converter__actions">
-      <button type="button" class="button button--primary" data-zip disabled>{t.downloadAll}</button>
+      <button type="button" class="button button--primary" data-zip disabled hidden={inspects}>{t.downloadAll}</button>
       <button type="button" class="button" data-reconvert hidden>{t.reconvert}</button>
       <button type="button" class="button button--ghost" data-clear>{t.clear}</button>
     </div>

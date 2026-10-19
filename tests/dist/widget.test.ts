@@ -20,7 +20,13 @@ describe('сборка: разметка виджета', () => {
       for (const selector of ['input[name="format"]', '[data-quality-row]', '[data-meta-row]', '[data-lossless-row]', '[data-png-warning]']) {
         expect(root.querySelector(selector)).toBeNull();
       }
+    } else if (tool.mode === 'inspect') {
+      // «Посмотреть EXIF»: настроек и архива нет — форма пустая и скрыта, кнопка ZIP скрыта
+      expect(root.querySelector('form[data-settings]')?.hasAttribute('hidden')).toBe(true);
+      expect(root.querySelectorAll('form[data-settings] input')).toHaveLength(0);
+      expect(root.querySelector('[data-zip]')?.hasAttribute('hidden')).toBe(true);
     } else {
+      expect(root.querySelector('[data-zip]')?.hasAttribute('hidden')).toBe(false);
       expect(root.querySelector('input[name="format"][checked]')?.getAttribute('value')).toBe(tool.defaultOutput);
       expect(root.querySelector('input[name="quality"]')?.getAttribute('value')).toBe(String(tool.defaultQuality));
       expect(root.querySelector('input[name="keepMetadata"]')?.hasAttribute('checked')).toBe(false);

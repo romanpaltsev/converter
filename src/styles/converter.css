@@ -381,7 +381,8 @@
   padding: 4px 4px 4px;
 }
 
-.converter__results[hidden] {
+.converter__results[hidden],
+.settings[hidden] {
   display: none;
 }
 
@@ -447,6 +448,107 @@
 
 .file__body {
   min-width: 0;
+}
+
+/* «Посмотреть EXIF»: карточка с метаданными под строкой файла */
+.report {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.report__summary {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.report__summary > div {
+  display: grid;
+  grid-template-columns: minmax(8rem, 11rem) 1fr;
+  gap: 12px;
+}
+
+.report__summary dt {
+  color: var(--muted);
+}
+
+.report__summary dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* место съёмки — главное, что выдаёт фото: выделено */
+.report__location dd {
+  padding: 6px 10px;
+  border-radius: var(--radius-small);
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.report__location a {
+  color: inherit;
+}
+
+.report__maps {
+  font-size: 0.875rem;
+}
+
+.report__note {
+  margin: 0;
+  color: var(--muted);
+}
+
+.report__tags summary {
+  color: var(--accent);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.report__tags table {
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.report__tags th,
+.report__tags td {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.report__tags tbody th {
+  width: 40%;
+  font-weight: 500;
+}
+
+.report__tags thead th,
+.report__group th {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.report__group th {
+  padding-top: 12px;
+  background: var(--surface-muted);
+}
+
+.report__binary {
+  color: var(--muted);
+}
+
+.report__download {
+  justify-self: start;
 }
 
 .file__name {
@@ -620,6 +722,11 @@
 @media (max-width: 420px) {
   .file {
     grid-template-columns: 44px 1fr;
+  }
+
+  .report__summary > div {
+    grid-template-columns: 1fr;
+    gap: 2px;
   }
 
   .file__thumb {

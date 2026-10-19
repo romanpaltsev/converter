@@ -1,6 +1,8 @@
-// Элементы HEIF/AVIF (ISOBMFF): где в файле лежат блоки Exif и XMP, какое изображение основное и его размер.
+// Элементы HEIF/AVIF (ISOBMFF): где в файле лежат блоки Exif и XMP, какое изображение основное, его размер и цвет.
 // Нужно, чтобы удалять метаданные без перекодирования (данные элементов затираются на месте — смещения не меняются)
 // и показывать их в «Посмотреть EXIF». Разбираются только боксы meta: pitm, iinf, iloc, idat, iprp.
+
+import type { Nclx } from '../color/nclx';
 
 export class HeifError extends Error {}
 
@@ -35,7 +37,13 @@ export interface HeifInfo {
   width: number | null;
   height: number | null;
   rotation: number;
+  /** Цвет основного изображения (colr): ICC-профиль и/или параметры nclx. */
+  icc: Uint8Array | null;
+  nclx: Nclx | null;
 }
+
+type PrimaryProperties = Pick<HeifInfo, 'width' | 'height' | 'rotation' | 'icc' | 'nclx'>;
+const NO_PROPERTIES: PrimaryProperties = { width: null, height: null, rotation: 0, icc: null, nclx: null };
 
 const ascii = (bytes: Uint8Array, at: number, length: number) => String.fromCharCode(...bytes.subarray(at, at + length));
 
@@ -207,11 +215,11 @@ function readLocations(bytes: Uint8Array, iloc: Box, idat: Box | undefined): Map
   return locations;
 }
 
-/** Размер (ispe) и поворот (irot) основного изображения из iprp. */
-function readPrimaryProperties(bytes: Uint8Array, iprp: Box, primary: number): { width: number | null; height: number | null; rotation: number } {
+/** Размер (ispe), поворот (irot) и цвет (colr) основного изображения из iprp. */
+function readPrimaryProperties(bytes: Uint8Array, iprp: Box, primary: number): PrimaryProperties {
   const children = readBoxes(bytes, iprp.dataStart, iprp.end);
   const ipco = children.find((b) => b.type === 'ipco');
-  const result = { width: null as number | null, height: null as number | null, rotation: 0 };
+  const result = { ...NO_PROPERTIES };
   if (!ipco) return result;
   const properties = readBoxes(bytes, ipco.dataStart, ipco.end);
   for (const ipma of children.filter((b) => b.type === 'ipma')) {
@@ -231,6 +239,15 @@ function readPrimaryProperties(bytes: Uint8Array, iprp: Box, primary: number): {
           result.height = p.u32();
         } else if (property?.type === 'irot') {
           result.rotation = ((bytes[property.dataStart]! & 3) * 90) % 360;
+        } else if (property?.type === 'colr') {
+          const p = new Reader(bytes, property.dataStart, property.end);
+          const type = p.fourcc();
+          if (type === 'nclx') {
+            const [colorPrimaries, transferCharacteristics, matrixCoefficients] = [p.u16(), p.u16(), p.u16()];
+            result.nclx = { colorPrimaries, transferCharacteristics, matrixCoefficients, fullRange: (p.u8() & 0x80) !== 0 };
+          } else if (type === 'prof' || type === 'rICC') {
+            result.icc = bytes.slice(p.pos, property.end);
+          }
         }
       }
     }
@@ -255,7 +272,7 @@ export function readHeifInfo(bytes: Uint8Array): HeifInfo {
     primary = version === 0 ? reader.u16() : reader.u32();
   }
   const items = [...infos].map(([id, info]): HeifItem => ({ id, ...info, extents: locations.get(id) ?? null }));
-  const properties = iprp && primary !== null ? readPrimaryProperties(bytes, iprp, primary) : { width: null, height: null, rotation: 0 };
+  const properties = iprp && primary !== null ? readPrimaryProperties(bytes, iprp, primary) : NO_PROPERTIES;
   return { items, primary, ...properties };
 }
 

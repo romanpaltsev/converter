@@ -2,13 +2,15 @@
 // Разметку отдаёт сервер (ConverterWidget.astro), здесь — только поведение. Строки — из конфигурации.
 
 import { track } from '../../lib/analytics';
+import type { MetadataReport } from '../metadata/inspect/types';
 import type { RemovedKind, StripMode } from '../metadata/strip/types';
 import { checkInput } from '../pipeline/input';
-import { KIND_FILES, SNIFF_BYTES, sniff } from '../pipeline/sniff';
+import { KIND_FILES, SNIFF_BYTES, type SniffKind, sniff } from '../pipeline/sniff';
 import type { ResizeSpec } from '../pipeline/resize';
 import { ENCODER_EXTENSIONS, type ErrorCode, type WarningCode } from '../pipeline/types';
 import { type OutputOption, type WidgetConfig, readConfig } from './config';
 import { NameAllocator, outputName, withTimestamp } from './filenames';
+import { ReportView } from './report-view';
 import { formatBytes } from './sizes';
 import { supportsConverter } from './support';
 import { WorkerClient } from './worker-client';
@@ -63,6 +65,9 @@ interface Item {
   /** «Удалить метаданные»: что нашлось и удалено (пусто — файл не изменился) и формат файла — вместо превью. */
   removed: RemovedKind[] | null;
   format: string | null;
+  /** «Посмотреть EXIF»: что прочитано из файла и его формат (для «Скачать без метаданных»). */
+  report: MetadataReport | null;
+  kind: Exclude<SniffKind, 'unknown'> | null;
   /** Размеры до и после уменьшения (страница «Изменить размер»). */
   dimensions: { before: [number, number]; after: [number, number] } | null;
   /** Оценка памяти, если файл не поместился рядом с другими (ждёт в очереди первым). */
@@ -146,10 +151,12 @@ export class ConverterWidget {
   private run = { total: 0, done: 0, failed: 0 };
   private dragDepth = 0;
   private readonly names = new NameAllocator();
+  private readonly reports: ReportView;
 
   constructor(private readonly root: HTMLElement) {
     this.config = readConfig(root);
     this.t = this.config.strings;
+    this.reports = new ReportView(this.t, this.config.locale);
     this.dropzone = element(root, '[data-dropzone]');
     this.input = element(root, '[data-input]');
     this.form = element(root, '[data-settings]');
@@ -321,6 +328,8 @@ export class ConverterWidget {
         quality: null,
         removed: null,
         format: null,
+        report: null,
+        kind: null,
         dimensions: null,
         estimate: null,
         retry: false,
@@ -385,6 +394,7 @@ export class ConverterWidget {
     const settings = this.currentSettings();
     item.settings = settings;
     if (settings.strip) return this.strip(item, head, settings.strip, lease, generation);
+    if (this.config.mode === 'inspect') return this.inspect(item, head, lease, generation);
     const input = checkInput(head, settings.output.encoder, this.config.mode !== 'convert');
     if (!input.ok) {
       this.fail(item, input.code);
@@ -496,6 +506,54 @@ export class ConverterWidget {
     return false;
   }
 
+  /** «Посмотреть EXIF»: только чтение, результата-файла нет. */
+  private async inspect(item: Item, head: Uint8Array, lease: Lease, generation: number): Promise<boolean> {
+    const { kind } = sniff(head);
+    if (kind === 'unknown') {
+      this.fail(item, 'not-image');
+      return false;
+    }
+    this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
+    const outcome = await lease.client.inspect(item.file, lease.memoryLimit, (footprint, fresh) => {
+      if (generation !== this.generation) return;
+      lease.started(footprint, fresh);
+      this.pump();
+    });
+    if (generation !== this.generation) return false;
+    if (outcome.status === 'needs-memory') {
+      item.estimate = outcome.fresh;
+      this.requeue(item);
+      return true;
+    }
+    if (outcome.status === 'error') {
+      this.fail(item, outcome.code);
+      return outcome.fatal || outcome.recycle;
+    }
+    item.report = outcome.report;
+    item.kind = kind;
+    item.format = KIND_FILES[kind].label;
+    if (outcome.report.thumbnail) item.previewUrl = URL.createObjectURL(new Blob([outcome.report.thumbnail as Uint8Array<ArrayBuffer>], { type: 'image/jpeg' }));
+    item.status = 'done';
+    this.run.done++;
+    this.renderRow(item);
+    this.updateActions();
+    return false;
+  }
+
+  /** «Скачать без метаданных» из отчёта: один файл по нажатию — удаляем прямо здесь, без очереди. */
+  private async downloadStripped(item: Item): Promise<void> {
+    if (!item.kind) return;
+    try {
+      const { stripMetadata } = await import('../metadata/strip');
+      const result = stripMetadata(new Uint8Array(await item.file.arrayBuffer()), item.kind, 'all');
+      const { saveBlob } = await import('./zip');
+      const name = outputName(item.file.name, item.file.name.includes('.') ? item.file.name.slice(item.file.name.lastIndexOf('.') + 1) : KIND_FILES[item.kind].extension);
+      saveBlob(new Blob([result.bytes as Uint8Array<ArrayBuffer>], { type: item.file.type || KIND_FILES[item.kind].mime }), withTimestamp(name, new Date()));
+    } catch {
+      this.showNotice(this.t.errors.internal, 'error');
+    }
+  }
+
   /** Вернуть файл в очередь (на своё место — он пойдёт первым); имя выделится заново при старте. */
   private requeue(item: Item): void {
     if (item.name) this.names.release(item.name);
@@ -553,6 +611,8 @@ export class ConverterWidget {
       img.width = 48;
       img.height = 48;
       img.decoding = 'async';
+      // у «Посмотреть EXIF» это миниатюра из самого файла — бывает, что на ней снимок до обрезки
+      if (item.report) img.title = this.t.report.thumbnail;
       thumb.append(img);
     } else if (item.status === 'done' && item.format) {
       // изображение не декодируется (метаданные удаляются без WASM) — вместо превью формат файла
@@ -571,6 +631,12 @@ export class ConverterWidget {
     if (item.status === 'queued') meta.textContent = this.t.queued;
     if (item.status === 'converting') meta.textContent = this.t.converting;
     if (item.status === 'error') meta.textContent = this.t.failed;
+    if (item.status === 'done' && item.report) {
+      const { width, height } = item.report;
+      const parts = [item.format ?? '', this.size(item.file.size)];
+      if (width && height) parts.push(fill(this.t.dimensions, { width, height }));
+      meta.textContent = parts.join(' · ');
+    }
     if (item.status === 'done' && item.blob) {
       const parts = [this.t.done, fill(this.t.sizes, { before: this.size(item.file.size), after: this.size(item.blob.size) })];
       // при сжатии и изменении размера важна разница в размере: «−85 %»; размер не изменился — одно число
@@ -594,6 +660,7 @@ export class ConverterWidget {
       body.append(note);
     }
     row.append(thumb, body);
+    if (item.status === 'done' && item.report) row.append(this.reports.render(item.report, item.file.name, () => void this.downloadStripped(item)));
 
     if (item.status === 'done' && item.url && item.name) {
       const name = item.name;
@@ -648,6 +715,8 @@ export class ConverterWidget {
         quality: null,
         removed: null,
         format: null,
+        report: null,
+        kind: null,
         dimensions: null,
         estimate: null,
         retry: false,

@@ -42,9 +42,10 @@ export type OutputChoiceId = OutputFormatId | 'original';
 /**
  * convert — конвертер из одного формата в другой (вход в формате выхода — ошибка «уже в формате …»);
  * compress — «Сжать фото» (качество или целевой размер); resize — «Изменить размер»;
- * strip — «Удалить метаданные» (без перекодирования: формат и пиксели те же, выбора формата нет).
+ * strip — «Удалить метаданные» (без перекодирования: формат и пиксели те же, выбора формата нет);
+ * inspect — «Посмотреть EXIF» (только чтение: настроек и файлов-результатов нет).
  */
-export type ToolMode = 'convert' | 'compress' | 'resize' | 'strip';
+export type ToolMode = 'convert' | 'compress' | 'resize' | 'strip' | 'inspect';
 
 export interface ToolConfig {
   id: string;
@@ -107,7 +108,18 @@ export const TOOLS: ToolConfig[] = [
     outputs: ['original'],
     defaultQuality: 90,
     content: 'remove-metadata',
-    related: ['compress-image', 'resize-image', 'heic-to-jpg', 'png-to-jpg'],
+    related: ['exif-viewer', 'compress-image', 'resize-image', 'heic-to-jpg'],
+  },
+  {
+    id: 'exif-viewer',
+    mode: 'inspect',
+    slugs: { ru: 'posmotret-exif', en: 'exif-viewer' },
+    inputFormats: ALL_INPUTS,
+    defaultOutput: 'original',
+    outputs: ['original'],
+    defaultQuality: 90,
+    content: 'exif-viewer',
+    related: ['remove-metadata', 'compress-image', 'resize-image', 'heic-to-jpg'],
   },
   {
     id: 'heic-to-jpg',

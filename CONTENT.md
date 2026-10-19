@@ -232,6 +232,80 @@
 - **Is it safe?** Yes. Only the tool itself is loaded from the site; your photos are processed in your browser and never sent to a server.
 - **How can I check that no metadata is left?** Each file shows what was removed, or “No metadata found” if there was nothing to remove. You can double-check in the file's properties or any EXIF viewer.
 
+### exif-viewer
+
+#### Русский — `/posmotret-exif`
+
+Файл: `src/content/tools/ru/exif-viewer.yaml`
+
+- **title:** Посмотреть EXIF онлайн — метаданные фото, дата и место съёмки _(61 симв.)_
+- **description:** Узнайте, когда, где и на какую камеру сделано фото: EXIF, геолокация и другие метаданные JPG, HEIC, PNG и WebP — прямо в браузере, без загрузки на сервер. _(154 симв.)_
+- **H1:** Посмотреть EXIF и метаданные фото
+- **Подзаголовок:** Дата, камера, параметры съёмки и место — прямо в браузере. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** Посмотреть EXIF
+- **Карточка:** Посмотреть EXIF — Узнать дату, камеру и место съёмки по метаданным фото.
+- **JSON-LD:** Просмотр EXIF онлайн — Онлайн-сервис для просмотра EXIF и других метаданных фотографий, который работает в браузере без загрузки файлов на сервер.
+
+**Как посмотреть метаданные фото**
+
+1. Нажмите на область выше или перетащите на неё фото — можно сразу несколько. Подойдут JPG, HEIC, PNG, WebP, AVIF, TIFF и другие форматы.
+2. Для каждого файла появится карточка: когда и на что снято, параметры съёмки, место на карте и цветовой профиль. «Все теги EXIF» — полный список.
+3. Если в фото есть лишнее, нажмите «Скачать без метаданных» — получите копию без EXIF, геолокации и XMP.
+
+**Почему здесь**
+
+- **Фото не загружаются на сервер.** Метаданные читаются прямо в браузере. Снимки и то, что в них записано, не видит никто, кроме вас.
+- **Понятно, а не только теги.** Дата съёмки, камера, выдержка, диафрагма и ISO показаны по-человечески, а полный список тегов — под спойлером.
+- **Место съёмки на карте.** Если в фото есть координаты, их можно открыть в Яндекс Картах или OpenStreetMap — только когда вы сами нажмёте на ссылку.
+- **Сразу и удалить.** Нашли геолокацию или серийный номер — скачайте копию без метаданных в один клик. Изображение при этом не перекодируется.
+
+**Частые вопросы**
+
+- **Что такое EXIF?** EXIF — служебные данные, которые камера или телефон записывает в фото: дату и время съёмки, модель устройства, выдержку, диафрагму, ISO, фокусное расстояние, ориентацию, а при включённой геолокации — координаты места.
+- **Как узнать, где сделано фото?** Добавьте фото: если в нём есть координаты, в карточке появится строка «Геолокация» со ссылками на карты. Если строки нет, координаты при съёмке не записывались или были удалены — например, мессенджером или соцсетью.
+- **Как узнать дату съёмки фото?** Дата и время съёмки — в строке «Снято». Это время, записанное камерой: оно не зависит от даты создания или изменения файла на диске.
+- **Почему у фото нет метаданных?** Многие мессенджеры и соцсети удаляют EXIF при отправке, а скриншоты и картинки из интернета часто не содержат его вовсе. Тогда вы увидите «Метаданных не найдено».
+- **Можно ли посмотреть EXIF у HEIC с iPhone?** Да. HEIC, AVIF, JPG, PNG, WebP, TIFF и JPEG XL читаются прямо в браузере — даже в тех, которые сами не умеют показывать HEIC.
+- **Что за «встроенная миниатюра»?** Некоторые камеры и программы сохраняют в EXIF маленькую копию снимка. Бывает, что после обрезки фото в ней остаётся исходный кадр целиком, — поэтому её стоит проверять перед публикацией.
+- **Как удалить метаданные?** Нажмите «Скачать без метаданных» в карточке файла или откройте «Удалить метаданные», чтобы обработать сразу много фото и выбрать, что оставить, — например, дату съёмки.
+- **Безопасно ли это?** Да. Файлы читаются в вашем браузере и не отправляются на сервер. Координаты передаются сайту карт, только если вы сами откроете ссылку.
+
+#### English — `/en/exif-viewer`
+
+Файл: `src/content/tools/en/exif-viewer.yaml`
+
+- **title:** EXIF Viewer Online — See Photo Metadata, Date and Location _(58 симв.)_
+- **description:** Find out when, where and with which camera a photo was taken: view EXIF, GPS location and other metadata of JPG, HEIC, PNG and WebP files right in your browser. _(160 симв.)_
+- **H1:** EXIF viewer
+- **Подзаголовок:** Date, camera, settings and location — right in your browser. Your files never leave your device.
+- **Хлебные крошки:** EXIF viewer
+- **Карточка:** EXIF viewer — See the date, camera and location stored in a photo's metadata.
+- **JSON-LD:** EXIF Viewer — An online EXIF viewer that reads photo metadata right in your browser, without uploading the files.
+
+**How to view photo metadata**
+
+1. Click the box above or drop your photos onto it — several at once is fine. JPG, HEIC, PNG, WebP, AVIF, TIFF and more are supported.
+2. Each file gets a card: when and with what it was taken, exposure settings, the location on a map and the color profile. “All EXIF tags” shows the complete list.
+3. If a photo reveals too much, click “Download without metadata” to get a copy without EXIF, location and XMP.
+
+**Why use this EXIF viewer**
+
+- **Photos stay on your device.** Metadata is read right in your browser. Nobody but you sees the photos or what's stored in them.
+- **Readable, not just raw tags.** Date, camera, shutter speed, aperture and ISO are shown in plain words, with the full tag list one click away.
+- **Location on a map.** If a photo has GPS coordinates, open them in Google Maps or OpenStreetMap — only when you click the link yourself.
+- **Remove it right away.** Spotted a location or a serial number? Download a copy without metadata in one click; the image itself isn't re-encoded.
+
+**FAQ**
+
+- **What is EXIF data?** EXIF is information a camera or phone writes into a photo: the date and time, device model, shutter speed, aperture, ISO, focal length, orientation and — if location is on — the GPS coordinates.
+- **How can I find out where a photo was taken?** Add the photo: if it has coordinates, its card shows a “Location” line with map links. If there's no such line, the location wasn't recorded or was removed — messaging apps and social networks often do that.
+- **How do I find the date a photo was taken?** The capture date and time are in the “Taken” line. That's the time recorded by the camera, independent of when the file was created or modified on disk.
+- **Why does my photo have no metadata?** Many messaging apps and social networks strip EXIF when sending, and screenshots or images from the web often have none at all. In that case you'll see “No metadata found”.
+- **Can I view the EXIF of iPhone HEIC photos?** Yes. HEIC, AVIF, JPG, PNG, WebP, TIFF and JPEG XL are read right in your browser — even in browsers that can't display HEIC themselves.
+- **What is the “embedded thumbnail”?** Some cameras and apps store a small copy of the photo inside EXIF. After cropping, it can still show the original uncropped frame, so it's worth checking before you share.
+- **How do I remove the metadata?** Click “Download without metadata” on the file's card, or open “Remove EXIF data” to process many photos at once and choose what to keep, such as the capture date.
+- **Is it safe?** Yes. Files are read in your browser and never sent to a server. Coordinates go to a map website only if you open a map link yourself.
+
 ### heic-to-jpg
 
 #### Русский — `/heic-v-jpg`
@@ -2031,6 +2105,45 @@
 | `widget.removedKinds.extra-images` | дополнительные изображения (HDR, глубина, видео) | extra images (HDR, depth, video) |
 | `widget.removedKinds.c2pa` | Content Credentials | Content Credentials |
 | `widget.removedKinds.other` | прочие служебные данные | other service data |
+| `widget.report.taken` | Снято | Taken |
+| `widget.report.camera` | Камера | Camera |
+| `widget.report.lens` | Объектив | Lens |
+| `widget.report.exposure` | Съёмка | Exposure |
+| `widget.report.location` | Геолокация | Location |
+| `widget.report.software` | Программа | Software |
+| `widget.report.author` | Автор | Author |
+| `widget.report.copyright` | Авторские права | Copyright |
+| `widget.report.serial` | Серийный номер | Serial number |
+| `widget.report.colorProfile` | Цветовой профиль | Color profile |
+| `widget.report.more` | Ещё в файле | Also in the file |
+| `widget.report.nothing` | Метаданных не найдено. | No metadata found. |
+| `widget.report.compressed` | EXIF в этом файле сжат, прочитать его не получится. Удалить — можно. | This file's EXIF is compressed and can't be read. It can still be removed. |
+| `widget.report.allTags` | Все теги EXIF ({count}) | All EXIF tags ({count}) |
+| `widget.report.tag` | Тег | Tag |
+| `widget.report.value` | Значение | Value |
+| `widget.report.binary` | двоичные данные, {size} | binary data, {size} |
+| `widget.report.groups.ifd0` | Основные | Main |
+| `widget.report.groups.exif` | EXIF | EXIF |
+| `widget.report.groups.gps` | GPS | GPS |
+| `widget.report.groups.interop` | Совместимость | Interoperability |
+| `widget.report.groups.ifd1` | Миниатюра | Thumbnail |
+| `widget.report.north` | с. ш. | N |
+| `widget.report.south` | ю. ш. | S |
+| `widget.report.east` | в. д. | E |
+| `widget.report.west` | з. д. | W |
+| `widget.report.altitude` | высота {value} м | altitude {value} m |
+| `widget.report.maps` | Показать на карте: | Show on a map: |
+| `widget.report.mapsHint` | откроется сайт карт | opens a map website |
+| `widget.report.mapLinks.0.name` | Яндекс Карты | Google Maps |
+| `widget.report.mapLinks.0.url` | https://yandex.ru/maps/?pt={lon},{lat}&z=16&l=map | https://www.google.com/maps/search/?api=1&query={lat},{lon} |
+| `widget.report.mapLinks.1.name` | OpenStreetMap | OpenStreetMap |
+| `widget.report.mapLinks.1.url` | https://www.openstreetmap.org/?mlat={lat}&mlon={lon}#map=16/{lat}/{lon} | https://www.openstreetmap.org/?mlat={lat}&mlon={lon}#map=16/{lat}/{lon} |
+| `widget.report.seconds` | {value} с | {value} s |
+| `widget.report.millimeters` | {value} мм | {value} mm |
+| `widget.report.equivalent` | {value} мм в экв. 35 мм | {value} mm equiv. on 35 mm |
+| `widget.report.download` | Скачать без метаданных | Download without metadata |
+| `widget.report.downloadLabel` | Скачать без метаданных: {name} | Download without metadata: {name} |
+| `widget.report.thumbnail` | Встроенная миниатюра | Embedded thumbnail |
 | `widget.dropAction` | или нажмите, чтобы выбрать | or click to choose |
 | `widget.dropHint` | Можно сразу много файлов — до 100 за раз | Add many files at once — up to 100 |
 | `widget.dropActive` | Отпустите, чтобы добавить файлы | Release to add files |

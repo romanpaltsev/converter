@@ -60,3 +60,15 @@ test('удаление метаданных: без WASM и без запрос�
     expect(request.url).toMatch(/^\/(udalit-metadannye-foto|_astro\/[\w.-]+|favicon\.svg)$/);
   }
 });
+
+test('просмотр EXIF: без WASM и без запросов с данными файлов', async ({ page, network }) => {
+  await openConverter(page, '/posmotret-exif');
+  await page.setInputFiles('[data-input]', ['exif-gps.jpg', 'exif-gps.heic'].map(fixture));
+  await expect(page.locator('.file[data-status="done"]')).toHaveCount(2);
+  expect(network.requests.filter((r) => r.url.endsWith('.wasm'))).toEqual([]);
+  for (const request of network.requests) {
+    expect(request.method, request.url).toBe('GET');
+    expect(request.hasBody, request.url).toBe(false);
+    expect(request.url).toMatch(/^\/(posmotret-exif|_astro\/[\w.-]+|favicon\.svg)$/);
+  }
+});
