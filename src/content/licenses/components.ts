@@ -15,6 +15,8 @@ export type LicenseTextId =
   | 'dav1d-bsd'
   | 'emscripten'
   | 'client-zip-mit'
+  | 'utif-mit'
+  | 'pako-mit'
   | 'inter-ofl';
 
 export interface ThirdPartyComponent {
@@ -131,6 +133,22 @@ export const COMPONENTS: ThirdPartyComponent[] = [
     source: 'https://github.com/Touffy/client-zip',
   },
   {
+    name: 'UTIF.js (utif2)',
+    version: '4.1.0',
+    purpose: { ru: 'чтение файлов TIFF: разбор и распаковка (LZW, Deflate, PackBits, JPEG, CCITT)', en: 'reading TIFF files: parsing and decompression (LZW, Deflate, PackBits, JPEG, CCITT)' },
+    license: 'MIT',
+    texts: ['utif-mit'],
+    source: 'https://github.com/photopea/UTIF.js',
+  },
+  {
+    name: 'pako',
+    version: '1.0.11',
+    purpose: { ru: 'распаковка Deflate внутри UTIF.js', en: 'Deflate decompression inside UTIF.js' },
+    license: 'MIT',
+    texts: ['pako-mit'],
+    source: 'https://github.com/nodeca/pako/tree/1.0.11',
+  },
+  {
     name: 'Inter (@fontsource-variable/inter)',
     version: '5.3.0',
     purpose: { ru: 'шрифт интерфейса', en: 'interface font' },
@@ -160,6 +178,8 @@ export const LICENSE_TITLES: Record<LicenseTextId, string> = {
   'dav1d-bsd': 'dav1d (BSD-2-Clause, VideoLAN)',
   emscripten: 'Emscripten (MIT / University of Illinois NCSA)',
   'client-zip-mit': 'client-zip (MIT)',
+  'utif-mit': 'UTIF.js (MIT, Photopea)',
+  'pako-mit': 'pako (MIT)',
   'inter-ofl': 'Inter (SIL Open Font License 1.1)',
 };
 

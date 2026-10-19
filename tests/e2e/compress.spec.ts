@@ -9,7 +9,7 @@ test.describe('сжатие', () => {
   test('по качеству: формат сохраняется, HEIC → JPG, метаданные по умолчанию — только даты', async ({ page }) => {
     await openConverter(page, '/szhat-foto');
     await expect(page.getByRole('radio', { name: 'Исходный' })).toBeChecked();
-    await expect(page.getByText('HEIC и AVIF сохраняются в JPG')).toBeVisible();
+    await expect(page.locator('[data-original-hint]')).toContainText('сохраняются в JPG');
     await convert(page, ['exif-gps.jpg', 'basic.heic', 'alpha.png', 'basic.webp']);
     await expect(page.locator('.file[data-status="done"]')).toHaveCount(4);
 

@@ -1,0 +1,44 @@
+# Texts for /en/tiff-to-png. Draft for the owner's review (see CONTENT.md).
+title: "TIFF to PNG Converter — Lossless, Private, No Upload"
+description: "Convert TIFF images to PNG right in your browser: lossless, with transparency. Free, no sign-up, and your files never leave your device."
+h1: "TIFF to PNG Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "TIFF to PNG"
+card:
+  title: "TIFF → PNG"
+  text: "Lossless, with transparency — a format that opens everywhere."
+app:
+  name: "TIFF to PNG Converter"
+  description: "An online TIFF to PNG converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert TIFF to PNG"
+  steps:
+    - "Click the box above or drag your TIFF files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each PNG separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Scanned documents and photos are never uploaded to a server, so nobody else ever sees them."
+    - title: "Lossless"
+      text: "PNG keeps every pixel exactly, so the image doesn't change. 16-bit TIFFs are saved with 8 bits per channel."
+    - title: "Transparency is kept"
+      text: "If the TIFF has an alpha channel, transparent areas stay transparent in the PNG."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is a TIFF file?"
+      a: "TIFF is a format for scans, printing and professional photography. Not every app or website understands it, while PNG opens everywhere."
+    - q: "Will the image change?"
+      a: "Pixels are copied losslessly. The only difference is that 16-bit TIFFs come out with 8 bits per channel: you won't see it on screen, but keep the original for heavy color grading."
+    - q: "What happens to a multi-page TIFF?"
+      a: "The first page is saved and the file's row tells you about it. If you need every page, split the file into separate images first."
+    - q: "Which TIFF files are supported?"
+      a: "Practically all common ones: uncompressed, LZW, Deflate (ZIP), PackBits, JPEG and CCITT (fax and black-and-white scans), 1–16 bits per channel, with or without transparency. CMYK images and camera RAW files (DNG, CR2, NEF) aren't supported yet."
+    - q: "Are the colors preserved?"
+      a: "Yes. An embedded color profile is copied into the PNG; without one, sRGB is used."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

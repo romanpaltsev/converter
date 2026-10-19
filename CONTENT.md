@@ -1234,6 +1234,146 @@
 - **Are the colors preserved?** Yes. If the BMP has an embedded color profile, it's copied into the PNG; otherwise sRGB is used, just like in the BMP itself.
 - **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
 
+### tiff-to-jpg
+
+#### Русский — `/tiff-v-jpg`
+
+Файл: `src/content/tools/ru/tiff-to-jpg.yaml`
+
+- **title:** TIFF в JPG онлайн — бесплатно, без загрузки на сервер _(53 симв.)_
+- **description:** Конвертируйте сканы и фото TIFF в JPG прямо в браузере: файл станет в разы легче. Бесплатно, без регистрации, файлы не загружаются на сервер. _(141 симв.)_
+- **H1:** Конвертер TIFF в JPG
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** TIFF в JPG
+- **Карточка:** TIFF → JPG — Сканы и фото TIFF — в лёгкий JPG для почты и сайтов.
+- **JSON-LD:** Конвертер TIFF в JPG — Онлайн-конвертер изображений TIFF в JPG, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать TIFF в JPG**
+
+1. Нажмите на область выше или перетащите на неё TIFF-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте JPG по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Сканы документов и фотографии не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Файл заметно легче.** TIFF обычно хранит изображение без сжатия или со сжатием без потерь, а JPG сжимает его — для фото и сканов файл становится в разы меньше.
+- **Цвета и поворот сохраняются.** Встроенный цветовой профиль переносится в JPG, а снимок поворачивается так, как задано в файле.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое TIFF?** TIFF — формат для сканов, полиграфии и профессиональной фотографии. Он хранит изображение без потерь, поэтому файлы получаются большими, и многие сайты и мессенджеры их не принимают.
+- **Что будет с многостраничным TIFF?** Сохранится первая страница, а в строке файла появится пояснение. Если нужны все страницы, разделите файл на отдельные изображения.
+- **Какие TIFF поддерживаются?** Почти все обычные: без сжатия и со сжатием LZW, Deflate (ZIP), PackBits, JPEG и CCITT (факсы и чёрно-белые сканы), 1–16 бит на канал, с прозрачностью и без. Изображения в CMYK и RAW-снимки камер (DNG, CR2, NEF) пока не поддерживаются — в строке файла будет понятная ошибка.
+- **Теряется ли качество?** JPG сжимает с потерями, поэтому изображение немного меняется. При качестве 90 (значение по умолчанию) разница на глаз обычно не видна. Если нужна точная копия, выберите PNG.
+- **Что происходит с метаданными?** По умолчанию сохраняется только дата съёмки, а геолокация, модель камеры и другие сведения удаляются. Чтобы перенести их все, отметьте «Сохранить все метаданные». Цветовой профиль переносится всегда.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/tiff-to-jpg`
+
+Файл: `src/content/tools/en/tiff-to-jpg.yaml`
+
+- **title:** TIFF to JPG Converter — Free, Private, No Upload _(48 симв.)_
+- **description:** Convert TIFF scans and photos to JPG right in your browser and make them many times lighter. Free, no sign-up, and your files never leave your device. _(150 симв.)_
+- **H1:** TIFF to JPG Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** TIFF to JPG
+- **Карточка:** TIFF → JPG — TIFF scans and photos as light JPGs for email and the web.
+- **JSON-LD:** TIFF to JPG Converter — An online TIFF to JPG converter that runs in your browser without uploading your images.
+
+**How to convert TIFF to JPG**
+
+1. Click the box above or drag your TIFF files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each JPG separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Scanned documents and photos are never uploaded to a server, so nobody else ever sees them.
+- **Much smaller files.** TIFF usually stores images uncompressed or with lossless compression, while JPG compresses them — scans and photos get several times smaller.
+- **Colors and rotation are kept.** An embedded color profile is copied into the JPG, and the image is rotated as specified in the file.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **What is a TIFF file?** TIFF is a format for scans, printing and professional photography. It stores images losslessly, so files are large, and many websites and messaging apps don't accept them.
+- **What happens to a multi-page TIFF?** The first page is saved and the file's row tells you about it. If you need every page, split the file into separate images first.
+- **Which TIFF files are supported?** Practically all common ones: uncompressed, LZW, Deflate (ZIP), PackBits, JPEG and CCITT (fax and black-and-white scans), 1–16 bits per channel, with or without transparency. CMYK images and camera RAW files (DNG, CR2, NEF) aren't supported yet — the file's row shows a clear message.
+- **Will I lose quality?** JPG compression is lossy, so the image changes slightly. At the default quality of 90 the difference is usually invisible. If you need an exact copy, choose PNG.
+- **What happens to the metadata?** By default only the capture date is kept, while the location, camera model and other details are removed. Tick “Keep all metadata” to copy everything. The color profile is always kept.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
+### tiff-to-png
+
+#### Русский — `/tiff-v-png`
+
+Файл: `src/content/tools/ru/tiff-to-png.yaml`
+
+- **title:** TIFF в PNG онлайн — без потерь, без загрузки на сервер _(54 симв.)_
+- **description:** Конвертируйте изображения TIFF в PNG прямо в браузере: без потери качества, с прозрачностью. Бесплатно, без регистрации, файлы не загружаются на сервер. _(152 симв.)_
+- **H1:** Конвертер TIFF в PNG
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** TIFF в PNG
+- **Карточка:** TIFF → PNG — Без потерь и с прозрачностью — формат, который открывается везде.
+- **JSON-LD:** Конвертер TIFF в PNG — Онлайн-конвертер изображений TIFF в PNG, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать TIFF в PNG**
+
+1. Нажмите на область выше или перетащите на неё TIFF-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте PNG по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Сканы документов и фотографии не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Без потерь.** PNG хранит каждый пиксель точно, поэтому изображение не меняется. 16-битные TIFF сохраняются с 8 битами на канал.
+- **Прозрачность сохраняется.** Если в TIFF есть альфа-канал, прозрачные области остаются прозрачными в PNG.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое TIFF?** TIFF — формат для сканов, полиграфии и профессиональной фотографии. Его понимают не все программы и сайты, а PNG открывается везде.
+- **Изменится ли изображение?** Пиксели переносятся без потерь. Единственное отличие — у 16-битных TIFF на выходе 8 бит на канал: на экране разницы не видно, но для глубокой цветокоррекции лучше оставить исходник.
+- **Что будет с многостраничным TIFF?** Сохранится первая страница, а в строке файла появится пояснение. Если нужны все страницы, разделите файл на отдельные изображения.
+- **Какие TIFF поддерживаются?** Почти все обычные: без сжатия и со сжатием LZW, Deflate (ZIP), PackBits, JPEG и CCITT (факсы и чёрно-белые сканы), 1–16 бит на канал, с прозрачностью и без. Изображения в CMYK и RAW-снимки камер (DNG, CR2, NEF) пока не поддерживаются.
+- **Сохранятся ли цвета?** Да. Встроенный цветовой профиль переносится в PNG; если профиля нет, используется sRGB.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/tiff-to-png`
+
+Файл: `src/content/tools/en/tiff-to-png.yaml`
+
+- **title:** TIFF to PNG Converter — Lossless, Private, No Upload _(52 симв.)_
+- **description:** Convert TIFF images to PNG right in your browser: lossless, with transparency. Free, no sign-up, and your files never leave your device. _(136 симв.)_
+- **H1:** TIFF to PNG Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** TIFF to PNG
+- **Карточка:** TIFF → PNG — Lossless, with transparency — a format that opens everywhere.
+- **JSON-LD:** TIFF to PNG Converter — An online TIFF to PNG converter that runs in your browser without uploading your images.
+
+**How to convert TIFF to PNG**
+
+1. Click the box above or drag your TIFF files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each PNG separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Scanned documents and photos are never uploaded to a server, so nobody else ever sees them.
+- **Lossless.** PNG keeps every pixel exactly, so the image doesn't change. 16-bit TIFFs are saved with 8 bits per channel.
+- **Transparency is kept.** If the TIFF has an alpha channel, transparent areas stay transparent in the PNG.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **What is a TIFF file?** TIFF is a format for scans, printing and professional photography. Not every app or website understands it, while PNG opens everywhere.
+- **Will the image change?** Pixels are copied losslessly. The only difference is that 16-bit TIFFs come out with 8 bits per channel: you won't see it on screen, but keep the original for heavy color grading.
+- **What happens to a multi-page TIFF?** The first page is saved and the file's row tells you about it. If you need every page, split the file into separate images first.
+- **Which TIFF files are supported?** Practically all common ones: uncompressed, LZW, Deflate (ZIP), PackBits, JPEG and CCITT (fax and black-and-white scans), 1–16 bits per channel, with or without transparency. CMYK images and camera RAW files (DNG, CR2, NEF) aren't supported yet.
+- **Are the colors preserved?** Yes. An embedded color profile is copied into the PNG; without one, sRGB is used.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
 ## Другие страницы
 
 ### Главная
@@ -1344,7 +1484,7 @@
 | `widget.dropTitle` | Перетащите {format}-файлы сюда | Drop {format} files here |
 | `widget.dropTitleAny` | Перетащите изображения сюда | Drop images here |
 | `widget.originalFormat` | Исходный | Original |
-| `widget.originalHint` | Формат файла сохраняется; HEIC и AVIF сохраняются в JPG, GIF и BMP — в PNG. | The file keeps its format; HEIC and AVIF are saved as JPG, GIF and BMP as PNG. |
+| `widget.originalHint` | Формат файла сохраняется; HEIC, AVIF и TIFF сохраняются в JPG, GIF и BMP — в PNG. | The file keeps its format; HEIC, AVIF and TIFF are saved as JPG, GIF and BMP as PNG. |
 | `widget.compression` | Сжатие | Compression |
 | `widget.byQuality` | По качеству | By quality |
 | `widget.byTarget` | До размера | To file size |
@@ -1412,7 +1552,7 @@
 | `widget.errors.already-webp` | Файл уже в формате WebP — выберите другой формат выше. | This file is already a WebP — pick another format above. |
 | `widget.errors.too-large-for-webp` | WebP вмещает изображения не больше 16 383 точек по стороне — выберите JPG или PNG. | WebP can't store images larger than 16,383 px per side — choose JPG or PNG. |
 | `widget.errors.unsupported-image` | Этот формат изображений пока не поддерживается. Поддерживаются {formats}. | This image format isn't supported yet. Supported: {formats}. |
-| `widget.errors.cmyk-unsupported` | JPEG в цветовой модели CMYK (для печати) пока не поддерживается. | CMYK JPEGs (used for print) aren't supported yet. |
+| `widget.errors.cmyk-unsupported` | Изображения в цветовой модели CMYK (для печати) пока не поддерживаются. | CMYK images (used for print) aren't supported yet. |
 | `widget.errors.decode-failed` | Не удалось прочитать файл — возможно, он повреждён. | Could not read the file — it may be damaged. |
 | `widget.errors.unsupported-variant` | Этот вариант формата не поддерживается. | This variant of the format isn't supported. |
 | `widget.errors.out-of-memory` | Браузеру не хватило памяти для этого файла. Закройте другие вкладки и попробуйте снова. | The browser ran out of memory for this file. Close other tabs and try again. |
@@ -1424,6 +1564,7 @@
 | `widget.warnings.icc-too-large` | Цветовой профиль слишком большой и не сохранён. | The color profile is too large and was not kept. |
 | `widget.warnings.icc-unreadable` | Цветовой профиль исходника не удалось прочитать — использован sRGB. | The original color profile couldn't be read — sRGB was used. |
 | `widget.warnings.first-frame-only` | Анимация не переносится — сохранён первый кадр. | Animation isn't kept — the first frame was saved. |
+| `widget.warnings.first-page-only` | Многостраничный файл — сохранена первая страница. | Multi-page file — the first page was saved. |
 | `widget.warnings.target-not-reached` | Даже с минимальным качеством файл больше заданного размера — сохранён самый маленький вариант. Уменьшите изображение в пикселях. | Even at the lowest quality the file is larger than the limit — the smallest version was saved. Try reducing the image's dimensions. |
 | `widget.warnings.target-lossless` | У PNG и WebP без потерь нет настройки качества, поэтому подобрать размер нельзя. Выберите JPG или WebP. | PNG and lossless WebP have no quality setting, so the size can't be matched. Choose JPG or WebP. |
 | `widget.warnings.not-smaller` | Файл не стал меньше: исходник уже хорошо сжат. | The file didn't get smaller: the original is already well compressed. |

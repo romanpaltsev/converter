@@ -4,7 +4,7 @@ import type { MetadataMode } from '../metadata/exif-filter';
 import type { Nclx } from '../color/nclx';
 import type { ResizeSpec } from './resize';
 
-export type DecoderId = 'heic' | 'avif' | 'jpeg' | 'png' | 'webp' | 'gif' | 'bmp';
+export type DecoderId = 'heic' | 'avif' | 'jpeg' | 'png' | 'webp' | 'gif' | 'bmp' | 'tiff';
 export type EncoderId = 'jpeg' | 'png' | 'webp';
 /** Выбор формата в интерфейсе: конкретный кодировщик или «как у исходника» (страницы сжатия и размера). */
 export type OutputTarget = EncoderId | 'original';
@@ -53,6 +53,7 @@ export type WarningCode =
   | 'icc-too-large'
   | 'icc-unreadable'
   | 'first-frame-only'
+  | 'first-page-only'
   | 'target-not-reached'
   | 'target-lossless'
   /** Ставит виджет, а не worker: при сжатии результат не меньше исходника. */

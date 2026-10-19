@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Генерация синтетических фикстур (без личных данных).
 # Запуск: npm run fixtures [-- секции] (собирает Docker-образ и выполняет этот скрипт внутри него).
-# Секции через запятую: heic, jpeg-png, webp, avif, gif, bmp (по умолчанию — все). Секция пересоздаёт только свои файлы:
+# Секции через запятую: heic, jpeg-png, webp, avif, gif, bmp, tiff (по умолчанию — все). Секция пересоздаёт только свои файлы:
 # HEIC-фикстуры не меняются побайтно, когда добавляются фикстуры других форматов.
 # Внутри контейнера: /out — tests/fixtures, /icc — src/converter/color/icc.
 set -euo pipefail
@@ -338,6 +338,50 @@ echo "== p3.bmp: 24 бита, встроенный ICC Display P3 (BITMAPV5HEADE
 echo "== самопроверка BMP"
 for f in basic palette4 rle8 rgb565 mono alpha p3; do
   magick identify -format "$f: %wx%h %[bmp:format] %z бит, сжатие=%C, профиль=%[profiles]\n" "$OUT/$f.bmp" 2>/dev/null || magick identify "$OUT/$f.bmp"
+done
+fi
+
+if want tiff; then
+# Маленькие (400x300): TIFF часто без сжатия или со слабым сжатием.
+quadrants 400 300 tif-quad.png
+echo "== сжатия: basic.tif (LZW), deflate.tif (Deflate + предиктор 2), packbits.tif, jpeg.tif (JPEG, YCbCr), raw.tif (без сжатия, MM)"
+"${IM[@]}" tif-quad.png -compress LZW "tiff:$OUT/basic.tif"
+"${IM[@]}" tif-quad.png -compress Zip -define tiff:predictor=2 "tiff:$OUT/deflate.tif"
+"${IM[@]}" tif-quad.png -compress RLE "tiff:$OUT/packbits.tif"
+"${IM[@]}" tif-quad.png -compress JPEG -quality 92 "tiff:$OUT/jpeg.tif"
+"${IM[@]}" tif-quad.png -compress None -endian MSB "tiff:$OUT/raw.tif"
+
+echo "== tiled.tif: тайлы 128x128 (крайние выходят за изображение), LZW"
+"${IM[@]}" tif-quad.png -compress LZW -define tiff:tile-geometry=128x128 "tiff:$OUT/tiled.tif"
+
+echo "== 16bit.tif: 16 бит, big-endian (MM), Deflate"
+"${IM[@]}" tif-quad.png -depth 16 -endian MSB -compress Zip "tiff:$OUT/16bit.tif"
+
+echo "== gray.tif (8 бит), mono-g4.tif (1 бит, CCITT G4, левая половина чёрная), palette.tif"
+"${IM[@]}" tif-quad.png -colorspace gray -compress LZW "tiff:$OUT/gray.tif"
+"${IM[@]}" -size 64x32 xc:white -fill black -draw 'rectangle 0,0 31,31' -monochrome -compress Group4 "tiff:$OUT/mono-g4.tif"
+"${IM[@]}" tif-quad.png +dither -colors 4 -type palette -compress LZW "tiff:$OUT/palette.tif"
+
+echo "== alpha.tif (обычная альфа), alpha-assoc.tif (предумноженная): красный круг на прозрачном фоне 200x150"
+"${IM[@]}" -size 200x150 xc:none -fill '#e00000' -draw 'circle 100,75 100,20' -compress LZW "tiff:$OUT/alpha.tif"
+"${IM[@]}" -size 200x150 xc:none -fill '#e00000' -draw 'circle 100,75 100,20' -define tiff:alpha=associated -compress LZW "tiff:$OUT/alpha-assoc.tif"
+
+echo "== multipage.tif: две страницы, первая — квадранты"
+"${IM[@]}" tif-quad.png \( tif-quad.png -negate \) -compress LZW "tiff:$OUT/multipage.tif"
+
+echo "== cmyk.tif: CMYK — понятная ошибка"
+"${IM[@]}" tif-quad.png -colorspace CMYK -compress LZW "tiff:$OUT/cmyk.tif"
+
+echo "== exif-gps.tif: ICC Display P3, даты, GPS, камера (exiftool); rotated.tif: хранится повёрнутым, Orientation 6"
+"${IM[@]}" tif-quad.png -profile "$ICC_P3" -compress LZW "tiff:$OUT/exif-gps.tif"
+exiftool -q -overwrite_original "${EXIF_DATES[@]}" "${EXIF_PRIVATE[@]}" "$OUT/exif-gps.tif"
+quadrants 300 400 tif-display.png
+"${IM[@]}" tif-display.png -rotate -90 -compress LZW "tiff:$OUT/rotated.tif"
+exiftool -q -overwrite_original "-Orientation#=6" "$OUT/rotated.tif"
+
+echo "== самопроверка TIFF"
+for f in basic deflate packbits jpeg raw tiled 16bit gray mono-g4 palette alpha alpha-assoc multipage cmyk exif-gps rotated; do
+  printf '%s: ' "$f"; tiffinfo "$OUT/$f.tif" 2>/dev/null | grep -E 'Compression|Photometric|Bits/Sample|Extra|Tile Width|Orientation' | tr -s ' ' | tr '\n' ';'; echo
 done
 fi
 

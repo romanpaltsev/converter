@@ -10,6 +10,7 @@ const loaders: Record<DecoderId, () => Promise<Decoder>> = {
   webp: () => import('./webp').then((m) => m.loadWebpDecoder()),
   gif: () => import('./gif').then((m) => m.loadGifDecoder()),
   bmp: () => import('./bmp').then((m) => m.loadBmpDecoder()),
+  tiff: () => import('./tiff').then((m) => m.loadTiffDecoder()),
 };
 
 const cache = new Map<DecoderId, Promise<Decoder>>();

@@ -1,0 +1,44 @@
+# Texts for /en/tiff-to-jpg. Draft for the owner's review (see CONTENT.md).
+title: "TIFF to JPG Converter — Free, Private, No Upload"
+description: "Convert TIFF scans and photos to JPG right in your browser and make them many times lighter. Free, no sign-up, and your files never leave your device."
+h1: "TIFF to JPG Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "TIFF to JPG"
+card:
+  title: "TIFF → JPG"
+  text: "TIFF scans and photos as light JPGs for email and the web."
+app:
+  name: "TIFF to JPG Converter"
+  description: "An online TIFF to JPG converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert TIFF to JPG"
+  steps:
+    - "Click the box above or drag your TIFF files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each JPG separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Scanned documents and photos are never uploaded to a server, so nobody else ever sees them."
+    - title: "Much smaller files"
+      text: "TIFF usually stores images uncompressed or with lossless compression, while JPG compresses them — scans and photos get several times smaller."
+    - title: "Colors and rotation are kept"
+      text: "An embedded color profile is copied into the JPG, and the image is rotated as specified in the file."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is a TIFF file?"
+      a: "TIFF is a format for scans, printing and professional photography. It stores images losslessly, so files are large, and many websites and messaging apps don't accept them."
+    - q: "What happens to a multi-page TIFF?"
+      a: "The first page is saved and the file's row tells you about it. If you need every page, split the file into separate images first."
+    - q: "Which TIFF files are supported?"
+      a: "Practically all common ones: uncompressed, LZW, Deflate (ZIP), PackBits, JPEG and CCITT (fax and black-and-white scans), 1–16 bits per channel, with or without transparency. CMYK images and camera RAW files (DNG, CR2, NEF) aren't supported yet — the file's row shows a clear message."
+    - q: "Will I lose quality?"
+      a: "JPG compression is lossy, so the image changes slightly. At the default quality of 90 the difference is usually invisible. If you need an exact copy, choose PNG."
+    - q: "What happens to the metadata?"
+      a: "By default only the capture date is kept, while the location, camera model and other details are removed. Tick “Keep all metadata” to copy everything. The color profile is always kept."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

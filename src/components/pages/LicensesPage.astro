@@ -19,6 +19,8 @@ import libwebpPatents from '../../content/licenses/libwebp-PATENTS.txt?raw';
 import dav1dBsd from '../../content/licenses/dav1d-BSD.txt?raw';
 import emscripten from '../../content/licenses/emscripten-MIT-NCSA.txt?raw';
 import interOfl from '../../content/licenses/inter-OFL.txt?raw';
+import utifMit from '../../content/licenses/utif-MIT.txt?raw';
+import pakoMit from '../../content/licenses/pako-MIT.txt?raw';
 
 interface Props {
   locale: Locale;
@@ -40,6 +42,8 @@ const TEXTS: Record<LicenseTextId, string> = {
   'dav1d-bsd': dav1dBsd,
   emscripten,
   'client-zip-mit': clientZipMit,
+  'utif-mit': utifMit,
+  'pako-mit': pakoMit,
   'inter-ofl': interOfl,
 };
 const ORDER: LicenseTextId[] = [
@@ -54,6 +58,8 @@ const ORDER: LicenseTextId[] = [
   'dav1d-bsd',
   'emscripten',
   'client-zip-mit',
+  'utif-mit',
+  'pako-mit',
   'inter-ofl',
 ];
 const site = import.meta.env.SITE;

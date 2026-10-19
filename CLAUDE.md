@@ -1,9 +1,9 @@
 # CLAUDE.md — ключевые решения и устройство проекта
 
 Онлайн-конвертер файлов: статический сайт на Astro (ru/en), конвертация полностью в браузере
-(module Web Worker + WASM), файлы на сервер не загружаются. Сейчас: HEIC, AVIF, JPG, PNG, WebP, GIF и BMP → JPG, PNG или WebP
-(15 страниц-конвертеров), «Сжать фото» и «Изменить размер». В работе (просьба владельца 19.10.2026): TIFF и
-JPEG XL на входе, ICO и AVIF на выходе. Дальше по плану: PDF.
+(module Web Worker + WASM), файлы на сервер не загружаются. Сейчас: HEIC, AVIF, JPG, PNG, WebP, GIF, BMP и TIFF → JPG, PNG или WebP
+(17 страниц-конвертеров), «Сжать фото» и «Изменить размер». В работе (просьба владельца 19.10.2026): JPEG XL на входе,
+ICO и AVIF на выходе. Дальше по плану: PDF.
 Обзор и команды — README.md, деплой — DEPLOY.md, тесты и замеры — TESTING.md, тексты — CONTENT.md.
 
 ## Правила работы
@@ -28,7 +28,7 @@ JPEG XL на входе, ICO и AVIF на выходе. Дальше по пла
 
 Astro 7.4 (Vite 8 + Rolldown, Zod 4), TypeScript 6.0 strict (не 7.x: `@astrojs/check` поддерживает только ^5/^6),
 libheif-js 1.23.5 (libheif 1.23.5 + libde265 1.0.15), @jsquash/jpeg 1.6.0 (MozJPEG 3.3.1), @jsquash/png 3.1.1,
-client-zip 2.5.1, шрифт Inter Variable (@fontsource-variable/inter 5.3.0, OFL), Vitest 5, Playwright 1.64, Node 24 LTS, nginx 1.30. Версии закреплены точно (`.npmrc`: `save-exact`).
+client-zip 2.5.1, utif2 4.1.0 (UTIF.js, с ним pako 1.0.11), шрифт Inter Variable (@fontsource-variable/inter 5.3.0, OFL), Vitest 5, Playwright 1.64, Node 24 LTS, nginx 1.30. Версии закреплены точно (`.npmrc`: `save-exact`).
 
 ## Устройство
 
@@ -178,6 +178,18 @@ scripts/                      serve-dist (тестовый сервер как n
   16/24/32 бита, маски (BITFIELDS, ALPHABITFIELDS, альфа-маска V3+), RLE8/RLE4 (пропуски — прозрачные, как в браузерах),
   сверху вниз, встроенный ICC V5. Альфа из одних нулей — «не используется» (так пишут многие программы).
   BI_JPEG/BI_PNG — `unsupported-variant`. «Исходный» формат — PNG. Фикстуры маленькие (400×300): BMP не сжат.
+- **TIFF на входе** (`decoders/tiff.ts`): от UTIF.js (utif2) — только разбор IFD и распаковка полосы/тайла
+  (`UTIF.decode._decompress`: LZW, Deflate, PackBits, JPEG с JPEGTables, CCITT G3/G4, предиктор 2; 16 бит приводит
+  к LE, если задан `isLE`). Обход полос и тайлов (крайние тайлы обрезаются), перевод в RGBA (WhiteIsZero, серый, RGB,
+  палитра, 1–16 бит, float32, обычная и предумноженная альфа из ExtraSamples) — свой: `toRGBA8` из UTIF обращается
+  к `window` (в worker'е его нет), путает порядок байтов 16 бит и игнорирует тип альфы; его же тайловый путь пишет
+  в console.log. Сжатия вне списка — `unsupported-variant` до вызова UTIF (иначе он пишет в консоль). Страница — первая
+  полноразмерная (NewSubfileType без бита «уменьшенная»), у многостраничного — предупреждение `first-page-only`.
+  CMYK — `cmyk-unsupported`, раздельные плоскости и предиктор 3 — `unsupported-variant`. RAW (фотометрия CFA/LinearRaw,
+  DNGVersion, срез CR2 в любом IFD) — `unsupported-variant`, а не конвертация миниатюры. EXIF — из самого файла:
+  описательные теги IFD0 (Make, Model, DateTime, Orientation, Copyright…) + Exif и GPS IFD, служебные теги структуры
+  отбрасываются (`tiffExif`); ICC — тег 34675. «Исходный» формат — JPG. UTIF передаётся буфер без смещения
+  (Deflate он читает через `data.buffer`).
 - MozJPEG кодирует с `baseline: true`: без него при качестве ниже ~25 таблицы квантования 16-битные (SOF1, не baseline)
   и libjpeg пишет предупреждение в консоль.
 - **Без `<select>` в виджете**: в WebKit его внутренние элементы ставят инлайн-стили → нарушение CSP `style-src-attr`.

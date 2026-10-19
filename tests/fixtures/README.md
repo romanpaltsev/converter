@@ -3,7 +3,7 @@
 Все файлы здесь синтетические (без личных данных), генерируются командой `npm run fixtures`
 (Docker-образ `tests/fixtures/generate`: Debian forky, heif-enc 1.23.6, exiftool, ImageMagick, cjpeg, apngasm).
 Результат закоммичен, перегенерировать нужно только при изменении `generate/generate.sh`. Генератор разбит на секции:
-Секции: `heic`, `jpeg-png`, `webp`, `avif`, `gif`, `bmp`. `npm run fixtures -- jpeg-png` пересоздаёт только JPEG/PNG, не трогая HEIC (heif-enc другой версии изменил бы их побайтно).
+Секции: `heic`, `jpeg-png`, `webp`, `avif`, `gif`, `bmp`, `tiff`. `npm run fixtures -- jpeg-png` пересоздаёт только JPEG/PNG, не трогая HEIC (heif-enc другой версии изменил бы их побайтно).
 
 | Файл | Что проверяем |
 |---|---|
@@ -50,6 +50,12 @@
 | `mono.bmp` | 1 бит, 64×32: левая половина чёрная |
 | `alpha.bmp` | 32 бита с альфой (V5, BITFIELDS): красный круг на прозрачном фоне 200×150 |
 | `p3.bmp` | 24 бита, встроенный ICC Display P3 (V5, PROFILE_EMBEDDED) |
+| `basic.tif`, `deflate.tif`, `packbits.tif`, `jpeg.tif`, `raw.tif` | квадранты 400×300: LZW; Deflate + предиктор 2; PackBits; JPEG; без сжатия, big-endian |
+| `tiled.tif`, `16bit.tif` | тайлы 128×128 (крайние выходят за изображение); 16 бит, big-endian, Deflate |
+| `gray.tif`, `mono-g4.tif`, `palette.tif` | серый 8 бит; 1 бит CCITT G4 (64×32, левая половина чёрная); палитра 2 бита |
+| `alpha.tif`, `alpha-assoc.tif` | 16 бит с альфой: обычной и предумноженной — красный круг на прозрачном фоне 200×150 |
+| `multipage.tif`, `cmyk.tif` | две страницы (первая — квадранты); CMYK — понятная ошибка |
+| `exif-gps.tif`, `rotated.tif` | ICC P3, даты, GPS, камера (exiftool); хранится повёрнутым 400×300, Orientation 6 → 300×400 |
 | `too-wide.png` | 16400×8 — шире предела WebP (16 383 точки) |
 | `exif/big-endian.tiff`, `exif/little-endian.tiff` | сырые EXIF-блоки (TIFF) с датами, GPS, Make/Model, Orientation = 6 — для unit-тестов |
 
