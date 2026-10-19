@@ -43,9 +43,13 @@ export type OutputChoiceId = OutputFormatId | 'original';
  * convert — конвертер из одного формата в другой (вход в формате выхода — ошибка «уже в формате …»);
  * compress — «Сжать фото» (качество или целевой размер); resize — «Изменить размер»;
  * strip — «Удалить метаданные» (без перекодирования: формат и пиксели те же, выбора формата нет);
- * inspect — «Посмотреть EXIF» (только чтение: настроек и файлов-результатов нет).
+ * inspect — «Посмотреть EXIF» (только чтение: настроек и файлов-результатов нет);
+ * to-pdf — «Изображения в PDF» (все файлы — страницы одного документа, порядок задаёт пользователь).
  */
-export type ToolMode = 'convert' | 'compress' | 'resize' | 'strip' | 'inspect';
+export type ToolMode = 'convert' | 'compress' | 'resize' | 'strip' | 'inspect' | 'to-pdf';
+
+/** Режимы, у которых формат результата не выбирается. */
+export const FIXED_OUTPUT_MODES: ToolMode[] = ['strip', 'inspect', 'to-pdf'];
 
 export interface ToolConfig {
   id: string;
@@ -75,7 +79,7 @@ const AVIF_OUTPUTS: OutputFormatId[] = ['avif', 'jpeg', 'png', 'webp'];
 const SAME_OR_ANY: OutputChoiceId[] = ['original', 'jpeg', 'png', 'webp'];
 const ALL_INPUTS: InputFormatId[] = ['heic', 'avif', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'jxl'];
 
-/** Сначала обработка (сжатие, размер, метаданные), затем конвертеры по входному формату: так идут карточки на главной и ссылки в подвале. */
+/** Сначала обработка (сжатие, размер, метаданные), затем PDF и конвертеры по входному формату: так идут карточки на главной и ссылки в подвале. */
 export const TOOLS: ToolConfig[] = [
   {
     id: 'compress-image',
@@ -120,6 +124,39 @@ export const TOOLS: ToolConfig[] = [
     defaultQuality: 90,
     content: 'exif-viewer',
     related: ['remove-metadata', 'compress-image', 'resize-image', 'heic-to-jpg'],
+  },
+  {
+    id: 'jpg-to-pdf',
+    mode: 'to-pdf',
+    slugs: { ru: 'jpg-v-pdf', en: 'jpg-to-pdf' },
+    inputFormats: ['jpeg'],
+    defaultOutput: 'original',
+    outputs: ['original'],
+    defaultQuality: 90,
+    content: 'jpg-to-pdf',
+    related: ['png-to-pdf', 'heic-to-pdf', 'compress-image', 'jpg-to-png'],
+  },
+  {
+    id: 'png-to-pdf',
+    mode: 'to-pdf',
+    slugs: { ru: 'png-v-pdf', en: 'png-to-pdf' },
+    inputFormats: ['png'],
+    defaultOutput: 'original',
+    outputs: ['original'],
+    defaultQuality: 90,
+    content: 'png-to-pdf',
+    related: ['jpg-to-pdf', 'heic-to-pdf', 'png-to-jpg', 'compress-image'],
+  },
+  {
+    id: 'heic-to-pdf',
+    mode: 'to-pdf',
+    slugs: { ru: 'heic-v-pdf', en: 'heic-to-pdf' },
+    inputFormats: ['heic'],
+    defaultOutput: 'original',
+    outputs: ['original'],
+    defaultQuality: 90,
+    content: 'heic-to-pdf',
+    related: ['jpg-to-pdf', 'png-to-pdf', 'heic-to-jpg', 'heic-to-png'],
   },
   {
     id: 'heic-to-jpg',

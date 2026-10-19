@@ -23,7 +23,11 @@ const c = entry.data;
   </section>
   <section>
     <h2>{c.editToolsTitle}</h2>
-    <ToolCards locale={locale} toolIds={TOOLS.filter((t) => t.mode !== 'convert').map((t) => t.id)} />
+    <ToolCards locale={locale} toolIds={TOOLS.filter((t) => t.mode !== 'convert' && t.mode !== 'to-pdf').map((t) => t.id)} />
+  </section>
+  <section class="section">
+    <h2>{c.pdfToolsTitle}</h2>
+    <ToolCards locale={locale} toolIds={TOOLS.filter((t) => t.mode === 'to-pdf').map((t) => t.id)} />
   </section>
   <section class="section">
     <h2>{c.toolsTitle}</h2>

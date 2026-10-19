@@ -1,0 +1,46 @@
+# Texts for /en/heic-to-pdf. Draft for the owner's review (see CONTENT.md).
+title: "HEIC to PDF Converter — iPhone Photos into One PDF"
+description: "Combine iPhone HEIC photos into a PDF right in your browser: several shots in one document with A4, Letter or fit-to-image pages. No sign-up, no uploads."
+h1: "HEIC to PDF"
+subtitle: "iPhone photos into one PDF, in the order you want. Your files never leave your device."
+breadcrumb: "HEIC to PDF"
+card:
+  title: "HEIC to PDF"
+  text: "Turn iPhone photos into one PDF document."
+app:
+  name: "HEIC to PDF Converter"
+  description: "An online tool that combines iPhone HEIC photos into a PDF right in your browser, without uploading files."
+howTo:
+  title: "How to convert HEIC to PDF"
+  steps:
+    - "Click the box above or drop your HEIC photos onto it — add as many as you like: each photo becomes a page."
+    - "Reorder pages with the arrow buttons and choose the page size: A4, Letter or fit to image, with or without margins."
+    - "Click “Download PDF” — the document is created right in your browser."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Straight from your iPhone"
+      text: "HEIC opens in any browser, even ones that can't display the format themselves. Nothing to install."
+    - title: "Colors as on iPhone"
+      text: "The Display P3 color profile is kept in the PDF, so vivid colors don't look washed out."
+    - title: "Files stay on your device"
+      text: "The PDF is built on your device; your photos aren't uploaded anywhere."
+    - title: "No location data"
+      text: "The location and other metadata don't make it into the PDF — only the photos themselves."
+faq:
+  title: "FAQ"
+  items:
+    - q: "How do I turn iPhone photos into a PDF?"
+      a: "Add your HEIC photos (on an iPhone, via Files or the Photo Library), put them in order and click “Download PDF”. Each photo becomes a page."
+    - q: "Will the quality get worse?"
+      a: "HEIC photos are stored in the PDF in high quality (JPEG 90), with no visible difference. Rotation and colors are preserved."
+    - q: "Why does my iPhone send JPG instead of HEIC?"
+      a: "When you pick photos, iOS sometimes converts HEIC to JPEG itself. That's fine: JPGs can be added too and go into the PDF without re-encoding."
+    - q: "Can I mix HEIC, JPG and PNG?"
+      a: "Yes: one PDF can combine HEIC, JPG, PNG, WebP, AVIF and other formats."
+    - q: "Which page size should I pick?"
+      a: "A4 or Letter for documents and printing; “Fit to image” makes each page exactly the size of the photo, with no white borders."
+    - q: "What about the location and the date taken?"
+      a: "Only the images go into the PDF: location, phone model and the date taken aren't carried over."
+    - q: "Is it safe?"
+      a: "Yes. Only the tool itself is loaded from the site; the PDF is created in your browser and your files are never sent to a server."

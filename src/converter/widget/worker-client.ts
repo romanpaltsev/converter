@@ -4,6 +4,7 @@
 
 import type { MetadataReport } from '../metadata/inspect/types';
 import type { RemovedKind, StripMode } from '../metadata/strip/types';
+import type { PdfImage } from '../pdf/writer';
 import type { ConvertOptions, DecoderId, EncoderId, ErrorCode, WarningCode } from '../pipeline/types';
 import type { FromWorker, ToWorker, WorkerStats } from '../worker/protocol';
 
@@ -52,6 +53,18 @@ export interface StripSuccess {
 export type StripOutcome = StripSuccess | ConvertFailure | NeedsMemory;
 
 export type InspectOutcome = { status: 'done'; report: MetadataReport } | ConvertFailure | NeedsMemory;
+
+export interface PdfPageSuccess {
+  status: 'done';
+  image: PdfImage;
+  preview: ArrayBuffer;
+  width: number;
+  height: number;
+  passthrough: boolean;
+  warnings: WarningCode[];
+}
+
+export type PdfPageOutcome = PdfPageSuccess | ConvertFailure | NeedsMemory;
 
 type OnStarted = (footprint: number, fresh: number) => void;
 
@@ -165,6 +178,17 @@ export class WorkerClient implements PoolClient {
     if (reply.type === 'inspected') {
       this.files++;
       return { status: 'done', report: reply.report };
+    }
+    return failure(reply);
+  }
+
+  /** «Изображения в PDF»: картинка страницы (модули декодера и MozJPEG — как у конвертации). */
+  async pdfPage(file: Blob, memoryLimit: number, onStarted: OnStarted): Promise<PdfPageOutcome> {
+    const reply = await this.request((id) => ({ type: 'pdf-page', id, file, memoryLimit }), onStarted);
+    if (reply.type === 'pdf-page') {
+      this.files++;
+      this.heapBytes = reply.heap;
+      return { status: 'done', image: reply.image, preview: reply.preview, width: reply.width, height: reply.height, passthrough: reply.passthrough, warnings: reply.warnings };
     }
     return failure(reply);
   }

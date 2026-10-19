@@ -33,6 +33,7 @@
     "client-zip": "2.5.1",
     "jxl-oxide-wasm": "0.12.6",
     "libheif-js": "1.23.5",
+    "pdfjs-dist": "6.4.299",
     "utif2": "4.1.0"
   },
   "devDependencies": {

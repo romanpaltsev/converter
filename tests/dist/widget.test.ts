@@ -20,6 +20,15 @@ describe('сборка: разметка виджета', () => {
       for (const selector of ['input[name="format"]', '[data-quality-row]', '[data-meta-row]', '[data-lossless-row]', '[data-png-warning]']) {
         expect(root.querySelector(selector)).toBeNull();
       }
+    } else if (tool.mode === 'to-pdf') {
+      // «Изображения в PDF»: размер страницы (A4) и поля (без полей) вместо формата; кнопка — «Скачать PDF»
+      const ui = UI[file.startsWith('en/') ? 'en' : 'ru'].widget;
+      expect(root.querySelector('input[name="pageSize"][checked]')?.getAttribute('value')).toBe('a4');
+      expect(root.querySelector('input[name="margin"][checked]')?.getAttribute('value')).toBe('none');
+      for (const selector of ['input[name="format"]', '[data-quality-row]', '[data-meta-row]', '[data-lossless-row]']) {
+        expect(root.querySelector(selector)).toBeNull();
+      }
+      expect(root.querySelector('[data-zip]')?.text).toBe(ui.downloadPdf);
     } else if (tool.mode === 'inspect') {
       // «Посмотреть EXIF»: настроек и архива нет — форма пустая и скрыта, кнопка ZIP скрыта
       expect(root.querySelector('form[data-settings]')?.hasAttribute('hidden')).toBe(true);

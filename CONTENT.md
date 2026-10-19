@@ -306,6 +306,224 @@
 - **How do I remove the metadata?** Click “Download without metadata” on the file's card, or open “Remove EXIF data” to process many photos at once and choose what to keep, such as the capture date.
 - **Is it safe?** Yes. Files are read in your browser and never sent to a server. Coordinates go to a map website only if you open a map link yourself.
 
+### jpg-to-pdf
+
+#### Русский — `/jpg-v-pdf`
+
+Файл: `src/content/tools/ru/jpg-to-pdf.yaml`
+
+- **title:** JPG в PDF онлайн — объединить фото в один PDF _(45 симв.)_
+- **description:** Сделайте PDF из JPG прямо в браузере: несколько фото в один документ, страницы A4, Letter или по размеру фото. Без перекодирования и загрузки на сервер. _(152 симв.)_
+- **H1:** JPG в PDF
+- **Подзаголовок:** Несколько фото — в один PDF, в нужном порядке. Бесплатно, файлы не покидают ваше устройство.
+- **Хлебные крошки:** JPG в PDF
+- **Карточка:** JPG в PDF — Собрать фото и сканы в один PDF-документ.
+- **JSON-LD:** Конвертер JPG в PDF — Онлайн-сервис, который собирает JPG-изображения в PDF прямо в браузере, без загрузки файлов на сервер.
+
+**Как сделать PDF из JPG**
+
+1. Нажмите на область выше или перетащите на неё JPG — можно сразу много: каждая картинка станет страницей.
+2. Расставьте страницы кнопками со стрелками и выберите размер: A4, Letter или по размеру фото, с полями или без.
+3. Нажмите «Скачать PDF» — документ соберётся прямо в браузере.
+
+**Почему здесь**
+
+- **Без потери качества.** JPG попадают в PDF как есть, без повторного сжатия: качество фото и сканов не страдает, а документ получается не больше исходных файлов.
+- **Файлы остаются у вас.** PDF собирается на вашем устройстве. Сканы паспорта, договоры и личные фото не загружаются на сервер.
+- **Порядок и размер страниц.** Переставьте страницы, выберите A4 или Letter — альбомные снимки лягут на альбомный лист автоматически.
+- **Без лишних данных.** Геолокация, модель телефона и другие метаданные фото в PDF не попадают — только сами изображения.
+
+**Частые вопросы**
+
+- **Как объединить несколько JPG в один PDF?** Добавьте все фото сразу или по очереди — каждое станет отдельной страницей. Порядок меняется кнопками со стрелками в строке файла, лишнее убирается крестиком. Затем нажмите «Скачать PDF».
+- **Ухудшится ли качество фото?** Нет. JPG вставляются в PDF без перекодирования — это те же данные, что и в исходном файле. Поэтому и размер PDF примерно равен сумме размеров фото.
+- **Какой размер страницы выбрать?** Для печати и отправки документов — A4 (в США — Letter): картинка впишется в лист с сохранением пропорций. «По размеру фото» сделает страницу ровно под изображение — без белых полей.
+- **Почему у вертикального фото страница вертикальная?** Ориентация листа выбирается по каждому снимку: портретные фото — на книжный лист, альбомные — на альбомный. Поворот из EXIF учитывается, поэтому фото не окажутся на боку.
+- **Можно ли добавить PNG, HEIC и другие форматы?** Да. В один PDF можно собрать JPG, PNG, HEIC, WebP, AVIF, GIF, BMP, TIFF и JPEG XL. PNG и другие форматы без потерь сохраняются без потерь, остальные — в высоком качестве.
+- **Сохранятся ли геолокация и дата съёмки?** Нет, метаданные фото в PDF не переносятся: в документе будут только изображения. Это удобно, если отправляете сканы или фото посторонним.
+- **Безопасно ли это?** Да. С сайта загружается только сам инструмент, а PDF собирается в вашем браузере — файлы не отправляются на сервер.
+- **Есть ли ограничения?** За один раз можно добавить до 100 изображений. Размер страниц и поля можно менять и после добавления файлов — обрабатывать их заново не нужно.
+
+#### English — `/en/jpg-to-pdf`
+
+Файл: `src/content/tools/en/jpg-to-pdf.yaml`
+
+- **title:** JPG to PDF Converter — Combine Photos into One PDF _(50 симв.)_
+- **description:** Turn JPG images into a PDF right in your browser: combine several photos into one document with A4, Letter or fit-to-image pages. No re-encoding, no uploads. _(157 симв.)_
+- **H1:** JPG to PDF
+- **Подзаголовок:** Combine photos into one PDF in the order you want. Free, and your files never leave your device.
+- **Хлебные крошки:** JPG to PDF
+- **Карточка:** JPG to PDF — Combine photos and scans into a single PDF document.
+- **JSON-LD:** JPG to PDF Converter — An online tool that combines JPG images into a PDF right in your browser, without uploading files.
+
+**How to convert JPG to PDF**
+
+1. Click the box above or drop your JPGs onto it — add as many as you like: each image becomes a page.
+2. Reorder pages with the arrow buttons and choose the page size: A4, Letter or fit to image, with or without margins.
+3. Click “Download PDF” — the document is created right in your browser.
+
+**Why use this converter**
+
+- **No quality loss.** JPGs go into the PDF as they are, without recompression: photos and scans keep their quality, and the PDF is no bigger than the images.
+- **Files stay on your device.** The PDF is built on your device. ID scans, contracts and personal photos are never uploaded.
+- **Page order and size.** Reorder pages and pick A4 or Letter — landscape shots get a landscape page automatically.
+- **No hidden data.** GPS location, phone model and other photo metadata don't make it into the PDF — only the images do.
+
+**FAQ**
+
+- **How do I combine several JPGs into one PDF?** Add all the photos at once or one by one — each becomes a page. Change the order with the arrow buttons on a file's row and remove extras with the cross. Then click “Download PDF”.
+- **Will the photo quality get worse?** No. JPGs are placed into the PDF without re-encoding — it's the same data as in the original file. That's also why the PDF is about the size of the photos combined.
+- **Which page size should I pick?** A4 (or Letter in the US) for printing and documents: the image fits the page and keeps its proportions. “Fit to image” makes each page exactly the size of the picture, with no white borders.
+- **Why is a portrait photo on a portrait page?** Page orientation follows each image: portrait shots get portrait pages, landscape shots get landscape ones. EXIF rotation is respected, so photos don't end up sideways.
+- **Can I add PNG, HEIC and other formats?** Yes. One PDF can combine JPG, PNG, HEIC, WebP, AVIF, GIF, BMP, TIFF and JPEG XL. PNG and other lossless formats stay lossless; the rest are stored in high quality.
+- **Are the location and date kept?** No, photo metadata isn't carried into the PDF — the document contains only the images. Handy when you send scans or photos to strangers.
+- **Is it safe?** Yes. Only the tool itself is loaded from the site; the PDF is created in your browser and your files are never sent to a server.
+- **Are there any limits?** You can add up to 100 images at a time. The page size and margins can be changed after adding files — no need to process them again.
+
+### png-to-pdf
+
+#### Русский — `/png-v-pdf`
+
+Файл: `src/content/tools/ru/png-to-pdf.yaml`
+
+- **title:** PNG в PDF онлайн — картинки и скриншоты в один PDF _(50 симв.)_
+- **description:** Соберите PNG-картинки и скриншоты в PDF прямо в браузере: без потери качества, с прозрачностью, страницы A4 или по размеру картинки. Без загрузки на сервер. _(156 симв.)_
+- **H1:** PNG в PDF
+- **Подзаголовок:** Скриншоты и картинки — в один PDF без потери качества. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** PNG в PDF
+- **Карточка:** PNG в PDF — Скриншоты и картинки PNG — в один PDF без потерь.
+- **JSON-LD:** Конвертер PNG в PDF — Онлайн-сервис, который собирает PNG-изображения в PDF прямо в браузере, без загрузки файлов на сервер.
+
+**Как сделать PDF из PNG**
+
+1. Нажмите на область выше или перетащите на неё PNG — можно сразу много: каждая картинка станет страницей.
+2. Расставьте страницы кнопками со стрелками и выберите размер: A4, Letter или по размеру картинки, с полями или без.
+3. Нажмите «Скачать PDF» — документ соберётся прямо в браузере.
+
+**Почему здесь**
+
+- **Чёткий текст на скриншотах.** PNG сжимаются в PDF без потерь: мелкий текст, схемы и интерфейсы остаются резкими.
+- **Прозрачность сохраняется.** Прозрачные области остаются прозрачными — на странице под ними будет белый лист, а не чёрный фон.
+- **Файлы остаются у вас.** PDF собирается на вашем устройстве — картинки никуда не загружаются.
+- **Любые форматы в одном PDF.** Вместе с PNG можно добавить JPG, HEIC, WebP и другие изображения — все станут страницами одного документа.
+
+**Частые вопросы**
+
+- **Как объединить несколько PNG в один PDF?** Добавьте все картинки сразу или по очереди — каждая станет отдельной страницей. Порядок меняется кнопками со стрелками в строке файла, лишнее убирается крестиком. Затем нажмите «Скачать PDF».
+- **Сохраняется ли качество PNG?** Да. PNG сжимаются в PDF без потерь — пиксели те же, что в исходном файле. Чёрно-белые картинки и сканы сохраняются в оттенках серого, это уменьшает PDF.
+- **Что будет с прозрачностью?** Прозрачность сохраняется: в программах просмотра PDF прозрачные области выглядят белыми — как лист бумаги.
+- **Почему PDF из PNG больше, чем из JPG?** PNG хранит изображение без потерь, поэтому и в PDF оно занимает больше места. Если размер важнее, сначала сожмите картинки или переведите их в JPG.
+- **Какой размер страницы выбрать?** Для печати и документов — A4 (в США — Letter): картинка впишется в лист с сохранением пропорций. «По размеру фото» сделает страницу ровно под изображение — без белых полей.
+- **Можно ли добавить фото в других форматах?** Да: JPG, HEIC, WebP, AVIF, GIF, BMP, TIFF и JPEG XL. Фото JPG вставляются без перекодирования, форматы с потерями — в высоком качестве.
+- **Безопасно ли это?** Да. С сайта загружается только сам инструмент, а PDF собирается в вашем браузере — файлы не отправляются на сервер.
+
+#### English — `/en/png-to-pdf`
+
+Файл: `src/content/tools/en/png-to-pdf.yaml`
+
+- **title:** PNG to PDF Converter — Images and Screenshots into One PDF _(58 симв.)_
+- **description:** Combine PNG images and screenshots into a PDF right in your browser: lossless quality, transparency kept, A4 or fit-to-image pages. No uploads. _(143 симв.)_
+- **H1:** PNG to PDF
+- **Подзаголовок:** Screenshots and images into one lossless PDF. Your files never leave your device.
+- **Хлебные крошки:** PNG to PDF
+- **Карточка:** PNG to PDF — Put PNG screenshots and images into one lossless PDF.
+- **JSON-LD:** PNG to PDF Converter — An online tool that combines PNG images into a PDF right in your browser, without uploading files.
+
+**How to convert PNG to PDF**
+
+1. Click the box above or drop your PNGs onto it — add as many as you like: each image becomes a page.
+2. Reorder pages with the arrow buttons and choose the page size: A4, Letter or fit to image, with or without margins.
+3. Click “Download PDF” — the document is created right in your browser.
+
+**Why use this converter**
+
+- **Crisp text in screenshots.** PNGs are compressed losslessly in the PDF: small text, diagrams and interfaces stay sharp.
+- **Transparency is kept.** Transparent areas stay transparent — the page underneath shows white paper, not a black background.
+- **Files stay on your device.** The PDF is built on your device; your images aren't uploaded anywhere.
+- **Mix formats in one PDF.** Add JPG, HEIC, WebP and other images alongside PNG — they all become pages of one document.
+
+**FAQ**
+
+- **How do I combine several PNGs into one PDF?** Add all the images at once or one by one — each becomes a page. Change the order with the arrow buttons on a file's row and remove extras with the cross. Then click “Download PDF”.
+- **Is the PNG quality preserved?** Yes. PNGs are compressed losslessly in the PDF — the pixels are the same as in the original. Black-and-white images and scans are stored in grayscale, which keeps the PDF smaller.
+- **What happens to transparency?** Transparency is preserved: PDF viewers show transparent areas as white, like a sheet of paper.
+- **Why is a PDF from PNGs bigger than from JPGs?** PNG stores images losslessly, so they take more space in the PDF too. If size matters more, compress the images first or convert them to JPG.
+- **Which page size should I pick?** A4 (or Letter in the US) for printing and documents: the image fits the page and keeps its proportions. “Fit to image” makes each page exactly the size of the picture, with no white borders.
+- **Can I add photos in other formats?** Yes: JPG, HEIC, WebP, AVIF, GIF, BMP, TIFF and JPEG XL. JPG photos go in without re-encoding, lossy formats in high quality.
+- **Is it safe?** Yes. Only the tool itself is loaded from the site; the PDF is created in your browser and your files are never sent to a server.
+
+### heic-to-pdf
+
+#### Русский — `/heic-v-pdf`
+
+Файл: `src/content/tools/ru/heic-to-pdf.yaml`
+
+- **title:** HEIC в PDF онлайн — фото с iPhone в один PDF _(44 симв.)_
+- **description:** Соберите фото HEIC с iPhone в PDF прямо в браузере: несколько снимков в один документ, страницы A4 или по размеру фото. Без регистрации и загрузки на сервер. _(157 симв.)_
+- **H1:** HEIC в PDF
+- **Подзаголовок:** Фото с iPhone — в один PDF, в нужном порядке. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** HEIC в PDF
+- **Карточка:** HEIC в PDF — Фото с iPhone — в один PDF-документ.
+- **JSON-LD:** Конвертер HEIC в PDF — Онлайн-сервис, который собирает фото HEIC с iPhone в PDF прямо в браузере, без загрузки файлов на сервер.
+
+**Как сделать PDF из HEIC**
+
+1. Нажмите на область выше или перетащите на неё фото HEIC — можно сразу много: каждое станет страницей.
+2. Расставьте страницы кнопками со стрелками и выберите размер: A4, Letter или по размеру фото, с полями или без.
+3. Нажмите «Скачать PDF» — документ соберётся прямо в браузере.
+
+**Почему здесь**
+
+- **Прямо с iPhone.** HEIC открывается в любом браузере — даже в тех, что сами не показывают этот формат. Устанавливать ничего не нужно.
+- **Цвета как на iPhone.** Цветовой профиль Display P3 сохраняется в PDF, поэтому насыщенные цвета снимков не тускнеют.
+- **Файлы остаются у вас.** PDF собирается на вашем устройстве — фото никуда не загружаются.
+- **Без геолокации.** Место съёмки и другие метаданные в PDF не попадают — только сами снимки.
+
+**Частые вопросы**
+
+- **Как перевести фото с iPhone в PDF?** Добавьте снимки HEIC (на iPhone — через «Файлы» или «Медиатеку»), расставьте их в нужном порядке и нажмите «Скачать PDF». Каждое фото станет страницей.
+- **Ухудшится ли качество?** Фото HEIC сохраняются в PDF в высоком качестве (JPEG 90): на глаз отличий нет. Повороты и цвета снимков сохраняются.
+- **Почему iPhone присылает JPG вместо HEIC?** При выборе фото iPhone иногда сам переводит HEIC в JPEG. Это не мешает: JPG тоже можно добавить, он попадёт в PDF без перекодирования.
+- **Можно ли смешать HEIC, JPG и PNG?** Да: в один PDF можно собрать HEIC, JPG, PNG, WebP, AVIF и другие форматы.
+- **Какой размер страницы выбрать?** Для документов и печати — A4 (в США — Letter); «По размеру фото» сделает каждую страницу ровно под снимок, без белых полей.
+- **Что с геолокацией и датой съёмки?** В PDF попадают только изображения: геолокация, модель телефона и дата съёмки не переносятся.
+- **Безопасно ли это?** Да. С сайта загружается только сам инструмент, а PDF собирается в вашем браузере — файлы не отправляются на сервер.
+
+#### English — `/en/heic-to-pdf`
+
+Файл: `src/content/tools/en/heic-to-pdf.yaml`
+
+- **title:** HEIC to PDF Converter — iPhone Photos into One PDF _(50 симв.)_
+- **description:** Combine iPhone HEIC photos into a PDF right in your browser: several shots in one document with A4, Letter or fit-to-image pages. No sign-up, no uploads. _(153 симв.)_
+- **H1:** HEIC to PDF
+- **Подзаголовок:** iPhone photos into one PDF, in the order you want. Your files never leave your device.
+- **Хлебные крошки:** HEIC to PDF
+- **Карточка:** HEIC to PDF — Turn iPhone photos into one PDF document.
+- **JSON-LD:** HEIC to PDF Converter — An online tool that combines iPhone HEIC photos into a PDF right in your browser, without uploading files.
+
+**How to convert HEIC to PDF**
+
+1. Click the box above or drop your HEIC photos onto it — add as many as you like: each photo becomes a page.
+2. Reorder pages with the arrow buttons and choose the page size: A4, Letter or fit to image, with or without margins.
+3. Click “Download PDF” — the document is created right in your browser.
+
+**Why use this converter**
+
+- **Straight from your iPhone.** HEIC opens in any browser, even ones that can't display the format themselves. Nothing to install.
+- **Colors as on iPhone.** The Display P3 color profile is kept in the PDF, so vivid colors don't look washed out.
+- **Files stay on your device.** The PDF is built on your device; your photos aren't uploaded anywhere.
+- **No location data.** The location and other metadata don't make it into the PDF — only the photos themselves.
+
+**FAQ**
+
+- **How do I turn iPhone photos into a PDF?** Add your HEIC photos (on an iPhone, via Files or the Photo Library), put them in order and click “Download PDF”. Each photo becomes a page.
+- **Will the quality get worse?** HEIC photos are stored in the PDF in high quality (JPEG 90), with no visible difference. Rotation and colors are preserved.
+- **Why does my iPhone send JPG instead of HEIC?** When you pick photos, iOS sometimes converts HEIC to JPEG itself. That's fine: JPGs can be added too and go into the PDF without re-encoding.
+- **Can I mix HEIC, JPG and PNG?** Yes: one PDF can combine HEIC, JPG, PNG, WebP, AVIF and other formats.
+- **Which page size should I pick?** A4 or Letter for documents and printing; “Fit to image” makes each page exactly the size of the photo, with no white borders.
+- **What about the location and the date taken?** Only the images go into the PDF: location, phone model and the date taken aren't carried over.
+- **Is it safe?** Yes. Only the tool itself is loaded from the site; the PDF is created in your browser and your files are never sent to a server.
+
 ### heic-to-jpg
 
 #### Русский — `/heic-v-jpg`
@@ -1955,6 +2173,7 @@
 - **h1:** Конвертер изображений прямо в браузере
 - **intro:** Переводите фото и картинки между форматами HEIC, AVIF, JPG, PNG и WebP, сжимайте их до нужного размера и удаляйте метаданные. Всё происходит на вашем устройстве: файлы не загружаются на сервер, а дата съёмки сохраняется.
 - **editToolsTitle:** Обработка фото
+- **pdfToolsTitle:** PDF
 - **toolsTitle:** Конвертеры
 - **features:**
   - **Без загрузки на сервер.** Изображения обрабатываются в браузере и не покидают ваше устройство.
@@ -1970,6 +2189,7 @@
 - **h1:** Convert images right in your browser
 - **intro:** Convert photos and pictures between HEIC, AVIF, JPG, PNG and WebP, compress them to the size you need and strip their metadata. Everything happens on your device: files are never uploaded, and the date taken is kept.
 - **editToolsTitle:** Photo tools
+- **pdfToolsTitle:** PDF
 - **toolsTitle:** Converters
 - **features:**
   - **No uploads.** Images are processed in your browser and never leave your device.
@@ -2105,6 +2325,22 @@
 | `widget.removedKinds.extra-images` | дополнительные изображения (HDR, глубина, видео) | extra images (HDR, depth, video) |
 | `widget.removedKinds.c2pa` | Content Credentials | Content Credentials |
 | `widget.removedKinds.other` | прочие служебные данные | other service data |
+| `widget.pageSize` | Страница | Page |
+| `widget.pageSizes.a4` | A4 | A4 |
+| `widget.pageSizes.letter` | Letter | Letter |
+| `widget.pageSizes.image` | По размеру фото | Fit to image |
+| `widget.margin` | Поля | Margins |
+| `widget.margins.none` | Без полей | None |
+| `widget.margins.small` | Узкие | Small |
+| `widget.pdfHint` | JPG попадают в PDF без перекодирования, остальные форматы — в высоком качестве. Метаданные фото (геолокация, камера) в документ не попадают. | JPGs go into the PDF without re-encoding, other formats in high quality. Photo metadata (location, camera) is left out. |
+| `widget.downloadPdf` | Скачать PDF | Download PDF |
+| `widget.pdfPreparing` | Собираем PDF… | Creating PDF… |
+| `widget.pdfFailed` | Не удалось собрать PDF. Попробуйте ещё раз. | Couldn't create the PDF. Please try again. |
+| `widget.pageNumber` | Стр. {number} | Page {number} |
+| `widget.passthrough` | без перекодирования | not re-encoded |
+| `widget.moveUp` | Переместить выше: {name} | Move up: {name} |
+| `widget.moveDown` | Переместить ниже: {name} | Move down: {name} |
+| `widget.removeFile` | Убрать из списка: {name} | Remove from the list: {name} |
 | `widget.report.taken` | Снято | Taken |
 | `widget.report.camera` | Камера | Camera |
 | `widget.report.lens` | Объектив | Lens |

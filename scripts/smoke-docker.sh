@@ -25,9 +25,10 @@ header() { curl -s -D - -o /dev/null "${@:2}" | tr -d '\r' | grep -i "^$1:" | he
 
 echo "== страницы"
 for path in / /heic-v-jpg /heic-v-png /heic-v-webp /jpg-v-png /jpg-v-webp /png-v-jpg /png-v-webp /webp-v-jpg /webp-v-png \
-  /szhat-foto /izmenit-razmer-foto /udalit-metadannye-foto /posmotret-exif \
+  /szhat-foto /izmenit-razmer-foto /udalit-metadannye-foto /posmotret-exif /jpg-v-pdf /png-v-pdf /heic-v-pdf \
   /licenses /contacts /en/ /en/heic-to-jpg /en/heic-to-png /en/heic-to-webp /en/jpg-to-png /en/jpg-to-webp /en/png-to-jpg \
   /en/png-to-webp /en/webp-to-jpg /en/webp-to-png /en/compress-image /en/resize-image /en/remove-exif /en/exif-viewer \
+  /en/jpg-to-pdf /en/png-to-pdf /en/heic-to-pdf \
   /en/licenses /en/contacts \
   /robots.txt /sitemap-index.xml /favicon.svg; do
   check "GET $path" 200 "$(status "$BASE$path")"

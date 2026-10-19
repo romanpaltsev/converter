@@ -4,6 +4,7 @@
 import { track } from '../../lib/analytics';
 import type { MetadataReport } from '../metadata/inspect/types';
 import type { RemovedKind, StripMode } from '../metadata/strip/types';
+import { type PageSize, type PdfImage, type PdfLayout, SMALL_MARGIN } from '../pdf/writer';
 import { checkInput } from '../pipeline/input';
 import { KIND_FILES, SNIFF_BYTES, type SniffKind, sniff } from '../pipeline/sniff';
 import type { ResizeSpec } from '../pipeline/resize';
@@ -30,6 +31,8 @@ interface Settings {
   resize: ResizeSpec | null;
   /** Страница «Удалить метаданные»: что удалять; иначе null. */
   strip: StripMode | null;
+  /** «Изображения в PDF»: размер страниц и поля (применяются при сборке — файлы заново не обрабатываются); иначе null. */
+  pdf: PdfLayout | null;
 }
 
 /** Целевой размер — в десятичных килобайтах и мегабайтах: файл «до 1 МБ» пройдёт и лимит 1 000 000, и 1 048 576 байт. */
@@ -68,6 +71,9 @@ interface Item {
   /** «Посмотреть EXIF»: что прочитано из файла и его формат (для «Скачать без метаданных»). */
   report: MetadataReport | null;
   kind: Exclude<SniffKind, 'unknown'> | null;
+  /** «Изображения в PDF»: картинка страницы; passthrough — JPEG вставлен без перекодирования. */
+  pdf: PdfImage | null;
+  passthrough: boolean;
   /** Размеры до и после уменьшения (страница «Изменить размер»). */
   dimensions: { before: [number, number]; after: [number, number] } | null;
   /** Оценка памяти, если файл не поместился рядом с другими (ждёт в очереди первым). */
@@ -232,7 +238,7 @@ export class ConverterWidget {
         this.syncSettings();
       });
     }
-    this.zipButton.addEventListener('click', () => void this.downloadAll());
+    this.zipButton.addEventListener('click', () => void (this.config.mode === 'to-pdf' ? this.downloadPdf() : this.downloadAll()));
     this.reconvertButton.addEventListener('click', () => this.reconvert());
     this.clearButton.addEventListener('click', () => this.clear());
   }
@@ -248,6 +254,10 @@ export class ConverterWidget {
       targetBytes: data.get('compression') === 'target' ? this.targetBytes(data) : null,
       resize: this.resizeRows ? this.resizeSpec(data) : null,
       strip: this.config.mode === 'strip' ? ((data.get('stripMode') ?? 'all') as StripMode) : null,
+      pdf:
+        this.config.mode === 'to-pdf'
+          ? { size: (data.get('pageSize') ?? 'a4') as PageSize, margin: data.get('margin') === 'small' ? SMALL_MARGIN : 0 }
+          : null,
     };
   }
 
@@ -330,6 +340,8 @@ export class ConverterWidget {
         format: null,
         report: null,
         kind: null,
+        pdf: null,
+        passthrough: false,
         dimensions: null,
         estimate: null,
         retry: false,
@@ -395,6 +407,7 @@ export class ConverterWidget {
     item.settings = settings;
     if (settings.strip) return this.strip(item, head, settings.strip, lease, generation);
     if (this.config.mode === 'inspect') return this.inspect(item, head, lease, generation);
+    if (this.config.mode === 'to-pdf') return this.pdfPage(item, head, lease, generation);
     const input = checkInput(head, settings.output.encoder, this.config.mode !== 'convert');
     if (!input.ok) {
       this.fail(item, input.code);
@@ -540,6 +553,116 @@ export class ConverterWidget {
     return false;
   }
 
+  /** «Изображения в PDF»: картинка страницы и превью; сам PDF собирается по кнопке из готовых страниц. */
+  private async pdfPage(item: Item, head: Uint8Array, lease: Lease, generation: number): Promise<boolean> {
+    const input = checkInput(head, 'jpeg', true);
+    if (!input.ok) {
+      this.fail(item, input.code);
+      return false;
+    }
+    if (!this.loadedOnce) this.setStatus(this.t.loading);
+    try {
+      await lease.client.load(input.decoder, 'jpeg');
+      this.loadedOnce = true;
+    } catch {
+      if (generation !== this.generation) return false;
+      this.showNotice(this.t.loadFailed, 'error');
+      this.fail(item, 'internal');
+      return true;
+    }
+    if (generation !== this.generation) return false;
+    this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
+    const outcome = await lease.client.pdfPage(item.file, lease.memoryLimit, (footprint, fresh) => {
+      if (generation !== this.generation) return;
+      lease.started(footprint, fresh);
+      this.pump();
+    });
+    if (generation !== this.generation) return false;
+    if (outcome.status === 'needs-memory') {
+      item.estimate = outcome.fresh;
+      this.requeue(item);
+      return true;
+    }
+    if (outcome.status === 'error') {
+      if (outcome.fatal && !item.retry) {
+        item.retry = true;
+        this.requeue(item);
+        return true;
+      }
+      this.fail(item, outcome.code);
+      return outcome.fatal || outcome.recycle;
+    }
+    item.pdf = outcome.image;
+    item.passthrough = outcome.passthrough;
+    item.previewUrl = URL.createObjectURL(new Blob([outcome.preview], { type: 'image/jpeg' }));
+    item.dimensions = { before: [outcome.width, outcome.height], after: [outcome.width, outcome.height] };
+    item.warnings = outcome.warnings;
+    item.status = 'done';
+    this.run.done++;
+    this.renderAll(); // номера страниц у следующих строк
+    this.updateActions();
+    return false;
+  }
+
+  /** Переставить файл (страницу) на одну позицию; фокус остаётся на той же кнопке. */
+  private move(item: Item, step: -1 | 1): void {
+    const index = this.items.indexOf(item);
+    const target = index + step;
+    if (index < 0 || target < 0 || target >= this.items.length) return;
+    this.items.splice(index, 1);
+    this.items.splice(target, 0, item);
+    if (step < 0) this.list.insertBefore(item.row, this.items[target + 1]!.row);
+    else this.list.insertBefore(item.row, this.items[target - 1]!.row.nextSibling);
+    this.renderAll();
+    item.row.querySelector<HTMLButtonElement>(`[data-move="${step < 0 ? 'up' : 'down'}"]:not(:disabled)`)?.focus();
+  }
+
+  /** Убрать файл из списка (кроме того, что сейчас обрабатывается). */
+  private remove(item: Item): void {
+    const index = this.items.indexOf(item);
+    if (index < 0 || item.status === 'converting') return;
+    if (item.status === 'queued') this.run.total--;
+    this.revokeUrls(item);
+    if (item.name) this.names.release(item.name);
+    this.items.splice(index, 1);
+    item.row.remove();
+    this.renderAll();
+    if (this.items.length === 0) this.results.hidden = true;
+    // фокус — на соседнюю строку, иначе на зону загрузки
+    const next = this.items[Math.min(index, this.items.length - 1)];
+    (next?.row.querySelector<HTMLButtonElement>('[data-remove]') ?? this.dropzone).focus();
+    this.updateActions();
+  }
+
+  private renderAll(): void {
+    for (const item of this.items) this.renderRow(item);
+  }
+
+  /** PDF из готовых страниц в порядке списка; имя — по первому файлу. */
+  private async downloadPdf(): Promise<void> {
+    const pages = this.items.filter((item) => item.status === 'done' && item.pdf);
+    const layout = this.currentSettings().pdf;
+    if (pages.length === 0 || !layout || this.zipping) return;
+    this.zipping = true;
+    const label = this.zipButton.textContent;
+    this.zipButton.textContent = this.t.pdfPreparing;
+    this.zipButton.setAttribute('aria-busy', 'true');
+    this.updateActions();
+    try {
+      const { buildPdf } = await import('../pdf/writer');
+      const { saveBlob } = await import('./zip');
+      const blob = buildPdf(pages.map((item) => item.pdf!), layout);
+      saveBlob(blob, withTimestamp(outputName(pages[0]!.file.name, 'pdf'), new Date()));
+    } catch {
+      this.showNotice(this.t.pdfFailed, 'error');
+    } finally {
+      this.zipping = false;
+      this.zipButton.textContent = label;
+      this.zipButton.removeAttribute('aria-busy');
+      this.updateActions();
+    }
+  }
+
   /** «Скачать без метаданных» из отчёта: один файл по нажатию — удаляем прямо здесь, без очереди. */
   private async downloadStripped(item: Item): Promise<void> {
     if (!item.kind) return;
@@ -637,6 +760,14 @@ export class ConverterWidget {
       if (width && height) parts.push(fill(this.t.dimensions, { width, height }));
       meta.textContent = parts.join(' · ');
     }
+    if (item.status === 'done' && item.pdf && item.dimensions) {
+      // номер страницы — среди готовых файлов в порядке списка
+      const number = this.items.filter((other) => other.status === 'done' && other.pdf).indexOf(item) + 1;
+      const [width, height] = item.dimensions.after;
+      const parts = [fill(this.t.pageNumber, { number }), fill(this.t.dimensions, { width, height })];
+      if (item.passthrough) parts.push(this.t.passthrough);
+      meta.textContent = parts.join(' · ');
+    }
     if (item.status === 'done' && item.blob) {
       const parts = [this.t.done, fill(this.t.sizes, { before: this.size(item.file.size), after: this.size(item.blob.size) })];
       // при сжатии и изменении размера важна разница в размере: «−85 %»; размер не изменился — одно число
@@ -661,6 +792,7 @@ export class ConverterWidget {
     }
     row.append(thumb, body);
     if (item.status === 'done' && item.report) row.append(this.reports.render(item.report, item.file.name, () => void this.downloadStripped(item)));
+    if (this.config.mode === 'to-pdf') row.append(this.orderControls(item));
 
     if (item.status === 'done' && item.url && item.name) {
       const name = item.name;
@@ -687,9 +819,34 @@ export class ConverterWidget {
     return code === 'already-jpeg' && this.config.iphoneHint ? `${text} ${this.t.iphoneJpegHint}` : text;
   }
 
+  /** «Изображения в PDF»: кнопки «выше», «ниже» и «убрать» у каждой строки. */
+  private orderControls(item: Item): HTMLElement {
+    const group = document.createElement('div');
+    group.className = 'file__order';
+    const index = this.items.indexOf(item);
+    const button = (kind: 'up' | 'down' | 'remove', label: string, disabled: boolean, action: () => void) => {
+      const node = document.createElement('button');
+      node.type = 'button';
+      node.className = `icon-button icon-button--${kind}`;
+      node.setAttribute('aria-label', fill(label, { name: item.file.name }));
+      node.title = node.getAttribute('aria-label')!;
+      if (kind === 'remove') node.dataset.remove = '';
+      else node.dataset.move = kind;
+      node.disabled = disabled;
+      node.addEventListener('click', action);
+      group.append(node);
+    };
+    button('up', this.t.moveUp, index === 0, () => this.move(item, -1));
+    button('down', this.t.moveDown, index === this.items.length - 1, () => this.move(item, 1));
+    button('remove', this.t.removeFile, item.status === 'converting', () => this.remove(item));
+    return group;
+  }
+
   private updateActions(): void {
     const done = this.items.filter((item) => item.status === 'done');
-    this.zipButton.disabled = this.zipping || done.length === 0;
+    // PDF собирается, когда обработаны все файлы: иначе страницы потеряются
+    const pending = this.config.mode === 'to-pdf' && this.items.some((item) => item.status === 'queued' || item.status === 'converting');
+    this.zipButton.disabled = this.zipping || done.length === 0 || pending;
     const current = this.currentSettings();
     const outdated = this.items.some((item) => isOutdated(item, current));
     this.reconvertButton.hidden = !outdated;
@@ -717,6 +874,8 @@ export class ConverterWidget {
         format: null,
         report: null,
         kind: null,
+        pdf: null,
+        passthrough: false,
         dimensions: null,
         estimate: null,
         retry: false,

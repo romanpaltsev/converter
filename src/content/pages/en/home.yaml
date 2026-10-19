@@ -5,6 +5,7 @@ description: "Free online image converters for HEIC, AVIF, JPG, PNG and WebP. No
 h1: "Convert images right in your browser"
 intro: "Convert photos and pictures between HEIC, AVIF, JPG, PNG and WebP, compress them to the size you need and strip their metadata. Everything happens on your device: files are never uploaded, and the date taken is kept."
 editToolsTitle: "Photo tools"
+pdfToolsTitle: "PDF"
 toolsTitle: "Converters"
 features:
   - title: "No uploads"

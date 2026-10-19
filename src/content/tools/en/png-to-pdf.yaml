@@ -1,0 +1,46 @@
+# Texts for /en/png-to-pdf. Draft for the owner's review (see CONTENT.md).
+title: "PNG to PDF Converter — Images and Screenshots into One PDF"
+description: "Combine PNG images and screenshots into a PDF right in your browser: lossless quality, transparency kept, A4 or fit-to-image pages. No uploads."
+h1: "PNG to PDF"
+subtitle: "Screenshots and images into one lossless PDF. Your files never leave your device."
+breadcrumb: "PNG to PDF"
+card:
+  title: "PNG to PDF"
+  text: "Put PNG screenshots and images into one lossless PDF."
+app:
+  name: "PNG to PDF Converter"
+  description: "An online tool that combines PNG images into a PDF right in your browser, without uploading files."
+howTo:
+  title: "How to convert PNG to PDF"
+  steps:
+    - "Click the box above or drop your PNGs onto it — add as many as you like: each image becomes a page."
+    - "Reorder pages with the arrow buttons and choose the page size: A4, Letter or fit to image, with or without margins."
+    - "Click “Download PDF” — the document is created right in your browser."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Crisp text in screenshots"
+      text: "PNGs are compressed losslessly in the PDF: small text, diagrams and interfaces stay sharp."
+    - title: "Transparency is kept"
+      text: "Transparent areas stay transparent — the page underneath shows white paper, not a black background."
+    - title: "Files stay on your device"
+      text: "The PDF is built on your device; your images aren't uploaded anywhere."
+    - title: "Mix formats in one PDF"
+      text: "Add JPG, HEIC, WebP and other images alongside PNG — they all become pages of one document."
+faq:
+  title: "FAQ"
+  items:
+    - q: "How do I combine several PNGs into one PDF?"
+      a: "Add all the images at once or one by one — each becomes a page. Change the order with the arrow buttons on a file's row and remove extras with the cross. Then click “Download PDF”."
+    - q: "Is the PNG quality preserved?"
+      a: "Yes. PNGs are compressed losslessly in the PDF — the pixels are the same as in the original. Black-and-white images and scans are stored in grayscale, which keeps the PDF smaller."
+    - q: "What happens to transparency?"
+      a: "Transparency is preserved: PDF viewers show transparent areas as white, like a sheet of paper."
+    - q: "Why is a PDF from PNGs bigger than from JPGs?"
+      a: "PNG stores images losslessly, so they take more space in the PDF too. If size matters more, compress the images first or convert them to JPG."
+    - q: "Which page size should I pick?"
+      a: "A4 (or Letter in the US) for printing and documents: the image fits the page and keeps its proportions. “Fit to image” makes each page exactly the size of the picture, with no white borders."
+    - q: "Can I add photos in other formats?"
+      a: "Yes: JPG, HEIC, WebP, AVIF, GIF, BMP, TIFF and JPEG XL. JPG photos go in without re-encoding, lossy formats in high quality."
+    - q: "Is it safe?"
+      a: "Yes. Only the tool itself is loaded from the site; the PDF is created in your browser and your files are never sent to a server."

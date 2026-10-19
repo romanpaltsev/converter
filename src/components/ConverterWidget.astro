@@ -21,12 +21,16 @@ const converts = tool.mode === 'convert';
 const strips = tool.mode === 'strip';
 // «Посмотреть EXIF»: только чтение — ни настроек, ни архива с результатами
 const inspects = tool.mode === 'inspect';
+// «Изображения в PDF»: размер страницы и поля вместо формата и качества; вместо ZIP — один PDF
+const pdfs = tool.mode === 'to-pdf';
+const PAGE_SIZES = ['a4', 'letter', 'image'] as const;
+const MARGINS = ['none', 'small'] as const;
 // шаблоны строк заполняем здесь: формат страницы и список всех поддерживаемых форматов
 const supported = list(Object.values(INPUT_FORMATS).map((f) => f.label));
 const base = UI[locale].widget;
 const t = {
   ...base,
-  dropTitle: converts ? format(base.dropTitle, { format: list(inputs.map((f) => f.label)) }) : base.dropTitleAny,
+  dropTitle: converts || pdfs ? format(base.dropTitle, { format: list(inputs.map((f) => f.label)) }) : base.dropTitleAny,
   // сжатие и изменение размера — не «конвертация»
   progress: converts ? base.progress : base.progressProcess,
   converting: converts ? base.converting : base.processing,
@@ -98,6 +102,32 @@ const DEFAULT_LONG_SIDE = 1920;
                 </fieldset>
                 <p class="settings__hint settings__hint--aligned" data-strip-hint>{t.stripHints.all}</p>
               </Fragment>
+            ) : pdfs ? (
+              <Fragment>
+                <fieldset class="settings__format">
+                  <legend class="settings__label">{t.pageSize}</legend>
+                  <div class="segmented">
+                    {PAGE_SIZES.map((size) => (
+                      <label class="segmented__option">
+                        <input type="radio" name="pageSize" value={size} checked={size === 'a4'} />
+                        <span>{t.pageSizes[size]}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+                <fieldset class="settings__format">
+                  <legend class="settings__label">{t.margin}</legend>
+                  <div class="segmented">
+                    {MARGINS.map((margin) => (
+                      <label class="segmented__option">
+                        <input type="radio" name="margin" value={margin} checked={margin === 'none'} />
+                        <span>{t.margins[margin]}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+                <p class="settings__hint settings__hint--aligned">{t.pdfHint}</p>
+              </Fragment>
             ) : (
               <fieldset class="settings__format">
                 <legend class="settings__label">{t.format}</legend>
@@ -113,7 +143,7 @@ const DEFAULT_LONG_SIDE = 1920;
             )
           }
           {tool.outputs.includes('ico') && <p class="settings__hint settings__hint--aligned" data-ico-hint hidden={tool.defaultOutput !== 'ico'}>{t.icoHint}</p>}
-          {!converts && !strips && <p class="settings__hint settings__hint--aligned" data-original-hint hidden={tool.defaultOutput !== 'original'}>{t.originalHint}</p>}
+          {!converts && !strips && !pdfs && <p class="settings__hint settings__hint--aligned" data-original-hint hidden={tool.defaultOutput !== 'original'}>{t.originalHint}</p>}
           {
             tool.mode === 'compress' && (
               <fieldset class="settings__format" data-compression-row>
@@ -191,7 +221,7 @@ const DEFAULT_LONG_SIDE = 1920;
             )
           }
           {
-            !strips && (
+            !strips && !pdfs && (
               <div class="settings__quality" data-quality-row hidden={!initial.hasQuality}>
                 <label class="settings__label" for={`${id}-quality`}>{t.quality}</label>
                 <input id={`${id}-quality`} type="range" name="quality" min="1" max="100" step="1" value={tool.defaultQuality} data-quality />
@@ -221,7 +251,7 @@ const DEFAULT_LONG_SIDE = 1920;
             )
           }
           {
-            !strips && (
+            !strips && !pdfs && (
               <Fragment>
                 <label class="checkbox settings__lossless" data-lossless-row hidden={!initial.hasLossless}>
                   <input type="checkbox" name="lossless" />
@@ -251,7 +281,7 @@ const DEFAULT_LONG_SIDE = 1920;
     <ul class="files" data-files></ul>
     <p class="settings__hint" data-settings-hint hidden>{t.settingsChanged}</p>
     <div class="converter__actions">
-      <button type="button" class="button button--primary" data-zip disabled hidden={inspects}>{t.downloadAll}</button>
+      <button type="button" class="button button--primary" data-zip disabled hidden={inspects}>{pdfs ? t.downloadPdf : t.downloadAll}</button>
       <button type="button" class="button" data-reconvert hidden>{t.reconvert}</button>
       <button type="button" class="button button--ghost" data-clear>{t.clear}</button>
     </div>

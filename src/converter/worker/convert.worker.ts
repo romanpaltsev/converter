@@ -5,10 +5,11 @@ import { convertImage } from '../pipeline/convert';
 import { loadDecoder } from '../pipeline/decoders';
 import { loadEncoder } from '../pipeline/encoders';
 import { checkInput } from '../pipeline/input';
+import { preparePdfPage } from '../pipeline/pdf-page';
 import { estimateNeeds, freshFootprint, projectFootprint } from '../pipeline/memory';
 import { targetSize } from '../pipeline/resize';
 import { sniff } from '../pipeline/sniff';
-import { ConvertError, type ErrorCode, WEBP_MAX_DIMENSION } from '../pipeline/types';
+import { type ConvertOptions, ConvertError, type ErrorCode, WEBP_MAX_DIMENSION } from '../pipeline/types';
 import type { FromWorker, ToWorker } from './protocol';
 
 interface WorkerScope {
@@ -142,6 +143,55 @@ async function handleStrip(message: Extract<ToWorker, { type: 'strip' }>): Promi
   }
 }
 
+/** «Изображения в PDF»: страница — JPEG как есть или пиксели; плюс превью. Тот же учёт памяти, что у конвертации. */
+async function handlePdfPage(message: Extract<ToWorker, { type: 'pdf-page' }>): Promise<void> {
+  const { id } = message;
+  try {
+    const bytes = new Uint8Array(await message.file.arrayBuffer());
+    const input = checkInput(bytes, 'jpeg', true);
+    if (!input.ok) throw new ConvertError(input.code);
+    const { kind } = sniff(bytes);
+    if (kind === 'unknown') throw new ConvertError('not-image');
+    const [decoder, encoder] = await Promise.all([loadDecoder(input.decoder), loadEncoder('jpeg')]);
+    modules.set(decoder.module, decoder);
+    modules.set(encoder.module, encoder);
+    const session = decoder.open(bytes);
+    try {
+      const pixels = session.width * session.height;
+      const needs = estimateNeeds({
+        decoder: input.decoder,
+        decoderModule: decoder.module,
+        encoder: 'jpeg',
+        encoderModule: encoder.module,
+        lossless: false,
+        pixels,
+        outputPixels: pixels,
+        fileBytes: bytes.length,
+      });
+      needs.js += pixels * 8; // каналы для PDF и их сжатая копия
+      const footprint = projectFootprint(needs, currentHeaps());
+      const fresh = freshFootprint(needs);
+      if (footprint > message.memoryLimit) {
+        post({ type: 'needs-memory', id, footprint, fresh });
+        return;
+      }
+      post({ type: 'started', id, footprint, fresh });
+      const options: ConvertOptions = { encoder: 'jpeg', quality: 90, lossless: false, metadata: 'dates', targetBytes: null, allowSameFormat: true, resize: null };
+      const result = await preparePdfPage(bytes, kind, session, encoder, options);
+      const preview = result.preview.buffer as ArrayBuffer;
+      // ICC не передаём владением: встроенные профили закэшированы в worker'е
+      const transfer = [result.image.data.buffer as ArrayBuffer, preview];
+      if (result.image.alpha) transfer.push(result.image.alpha.buffer as ArrayBuffer);
+      const heap = [...currentHeaps().values()].reduce((sum, bytes) => sum + bytes, 0);
+      post({ type: 'pdf-page', id, image: result.image, preview, width: result.width, height: result.height, passthrough: result.passthrough, warnings: result.warnings, heap }, transfer);
+    } finally {
+      session.close();
+    }
+  } catch (error) {
+    postError(id, error);
+  }
+}
+
 /** «Посмотреть EXIF»: модуль грузится только на этой странице; миниатюра передаётся без копирования. */
 async function handleInspect(message: Extract<ToWorker, { type: 'inspect' }>): Promise<void> {
   const { id } = message;
@@ -181,5 +231,7 @@ scope.onmessage = (event) => {
     void handleStrip(message);
   } else if (message.type === 'inspect') {
     void handleInspect(message);
+  } else if (message.type === 'pdf-page') {
+    void handlePdfPage(message);
   }
 };

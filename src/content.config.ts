@@ -36,6 +36,8 @@ const home = z.object({
   intro: text,
   /** Раздел «Обработка фото»: сжатие, размер, метаданные — инструменты, которые не меняют формат. */
   editToolsTitle: text,
+  /** Раздел «PDF». */
+  pdfToolsTitle: text,
   toolsTitle: text,
   features: z.array(z.object({ title: text, text })).min(2).max(4),
 });

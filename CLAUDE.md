@@ -2,7 +2,8 @@
 
 Онлайн-конвертер файлов: статический сайт на Astro (ru/en), конвертация полностью в браузере
 (module Web Worker + WASM), файлы на сервер не загружаются. Сейчас: HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF и JPEG XL → JPG, PNG, WebP, ICO или AVIF
-(23 страницы-конвертера), «Сжать фото», «Изменить размер», «Удалить метаданные» и «Посмотреть EXIF». Дальше по плану: PDF.
+(23 страницы-конвертера), «Сжать фото», «Изменить размер», «Удалить метаданные», «Посмотреть EXIF» и «Изображения в PDF»
+(JPG, PNG, HEIC → PDF). Дальше по плану: «PDF в JPG» и «Объединить PDF» (pdf.js).
 Обзор и команды — README.md, деплой — DEPLOY.md, тесты и замеры — TESTING.md, тексты — CONTENT.md.
 
 ## Правила работы
@@ -27,7 +28,8 @@
 
 Astro 7.4 (Vite 8 + Rolldown, Zod 4), TypeScript 6.0 strict (не 7.x: `@astrojs/check` поддерживает только ^5/^6),
 libheif-js 1.23.5 (libheif 1.23.5 + libde265 1.0.15), @jsquash/jpeg 1.6.0 (MozJPEG 3.3.1), @jsquash/png 3.1.1,
-client-zip 2.5.1, utif2 4.1.0 (UTIF.js, с ним pako 1.0.11), jxl-oxide-wasm 0.12.6, шрифт Inter Variable (@fontsource-variable/inter 5.3.0, OFL), Vitest 5, Playwright 1.64, Node 24 LTS, nginx 1.30. Версии закреплены точно (`.npmrc`: `save-exact`).
+client-zip 2.5.1, utif2 4.1.0 (UTIF.js, с ним pako 1.0.11), jxl-oxide-wasm 0.12.6, pdfjs-dist 6.4.299 (пока только
+в тестах: разбор PDF), шрифт Inter Variable (@fontsource-variable/inter 5.3.0, OFL), Vitest 5, Playwright 1.64, Node 24 LTS, nginx 1.30. Версии закреплены точно (`.npmrc`: `save-exact`).
 
 ## Устройство
 
@@ -41,7 +43,7 @@ src/pages/[tool].astro        страницы-конвертеры из рее�
 src/components/pages/*.astro  страницы целиком: ToolPage, HomePage, LicensesPage, ContactsPage, NotFoundPage
 src/converter/pipeline/       sniff + checkInput (input.ts) → декодер (decoders/) → RGBA → поворот (orientation.ts) →
                               кодировщик (encoders/) → метаданные; превью; headers.ts — размеры до декодирования;
-                              memory.ts — оценка памяти файла для пула worker'ов
+                              memory.ts — оценка памяти файла для пула worker'ов; pdf-page.ts — картинка страницы PDF
 src/converter/pipeline/codecs общий загрузчик модуля PNG (декодер и кодировщик — один экземпляр)
 src/converter/vendor/webp/    собранная libwebp 1.6.0 (WASM + glue, BUILD.txt); исходники сборки — codecs/webp/
 src/converter/vendor/avif/    собранные libheif 1.23.6 + dav1d 1.5.4 (декодер AVIF, BUILD.txt); исходники — codecs/avif/
@@ -51,6 +53,7 @@ src/converter/metadata/       TIFF/EXIF, фильтр EXIF, APP1/APP2 в JPEG, e
                               на месте, exif-tags.ts — словарь тегов; strip/ — «Удалить метаданные» по форматам;
                               inspect/ — «Посмотреть EXIF» (сводка, таблица тегов, профиль, размер по заголовкам)
 src/converter/color/          ICC-профили (CC0) и выбор по nclx
+src/converter/pdf/            writer.ts — свой писатель PDF («Изображения в PDF»)
 src/converter/worker/         convert.worker.ts (конвертация), zip.worker.ts (ZIP), protocol.ts
 src/converter/widget/         виджет: controller.ts (очередь, DOM), worker-pool.ts (сколько файлов одновременно, память),
                               worker-client.ts (один worker: запуск, модули, задание)
@@ -221,6 +224,21 @@ scripts/                      serve-dist (тестовый сервер как n
   (SOF, IHDR, VP8X, ispe + irot, SizeHeader JPEG XL с ориентацией, GIF, BMP, IFD0). Встроенная миниатюра EXIF (IFD1)
   показывается вместо превью — бывает, что на ней снимок до обрезки. «Скачать без метаданных» — удаление в режиме
   «все» прямо в основном потоке (один файл по нажатию). Подпись кнопки начинается с видимого текста (WCAG 2.5.3).
+- **«Изображения в PDF»** (`/jpg-v-pdf`, `/png-v-pdf`, `/heic-v-pdf`; режим `to-pdf`; запрос владельца 19.10.2026 «PDF,
+  начиная с JPG в PDF»): все файлы — страницы одного PDF в порядке списка (кнопки ↑ ↓ ✕ у строк, фокус остаётся на
+  кнопке), «Скачать PDF» — когда обработаны все файлы; имя — по первому файлу. Любой поддерживаемый вход.
+  - Worker готовит картинку страницы (`pipeline/pdf-page.ts`) и превью: JPEG — как есть (DCTDecode; без EXIF/XMP
+    и хвостов после EOI — `stripJpeg`), поворот по EXIF делает матрица `cm` (`orientationMatrix()`, все 8 значений
+    сверены с `applyOrientation()` в unit-тесте); без потерь (PNG, GIF, BMP, TIFF, WebP VP8L) — пиксели, сжатые
+    `CompressionStream('deflate')` (FlateDecode; если все точки серые — 1 канал), прозрачность — маска SMask;
+    остальное (HEIC, AVIF, WebP с потерями, JPEG XL) — MozJPEG 90. Цвет — ICCBased с профилем исходника или
+    эквивалентом nclx (профиль не того числа каналов не используется), одинаковые профили пишутся один раз.
+  - Свой писатель (`pdf/writer.ts`, без зависимостей): PDF 1.7, каталог, страницы, XObject, xref; ни Info, ни XMP —
+    метаданных документа и фото нет. Страница: A4 (по умолчанию) / Letter — картинка вписывается по центру,
+    альбомная — на альбомный лист; «По размеру фото» — 96 dpi (1 px = 0,75 pt); поля 10 мм снаружи. Размер страниц
+    и поля применяются при сборке — файлы заново не обрабатываются.
+  - Проверка — pdf.js в Node (`pdfjs-dist` 6.4.299, legacy-сборка): размеры страниц, матрицы, пиксели FlateDecode
+    и SMask, xref по смещениям; в e2e — сжатые данные исходного JPEG есть в PDF байт в байт.
 - **GIF на входе** — свой декодер на TypeScript (`decoders/gif.ts`, без WASM): LZW, палитра, чересстрочность. Первый
   кадр — как в браузере: на прозрачном холсте логического экрана (фон GIF не рисуется), прозрачный индекс — прозрачный
   пиксель, обрезанный файл — декодированная часть, остальное прозрачно; у анимации — предупреждение. Цвет — sRGB.

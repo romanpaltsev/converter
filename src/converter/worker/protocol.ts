@@ -2,6 +2,7 @@
 
 import type { MetadataReport } from '../metadata/inspect/types';
 import type { RemovedKind, StripMode } from '../metadata/strip/types';
+import type { PdfImage } from '../pdf/writer';
 import type { ConvertOptions, DecoderId, EncoderId, ErrorCode, WarningCode } from '../pipeline/types';
 
 export type ToWorker =
@@ -21,7 +22,9 @@ export type ToWorker =
   /** «Удалить метаданные»: без WASM и перекодирования. */
   | { type: 'strip'; id: number; file: Blob; mode: StripMode; memoryLimit: number }
   /** «Посмотреть EXIF»: только чтение, без WASM. */
-  | { type: 'inspect'; id: number; file: Blob; memoryLimit: number };
+  | { type: 'inspect'; id: number; file: Blob; memoryLimit: number }
+  /** «Изображения в PDF»: картинка страницы и превью. */
+  | { type: 'pdf-page'; id: number; file: Blob; memoryLimit: number };
 
 export interface WorkerStats {
   /** Размеры куч WASM после обработки (байты) по модулям: libheif, mozjpeg-enc, squoosh-png… */
@@ -59,5 +62,19 @@ export type FromWorker =
   /** Метаданные удалены; changed = false — удалять было нечего, buffer — исходный файл. */
   | { type: 'stripped'; id: number; buffer: ArrayBuffer; changed: boolean; removed: RemovedKind[]; warnings: WarningCode[] }
   | { type: 'inspected'; id: number; report: MetadataReport }
+  | {
+      type: 'pdf-page';
+      id: number;
+      image: PdfImage;
+      preview: ArrayBuffer;
+      /** Размер картинки, как она видна (после поворота). */
+      width: number;
+      height: number;
+      /** JPEG вставлен без перекодирования. */
+      passthrough: boolean;
+      warnings: WarningCode[];
+      /** Кучи WASM-модулей worker'а после файла (байты). */
+      heap: number;
+    }
   /** fatal — нужен новый worker и повторная попытка; recycle — новый worker без повторной попытки. */
   | { type: 'error'; id: number; code: ErrorCode; fatal: boolean; recycle: boolean; message: string };

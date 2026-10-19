@@ -1,0 +1,48 @@
+# Texts for /en/jpg-to-pdf. Draft for the owner's review (see CONTENT.md).
+title: "JPG to PDF Converter — Combine Photos into One PDF"
+description: "Turn JPG images into a PDF right in your browser: combine several photos into one document with A4, Letter or fit-to-image pages. No re-encoding, no uploads."
+h1: "JPG to PDF"
+subtitle: "Combine photos into one PDF in the order you want. Free, and your files never leave your device."
+breadcrumb: "JPG to PDF"
+card:
+  title: "JPG to PDF"
+  text: "Combine photos and scans into a single PDF document."
+app:
+  name: "JPG to PDF Converter"
+  description: "An online tool that combines JPG images into a PDF right in your browser, without uploading files."
+howTo:
+  title: "How to convert JPG to PDF"
+  steps:
+    - "Click the box above or drop your JPGs onto it — add as many as you like: each image becomes a page."
+    - "Reorder pages with the arrow buttons and choose the page size: A4, Letter or fit to image, with or without margins."
+    - "Click “Download PDF” — the document is created right in your browser."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "No quality loss"
+      text: "JPGs go into the PDF as they are, without recompression: photos and scans keep their quality, and the PDF is no bigger than the images."
+    - title: "Files stay on your device"
+      text: "The PDF is built on your device. ID scans, contracts and personal photos are never uploaded."
+    - title: "Page order and size"
+      text: "Reorder pages and pick A4 or Letter — landscape shots get a landscape page automatically."
+    - title: "No hidden data"
+      text: "GPS location, phone model and other photo metadata don't make it into the PDF — only the images do."
+faq:
+  title: "FAQ"
+  items:
+    - q: "How do I combine several JPGs into one PDF?"
+      a: "Add all the photos at once or one by one — each becomes a page. Change the order with the arrow buttons on a file's row and remove extras with the cross. Then click “Download PDF”."
+    - q: "Will the photo quality get worse?"
+      a: "No. JPGs are placed into the PDF without re-encoding — it's the same data as in the original file. That's also why the PDF is about the size of the photos combined."
+    - q: "Which page size should I pick?"
+      a: "A4 (or Letter in the US) for printing and documents: the image fits the page and keeps its proportions. “Fit to image” makes each page exactly the size of the picture, with no white borders."
+    - q: "Why is a portrait photo on a portrait page?"
+      a: "Page orientation follows each image: portrait shots get portrait pages, landscape shots get landscape ones. EXIF rotation is respected, so photos don't end up sideways."
+    - q: "Can I add PNG, HEIC and other formats?"
+      a: "Yes. One PDF can combine JPG, PNG, HEIC, WebP, AVIF, GIF, BMP, TIFF and JPEG XL. PNG and other lossless formats stay lossless; the rest are stored in high quality."
+    - q: "Are the location and date kept?"
+      a: "No, photo metadata isn't carried into the PDF — the document contains only the images. Handy when you send scans or photos to strangers."
+    - q: "Is it safe?"
+      a: "Yes. Only the tool itself is loaded from the site; the PDF is created in your browser and your files are never sent to a server."
+    - q: "Are there any limits?"
+      a: "You can add up to 100 images at a time. The page size and margins can be changed after adding files — no need to process them again."
