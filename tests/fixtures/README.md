@@ -3,7 +3,7 @@
 Все файлы здесь синтетические (без личных данных), генерируются командой `npm run fixtures`
 (Docker-образ `tests/fixtures/generate`: Debian forky, heif-enc 1.23.6, exiftool, ImageMagick, cjpeg, apngasm).
 Результат закоммичен, перегенерировать нужно только при изменении `generate/generate.sh`. Генератор разбит на секции:
-Секции: `heic`, `jpeg-png`, `webp`, `avif`, `gif`, `bmp`, `tiff`. `npm run fixtures -- jpeg-png` пересоздаёт только JPEG/PNG, не трогая HEIC (heif-enc другой версии изменил бы их побайтно).
+Секции: `heic`, `jpeg-png`, `webp`, `avif`, `gif`, `bmp`, `tiff`, `jxl`. `npm run fixtures -- jpeg-png` пересоздаёт только JPEG/PNG, не трогая HEIC (heif-enc другой версии изменил бы их побайтно).
 
 | Файл | Что проверяем |
 |---|---|
@@ -56,6 +56,10 @@
 | `alpha.tif`, `alpha-assoc.tif` | 16 бит с альфой: обычной и предумноженной — красный круг на прозрачном фоне 200×150 |
 | `multipage.tif`, `cmyk.tif` | две страницы (первая — квадранты); CMYK — понятная ошибка |
 | `exif-gps.tif`, `rotated.tif` | ICC P3, даты, GPS, камера (exiftool); хранится повёрнутым 400×300, Orientation 6 → 300×400 |
+| `basic.jxl`, `codestream.jxl` | квадранты 1200×800 без потерь: контейнер; «голый» кодовый поток |
+| `alpha.jxl`, `animated.jxl` | красный круг на прозрачном фоне 800×600; анимация из animated.png |
+| `exif-gps.jxl`, `exif-brotli.jxl` | перепаковка exif-gps.jpg (ICC P3, даты, GPS): Exif несжатый; Exif в brob (brotli) |
+| `rotated.jxl` | перепаковка rotated.jpg: Orientation 6 в заголовке кодового потока → 600×800 |
 | `too-wide.png` | 16400×8 — шире предела WebP (16 383 точки) |
 | `exif/big-endian.tiff`, `exif/little-endian.tiff` | сырые EXIF-блоки (TIFF) с датами, GPS, Make/Model, Orientation = 6 — для unit-тестов |
 

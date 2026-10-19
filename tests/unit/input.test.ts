@@ -67,6 +67,11 @@ describe('checkInput', () => {
     expect(checkInput(head('rle8.bmp'), 'original', true)).toEqual({ ok: true, decoder: 'bmp', encoder: 'png' });
   });
 
+  test('JPEG XL — декодер jxl; «Исходный» — JPG', () => {
+    expect(checkInput(head('basic.jxl'), 'png')).toEqual({ ok: true, decoder: 'jxl', encoder: 'png' });
+    expect(checkInput(head('codestream.jxl'), 'original', true)).toEqual({ ok: true, decoder: 'jxl', encoder: 'jpeg' });
+  });
+
   test('AVIF — декодер avif, в том числе анимированный (avis)', () => {
     expect(checkInput(head('photo.avif'), 'jpeg')).toEqual({ ok: true, decoder: 'avif', encoder: 'jpeg' });
     expect(checkInput(head('animated.avif'), 'webp')).toEqual({ ok: true, decoder: 'avif', encoder: 'webp' });

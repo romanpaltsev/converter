@@ -20,6 +20,7 @@ export const INPUT_FORMATS = {
   gif: { label: 'GIF', accept: '.gif,image/gif', decoder: 'gif' },
   bmp: { label: 'BMP', accept: '.bmp,.dib,image/bmp,image/x-ms-bmp', decoder: 'bmp' },
   tiff: { label: 'TIFF', accept: '.tif,.tiff,image/tiff', decoder: 'tiff' },
+  jxl: { label: 'JPEG XL', accept: '.jxl,image/jxl', decoder: 'jxl' },
 } as const satisfies Record<string, { label: string; accept: string; decoder: DecoderId }>;
 
 export const OUTPUT_FORMATS = {
@@ -67,7 +68,7 @@ const ALL_OUTPUTS: OutputFormatId[] = ['jpeg', 'png', 'webp'];
 const ICON_OUTPUTS: OutputFormatId[] = ['ico', 'png', 'jpeg', 'webp'];
 /** Сжатие и изменение размера: по умолчанию формат сохраняется. */
 const SAME_OR_ANY: OutputChoiceId[] = ['original', 'jpeg', 'png', 'webp'];
-const ALL_INPUTS: InputFormatId[] = ['heic', 'avif', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tiff'];
+const ALL_INPUTS: InputFormatId[] = ['heic', 'avif', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'jxl'];
 
 /** Сначала сжатие и размер, затем конвертеры по входному формату: так идут карточки на главной и ссылки в подвале. */
 export const TOOLS: ToolConfig[] = [
@@ -282,6 +283,26 @@ export const TOOLS: ToolConfig[] = [
     outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'tiff-to-png',
+  },
+  {
+    id: 'jxl-to-jpg',
+    mode: 'convert',
+    slugs: { ru: 'jxl-v-jpg', en: 'jxl-to-jpg' },
+    inputFormats: ['jxl'],
+    defaultOutput: 'jpeg',
+    outputs: ALL_OUTPUTS,
+    defaultQuality: 90,
+    content: 'jxl-to-jpg',
+  },
+  {
+    id: 'jxl-to-png',
+    mode: 'convert',
+    slugs: { ru: 'jxl-v-png', en: 'jxl-to-png' },
+    inputFormats: ['jxl'],
+    defaultOutput: 'png',
+    outputs: ALL_OUTPUTS,
+    defaultQuality: 90,
+    content: 'jxl-to-png',
   },
 ];
 

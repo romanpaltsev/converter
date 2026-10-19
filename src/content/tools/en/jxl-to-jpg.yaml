@@ -1,0 +1,44 @@
+# Texts for /en/jxl-to-jpg. Draft for the owner's review (see CONTENT.md).
+title: "JPEG XL to JPG Converter — Free, Private, No Upload"
+description: "Convert JPEG XL (.jxl) images to JPG right in your browser so they open anywhere. Free, no sign-up, and your files never leave your device."
+h1: "JPEG XL to JPG Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "JPEG XL to JPG"
+card:
+  title: "JPEG XL → JPG"
+  text: "The new .jxl format as a JPG that opens everywhere."
+app:
+  name: "JPEG XL to JPG Converter"
+  description: "An online JPEG XL to JPG converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert JPEG XL to JPG"
+  steps:
+    - "Click the box above or drag your .jxl files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each JPG separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them."
+    - title: "Colors and rotation are kept"
+      text: "The color profile is copied into the JPG, and the image is rotated as specified in the JPEG XL file."
+    - title: "MozJPEG encoding"
+      text: "JPGs are created with Mozilla's MozJPEG encoder. You can adjust the quality with the slider."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is JPEG XL?"
+      a: "JPEG XL (.jxl) is a new image format: it compresses better than JPG and can store images losslessly. Not every app or browser opens it yet, so JPG is handier for sharing and publishing."
+    - q: "Why is the JPG bigger than the JXL?"
+      a: "JPEG XL compresses more efficiently, so the same image at similar quality takes more space as a JPG. That's expected; lower the quality slider if you need a smaller file."
+    - q: "What happens to an animation?"
+      a: "A JPG holds a single image, so the first frame of an animated JXL is saved and the file's row tells you about it."
+    - q: "What happens to the metadata?"
+      a: "By default the capture date is kept, while the location and camera details are removed; tick “Keep all metadata” to copy everything. Metadata compressed inside the JXL (what cjxl does by default) can't be read yet, so it won't appear in the JPG. The color profile is always kept."
+    - q: "What about transparency?"
+      a: "JPG has no transparency, so transparent areas are placed on a white background. To keep transparency, choose PNG or WebP."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

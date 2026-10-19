@@ -1514,6 +1514,146 @@
 - **Are the colors preserved?** Yes. An embedded color profile is copied into the PNG; without one, sRGB is used.
 - **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
 
+### jxl-to-jpg
+
+#### Русский — `/jxl-v-jpg`
+
+Файл: `src/content/tools/ru/jxl-to-jpg.yaml`
+
+- **title:** JPEG XL в JPG онлайн — бесплатно, без загрузки на сервер _(56 симв.)_
+- **description:** Конвертируйте изображения JPEG XL (.jxl) в JPG прямо в браузере, чтобы открыть их где угодно. Бесплатно, без регистрации, файлы не загружаются на сервер. _(153 симв.)_
+- **H1:** Конвертер JPEG XL в JPG
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** JPEG XL в JPG
+- **Карточка:** JPEG XL → JPG — Новый формат .jxl — в JPG, который открывается везде.
+- **JSON-LD:** Конвертер JPEG XL в JPG — Онлайн-конвертер изображений JPEG XL в JPG, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать JPEG XL в JPG**
+
+1. Нажмите на область выше или перетащите на неё файлы .jxl — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте JPG по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Изображения не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Цвета и поворот сохраняются.** Цветовой профиль переносится в JPG, а снимок поворачивается так, как задано в файле JPEG XL.
+- **Сжатие MozJPEG.** JPG создаётся кодировщиком MozJPEG от Mozilla. Качество настраивается ползунком.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое JPEG XL?** JPEG XL (.jxl) — новый формат изображений: он сжимает лучше JPG и умеет хранить снимки без потерь. Но открывают его пока не все программы и браузеры, поэтому для пересылки и публикации удобнее JPG.
+- **Почему JPG получается больше, чем JXL?** JPEG XL сжимает эффективнее, поэтому тот же снимок в JPG при сопоставимом качестве весит больше. Это нормально; если нужен файл поменьше, уменьшите качество ползунком.
+- **Что будет с анимацией?** JPG хранит одно изображение, поэтому из анимированного JXL сохранится первый кадр, а в строке файла появится пояснение.
+- **Что происходит с метаданными?** По умолчанию сохраняется дата съёмки, а геолокация и сведения о камере удаляются; галочка «Сохранить все метаданные» переносит всё. Метаданные, сжатые внутри JXL (так по умолчанию делает cjxl), пока не читаются — тогда в JPG их не будет. Цветовой профиль переносится всегда.
+- **Что делать с прозрачностью?** В JPG прозрачности нет, поэтому прозрачные области ложатся на белый фон. Чтобы сохранить прозрачность, выберите PNG или WebP.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/jxl-to-jpg`
+
+Файл: `src/content/tools/en/jxl-to-jpg.yaml`
+
+- **title:** JPEG XL to JPG Converter — Free, Private, No Upload _(51 симв.)_
+- **description:** Convert JPEG XL (.jxl) images to JPG right in your browser so they open anywhere. Free, no sign-up, and your files never leave your device. _(139 симв.)_
+- **H1:** JPEG XL to JPG Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** JPEG XL to JPG
+- **Карточка:** JPEG XL → JPG — The new .jxl format as a JPG that opens everywhere.
+- **JSON-LD:** JPEG XL to JPG Converter — An online JPEG XL to JPG converter that runs in your browser without uploading your images.
+
+**How to convert JPEG XL to JPG**
+
+1. Click the box above or drag your .jxl files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each JPG separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Colors and rotation are kept.** The color profile is copied into the JPG, and the image is rotated as specified in the JPEG XL file.
+- **MozJPEG encoding.** JPGs are created with Mozilla's MozJPEG encoder. You can adjust the quality with the slider.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **What is JPEG XL?** JPEG XL (.jxl) is a new image format: it compresses better than JPG and can store images losslessly. Not every app or browser opens it yet, so JPG is handier for sharing and publishing.
+- **Why is the JPG bigger than the JXL?** JPEG XL compresses more efficiently, so the same image at similar quality takes more space as a JPG. That's expected; lower the quality slider if you need a smaller file.
+- **What happens to an animation?** A JPG holds a single image, so the first frame of an animated JXL is saved and the file's row tells you about it.
+- **What happens to the metadata?** By default the capture date is kept, while the location and camera details are removed; tick “Keep all metadata” to copy everything. Metadata compressed inside the JXL (what cjxl does by default) can't be read yet, so it won't appear in the JPG. The color profile is always kept.
+- **What about transparency?** JPG has no transparency, so transparent areas are placed on a white background. To keep transparency, choose PNG or WebP.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
+### jxl-to-png
+
+#### Русский — `/jxl-v-png`
+
+Файл: `src/content/tools/ru/jxl-to-png.yaml`
+
+- **title:** JPEG XL в PNG онлайн — без потерь, без загрузки на сервер _(57 симв.)_
+- **description:** Конвертируйте изображения JPEG XL (.jxl) в PNG прямо в браузере: без потерь и с прозрачностью. Бесплатно, без регистрации, файлы не загружаются на сервер. _(154 симв.)_
+- **H1:** Конвертер JPEG XL в PNG
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** JPEG XL в PNG
+- **Карточка:** JPEG XL → PNG — Без потерь и с прозрачностью — формат, который открывается везде.
+- **JSON-LD:** Конвертер JPEG XL в PNG — Онлайн-конвертер изображений JPEG XL в PNG, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать JPEG XL в PNG**
+
+1. Нажмите на область выше или перетащите на неё файлы .jxl — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте PNG по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Изображения не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Без потерь.** PNG хранит каждый пиксель точно, поэтому изображение не теряет качества при конвертации.
+- **Прозрачность сохраняется.** Прозрачные области JPEG XL остаются прозрачными в PNG.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое JPEG XL?** JPEG XL (.jxl) — новый формат изображений: он сжимает лучше JPG и PNG и умеет хранить снимки без потерь. Но открывают его пока не все программы и сайты, а PNG понимают везде.
+- **Почему PNG намного больше, чем JXL?** JPEG XL сжимает гораздо эффективнее, а PNG хранит фотографию без потерь, поэтому файл может стать в разы больше. Если важен размер, выберите JPG или WebP.
+- **Изменится ли изображение?** Пиксели переносятся без потерь. Если JXL хранит больше 8 бит на канал, PNG сохранится с 8 битами: на экране разницы не видно.
+- **Что будет с анимацией?** Сохранится первый кадр анимированного JXL, а в строке файла появится пояснение.
+- **Сохранятся ли цвета?** Да. Цветовой профиль изображения переносится в PNG, поэтому цвета не тускнеют.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/jxl-to-png`
+
+Файл: `src/content/tools/en/jxl-to-png.yaml`
+
+- **title:** JPEG XL to PNG Converter — Lossless, Private, No Upload _(55 симв.)_
+- **description:** Convert JPEG XL (.jxl) images to PNG right in your browser: lossless, with transparency. Free, no sign-up, and your files never leave your device. _(146 симв.)_
+- **H1:** JPEG XL to PNG Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** JPEG XL to PNG
+- **Карточка:** JPEG XL → PNG — Lossless, with transparency — a format that opens everywhere.
+- **JSON-LD:** JPEG XL to PNG Converter — An online JPEG XL to PNG converter that runs in your browser without uploading your images.
+
+**How to convert JPEG XL to PNG**
+
+1. Click the box above or drag your .jxl files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each PNG separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Lossless.** PNG keeps every pixel exactly, so the image loses no quality in conversion.
+- **Transparency is kept.** Transparent areas of the JPEG XL stay transparent in the PNG.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **What is JPEG XL?** JPEG XL (.jxl) is a new image format: it compresses better than JPG and PNG and can store images losslessly. Not every app or website opens it yet, while PNG works everywhere.
+- **Why is the PNG so much bigger than the JXL?** JPEG XL compresses far more efficiently, while PNG stores photos losslessly, so the file can get several times larger. If size matters, choose JPG or WebP.
+- **Will the image change?** Pixels are copied losslessly. If the JXL stores more than 8 bits per channel, the PNG is saved with 8 bits: you won't see the difference on screen.
+- **What happens to an animation?** The first frame of an animated JXL is saved and the file's row tells you about it.
+- **Are the colors preserved?** Yes. The image's color profile is copied into the PNG, so colors don't look washed out.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
 ## Другие страницы
 
 ### Главная
@@ -1625,7 +1765,7 @@
 | `widget.dropTitleAny` | Перетащите изображения сюда | Drop images here |
 | `widget.originalFormat` | Исходный | Original |
 | `widget.icoHint` | В иконку войдут размеры от 16 до 256 пикселей (не больше исходника); прямоугольная картинка впишется в квадрат с прозрачными полями. Метаданные в ICO не сохраняются. | The icon gets sizes from 16 to 256 pixels (no larger than the original); a non-square image is fitted into a square with transparent margins. ICO keeps no metadata. |
-| `widget.originalHint` | Формат файла сохраняется; HEIC, AVIF и TIFF сохраняются в JPG, GIF и BMP — в PNG. | The file keeps its format; HEIC, AVIF and TIFF are saved as JPG, GIF and BMP as PNG. |
+| `widget.originalHint` | Формат файла сохраняется; HEIC, AVIF, JPEG XL и TIFF сохраняются в JPG, GIF и BMP — в PNG. | The file keeps its format; HEIC, AVIF, JPEG XL and TIFF are saved as JPG, GIF and BMP as PNG. |
 | `widget.compression` | Сжатие | Compression |
 | `widget.byQuality` | По качеству | By quality |
 | `widget.byTarget` | До размера | To file size |

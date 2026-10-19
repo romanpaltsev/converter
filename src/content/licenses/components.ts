@@ -17,6 +17,7 @@ export type LicenseTextId =
   | 'client-zip-mit'
   | 'utif-mit'
   | 'pako-mit'
+  | 'jxl-oxide-mit'
   | 'inter-ofl';
 
 export interface ThirdPartyComponent {
@@ -149,6 +150,14 @@ export const COMPONENTS: ThirdPartyComponent[] = [
     source: 'https://github.com/nodeca/pako/tree/1.0.11',
   },
   {
+    name: 'jxl-oxide (jxl-oxide-wasm)',
+    version: '0.12.6',
+    purpose: { ru: 'чтение файлов JPEG XL', en: 'reading JPEG XL files' },
+    license: 'MIT / Apache 2.0',
+    texts: ['jxl-oxide-mit', 'apache-2.0'],
+    source: 'https://github.com/tirr-c/jxl-oxide',
+  },
+  {
     name: 'Inter (@fontsource-variable/inter)',
     version: '5.3.0',
     purpose: { ru: 'шрифт интерфейса', en: 'interface font' },
@@ -180,6 +189,7 @@ export const LICENSE_TITLES: Record<LicenseTextId, string> = {
   'client-zip-mit': 'client-zip (MIT)',
   'utif-mit': 'UTIF.js (MIT, Photopea)',
   'pako-mit': 'pako (MIT)',
+  'jxl-oxide-mit': 'jxl-oxide (MIT, Wonwoo Choi)',
   'inter-ofl': 'Inter (SIL Open Font License 1.1)',
 };
 

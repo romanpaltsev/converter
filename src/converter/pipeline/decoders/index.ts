@@ -11,6 +11,7 @@ const loaders: Record<DecoderId, () => Promise<Decoder>> = {
   gif: () => import('./gif').then((m) => m.loadGifDecoder()),
   bmp: () => import('./bmp').then((m) => m.loadBmpDecoder()),
   tiff: () => import('./tiff').then((m) => m.loadTiffDecoder()),
+  jxl: () => import('./jxl').then((m) => m.loadJxlDecoder()),
 };
 
 const cache = new Map<DecoderId, Promise<Decoder>>();

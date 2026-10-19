@@ -1,0 +1,44 @@
+# Texts for /en/jxl-to-png. Draft for the owner's review (see CONTENT.md).
+title: "JPEG XL to PNG Converter — Lossless, Private, No Upload"
+description: "Convert JPEG XL (.jxl) images to PNG right in your browser: lossless, with transparency. Free, no sign-up, and your files never leave your device."
+h1: "JPEG XL to PNG Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "JPEG XL to PNG"
+card:
+  title: "JPEG XL → PNG"
+  text: "Lossless, with transparency — a format that opens everywhere."
+app:
+  name: "JPEG XL to PNG Converter"
+  description: "An online JPEG XL to PNG converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert JPEG XL to PNG"
+  steps:
+    - "Click the box above or drag your .jxl files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each PNG separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them."
+    - title: "Lossless"
+      text: "PNG keeps every pixel exactly, so the image loses no quality in conversion."
+    - title: "Transparency is kept"
+      text: "Transparent areas of the JPEG XL stay transparent in the PNG."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is JPEG XL?"
+      a: "JPEG XL (.jxl) is a new image format: it compresses better than JPG and PNG and can store images losslessly. Not every app or website opens it yet, while PNG works everywhere."
+    - q: "Why is the PNG so much bigger than the JXL?"
+      a: "JPEG XL compresses far more efficiently, while PNG stores photos losslessly, so the file can get several times larger. If size matters, choose JPG or WebP."
+    - q: "Will the image change?"
+      a: "Pixels are copied losslessly. If the JXL stores more than 8 bits per channel, the PNG is saved with 8 bits: you won't see the difference on screen."
+    - q: "What happens to an animation?"
+      a: "The first frame of an animated JXL is saved and the file's row tells you about it."
+    - q: "Are the colors preserved?"
+      a: "Yes. The image's color profile is copied into the PNG, so colors don't look washed out."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

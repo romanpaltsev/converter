@@ -9,6 +9,7 @@ export type SniffResult =
   | { kind: 'gif' }
   | { kind: 'bmp' }
   | { kind: 'tiff' }
+  | { kind: 'jxl' }
   | { kind: 'unknown' };
 
 export type SniffKind = SniffResult['kind'];
@@ -60,6 +61,9 @@ export function sniff(bytes: Uint8Array): SniffResult {
   }
   const b = (i: number) => bytes[i] ?? -1;
   if (b(0) === 0xff && b(1) === 0xd8 && b(2) === 0xff) return { kind: 'jpeg' };
+  // JPEG XL: «голый» кодовый поток (FF 0A) или контейнер, первый бокс которого — «JXL » (а не ftyp)
+  if (b(0) === 0xff && b(1) === 0x0a) return { kind: 'jxl' };
+  if (ascii(bytes, 4, 4) === 'JXL ' && b(0) === 0 && b(3) === 0x0c) return { kind: 'jxl' };
   if (b(0) === 0x89 && ascii(bytes, 1, 3) === 'PNG' && b(4) === 0x0d && b(5) === 0x0a) return { kind: 'png' };
   if (ascii(bytes, 0, 4) === 'GIF8') return { kind: 'gif' };
   if (ascii(bytes, 0, 4) === 'RIFF' && ascii(bytes, 8, 4) === 'WEBP') return { kind: 'webp' };

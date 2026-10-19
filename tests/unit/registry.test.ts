@@ -49,6 +49,8 @@ describe('реестр инструментов', () => {
       'bmp-to-png': ['bmp-to-jpg', 'heic-to-png', 'avif-to-png', 'jpg-to-png'],
       'tiff-to-jpg': ['tiff-to-png', 'heic-to-jpg', 'avif-to-jpg', 'png-to-jpg'],
       'tiff-to-png': ['tiff-to-jpg', 'heic-to-png', 'avif-to-png', 'jpg-to-png'],
+      'jxl-to-jpg': ['jxl-to-png', 'heic-to-jpg', 'avif-to-jpg', 'png-to-jpg'],
+      'jxl-to-png': ['jxl-to-jpg', 'heic-to-png', 'avif-to-png', 'jpg-to-png'],
     });
   });
 

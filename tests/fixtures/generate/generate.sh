@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Генерация синтетических фикстур (без личных данных).
 # Запуск: npm run fixtures [-- секции] (собирает Docker-образ и выполняет этот скрипт внутри него).
-# Секции через запятую: heic, jpeg-png, webp, avif, gif, bmp, tiff (по умолчанию — все). Секция пересоздаёт только свои файлы:
+# Секции через запятую: heic, jpeg-png, webp, avif, gif, bmp, tiff, jxl (по умолчанию — все). Секция пересоздаёт только свои файлы:
 # HEIC-фикстуры не меняются побайтно, когда добавляются фикстуры других форматов.
 # Внутри контейнера: /out — tests/fixtures, /icc — src/converter/color/icc.
 set -euo pipefail
@@ -382,6 +382,33 @@ exiftool -q -overwrite_original "-Orientation#=6" "$OUT/rotated.tif"
 echo "== самопроверка TIFF"
 for f in basic deflate packbits jpeg raw tiled 16bit gray mono-g4 palette alpha alpha-assoc multipage cmyk exif-gps rotated; do
   printf '%s: ' "$f"; tiffinfo "$OUT/$f.tif" 2>/dev/null | grep -E 'Compression|Photometric|Bits/Sample|Extra|Tile Width|Orientation' | tr -s ' ' | tr '\n' ';'; echo
+done
+fi
+
+if want jxl; then
+echo "== basic.jxl: квадранты 1200x800 без потерь (контейнер); codestream.jxl: то же, «голый» кодовый поток"
+quadrants 1200 800 jxl-quad.png
+cjxl -q 100 --container=1 jxl-quad.png "$OUT/basic.jxl" >/dev/null 2>&1
+cjxl -q 100 --container=0 jxl-quad.png "$OUT/codestream.jxl" >/dev/null 2>&1
+
+echo "== alpha.jxl: красный круг на прозрачном фоне 800x600"
+"${IM[@]}" -size 800x600 xc:none -fill '#e00000' -draw 'circle 400,300 400,80' png32:jxl-alpha.png
+cjxl -q 100 jxl-alpha.png "$OUT/alpha.jxl" >/dev/null 2>&1
+
+echo "== exif-gps.jxl: перепаковка exif-gps.jpg (ICC P3, даты, GPS, камера в несжатом боксе Exif);"
+echo "   exif-brotli.jxl: то же, но Exif сжат brotli (бокс brob, так cjxl делает по умолчанию)"
+cjxl --lossless_jpeg=1 --compress_boxes=0 "$OUT/exif-gps.jpg" "$OUT/exif-gps.jxl" >/dev/null 2>&1
+cjxl --lossless_jpeg=1 "$OUT/exif-gps.jpg" "$OUT/exif-brotli.jxl" >/dev/null 2>&1
+
+echo "== rotated.jxl: из rotated.jpg (Orientation 6) — ориентация в заголовке кодового потока"
+cjxl --lossless_jpeg=1 "$OUT/rotated.jpg" "$OUT/rotated.jxl" >/dev/null 2>&1
+
+echo "== animated.jxl: из animated.png (APNG, 2 кадра 640x480)"
+cjxl -q 100 "$OUT/animated.png" "$OUT/animated.jxl" >/dev/null 2>&1
+
+echo "== самопроверка JXL"
+for f in basic codestream alpha exif-gps exif-brotli rotated animated; do
+  printf '%s: ' "$f"; jxlinfo "$OUT/$f.jxl" 2>&1 | grep -m3 -E 'JPEG XL|box|Orientation|animation|Exif|colorspace' | tr '\n' ';'; echo
 done
 fi
 

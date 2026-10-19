@@ -1,9 +1,8 @@
 # CLAUDE.md — ключевые решения и устройство проекта
 
 Онлайн-конвертер файлов: статический сайт на Astro (ru/en), конвертация полностью в браузере
-(module Web Worker + WASM), файлы на сервер не загружаются. Сейчас: HEIC, AVIF, JPG, PNG, WebP, GIF, BMP и TIFF → JPG, PNG, WebP или ICO
-(19 страниц-конвертеров), «Сжать фото» и «Изменить размер». В работе (просьба владельца 19.10.2026): JPEG XL на входе,
-AVIF на выходе. Дальше по плану: PDF.
+(module Web Worker + WASM), файлы на сервер не загружаются. Сейчас: HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF и JPEG XL → JPG, PNG, WebP или ICO
+(21 страница-конвертер), «Сжать фото» и «Изменить размер». В работе (просьба владельца 19.10.2026): AVIF на выходе. Дальше по плану: PDF.
 Обзор и команды — README.md, деплой — DEPLOY.md, тесты и замеры — TESTING.md, тексты — CONTENT.md.
 
 ## Правила работы
@@ -28,7 +27,7 @@ AVIF на выходе. Дальше по плану: PDF.
 
 Astro 7.4 (Vite 8 + Rolldown, Zod 4), TypeScript 6.0 strict (не 7.x: `@astrojs/check` поддерживает только ^5/^6),
 libheif-js 1.23.5 (libheif 1.23.5 + libde265 1.0.15), @jsquash/jpeg 1.6.0 (MozJPEG 3.3.1), @jsquash/png 3.1.1,
-client-zip 2.5.1, utif2 4.1.0 (UTIF.js, с ним pako 1.0.11), шрифт Inter Variable (@fontsource-variable/inter 5.3.0, OFL), Vitest 5, Playwright 1.64, Node 24 LTS, nginx 1.30. Версии закреплены точно (`.npmrc`: `save-exact`).
+client-zip 2.5.1, utif2 4.1.0 (UTIF.js, с ним pako 1.0.11), jxl-oxide-wasm 0.12.6, шрифт Inter Variable (@fontsource-variable/inter 5.3.0, OFL), Vitest 5, Playwright 1.64, Node 24 LTS, nginx 1.30. Версии закреплены точно (`.npmrc`: `save-exact`).
 
 ## Устройство
 
@@ -195,6 +194,13 @@ scripts/                      serve-dist (тестовый сервер как n
   вписано в квадрат с прозрачными полями, уменьшение — Lanczos из `resize.ts`. Метаданных в ICO нет: `embed` их не
   пишет, галочка метаданных для ICO скрыта, вместо неё — пояснение про размеры. ICO предлагается только на страницах
   иконок (`ICON_OUTPUTS`: PNG → ICO, JPG → ICO), на остальных переключатель не расширяем.
+- **JPEG XL на входе** (`decoders/jxl.ts`) — jxl-oxide (Rust → WASM, 1,7 МБ, грузится только для JXL): безопасная
+  работа с памятью важнее скорости. Его обёртка отдаёт только PNG и ICC, поэтому пиксели идут через наш PNG-декодер
+  (JXL → PNG → RGBA, 16 бит понижаются там же). Важно: `RenderResult.encodeToPng()` поглощает объект — профиль
+  читается до него, `free()` после не вызывается («null pointer passed to rust»). Ориентацию jxl-oxide применяет сам
+  (размеры уже повёрнутые) → orientation = 1; пустой ICC — sRGB. EXIF — из несжатого бокса «Exif» (как у HEIF);
+  сжатый brotli бокс «brob» (cjxl так делает по умолчанию) не читаем: Brotli в браузере не распаковать без
+  JS-декодера со словарём ~120 КБ — тогда метаданные не переносятся (сказано в FAQ). «Исходный» формат — JPG.
 - MozJPEG кодирует с `baseline: true`: без него при качестве ниже ~25 таблицы квантования 16-битные (SOF1, не baseline)
   и libjpeg пишет предупреждение в консоль.
 - **Без `<select>` в виджете**: в WebKit его внутренние элементы ставят инлайн-стили → нарушение CSP `style-src-attr`.
