@@ -14,13 +14,14 @@ describe('реестр инструментов', () => {
     }
   });
 
-  test('сжатие и размер: любой вход, по умолчанию «Исходный», перелинковка задана вручную', () => {
+  test('сжатие, размер и метаданные: любой вход, по умолчанию «Исходный», перелинковка задана вручную', () => {
     const editors = TOOLS.filter((t) => t.mode !== 'convert');
-    expect(editors.map((t) => t.id)).toEqual(['compress-image', 'resize-image']);
+    expect(editors.map((t) => t.id)).toEqual(['compress-image', 'resize-image', 'remove-metadata']);
     for (const tool of editors) {
       expect(tool.inputFormats).toEqual(Object.keys(INPUT_FORMATS));
       expect(tool.defaultOutput).toBe('original');
-      expect(tool.outputs).toEqual(['original', 'jpeg', 'png', 'webp']);
+      // метаданные удаляются без перекодирования — формат не выбирается
+      expect(tool.outputs).toEqual(tool.mode === 'strip' ? ['original'] : ['original', 'jpeg', 'png', 'webp']);
       for (const id of tool.related ?? []) expect(TOOLS.map((t) => t.id)).toContain(id);
     }
   });
@@ -28,8 +29,9 @@ describe('реестр инструментов', () => {
   test('перелинковка: обратная пара, тот же вход, тот же выход', () => {
     const table = Object.fromEntries(TOOLS.map((tool) => [tool.id, relatedTools(tool).map((t) => t.id)]));
     expect(table).toEqual({
-      'compress-image': ['resize-image', 'heic-to-jpg', 'png-to-jpg', 'jpg-to-webp'],
-      'resize-image': ['compress-image', 'heic-to-jpg', 'jpg-to-webp', 'png-to-jpg'],
+      'compress-image': ['resize-image', 'remove-metadata', 'heic-to-jpg', 'jpg-to-webp'],
+      'resize-image': ['compress-image', 'remove-metadata', 'heic-to-jpg', 'jpg-to-webp'],
+      'remove-metadata': ['compress-image', 'resize-image', 'heic-to-jpg', 'png-to-jpg'],
       'heic-to-jpg': ['heic-to-png', 'heic-to-webp', 'avif-to-jpg', 'png-to-jpg'],
       'heic-to-png': ['heic-to-jpg', 'heic-to-webp', 'avif-to-png', 'jpg-to-png'],
       'heic-to-webp': ['heic-to-jpg', 'heic-to-png', 'jpg-to-webp', 'png-to-webp'],

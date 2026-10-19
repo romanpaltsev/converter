@@ -2,6 +2,7 @@
 // Английский словарь типизирован по русскому: TypeScript не даст пропустить ключ.
 
 import type { Locale } from '../config/site';
+import type { RemovedKind, StripMode } from '../converter/metadata/strip/types';
 import type { ErrorCode, WarningCode } from '../converter/pipeline/types';
 
 const ru = {
@@ -51,6 +52,38 @@ const ru = {
     keepAspect: 'Сохранять пропорции',
     boxHint: 'С пропорциями изображение впишется в эти размеры, без них — растянется точно до них. Одну сторону можно оставить пустой.',
     dimensions: '{width}×{height}',
+    stripWhat: 'Удалить',
+    stripModes: {
+      all: 'Все метаданные',
+      'keep-dates': 'Всё, кроме даты',
+      location: 'Только геолокацию',
+    } satisfies Record<StripMode, string>,
+    stripHints: {
+      all: 'Ориентация и цветовой профиль остаются: без них снимок покажется иначе. Само изображение не перекодируется.',
+      'keep-dates': 'Останутся дата и время съёмки — по ним галерея расставит снимки по порядку.',
+      location: 'Координаты удаляются из EXIF, а блоки XMP и IPTC — целиком: в них тоже бывает место съёмки. Камера и дата остаются.',
+    } satisfies Record<StripMode, string>,
+    removed: 'Удалено: {list}.',
+    nothingFound: 'Метаданных не найдено — файл не изменён.',
+    removedKinds: {
+      location: 'геолокация',
+      camera: 'камера и объектив',
+      serial: 'серийные номера',
+      author: 'автор и подписи',
+      dates: 'дата съёмки',
+      settings: 'параметры съёмки',
+      software: 'программы',
+      makernote: 'служебные данные камеры',
+      thumbnail: 'встроенная миниатюра',
+      exif: 'прочие данные EXIF',
+      xmp: 'XMP',
+      iptc: 'IPTC',
+      comment: 'комментарии',
+      text: 'текстовые поля',
+      'extra-images': 'дополнительные изображения (HDR, глубина, видео)',
+      c2pa: 'Content Credentials',
+      other: 'прочие служебные данные',
+    } satisfies Record<RemovedKind, string>,
     dropAction: 'или нажмите, чтобы выбрать',
     dropHint: 'Можно сразу много файлов — до 100 за раз',
     dropActive: 'Отпустите, чтобы добавить файлы',
@@ -111,6 +144,7 @@ const ru = {
       'target-lossless': 'У PNG и WebP без потерь нет настройки качества, поэтому подобрать размер нельзя. Выберите JPG или WebP.',
       'not-smaller': 'Файл не стал меньше: исходник уже хорошо сжат.',
       'not-resized': 'Изображение уже не больше заданного размера — размер не изменён.',
+      'exif-compressed-removed': 'EXIF в этом файле сжат, и выборочно его не поправить — он удалён целиком, вместе с датой.',
     } satisfies Record<WarningCode, string>,
   },
   notFound: {
@@ -170,6 +204,38 @@ const en: UiStrings = {
     keepAspect: 'Keep aspect ratio',
     boxHint: 'With the aspect ratio kept, the image fits within these dimensions; without it, it is stretched to exactly them. You can leave one side empty.',
     dimensions: '{width}×{height}',
+    stripWhat: 'Remove',
+    stripModes: {
+      all: 'All metadata',
+      'keep-dates': 'All but the date',
+      location: 'Location only',
+    },
+    stripHints: {
+      all: "Orientation and the color profile stay: without them the photo would look different. The image itself isn't re-encoded.",
+      'keep-dates': 'The capture date and time stay, so galleries keep your photos in order.',
+      location: 'Coordinates are removed from EXIF, and XMP and IPTC blocks entirely: they can hold the location too. Camera and date stay.',
+    },
+    removed: 'Removed: {list}.',
+    nothingFound: 'No metadata found — the file is unchanged.',
+    removedKinds: {
+      location: 'location',
+      camera: 'camera and lens',
+      serial: 'serial numbers',
+      author: 'author and captions',
+      dates: 'capture date',
+      settings: 'shooting settings',
+      software: 'software',
+      makernote: 'camera maker data',
+      thumbnail: 'embedded thumbnail',
+      exif: 'other EXIF data',
+      xmp: 'XMP',
+      iptc: 'IPTC',
+      comment: 'comments',
+      text: 'text fields',
+      'extra-images': 'extra images (HDR, depth, video)',
+      c2pa: 'Content Credentials',
+      other: 'other service data',
+    },
     dropAction: 'or click to choose',
     dropHint: 'Add many files at once — up to 100',
     dropActive: 'Release to add files',
@@ -230,6 +296,7 @@ const en: UiStrings = {
       'target-lossless': "PNG and lossless WebP have no quality setting, so the size can't be matched. Choose JPG or WebP.",
       'not-smaller': "The file didn't get smaller: the original is already well compressed.",
       'not-resized': 'The image is already no larger than the requested size — its size was kept.',
+      'exif-compressed-removed': "This file's EXIF is compressed and can't be edited selectively, so it was removed entirely, date included.",
     },
   },
   notFound: {

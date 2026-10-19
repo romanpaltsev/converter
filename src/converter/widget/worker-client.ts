@@ -2,6 +2,7 @@
 // Сколько worker'ов работает одновременно, когда файл ждёт памяти и когда worker пересоздаётся, решает пул
 // (worker-pool.ts): память WASM после роста не уменьшается.
 
+import type { RemovedKind, StripMode } from '../metadata/strip/types';
 import type { ConvertOptions, DecoderId, EncoderId, ErrorCode, WarningCode } from '../pipeline/types';
 import type { FromWorker, ToWorker, WorkerStats } from '../worker/protocol';
 
@@ -38,6 +39,19 @@ export interface NeedsMemory {
 
 export type ConvertOutcome = ConvertSuccess | ConvertFailure | NeedsMemory;
 
+export interface StripSuccess {
+  status: 'done';
+  buffer: ArrayBuffer;
+  /** false — удалять было нечего, buffer — исходный файл. */
+  changed: boolean;
+  removed: RemovedKind[];
+  warnings: WarningCode[];
+}
+
+export type StripOutcome = StripSuccess | ConvertFailure | NeedsMemory;
+
+type OnStarted = (footprint: number, fresh: number) => void;
+
 /** То, что нужно пулу от worker'а (в unit-тестах пула — подделка). */
 export interface PoolClient {
   /** Файлов обработано этим экземпляром worker'а. */
@@ -54,7 +68,7 @@ export class WorkerClient implements PoolClient {
   private loading: Promise<void> | null = null;
   private nextId = 1;
   private pending: ((reply: FromWorker) => void) | null = null;
-  private onStarted: ((footprint: number, fresh: number) => void) | null = null;
+  private onStarted: OnStarted | null = null;
   /** Модули, уже загруженные (или загружаемые) в текущем worker'е; после пересоздания — пусто. */
   private readonly decoders = new Set<DecoderId>();
   private readonly encoders = new Set<EncoderId>();
@@ -90,8 +104,8 @@ export class WorkerClient implements PoolClient {
    * Конвертирует один файл. memoryLimit — сколько памяти может занять worker (Infinity — без ограничения);
    * onStarted вызывается, когда worker оценил файл и начал работу.
    */
-  async convert(file: Blob, options: ConvertOptions, memoryLimit: number, onStarted: (footprint: number, fresh: number) => void): Promise<ConvertOutcome> {
-    const reply = await this.request(file, options, memoryLimit, onStarted);
+  async convert(file: Blob, options: ConvertOptions, memoryLimit: number, onStarted: OnStarted): Promise<ConvertOutcome> {
+    const reply = await this.request((id) => ({ type: 'convert', id, file, options, memoryLimit }), onStarted);
     if (reply.type === 'done') {
       this.files++;
       this.heapBytes = Object.values(reply.stats.heap).reduce((sum, bytes) => sum + bytes, 0);
@@ -110,9 +124,17 @@ export class WorkerClient implements PoolClient {
         stats: reply.stats,
       };
     }
-    if (reply.type === 'needs-memory') return { status: 'needs-memory', fresh: reply.fresh };
-    if (reply.type === 'error') return { status: 'error', code: reply.code, message: reply.message, fatal: reply.fatal, recycle: reply.recycle };
-    return { status: 'error', code: 'internal', message: `unexpected reply ${reply.type}`, fatal: false, recycle: true };
+    return failure(reply);
+  }
+
+  /** «Удалить метаданные»: модули WASM не нужны. */
+  async strip(file: Blob, mode: StripMode, memoryLimit: number, onStarted: OnStarted): Promise<StripOutcome> {
+    const reply = await this.request((id) => ({ type: 'strip', id, file, mode, memoryLimit }), onStarted);
+    if (reply.type === 'stripped') {
+      this.files++;
+      return { status: 'done', buffer: reply.buffer, changed: reply.changed, removed: reply.removed, warnings: reply.warnings };
+    }
+    return failure(reply);
   }
 
   /** Завершает worker и освобождает его память; следующий файл запустит новый. */
@@ -134,13 +156,12 @@ export class WorkerClient implements PoolClient {
     this.encoders.clear();
   }
 
-  private request(file: Blob, options: ConvertOptions, memoryLimit: number, onStarted: (footprint: number, fresh: number) => void): Promise<FromWorker> {
+  private request(build: (id: number) => ToWorker, onStarted: OnStarted): Promise<FromWorker> {
     const worker = this.ensureWorker();
-    const id = this.nextId++;
+    const message = build(this.nextId++);
     return new Promise<FromWorker>((resolve) => {
       this.pending = resolve;
       this.onStarted = onStarted;
-      const message: ToWorker = { type: 'convert', id, file, options, memoryLimit };
       worker.postMessage(message);
     });
   }
@@ -171,4 +192,11 @@ export class WorkerClient implements PoolClient {
     this.worker = worker;
     return worker;
   }
+}
+
+/** Ответ, который не «готово»: нехватка памяти или ошибка. */
+function failure(reply: FromWorker): ConvertFailure | NeedsMemory {
+  if (reply.type === 'needs-memory') return { status: 'needs-memory', fresh: reply.fresh };
+  if (reply.type === 'error') return { status: 'error', code: reply.code, message: reply.message, fatal: reply.fatal, recycle: reply.recycle };
+  return { status: 'error', code: 'internal', message: `unexpected reply ${reply.type}`, fatal: false, recycle: true };
 }

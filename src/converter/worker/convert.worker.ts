@@ -7,6 +7,7 @@ import { loadEncoder } from '../pipeline/encoders';
 import { checkInput } from '../pipeline/input';
 import { estimateNeeds, freshFootprint, projectFootprint } from '../pipeline/memory';
 import { targetSize } from '../pipeline/resize';
+import { sniff } from '../pipeline/sniff';
 import { ConvertError, type ErrorCode, WEBP_MAX_DIMENSION } from '../pipeline/types';
 import type { FromWorker, ToWorker } from './protocol';
 
@@ -104,12 +105,40 @@ async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): P
       session.close();
     }
   } catch (error) {
-    if (error instanceof ConvertError) {
-      post({ type: 'error', id, code: error.code, fatal: error.fatal, recycle: error.recycle, message: error.message });
-    } else {
-      const { code, fatal } = classifyUnexpected(error);
-      post({ type: 'error', id, code, fatal, recycle: true, message: String(error) });
+    postError(id, error);
+  }
+}
+
+/** Ошибка задания → ответ; неожиданные ошибки WASM требуют нового worker'а. */
+function postError(id: number, error: unknown): void {
+  if (error instanceof ConvertError) {
+    post({ type: 'error', id, code: error.code, fatal: error.fatal, recycle: error.recycle, message: error.message });
+  } else {
+    const { code, fatal } = classifyUnexpected(error);
+    post({ type: 'error', id, code, fatal, recycle: true, message: String(error) });
+  }
+}
+
+/** «Удалить метаданные»: модуль грузится только на этой странице; память — вход, копия и результат. */
+async function handleStrip(message: Extract<ToWorker, { type: 'strip' }>): Promise<void> {
+  const { id } = message;
+  try {
+    const bytes = new Uint8Array(await message.file.arrayBuffer());
+    const { kind } = sniff(bytes);
+    if (kind === 'unknown') throw new ConvertError('not-image');
+    const footprint = 3 * bytes.length;
+    if (footprint > message.memoryLimit) {
+      post({ type: 'needs-memory', id, footprint, fresh: footprint });
+      return;
     }
+    post({ type: 'started', id, footprint, fresh: footprint });
+    const { stripMetadata } = await import('../metadata/strip');
+    const result = stripMetadata(bytes, kind, message.mode);
+    const out = result.bytes;
+    const buffer = out.byteOffset === 0 && out.byteLength === out.buffer.byteLength ? (out.buffer as ArrayBuffer) : (out.slice().buffer as ArrayBuffer);
+    post({ type: 'stripped', id, buffer, changed: result.changed, removed: result.removed, warnings: result.warnings }, [buffer]);
+  } catch (error) {
+    postError(id, error);
   }
 }
 
@@ -127,5 +156,7 @@ scope.onmessage = (event) => {
     );
   } else if (message.type === 'convert') {
     void handleConvert(message);
+  } else if (message.type === 'strip') {
+    void handleStrip(message);
   }
 };

@@ -3,6 +3,7 @@
 // До выбора первого файла WASM не загружается.
 import '../styles/converter.css';
 import { LOCALE_META, MAX_FILES_PER_BATCH, type Locale } from '../config/site';
+import { STRIP_MODES } from '../converter/metadata/strip/types';
 import type { OutputOption, WidgetConfig } from '../converter/widget/config';
 import { UI, format } from '../i18n/ui';
 import { INPUT_FORMATS, OUTPUT_FORMATS, type ToolConfig } from '../tools/registry';
@@ -16,6 +17,8 @@ const { tool, locale } = Astro.props;
 const list = (items: string[]) => new Intl.ListFormat(LOCALE_META[locale].htmlLang, { type: 'conjunction' }).format(items);
 const inputs = tool.inputFormats.map((id) => INPUT_FORMATS[id]);
 const converts = tool.mode === 'convert';
+// «Удалить метаданные»: без выбора формата и качества — только что удалять
+const strips = tool.mode === 'strip';
 // шаблоны строк заполняем здесь: формат страницы и список всех поддерживаемых форматов
 const supported = list(Object.values(INPUT_FORMATS).map((f) => f.label));
 const base = UI[locale].widget;
@@ -74,21 +77,38 @@ const DEFAULT_LONG_SIDE = 1920;
   <input type="file" class="visually-hidden" data-input multiple accept={accept} tabindex="-1" aria-hidden="true" />
 
   <form class="settings" data-settings aria-label={t.settings}>
-    <fieldset class="settings__format">
-      <legend class="settings__label">{t.format}</legend>
-      <div class="segmented">
-        {
-          outputs.map((output) => (
-            <label class="segmented__option">
-              <input type="radio" name="format" value={output.id} checked={output.id === tool.defaultOutput} />
-              <span>{output.label}</span>
-            </label>
-          ))
-        }
-      </div>
-    </fieldset>
+    {
+      strips ? (
+        <Fragment>
+          <fieldset class="settings__format">
+            <legend class="settings__label">{t.stripWhat}</legend>
+            <div class="segmented segmented--stack">
+              {STRIP_MODES.map((mode) => (
+                <label class="segmented__option">
+                  <input type="radio" name="stripMode" value={mode} checked={mode === 'all'} />
+                  <span>{t.stripModes[mode]}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          <p class="settings__hint settings__hint--aligned" data-strip-hint>{t.stripHints.all}</p>
+        </Fragment>
+      ) : (
+        <fieldset class="settings__format">
+          <legend class="settings__label">{t.format}</legend>
+          <div class="segmented">
+            {outputs.map((output) => (
+              <label class="segmented__option">
+                <input type="radio" name="format" value={output.id} checked={output.id === tool.defaultOutput} />
+                <span>{output.label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )
+    }
     {tool.outputs.includes('ico') && <p class="settings__hint settings__hint--aligned" data-ico-hint hidden={tool.defaultOutput !== 'ico'}>{t.icoHint}</p>}
-    {!converts && <p class="settings__hint settings__hint--aligned" data-original-hint hidden={tool.defaultOutput !== 'original'}>{t.originalHint}</p>}
+    {!converts && !strips && <p class="settings__hint settings__hint--aligned" data-original-hint hidden={tool.defaultOutput !== 'original'}>{t.originalHint}</p>}
     {
       tool.mode === 'compress' && (
         <fieldset class="settings__format" data-compression-row>
@@ -165,11 +185,15 @@ const DEFAULT_LONG_SIDE = 1920;
         </Fragment>
       )
     }
-    <div class="settings__quality" data-quality-row hidden={!initial.hasQuality}>
-      <label class="settings__label" for={`${id}-quality`}>{t.quality}</label>
-      <input id={`${id}-quality`} type="range" name="quality" min="1" max="100" step="1" value={tool.defaultQuality} data-quality />
-      <output for={`${id}-quality`} data-quality-value>{tool.defaultQuality}</output>
-    </div>
+    {
+      !strips && (
+        <div class="settings__quality" data-quality-row hidden={!initial.hasQuality}>
+          <label class="settings__label" for={`${id}-quality`}>{t.quality}</label>
+          <input id={`${id}-quality`} type="range" name="quality" min="1" max="100" step="1" value={tool.defaultQuality} data-quality />
+          <output for={`${id}-quality`} data-quality-value>{tool.defaultQuality}</output>
+        </div>
+      )
+    }
     {
       tool.mode === 'compress' && (
         <div class="settings__target" data-target-row hidden>
@@ -191,18 +215,24 @@ const DEFAULT_LONG_SIDE = 1920;
         </div>
       )
     }
-    <label class="checkbox settings__lossless" data-lossless-row hidden={!initial.hasLossless}>
-      <input type="checkbox" name="lossless" />
-      <span>{t.lossless}</span>
-    </label>
-    <div class="settings__meta" data-meta-row hidden={tool.defaultOutput === 'ico'}>
-      <label class="checkbox">
-        <input type="checkbox" name="keepMetadata" aria-describedby={`${id}-meta-hint`} />
-        <span>{t.keepMetadata}</span>
-      </label>
-      <p class="settings__hint" id={`${id}-meta-hint`}>{t.keepMetadataHint}</p>
-    </div>
-    <p class="notice notice--warning" data-png-warning hidden={!initial.largeFiles}>{converts ? t.pngWarning : t.pngCompressWarning}</p>
+    {
+      !strips && (
+        <Fragment>
+          <label class="checkbox settings__lossless" data-lossless-row hidden={!initial.hasLossless}>
+            <input type="checkbox" name="lossless" />
+            <span>{t.lossless}</span>
+          </label>
+          <div class="settings__meta" data-meta-row hidden={tool.defaultOutput === 'ico'}>
+            <label class="checkbox">
+              <input type="checkbox" name="keepMetadata" aria-describedby={`${id}-meta-hint`} />
+              <span>{t.keepMetadata}</span>
+            </label>
+            <p class="settings__hint" id={`${id}-meta-hint`}>{t.keepMetadataHint}</p>
+          </div>
+          <p class="notice notice--warning" data-png-warning hidden={!initial.largeFiles}>{converts ? t.pngWarning : t.pngCompressWarning}</p>
+        </Fragment>
+      )
+    }
   </form>
 
   <noscript><p class="notice notice--error">{t.noscript}</p></noscript>

@@ -2,8 +2,9 @@
 // Разметку отдаёт сервер (ConverterWidget.astro), здесь — только поведение. Строки — из конфигурации.
 
 import { track } from '../../lib/analytics';
+import type { RemovedKind, StripMode } from '../metadata/strip/types';
 import { checkInput } from '../pipeline/input';
-import { SNIFF_BYTES } from '../pipeline/sniff';
+import { KIND_FILES, SNIFF_BYTES, sniff } from '../pipeline/sniff';
 import type { ResizeSpec } from '../pipeline/resize';
 import { ENCODER_EXTENSIONS, type ErrorCode, type WarningCode } from '../pipeline/types';
 import { type OutputOption, type WidgetConfig, readConfig } from './config';
@@ -25,6 +26,8 @@ interface Settings {
   targetBytes: number | null;
   /** Страница «Изменить размер»: как уменьшать; иначе null. */
   resize: ResizeSpec | null;
+  /** Страница «Удалить метаданные»: что удалять; иначе null. */
+  strip: StripMode | null;
 }
 
 /** Целевой размер — в десятичных килобайтах и мегабайтах: файл «до 1 МБ» пройдёт и лимит 1 000 000, и 1 048 576 байт. */
@@ -57,6 +60,9 @@ interface Item {
   warnings: WarningCode[];
   /** Качество, подобранное под целевой размер (показывается в строке файла). */
   quality: number | null;
+  /** «Удалить метаданные»: что нашлось и удалено (пусто — файл не изменился) и формат файла — вместо превью. */
+  removed: RemovedKind[] | null;
+  format: string | null;
   /** Размеры до и после уменьшения (страница «Изменить размер»). */
   dimensions: { before: [number, number]; after: [number, number] } | null;
   /** Оценка памяти, если файл не поместился рядом с другими (ждёт в очереди первым). */
@@ -76,7 +82,8 @@ const sameSettings = (a: Settings, b: Settings) =>
   a.keepMetadata === b.keepMetadata &&
   isLossless(a) === isLossless(b) &&
   (!isLossy(a) || (a.targetBytes === b.targetBytes && (a.targetBytes !== null || a.quality === b.quality))) &&
-  JSON.stringify(a.resize) === JSON.stringify(b.resize);
+  JSON.stringify(a.resize) === JSON.stringify(b.resize) &&
+  a.strip === b.strip;
 
 /** Сконвертированный файл или «уже в этом формате» — после смены настроек их можно сконвертировать заново. */
 function isOutdated(item: Item, current: Settings): boolean {
@@ -102,14 +109,17 @@ export class ConverterWidget {
   private readonly dropzone: HTMLButtonElement;
   private readonly input: HTMLInputElement;
   private readonly form: HTMLFormElement;
-  private readonly qualityRow: HTMLElement;
-  private readonly losslessRow: HTMLElement;
-  private readonly qualityValue: HTMLOutputElement;
+  /** Качество, «Без потерь», метаданные и предупреждение PNG — у всех, кроме «Удалить метаданные». */
+  private readonly qualityRow: HTMLElement | null;
+  private readonly losslessRow: HTMLElement | null;
+  private readonly qualityValue: HTMLOutputElement | null;
   /** Только на страницах сжатия и размера. */
   private readonly originalHint: HTMLElement | null;
   /** Только на страницах иконок: пояснение про размеры ICO; метаданные для ICO скрываются. */
   private readonly icoHint: HTMLElement | null;
-  private readonly metaRow: HTMLElement;
+  private readonly metaRow: HTMLElement | null;
+  /** Только на странице «Удалить метаданные»: пояснение к выбранному режиму. */
+  private readonly stripHint: HTMLElement | null;
   /** Только на странице «Сжать фото»: переключатель «По качеству / До размера» и поле целевого размера. */
   private readonly compressionRow: HTMLElement | null;
   private readonly targetRow: HTMLElement | null;
@@ -117,7 +127,7 @@ export class ConverterWidget {
   private readonly resizeRows: Record<ResizeSpec['mode'], HTMLElement> | null;
   private readonly presets: HTMLButtonElement[];
   private readonly percentValue: HTMLOutputElement | null;
-  private readonly pngWarning: HTMLElement;
+  private readonly pngWarning: HTMLElement | null;
   private readonly status: HTMLElement;
   private readonly notice: HTMLElement;
   private readonly results: HTMLElement;
@@ -143,12 +153,13 @@ export class ConverterWidget {
     this.dropzone = element(root, '[data-dropzone]');
     this.input = element(root, '[data-input]');
     this.form = element(root, '[data-settings]');
-    this.qualityRow = element(root, '[data-quality-row]');
-    this.losslessRow = element(root, '[data-lossless-row]');
-    this.qualityValue = element(root, '[data-quality-value]');
+    this.qualityRow = root.querySelector('[data-quality-row]');
+    this.losslessRow = root.querySelector('[data-lossless-row]');
+    this.qualityValue = root.querySelector('[data-quality-value]');
     this.originalHint = root.querySelector('[data-original-hint]');
     this.icoHint = root.querySelector('[data-ico-hint]');
-    this.metaRow = element(root, '[data-meta-row]');
+    this.metaRow = root.querySelector('[data-meta-row]');
+    this.stripHint = root.querySelector('[data-strip-hint]');
     this.compressionRow = root.querySelector('[data-compression-row]');
     this.targetRow = root.querySelector('[data-target-row]');
     const longRow = root.querySelector<HTMLElement>('[data-resize-long]');
@@ -157,7 +168,7 @@ export class ConverterWidget {
       : null;
     this.presets = [...root.querySelectorAll<HTMLButtonElement>('[data-preset]')];
     this.percentValue = root.querySelector('[data-percent-value]');
-    this.pngWarning = element(root, '[data-png-warning]');
+    this.pngWarning = root.querySelector('[data-png-warning]');
     this.status = element(root, '[data-status-text]');
     this.notice = element(root, '[data-notice]');
     this.results = element(root, '[data-results]');
@@ -229,6 +240,7 @@ export class ConverterWidget {
       keepMetadata: data.get('keepMetadata') !== null,
       targetBytes: data.get('compression') === 'target' ? this.targetBytes(data) : null,
       resize: this.resizeRows ? this.resizeSpec(data) : null,
+      strip: this.config.mode === 'strip' ? ((data.get('stripMode') ?? 'all') as StripMode) : null,
     };
   }
 
@@ -260,10 +272,11 @@ export class ConverterWidget {
     const lossy = isLossy(settings);
     if (this.originalHint) this.originalHint.hidden = settings.output.id !== 'original';
     if (this.icoHint) this.icoHint.hidden = settings.output.id !== 'ico';
-    this.metaRow.hidden = settings.output.id === 'ico';
+    if (this.metaRow) this.metaRow.hidden = settings.output.id === 'ico';
+    if (this.stripHint && settings.strip) this.stripHint.textContent = this.t.stripHints[settings.strip];
     if (this.compressionRow) this.compressionRow.hidden = !lossy;
     if (this.targetRow) this.targetRow.hidden = !lossy || settings.targetBytes === null;
-    this.qualityRow.hidden = !lossy || settings.targetBytes !== null;
+    if (this.qualityRow) this.qualityRow.hidden = !lossy || settings.targetBytes !== null;
     if (this.resizeRows && settings.resize) {
       const resize = settings.resize;
       for (const [mode, row] of Object.entries(this.resizeRows)) row.hidden = mode !== resize.mode;
@@ -279,9 +292,9 @@ export class ConverterWidget {
         input.setAttribute('aria-invalid', String(!empty && parseDimension(input.value) === null));
       }
     }
-    this.losslessRow.hidden = !settings.output.hasLossless;
-    this.pngWarning.hidden = !settings.output.largeFiles;
-    this.qualityValue.value = String(settings.quality);
+    if (this.losslessRow) this.losslessRow.hidden = !settings.output.hasLossless;
+    if (this.pngWarning) this.pngWarning.hidden = !settings.output.largeFiles;
+    if (this.qualityValue) this.qualityValue.value = String(settings.quality);
     this.updateActions();
   }
 
@@ -306,6 +319,8 @@ export class ConverterWidget {
         error: null,
         warnings: [],
         quality: null,
+        removed: null,
+        format: null,
         dimensions: null,
         estimate: null,
         retry: false,
@@ -369,6 +384,7 @@ export class ConverterWidget {
     if (generation !== this.generation) return false;
     const settings = this.currentSettings();
     item.settings = settings;
+    if (settings.strip) return this.strip(item, head, settings.strip, lease, generation);
     const input = checkInput(head, settings.output.encoder, this.config.mode !== 'convert');
     if (!input.ok) {
       this.fail(item, input.code);
@@ -441,6 +457,45 @@ export class ConverterWidget {
     return false;
   }
 
+  /** «Удалить метаданные»: формат и имя файла остаются, WASM не нужен. */
+  private async strip(item: Item, head: Uint8Array, mode: StripMode, lease: Lease, generation: number): Promise<boolean> {
+    const { kind } = sniff(head);
+    if (kind === 'unknown') {
+      this.fail(item, 'not-image');
+      return false;
+    }
+    // имя и расширение остаются (без расширения — по формату)
+    const dot = item.file.name.lastIndexOf('.');
+    const extension = dot > 0 ? item.file.name.slice(dot + 1) : KIND_FILES[kind].extension;
+    item.name ??= this.names.allocate(outputName(item.file.name, extension));
+    this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
+    const outcome = await lease.client.strip(item.file, mode, lease.memoryLimit, (footprint, fresh) => {
+      if (generation !== this.generation) return;
+      lease.started(footprint, fresh);
+      this.pump();
+    });
+    if (generation !== this.generation) return false;
+    if (outcome.status === 'needs-memory') {
+      item.estimate = outcome.fresh;
+      this.requeue(item);
+      return true;
+    }
+    if (outcome.status === 'error') {
+      this.fail(item, outcome.code);
+      return outcome.fatal || outcome.recycle;
+    }
+    item.blob = new Blob([outcome.buffer], { type: item.file.type || KIND_FILES[kind].mime });
+    item.url = URL.createObjectURL(item.blob);
+    item.removed = outcome.removed;
+    item.format = KIND_FILES[kind].label;
+    item.warnings = outcome.warnings;
+    item.status = 'done';
+    this.run.done++;
+    this.renderRow(item);
+    this.updateActions();
+    return false;
+  }
+
   /** Вернуть файл в очередь (на своё место — он пойдёт первым); имя выделится заново при старте. */
   private requeue(item: Item): void {
     if (item.name) this.names.release(item.name);
@@ -499,6 +554,10 @@ export class ConverterWidget {
       img.height = 48;
       img.decoding = 'async';
       thumb.append(img);
+    } else if (item.status === 'done' && item.format) {
+      // изображение не декодируется (метаданные удаляются без WASM) — вместо превью формат файла
+      thumb.classList.add('file__thumb--format');
+      thumb.textContent = item.format;
     }
 
     const body = document.createElement('div');
@@ -514,8 +573,9 @@ export class ConverterWidget {
     if (item.status === 'error') meta.textContent = this.t.failed;
     if (item.status === 'done' && item.blob) {
       const parts = [this.t.done, fill(this.t.sizes, { before: this.size(item.file.size), after: this.size(item.blob.size) })];
-      // при сжатии и изменении размера важна разница в размере: «−85 %»
-      if (this.config.mode !== 'convert') parts[1] += ` (${this.change(item.file.size, item.blob.size)})`;
+      // при сжатии и изменении размера важна разница в размере: «−85 %»; размер не изменился — одно число
+      if (item.blob.size === item.file.size) parts[1] = this.size(item.file.size);
+      else if (this.config.mode !== 'convert') parts[1] += ` (${this.change(item.file.size, item.blob.size)})`;
       if (item.dimensions) {
         const [before, after] = [item.dimensions.before, item.dimensions.after].map(([width, height]) => fill(this.t.dimensions, { width, height }));
         parts.splice(1, 0, before === after ? before! : fill(this.t.sizes, { before: before!, after: after! }));
@@ -526,6 +586,7 @@ export class ConverterWidget {
     body.append(name, meta);
 
     const notes = item.status === 'error' && item.error ? [this.errorText(item.error)] : item.warnings.map((w) => this.t.warnings[w]);
+    if (item.status === 'done' && item.removed) notes.unshift(this.removedText(item.removed));
     for (const text of notes) {
       const note = document.createElement('p');
       note.className = item.status === 'error' ? 'file__note file__note--error' : 'file__note';
@@ -546,6 +607,12 @@ export class ConverterWidget {
       link.setAttribute('aria-label', fill(this.t.downloadLabel, { name: item.name }));
       row.append(link);
     }
+  }
+
+  /** «Удалено: геолокация, камера и объектив, XMP.» или «Метаданных не найдено…». */
+  private removedText(removed: RemovedKind[]): string {
+    if (removed.length === 0) return this.t.nothingFound;
+    return fill(this.t.removed, { list: removed.map((kind) => this.t.removedKinds[kind]).join(', ') });
   }
 
   private errorText(code: ErrorCode): string {
@@ -579,6 +646,8 @@ export class ConverterWidget {
         error: null,
         warnings: [],
         quality: null,
+        removed: null,
+        format: null,
         dimensions: null,
         estimate: null,
         retry: false,

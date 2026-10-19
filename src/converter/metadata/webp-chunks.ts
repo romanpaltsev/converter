@@ -14,16 +14,19 @@ export class WebpError extends Error {}
 
 const fourcc = (bytes: Uint8Array, at: number) => String.fromCharCode(bytes[at]!, bytes[at + 1]!, bytes[at + 2]!, bytes[at + 3]!);
 
-/** Чанки после заголовка RIFF. Размер в заголовке RIFF не проверяем: некоторые программы пишут его неверно. */
-export function readWebpChunks(webp: Uint8Array): WebpChunk[] {
+/**
+ * Чанки после заголовка RIFF до limit (по умолчанию — до конца файла). Размер в заголовке RIFF сам по себе
+ * не проверяем: некоторые программы пишут его неверно.
+ */
+export function readWebpChunks(webp: Uint8Array, limit = webp.length): WebpChunk[] {
   if (webp.length < 12 || fourcc(webp, 0) !== 'RIFF' || fourcc(webp, 8) !== 'WEBP') throw new WebpError('WebP: неверная сигнатура');
   const view = new DataView(webp.buffer, webp.byteOffset, webp.byteLength);
   const chunks: WebpChunk[] = [];
   let pos = 12;
-  while (pos + 8 <= webp.length) {
+  while (pos + 8 <= limit) {
     const size = view.getUint32(pos + 4, true);
     const end = pos + 8 + size;
-    if (end > webp.length) throw new WebpError('WebP: битая длина чанка');
+    if (end > limit) throw new WebpError('WebP: битая длина чанка');
     chunks.push({ type: fourcc(webp, pos), offset: pos, data: webp.subarray(pos + 8, end) });
     pos = end + (size & 1); // данные чанка выравниваются до чётной длины
   }

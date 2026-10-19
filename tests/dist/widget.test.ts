@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+import { UI } from '../../src/i18n/ui';
 import { INPUT_FORMATS, TOOLS } from '../../src/tools/registry';
 import { readHtml } from './helpers';
 
@@ -11,19 +12,28 @@ describe('сборка: разметка виджета', () => {
     expect(root.querySelector('input[type="file"]')?.getAttribute('accept')).toBe(tool.inputFormats.map((id) => INPUT_FORMATS[id].accept).join(','));
     expect(root.querySelector('input[type="file"]')?.hasAttribute('multiple')).toBe(true);
     expect(root.querySelector('button[data-dropzone]')).toBeTruthy();
-    expect(root.querySelector('input[name="format"][checked]')?.getAttribute('value')).toBe(tool.defaultOutput);
-    expect(root.querySelector('input[name="quality"]')?.getAttribute('value')).toBe(String(tool.defaultQuality));
-    expect(root.querySelector('input[name="keepMetadata"]')?.hasAttribute('checked')).toBe(false);
     expect(root.querySelector('[data-status-text][role="status"][aria-live="polite"]')).toBeTruthy();
-    // ползунок скрыт для форматов без качества (PNG, ICO), предупреждение о размере — только у PNG
-    expect(root.querySelector('[data-quality-row]')?.hasAttribute('hidden')).toBe(tool.defaultOutput === 'png' || tool.defaultOutput === 'ico');
-    // ICO: пояснение про размеры видно, метаданные скрыты
-    expect(root.querySelector('[data-ico-hint]')?.hasAttribute('hidden') ?? null).toBe(tool.outputs.includes('ico') ? tool.defaultOutput !== 'ico' : null);
-    expect(root.querySelector('[data-meta-row]')?.hasAttribute('hidden')).toBe(tool.defaultOutput === 'ico');
-    expect(root.querySelector('[data-png-warning]')?.hasAttribute('hidden')).toBe(tool.defaultOutput !== 'png');
-    // «Без потерь» — только у WebP
-    expect(root.querySelector('[data-lossless-row]')?.hasAttribute('hidden')).toBe(tool.defaultOutput !== 'webp');
-    expect(root.querySelector('input[name="lossless"]')?.hasAttribute('checked')).toBe(false);
+    if (tool.mode === 'strip') {
+      // «Удалить метаданные»: только что удалять (по умолчанию всё) и пояснение; формата, качества и галочек нет
+      expect(root.querySelector('input[name="stripMode"][checked]')?.getAttribute('value')).toBe('all');
+      expect(root.querySelector('[data-strip-hint]')?.text).toBe(UI[file.startsWith('en/') ? 'en' : 'ru'].widget.stripHints.all);
+      for (const selector of ['input[name="format"]', '[data-quality-row]', '[data-meta-row]', '[data-lossless-row]', '[data-png-warning]']) {
+        expect(root.querySelector(selector)).toBeNull();
+      }
+    } else {
+      expect(root.querySelector('input[name="format"][checked]')?.getAttribute('value')).toBe(tool.defaultOutput);
+      expect(root.querySelector('input[name="quality"]')?.getAttribute('value')).toBe(String(tool.defaultQuality));
+      expect(root.querySelector('input[name="keepMetadata"]')?.hasAttribute('checked')).toBe(false);
+      // ползунок скрыт для форматов без качества (PNG, ICO), предупреждение о размере — только у PNG
+      expect(root.querySelector('[data-quality-row]')?.hasAttribute('hidden')).toBe(tool.defaultOutput === 'png' || tool.defaultOutput === 'ico');
+      // ICO: пояснение про размеры видно, метаданные скрыты
+      expect(root.querySelector('[data-ico-hint]')?.hasAttribute('hidden') ?? null).toBe(tool.outputs.includes('ico') ? tool.defaultOutput !== 'ico' : null);
+      expect(root.querySelector('[data-meta-row]')?.hasAttribute('hidden')).toBe(tool.defaultOutput === 'ico');
+      expect(root.querySelector('[data-png-warning]')?.hasAttribute('hidden')).toBe(tool.defaultOutput !== 'png');
+      // «Без потерь» — только у WebP
+      expect(root.querySelector('[data-lossless-row]')?.hasAttribute('hidden')).toBe(tool.defaultOutput !== 'webp');
+      expect(root.querySelector('input[name="lossless"]')?.hasAttribute('checked')).toBe(false);
+    }
     const config = JSON.parse(root.querySelector('script[data-converter-config]')!.text);
     expect(config.maxFiles).toBe(100);
     expect(config.outputs.map((o: { id: string }) => o.id)).toEqual(tool.outputs);
@@ -32,7 +42,7 @@ describe('сборка: разметка виджета', () => {
     // сжатие: переключатель «По качеству / До размера» и скрытое до выбора поле целевого размера
     expect(Boolean(root.querySelector('input[name="compression"][value="quality"][checked]'))).toBe(tool.mode === 'compress');
     expect(root.querySelector('[data-target-row]')?.hasAttribute('hidden') ?? null).toBe(tool.mode === 'compress' ? true : null);
-    expect(Boolean(root.querySelector('[data-original-hint]'))).toBe(tool.mode !== 'convert');
+    expect(Boolean(root.querySelector('[data-original-hint]'))).toBe(tool.mode === 'compress' || tool.mode === 'resize');
     // размер: по умолчанию «По длинной стороне» 1920, остальные режимы скрыты
     expect(Boolean(root.querySelector('input[name="resizeMode"][value="long-side"][checked]'))).toBe(tool.mode === 'resize');
     if (tool.mode === 'resize') {

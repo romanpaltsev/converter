@@ -5,6 +5,7 @@
 export const TAG = {
   ImageWidth: 0x0100,
   ImageLength: 0x0101,
+  Compression: 0x0103,
   StripOffsets: 0x0111,
   Orientation: 0x0112,
   StripByteCounts: 0x0117,

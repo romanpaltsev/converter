@@ -1,5 +1,6 @@
 // Сообщения между основным потоком и worker'ом конвертера.
 
+import type { RemovedKind, StripMode } from '../metadata/strip/types';
 import type { ConvertOptions, DecoderId, EncoderId, ErrorCode, WarningCode } from '../pipeline/types';
 
 export type ToWorker =
@@ -15,7 +16,9 @@ export type ToWorker =
        * пула поместились в бюджет. Infinity — файл обрабатывается в одиночку, без ограничения.
        */
       memoryLimit: number;
-    };
+    }
+  /** «Удалить метаданные»: без WASM и перекодирования. */
+  | { type: 'strip'; id: number; file: Blob; mode: StripMode; memoryLimit: number };
 
 export interface WorkerStats {
   /** Размеры куч WASM после обработки (байты) по модулям: libheif, mozjpeg-enc, squoosh-png… */
@@ -50,5 +53,7 @@ export type FromWorker =
       warnings: WarningCode[];
       stats: WorkerStats;
     }
+  /** Метаданные удалены; changed = false — удалять было нечего, buffer — исходный файл. */
+  | { type: 'stripped'; id: number; buffer: ArrayBuffer; changed: boolean; removed: RemovedKind[]; warnings: WarningCode[] }
   /** fatal — нужен новый worker и повторная попытка; recycle — новый worker без повторной попытки. */
   | { type: 'error'; id: number; code: ErrorCode; fatal: boolean; recycle: boolean; message: string };

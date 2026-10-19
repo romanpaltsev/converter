@@ -1,0 +1,48 @@
+# Texts for /en/remove-exif. Draft for the owner's review (see CONTENT.md).
+title: "Remove EXIF Data from Photos Online — Location and Metadata"
+description: "Strip EXIF, GPS location, camera model and other metadata from JPG, PNG, HEIC and WebP photos right in your browser — no re-encoding, no uploads."
+h1: "Remove EXIF data from photos"
+subtitle: "Location, camera details and other metadata — without re-encoding. Your files never leave your device."
+breadcrumb: "Remove EXIF data"
+card:
+  title: "Remove EXIF data"
+  text: "Strip the location, camera model and other metadata from photos."
+app:
+  name: "EXIF Remover"
+  description: "An online tool that removes EXIF, GPS location and other metadata from photos right in your browser, without uploading them."
+howTo:
+  title: "How to remove metadata from a photo"
+  steps:
+    - "Choose what to remove: all metadata, everything but the capture date, or just the location."
+    - "Click the box above or drop your photos onto it — several at once is fine. Each file shows exactly what was removed."
+    - "Download the files one by one or all at once as a ZIP. The format and image quality stay the same."
+why:
+  title: "Why use this EXIF remover"
+  items:
+    - title: "Your photos stay on your device"
+      text: "Metadata is removed right in your browser. Nobody but you sees the photos or what was stored in them."
+    - title: "No quality loss"
+      text: "The image isn't re-encoded: only the metadata blocks are dropped and the pixels stay byte for byte. That's why the file size barely changes."
+    - title: "See what was removed"
+      text: "Every file shows what was found: GPS location, camera model, date, XMP, an embedded thumbnail or extra images."
+    - title: "All popular formats"
+      text: "JPG, PNG, iPhone HEIC, WebP, AVIF, GIF, TIFF and JPEG XL — up to 100 files at a time."
+faq:
+  title: "FAQ"
+  items:
+    - q: "What metadata is stored in a photo?"
+      a: "Phones and cameras record the capture date and time, the device and lens model, shooting settings and — if location is on — the GPS coordinates. Editing apps add their own: XMP with edit history, IPTC with captions and credits, sometimes an embedded thumbnail."
+    - q: "How do I remove the location from a photo?"
+      a: "Choose “Location only” and add your photos. The GPS coordinates are removed while the capture date and camera model stay. XMP and IPTC blocks are removed entirely, since they can hold the location too."
+    - q: "Can I keep the date the photo was taken?"
+      a: "Yes — choose “All but the date”. The capture date and time stay, so galleries keep your photos in order, and everything else is removed."
+    - q: "Does removing EXIF data reduce image quality?"
+      a: "No. The image isn't recompressed: only metadata blocks are taken out and the pixels don't change. That's also why the file gets only slightly smaller."
+    - q: "Why are the orientation and colors unchanged?"
+      a: "We deliberately keep the orientation and the color profile. Without the orientation a portrait shot would show up sideways, and without the profile iPhone photos would look duller. Neither holds personal data."
+    - q: "What happens to HEIC files and motion photos?"
+      a: "iPhone HEIC stays HEIC: the EXIF and XMP blocks inside are wiped in place, so the file size doesn't change. Android motion photo videos and extra images inside a JPEG (HDR gain map, depth) are removed, since they carry metadata of their own."
+    - q: "Is it safe?"
+      a: "Yes. Only the tool itself is loaded from the site; your photos are processed in your browser and never sent to a server."
+    - q: "How can I check that no metadata is left?"
+      a: "Each file shows what was removed, or “No metadata found” if there was nothing to remove. You can double-check in the file's properties or any EXIF viewer."

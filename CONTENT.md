@@ -158,6 +158,80 @@
 - **What happens to the location and the date taken?** By default the capture date is kept, while the location, phone model and other details are removed. Tick “Keep all metadata” to copy everything.
 - **Is it safe to resize my photos here?** Yes. The site only downloads the tool itself; your images are processed in your browser and are never sent to a server.
 
+### remove-metadata
+
+#### Русский — `/udalit-metadannye-foto`
+
+Файл: `src/content/tools/ru/remove-metadata.yaml`
+
+- **title:** Удалить метаданные с фото онлайн — EXIF и геолокация _(52 симв.)_
+- **description:** Удалите EXIF, геолокацию, модель телефона и другие метаданные из фото JPG, PNG, HEIC и WebP прямо в браузере — без перекодирования и загрузки на сервер. _(152 симв.)_
+- **H1:** Удалить метаданные с фото
+- **Подзаголовок:** EXIF, геолокация и данные камеры — без перекодирования. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** Удалить метаданные
+- **Карточка:** Удалить метаданные — Убрать из фото геолокацию, модель телефона и другие данные EXIF.
+- **JSON-LD:** Удаление метаданных из фото — Онлайн-сервис для удаления EXIF, геолокации и других метаданных из фотографий, который работает в браузере без загрузки файлов на сервер.
+
+**Как удалить метаданные**
+
+1. Выберите, что удалить: все метаданные, всё, кроме даты съёмки, или только геолокацию.
+2. Нажмите на область выше или перетащите на неё фото — можно сразу несколько. В строке каждого файла видно, что именно было удалено.
+3. Скачайте файлы по одному или все сразу ZIP-архивом. Формат и качество снимков не меняются.
+
+**Почему здесь**
+
+- **Фото не загружаются на сервер.** Метаданные удаляются прямо на вашем устройстве. Никто, кроме вас, не увидит ни снимков, ни того, что в них было записано.
+- **Без потери качества.** Изображение не перекодируется: удаляются только служебные данные, а пиксели остаются байт в байт. Поэтому размер файла почти не меняется.
+- **Видно, что было удалено.** Для каждого файла показано, что нашлось: геолокация, модель камеры, дата, XMP, встроенная миниатюра или дополнительные изображения.
+- **Все популярные форматы.** JPG, PNG, HEIC с iPhone, WebP, AVIF, GIF, TIFF и JPEG XL — до 100 файлов за раз.
+
+**Частые вопросы**
+
+- **Какие метаданные хранятся в фото?** Телефоны и камеры записывают в файл дату и время съёмки, модель устройства и объектива, параметры съёмки, а при включённой геолокации — координаты места. Программы добавляют свои данные: XMP с историей правок, IPTC с подписями и авторством, иногда — встроенную миниатюру.
+- **Как удалить геолокацию с фото?** Выберите «Только геолокацию» и добавьте фото. Координаты будут удалены, а дата съёмки и модель камеры останутся. Блоки XMP и IPTC удаляются целиком: в них тоже бывает место съёмки.
+- **Можно ли сохранить дату съёмки?** Да, выберите «Всё, кроме даты». Останутся дата и время съёмки — по ним галерея расставит снимки по порядку, — а всё остальное будет удалено.
+- **Ухудшится ли качество фото?** Нет. Изображение не пересжимается: из файла убираются только служебные блоки, а сами пиксели не меняются. Поэтому и размер файла уменьшается совсем немного.
+- **Почему ориентация и цвета остались прежними?** Мы специально оставляем ориентацию и цветовой профиль. Без ориентации вертикальный снимок показался бы на боку, а без профиля цвета фото с iPhone стали бы тусклее. Личных данных в них нет.
+- **Что будет с HEIC и «живыми фото»?** HEIC с iPhone остаётся в формате HEIC: блоки EXIF и XMP внутри файла затираются на месте, поэтому размер файла не меняется. Видео «живых фото» с Android и дополнительные изображения внутри JPEG (карта HDR, глубина) удаляются: в них бывают свои метаданные.
+- **Безопасно ли это?** Да. С сайта загружается только сам инструмент, а фото обрабатываются в вашем браузере и не отправляются на сервер.
+- **Как проверить, что метаданных не осталось?** В строке каждого файла видно, что было удалено, а если удалять было нечего — «Метаданных не найдено». Проверить результат можно в свойствах файла или в любом просмотрщике EXIF.
+
+#### English — `/en/remove-exif`
+
+Файл: `src/content/tools/en/remove-metadata.yaml`
+
+- **title:** Remove EXIF Data from Photos Online — Location and Metadata _(59 симв.)_
+- **description:** Strip EXIF, GPS location, camera model and other metadata from JPG, PNG, HEIC and WebP photos right in your browser — no re-encoding, no uploads. _(145 симв.)_
+- **H1:** Remove EXIF data from photos
+- **Подзаголовок:** Location, camera details and other metadata — without re-encoding. Your files never leave your device.
+- **Хлебные крошки:** Remove EXIF data
+- **Карточка:** Remove EXIF data — Strip the location, camera model and other metadata from photos.
+- **JSON-LD:** EXIF Remover — An online tool that removes EXIF, GPS location and other metadata from photos right in your browser, without uploading them.
+
+**How to remove metadata from a photo**
+
+1. Choose what to remove: all metadata, everything but the capture date, or just the location.
+2. Click the box above or drop your photos onto it — several at once is fine. Each file shows exactly what was removed.
+3. Download the files one by one or all at once as a ZIP. The format and image quality stay the same.
+
+**Why use this EXIF remover**
+
+- **Your photos stay on your device.** Metadata is removed right in your browser. Nobody but you sees the photos or what was stored in them.
+- **No quality loss.** The image isn't re-encoded: only the metadata blocks are dropped and the pixels stay byte for byte. That's why the file size barely changes.
+- **See what was removed.** Every file shows what was found: GPS location, camera model, date, XMP, an embedded thumbnail or extra images.
+- **All popular formats.** JPG, PNG, iPhone HEIC, WebP, AVIF, GIF, TIFF and JPEG XL — up to 100 files at a time.
+
+**FAQ**
+
+- **What metadata is stored in a photo?** Phones and cameras record the capture date and time, the device and lens model, shooting settings and — if location is on — the GPS coordinates. Editing apps add their own: XMP with edit history, IPTC with captions and credits, sometimes an embedded thumbnail.
+- **How do I remove the location from a photo?** Choose “Location only” and add your photos. The GPS coordinates are removed while the capture date and camera model stay. XMP and IPTC blocks are removed entirely, since they can hold the location too.
+- **Can I keep the date the photo was taken?** Yes — choose “All but the date”. The capture date and time stay, so galleries keep your photos in order, and everything else is removed.
+- **Does removing EXIF data reduce image quality?** No. The image isn't recompressed: only metadata blocks are taken out and the pixels don't change. That's also why the file gets only slightly smaller.
+- **Why are the orientation and colors unchanged?** We deliberately keep the orientation and the color profile. Without the orientation a portrait shot would show up sideways, and without the profile iPhone photos would look duller. Neither holds personal data.
+- **What happens to HEIC files and motion photos?** iPhone HEIC stays HEIC: the EXIF and XMP blocks inside are wiped in place, so the file size doesn't change. Android motion photo videos and extra images inside a JPEG (HDR gain map, depth) are removed, since they carry metadata of their own.
+- **Is it safe?** Yes. Only the tool itself is loaded from the site; your photos are processed in your browser and never sent to a server.
+- **How can I check that no metadata is left?** Each file shows what was removed, or “No metadata found” if there was nothing to remove. You can double-check in the file's properties or any EXIF viewer.
+
 ### heic-to-jpg
 
 #### Русский — `/heic-v-jpg`
@@ -1805,8 +1879,8 @@
 - **title:** Конвертер изображений онлайн — HEIC, AVIF, JPG, PNG и WebP в браузере _(69 симв.)_
 - **description:** Бесплатные онлайн-конвертеры изображений: HEIC, AVIF, JPG, PNG и WebP. Без регистрации и без загрузки на сервер — всё работает в вашем браузере. _(144 симв.)_
 - **h1:** Конвертер изображений прямо в браузере
-- **intro:** Переводите фото и картинки между форматами HEIC, AVIF, JPG, PNG и WebP и сжимайте их до нужного размера. Всё происходит на вашем устройстве: файлы не загружаются на сервер, а дата съёмки сохраняется.
-- **editToolsTitle:** Сжатие и размер
+- **intro:** Переводите фото и картинки между форматами HEIC, AVIF, JPG, PNG и WebP, сжимайте их до нужного размера и удаляйте метаданные. Всё происходит на вашем устройстве: файлы не загружаются на сервер, а дата съёмки сохраняется.
+- **editToolsTitle:** Обработка фото
 - **toolsTitle:** Конвертеры
 - **features:**
   - **Без загрузки на сервер.** Изображения обрабатываются в браузере и не покидают ваше устройство.
@@ -1820,8 +1894,8 @@
 - **title:** Free Online Image Converter — HEIC, AVIF, JPG, PNG and WebP _(59 симв.)_
 - **description:** Free online image converters for HEIC, AVIF, JPG, PNG and WebP. No sign-up and no uploads — everything runs in your browser. _(124 симв.)_
 - **h1:** Convert images right in your browser
-- **intro:** Convert photos and pictures between HEIC, AVIF, JPG, PNG and WebP, and compress them to the size you need. Everything happens on your device: files are never uploaded, and the date taken is kept.
-- **editToolsTitle:** Compress and resize
+- **intro:** Convert photos and pictures between HEIC, AVIF, JPG, PNG and WebP, compress them to the size you need and strip their metadata. Everything happens on your device: files are never uploaded, and the date taken is kept.
+- **editToolsTitle:** Photo tools
 - **toolsTitle:** Converters
 - **features:**
   - **No uploads.** Images are processed in your browser and never leave your device.
@@ -1931,6 +2005,32 @@
 | `widget.keepAspect` | Сохранять пропорции | Keep aspect ratio |
 | `widget.boxHint` | С пропорциями изображение впишется в эти размеры, без них — растянется точно до них. Одну сторону можно оставить пустой. | With the aspect ratio kept, the image fits within these dimensions; without it, it is stretched to exactly them. You can leave one side empty. |
 | `widget.dimensions` | {width}×{height} | {width}×{height} |
+| `widget.stripWhat` | Удалить | Remove |
+| `widget.stripModes.all` | Все метаданные | All metadata |
+| `widget.stripModes.keep-dates` | Всё, кроме даты | All but the date |
+| `widget.stripModes.location` | Только геолокацию | Location only |
+| `widget.stripHints.all` | Ориентация и цветовой профиль остаются: без них снимок покажется иначе. Само изображение не перекодируется. | Orientation and the color profile stay: without them the photo would look different. The image itself isn't re-encoded. |
+| `widget.stripHints.keep-dates` | Останутся дата и время съёмки — по ним галерея расставит снимки по порядку. | The capture date and time stay, so galleries keep your photos in order. |
+| `widget.stripHints.location` | Координаты удаляются из EXIF, а блоки XMP и IPTC — целиком: в них тоже бывает место съёмки. Камера и дата остаются. | Coordinates are removed from EXIF, and XMP and IPTC blocks entirely: they can hold the location too. Camera and date stay. |
+| `widget.removed` | Удалено: {list}. | Removed: {list}. |
+| `widget.nothingFound` | Метаданных не найдено — файл не изменён. | No metadata found — the file is unchanged. |
+| `widget.removedKinds.location` | геолокация | location |
+| `widget.removedKinds.camera` | камера и объектив | camera and lens |
+| `widget.removedKinds.serial` | серийные номера | serial numbers |
+| `widget.removedKinds.author` | автор и подписи | author and captions |
+| `widget.removedKinds.dates` | дата съёмки | capture date |
+| `widget.removedKinds.settings` | параметры съёмки | shooting settings |
+| `widget.removedKinds.software` | программы | software |
+| `widget.removedKinds.makernote` | служебные данные камеры | camera maker data |
+| `widget.removedKinds.thumbnail` | встроенная миниатюра | embedded thumbnail |
+| `widget.removedKinds.exif` | прочие данные EXIF | other EXIF data |
+| `widget.removedKinds.xmp` | XMP | XMP |
+| `widget.removedKinds.iptc` | IPTC | IPTC |
+| `widget.removedKinds.comment` | комментарии | comments |
+| `widget.removedKinds.text` | текстовые поля | text fields |
+| `widget.removedKinds.extra-images` | дополнительные изображения (HDR, глубина, видео) | extra images (HDR, depth, video) |
+| `widget.removedKinds.c2pa` | Content Credentials | Content Credentials |
+| `widget.removedKinds.other` | прочие служебные данные | other service data |
 | `widget.dropAction` | или нажмите, чтобы выбрать | or click to choose |
 | `widget.dropHint` | Можно сразу много файлов — до 100 за раз | Add many files at once — up to 100 |
 | `widget.dropActive` | Отпустите, чтобы добавить файлы | Release to add files |
@@ -1991,6 +2091,7 @@
 | `widget.warnings.target-lossless` | У PNG и WebP без потерь нет настройки качества, поэтому подобрать размер нельзя. Выберите JPG или WebP. | PNG and lossless WebP have no quality setting, so the size can't be matched. Choose JPG or WebP. |
 | `widget.warnings.not-smaller` | Файл не стал меньше: исходник уже хорошо сжат. | The file didn't get smaller: the original is already well compressed. |
 | `widget.warnings.not-resized` | Изображение уже не больше заданного размера — размер не изменён. | The image is already no larger than the requested size — its size was kept. |
+| `widget.warnings.exif-compressed-removed` | EXIF в этом файле сжат, и выборочно его не поправить — он удалён целиком, вместе с датой. | This file's EXIF is compressed and can't be edited selectively, so it was removed entirely, date included. |
 | `notFound.title` | Страница не найдена | Page not found |
 | `notFound.text` | Такой страницы нет. Возможно, адрес изменился или в нём опечатка. | This page does not exist. The address may have changed or contain a typo. |
 | `notFound.toHome` | На главную | Go to the home page |

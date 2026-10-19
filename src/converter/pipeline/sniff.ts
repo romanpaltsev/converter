@@ -14,6 +14,19 @@ export type SniffResult =
 
 export type SniffKind = SniffResult['kind'];
 
+/** Название, расширение и MIME-тип по формату — для файлов, которые остаются в своём формате («Удалить метаданные»). */
+export const KIND_FILES: Record<Exclude<SniffKind, 'unknown'>, { label: string; extension: string; mime: string }> = {
+  heic: { label: 'HEIC', extension: 'heic', mime: 'image/heic' },
+  avif: { label: 'AVIF', extension: 'avif', mime: 'image/avif' },
+  jpeg: { label: 'JPG', extension: 'jpg', mime: 'image/jpeg' },
+  png: { label: 'PNG', extension: 'png', mime: 'image/png' },
+  webp: { label: 'WebP', extension: 'webp', mime: 'image/webp' },
+  gif: { label: 'GIF', extension: 'gif', mime: 'image/gif' },
+  bmp: { label: 'BMP', extension: 'bmp', mime: 'image/bmp' },
+  tiff: { label: 'TIFF', extension: 'tif', mime: 'image/tiff' },
+  jxl: { label: 'JXL', extension: 'jxl', mime: 'image/jxl' },
+};
+
 /** Сколько байт начала файла нужно для определения формата (с запасом на длинный список брендов ftyp). */
 export const SNIFF_BYTES = 256;
 

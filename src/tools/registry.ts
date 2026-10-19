@@ -41,9 +41,10 @@ export type OutputChoiceId = OutputFormatId | 'original';
 
 /**
  * convert — конвертер из одного формата в другой (вход в формате выхода — ошибка «уже в формате …»);
- * compress — «Сжать фото» (качество или целевой размер); resize — «Изменить размер».
+ * compress — «Сжать фото» (качество или целевой размер); resize — «Изменить размер»;
+ * strip — «Удалить метаданные» (без перекодирования: формат и пиксели те же, выбора формата нет).
  */
-export type ToolMode = 'convert' | 'compress' | 'resize';
+export type ToolMode = 'convert' | 'compress' | 'resize' | 'strip';
 
 export interface ToolConfig {
   id: string;
@@ -73,7 +74,7 @@ const AVIF_OUTPUTS: OutputFormatId[] = ['avif', 'jpeg', 'png', 'webp'];
 const SAME_OR_ANY: OutputChoiceId[] = ['original', 'jpeg', 'png', 'webp'];
 const ALL_INPUTS: InputFormatId[] = ['heic', 'avif', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'jxl'];
 
-/** Сначала сжатие и размер, затем конвертеры по входному формату: так идут карточки на главной и ссылки в подвале. */
+/** Сначала обработка (сжатие, размер, метаданные), затем конвертеры по входному формату: так идут карточки на главной и ссылки в подвале. */
 export const TOOLS: ToolConfig[] = [
   {
     id: 'compress-image',
@@ -84,7 +85,7 @@ export const TOOLS: ToolConfig[] = [
     outputs: SAME_OR_ANY,
     defaultQuality: 75,
     content: 'compress-image',
-    related: ['resize-image', 'heic-to-jpg', 'png-to-jpg', 'jpg-to-webp'],
+    related: ['resize-image', 'remove-metadata', 'heic-to-jpg', 'jpg-to-webp'],
   },
   {
     id: 'resize-image',
@@ -95,7 +96,18 @@ export const TOOLS: ToolConfig[] = [
     outputs: SAME_OR_ANY,
     defaultQuality: 90,
     content: 'resize-image',
-    related: ['compress-image', 'heic-to-jpg', 'jpg-to-webp', 'png-to-jpg'],
+    related: ['compress-image', 'remove-metadata', 'heic-to-jpg', 'jpg-to-webp'],
+  },
+  {
+    id: 'remove-metadata',
+    mode: 'strip',
+    slugs: { ru: 'udalit-metadannye-foto', en: 'remove-exif' },
+    inputFormats: ALL_INPUTS,
+    defaultOutput: 'original',
+    outputs: ['original'],
+    defaultQuality: 90,
+    content: 'remove-metadata',
+    related: ['compress-image', 'resize-image', 'heic-to-jpg', 'png-to-jpg'],
   },
   {
     id: 'heic-to-jpg',

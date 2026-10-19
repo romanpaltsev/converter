@@ -67,12 +67,16 @@ export interface FilterOptions {
   height: number;
   /** Отбросить MakerNote даже от Apple (когда EXIF не помещается в лимит). */
   dropMakerNote?: boolean;
+  /**
+   * Orientation результата. При конвертации пиксели уже повёрнуты, поэтому 1 (иначе будет двойной поворот);
+   * при удалении метаданных без перекодирования — исходная.
+   */
+  orientation?: number;
 }
 
 export function filterExif(src: ExifData, options: FilterOptions): ExifData {
   const le = src.littleEndian;
-  // пиксели уже повёрнуты декодером, поэтому Orientation всегда 1 — иначе будет двойной поворот
-  const orientation = shortEntry(TAG.Orientation, 1, le);
+  const orientation = shortEntry(TAG.Orientation, options.orientation ?? 1, le);
 
   if (options.mode === 'dates') {
     const exif = src.exif.filter((e) => DATE_TAGS_EXIF.has(e.tag));
