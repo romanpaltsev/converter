@@ -51,6 +51,14 @@ const config: WidgetConfig = {
   strings: t,
 };
 const id = `cv-${tool.id}`;
+// «Изменить размер»: режимы и готовые размеры по длинной стороне (4K, 2,5K, Full HD, HD, превью)
+const RESIZE_MODES = [
+  { value: 'long-side', label: t.resizeLongSide },
+  { value: 'percent', label: t.resizePercent },
+  { value: 'box', label: t.resizeBox },
+];
+const LONG_SIDE_PRESETS = [3840, 2560, 1920, 1280, 800];
+const DEFAULT_LONG_SIDE = 1920;
 ---
 
 <section class="converter" data-converter aria-label={t.dropTitle}>
@@ -95,6 +103,65 @@ const id = `cv-${tool.id}`;
             </label>
           </div>
         </fieldset>
+      )
+    }
+    {
+      tool.mode === 'resize' && (
+        <Fragment>
+          <fieldset class="settings__format">
+            <legend class="settings__label">{t.resize}</legend>
+            <div class="segmented segmented--stack">
+              {RESIZE_MODES.map((mode) => (
+                <label class="segmented__option">
+                  <input type="radio" name="resizeMode" value={mode.value} checked={mode.value === 'long-side'} />
+                  <span>{mode.label}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+          <p class="settings__hint settings__hint--aligned">{t.resizeHint}</p>
+          <div class="settings__target" data-resize-long>
+            <label class="settings__label" for={`${id}-long`}>{t.longSide}</label>
+            <div class="field-group">
+              <span class="field-unit">
+                <input id={`${id}-long`} class="field field--number" type="text" name="longSide" value={DEFAULT_LONG_SIDE} inputmode="numeric" autocomplete="off" />
+                <span class="field-unit__label">{t.pixels}</span>
+              </span>
+              <div class="chips" role="group" aria-label={t.presets}>
+                {LONG_SIDE_PRESETS.map((size) => (
+                  <button type="button" class="chip" data-preset={size} aria-pressed={size === DEFAULT_LONG_SIDE ? 'true' : 'false'}>
+                    {size}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div class="settings__quality settings__quality--wide" data-resize-percent hidden>
+            <label class="settings__label" for={`${id}-percent`}>{t.scale}</label>
+            <input id={`${id}-percent`} type="range" name="percent" min="5" max="100" step="5" value="50" />
+            <output for={`${id}-percent`} data-percent-value>50 %</output>
+          </div>
+          <div class="settings__target" data-resize-box hidden>
+            <span class="settings__label" aria-hidden="true"></span>
+            <div class="field-group">
+              <label class="field-caption">
+                <span>{t.width}</span>
+                <input class="field field--number" type="text" name="boxWidth" value="1920" inputmode="numeric" autocomplete="off" />
+              </label>
+              <span class="field-times" aria-hidden="true">×</span>
+              <label class="field-caption">
+                <span>{t.height}</span>
+                <input class="field field--number" type="text" name="boxHeight" value="1080" inputmode="numeric" autocomplete="off" />
+              </label>
+              <span class="field-unit__label field-times">{t.pixels}</span>
+            </div>
+            <label class="checkbox settings__target-span">
+              <input type="checkbox" name="keepAspect" checked />
+              <span>{t.keepAspect}</span>
+            </label>
+            <p class="settings__hint settings__hint--flush settings__target-span">{t.boxHint}</p>
+          </div>
+        </Fragment>
       )
     }
     <div class="settings__quality" data-quality-row hidden={!initial.hasQuality}>

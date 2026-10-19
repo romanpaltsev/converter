@@ -84,6 +84,80 @@
 - **What happens to the location and the date taken?** By default the capture date is kept, while the location, phone model and other details are removed — which also trims the file a little. Tick “Keep all metadata” to copy everything.
 - **Is it safe to compress my photos here?** Yes. The site only downloads the tool itself; your images are processed in your browser and are never sent to a server.
 
+### resize-image
+
+#### Русский — `/izmenit-razmer-foto`
+
+Файл: `src/content/tools/ru/resize-image.yaml`
+
+- **title:** Изменить размер фото онлайн — в пикселях или процентах _(54 симв.)_
+- **description:** Уменьшите фото и картинки JPG, PNG, WebP, HEIC и AVIF до нужного размера в пикселях или процентах прямо в браузере. Бесплатно, без регистрации и загрузки. _(154 симв.)_
+- **H1:** Изменить размер фото онлайн
+- **Подзаголовок:** По длинной стороне, в процентах или до точных размеров. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** Изменить размер фото
+- **Карточка:** Изменить размер — Уменьшить фото до нужных пикселей — по стороне, в процентах или точно.
+- **JSON-LD:** Изменение размера фото онлайн — Онлайн-сервис для уменьшения фотографий и картинок, который работает в браузере без загрузки файлов на сервер.
+
+**Как изменить размер фото**
+
+1. Выберите, как уменьшить: до длины длинной стороны (например, 1920 точек), в процентах или до точной ширины и высоты.
+2. Нажмите на область выше или перетащите на неё фото — можно сразу несколько. Всё происходит прямо в браузере.
+3. Скачайте файлы по одному или все сразу ZIP-архивом. В строке каждого файла видны размеры до и после.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Фото уменьшаются на вашем устройстве. Они не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Аккуратное уменьшение.** Используется фильтр Lanczos — тот же, что в графических редакторах: мелкие детали остаются чёткими, без «лесенок» на краях.
+- **Формат и поворот сохраняются.** JPG остаётся JPG, PNG — PNG с прозрачностью. Фото HEIC с iPhone и AVIF сохраняются в JPG. Снимок поворачивается так же, как в галерее.
+- **Сразу много файлов.** Уменьшите до 100 изображений за раз с одинаковыми настройками и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Как уменьшить фото до 1920 пикселей?** Оставьте режим «По длинной стороне» и выберите 1920 — или впишите своё число. Длинная сторона станет 1920 точек, а короткая уменьшится пропорционально: снимок 4032 × 3024 превратится в 1920 × 1440.
+- **Чем отличаются режимы?** «По длинной стороне» удобен для пачки фото разной ориентации: и горизонтальные, и вертикальные снимки станут не больше заданного. «В процентах» уменьшает каждое изображение во столько же раз. «Ширина и высота» вписывает изображение в рамку, а без галочки «Сохранять пропорции» растягивает точно до неё.
+- **Можно ли увеличить изображение?** Нет, изображения только уменьшаются: при увеличении новых деталей не появляется, файл лишь становится больше. Если фото уже меньше заданного размера, оно сохранит свои размеры, а в строке файла появится пояснение.
+- **Ухудшится ли качество?** Уменьшенное фото содержит меньше точек, но выглядит чётким: используется фильтр Lanczos. JPG и WebP сохраняются с качеством 90 — его можно изменить ползунком. PNG сохраняется без потерь.
+- **Уменьшится ли вес файла?** Да, обычно заметно: если уменьшить фото вдвое по каждой стороне, точек станет вчетверо меньше. Чтобы уложиться в конкретный размер в килобайтах, воспользуйтесь страницей «Сжать фото».
+- **Сохранится ли прозрачность?** Да, если выбрать «Исходный» формат для PNG и WebP или формат PNG либо WebP явно. В JPG прозрачных областей нет — они станут белыми.
+- **Что происходит с геолокацией и датой съёмки?** По умолчанию дата и время съёмки сохраняются, а геолокация, модель телефона и другие служебные данные удаляются. Чтобы перенести все метаданные, отметьте «Сохранить все метаданные».
+- **Безопасно ли это?** Да. С сайта загружается только сам инструмент, а фотографии обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/resize-image`
+
+Файл: `src/content/tools/en/resize-image.yaml`
+
+- **title:** Resize Images Online — By Pixels or Percentage, No Upload _(57 симв.)_
+- **description:** Resize JPG, PNG, WebP, HEIC and AVIF images to the pixel dimensions or percentage you need, right in your browser. Free, no sign-up, no upload. _(143 симв.)_
+- **H1:** Resize Images Online
+- **Подзаголовок:** By the longest side, by percentage or to exact dimensions. Your files never leave your device.
+- **Хлебные крошки:** Resize images
+- **Карточка:** Resize images — Shrink photos to the pixels you need — by side, by percentage or exactly.
+- **JSON-LD:** Image Resizer — An online image resizer that runs in your browser without uploading your photos.
+
+**How to resize an image**
+
+1. Choose how to resize: by the longest side (for example 1920 pixels), by percentage, or to an exact width and height.
+2. Click the box above or drag your images onto it — you can add many at once. Everything happens in your browser.
+3. Download the files one by one or all at once as a ZIP. Each file's row shows its dimensions before and after.
+
+**Why use this resizer**
+
+- **Your files stay with you.** Images are resized on your device. They are never uploaded to a server, so nobody else ever sees them.
+- **Clean downscaling.** Resizing uses the Lanczos filter found in photo editors, so fine detail stays crisp, without jagged edges.
+- **Format and rotation are kept.** JPG stays JPG, PNG stays PNG with its transparency. HEIC photos from an iPhone and AVIF images are saved as JPG. Photos are rotated just as in your gallery.
+- **Batch resizing.** Resize up to 100 images at a time with the same settings and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **How do I resize a photo to 1920 pixels?** Keep “Longest side” and pick 1920, or type your own number. The longest side becomes 1920 pixels and the other one shrinks proportionally: a 4032 × 3024 photo becomes 1920 × 1440.
+- **What's the difference between the modes?** “Longest side” works best for a batch of landscape and portrait photos — none of them ends up larger than the limit. “Percentage” shrinks every image by the same factor. “Width and height” fits the image within a box, or stretches it to exactly that box if “Keep aspect ratio” is unticked.
+- **Can I make an image bigger?** No, images are only made smaller: enlarging doesn't add detail, it just makes the file bigger. If a photo is already smaller than the requested size, it keeps its dimensions and its row explains why.
+- **Will the quality suffer?** A smaller image has fewer pixels but stays sharp thanks to the Lanczos filter. JPG and WebP are saved at quality 90, which you can change with the slider. PNG is saved losslessly.
+- **Will the file get lighter?** Yes, usually a lot: halving each side leaves a quarter of the pixels. To hit a specific size in kilobytes, use the “Compress images” page.
+- **Is transparency preserved?** Yes, with the “Original” format for PNG and WebP, or when you pick PNG or WebP explicitly. JPG has no transparency, so transparent areas turn white.
+- **What happens to the location and the date taken?** By default the capture date is kept, while the location, phone model and other details are removed. Tick “Keep all metadata” to copy everything.
+- **Is it safe to resize my photos here?** Yes. The site only downloads the tool itself; your images are processed in your browser and are never sent to a server.
+
 ### heic-to-jpg
 
 #### Русский — `/heic-v-jpg`
@@ -1002,6 +1076,20 @@
 | `widget.processing` | Обрабатывается… | Processing… |
 | `widget.reprocess` | Обработать заново с новыми настройками | Process again with the new settings |
 | `widget.qualityUsed` | качество {quality} | quality {quality} |
+| `widget.resize` | Размер | Size |
+| `widget.resizeLongSide` | По длинной стороне | Longest side |
+| `widget.resizePercent` | В процентах | Percentage |
+| `widget.resizeBox` | Ширина и высота | Width and height |
+| `widget.resizeHint` | Изображения только уменьшаются: те, что уже меньше, сохранят свой размер. | Images are only made smaller: ones that are already smaller keep their size. |
+| `widget.longSide` | Сторона | Side |
+| `widget.presets` | Готовые размеры | Preset sizes |
+| `widget.pixels` | пикс. | px |
+| `widget.scale` | Масштаб | Scale |
+| `widget.width` | Ширина | Width |
+| `widget.height` | Высота | Height |
+| `widget.keepAspect` | Сохранять пропорции | Keep aspect ratio |
+| `widget.boxHint` | С пропорциями изображение впишется в эти размеры, без них — растянется точно до них. Одну сторону можно оставить пустой. | With the aspect ratio kept, the image fits within these dimensions; without it, it is stretched to exactly them. You can leave one side empty. |
+| `widget.dimensions` | {width}×{height} | {width}×{height} |
 | `widget.dropAction` | или нажмите, чтобы выбрать | or click to choose |
 | `widget.dropHint` | Можно сразу много файлов — до 100 за раз | Add many files at once — up to 100 |
 | `widget.dropActive` | Отпустите, чтобы добавить файлы | Release to add files |
@@ -1059,6 +1147,7 @@
 | `widget.warnings.target-not-reached` | Даже с минимальным качеством файл больше заданного размера — сохранён самый маленький вариант. Уменьшите изображение в пикселях. | Even at the lowest quality the file is larger than the limit — the smallest version was saved. Try reducing the image's dimensions. |
 | `widget.warnings.target-lossless` | У PNG и WebP без потерь нет настройки качества, поэтому подобрать размер нельзя. Выберите JPG или WebP. | PNG and lossless WebP have no quality setting, so the size can't be matched. Choose JPG or WebP. |
 | `widget.warnings.not-smaller` | Файл не стал меньше: исходник уже хорошо сжат. | The file didn't get smaller: the original is already well compressed. |
+| `widget.warnings.not-resized` | Изображение уже не больше заданного размера — размер не изменён. | The image is already no larger than the requested size — its size was kept. |
 | `notFound.title` | Страница не найдена | Page not found |
 | `notFound.text` | Такой страницы нет. Возможно, адрес изменился или в нём опечатка. | This page does not exist. The address may have changed or contain a typo. |
 | `notFound.toHome` | На главную | Go to the home page |

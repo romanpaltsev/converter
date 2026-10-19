@@ -34,6 +34,8 @@ export type FromWorker =
       extension: string;
       width: number;
       height: number;
+      sourceWidth: number;
+      sourceHeight: number;
       /** Качество результата (подобранное под целевой размер или с ползунка); null — без потерь. */
       quality: number | null;
       pixels: number;

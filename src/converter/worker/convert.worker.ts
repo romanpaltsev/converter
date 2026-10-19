@@ -59,8 +59,10 @@ async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): P
     modules.set(encoder.module, encoder);
     const session = decoder.open(bytes);
     try {
-      // ограничение WebP проверяем до декодирования (бывает у панорам)
-      if (message.options.encoder === 'webp' && Math.max(session.width, session.height) > WEBP_MAX_DIMENSION) {
+      // ограничение WebP проверяем до декодирования (бывает у панорам); после уменьшения снимок может и влезть —
+      // тогда проверит сам кодировщик
+      const resized = message.options.resize !== null;
+      if (message.options.encoder === 'webp' && !resized && Math.max(session.width, session.height) > WEBP_MAX_DIMENSION) {
         throw new ConvertError('too-large-for-webp');
       }
       const pixels = session.width * session.height;
@@ -82,6 +84,8 @@ async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): P
           extension: encoder.extension,
           width: result.width,
           height: result.height,
+          sourceWidth: result.sourceWidth,
+          sourceHeight: result.sourceHeight,
           quality: result.quality,
           pixels,
           warnings: result.warnings,

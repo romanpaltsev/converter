@@ -25,13 +25,15 @@ const PAGES = [
   '/en/webp-to-png',
   '/szhat-foto',
   '/en/compress-image',
+  '/izmenit-razmer-foto',
+  '/en/resize-image',
   '/licenses',
   '/en/licenses',
   '/contacts',
   '/en/contacts',
 ];
 // страницы-конвертеры собраны из одного шаблона — для axe достаточно представителей каждого вида
-const AXE_PAGES = ['/', '/en/', '/heic-v-jpg', '/szhat-foto', '/en/png-to-webp', '/webp-v-png', '/licenses', '/en/contacts'];
+const AXE_PAGES = ['/', '/en/', '/heic-v-jpg', '/szhat-foto', '/en/resize-image', '/en/png-to-webp', '/webp-v-png', '/licenses', '/en/contacts'];
 
 test.describe('заголовки ответа', () => {
   for (const path of PAGES) {
@@ -129,7 +131,7 @@ test.describe('интерфейс', () => {
     await expect(page.locator('.file[data-status="done"]')).toHaveCount(1);
   });
 
-  for (const path of ['/heic-v-jpg', '/en/heic-to-png', '/szhat-foto', '/en/compress-image']) {
+  for (const path of ['/heic-v-jpg', '/en/heic-to-png', '/szhat-foto', '/en/compress-image', '/izmenit-razmer-foto']) {
     test(`${path}: конвертер в первом экране телефона (360×640)`, async ({ page }) => {
       await page.setViewportSize({ width: 360, height: 640 });
       await openConverter(page, path);
@@ -159,6 +161,17 @@ test.describe('доступность (axe, WCAG 2.1 AA)', () => {
       await page.setInputFiles('[data-input]', ['basic.heic', 'garbage.heic', 'hdr-pq.heic'].map(fixture));
       await expect(page.locator('.file:is([data-status="done"], [data-status="error"])')).toHaveCount(3);
       await page.getByRole('radio', { name: 'PNG' }).check(); // показывает предупреждение и «Конвертировать заново»
+      const result = await new AxeBuilder({ page }).include('[data-converter]').withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
+      expect(result.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
+    });
+
+    test(`размер: ширина и высота, результаты (${scheme})`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme: scheme });
+      await openConverter(page, '/izmenit-razmer-foto');
+      await page.getByRole('radio', { name: 'Ширина и высота' }).check();
+      await page.getByLabel('Ширина', { exact: true }).fill('x'); // подсвеченное неверное значение
+      await page.setInputFiles('[data-input]', ['photo.jpg'].map(fixture));
+      await expect(page.locator('.file[data-status="done"]')).toHaveCount(1);
       const result = await new AxeBuilder({ page }).include('[data-converter]').withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
       expect(result.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
     });

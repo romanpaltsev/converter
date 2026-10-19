@@ -30,6 +30,14 @@ describe('сборка: разметка виджета', () => {
     expect(Boolean(root.querySelector('input[name="compression"][value="quality"][checked]'))).toBe(tool.mode === 'compress');
     expect(root.querySelector('[data-target-row]')?.hasAttribute('hidden') ?? null).toBe(tool.mode === 'compress' ? true : null);
     expect(Boolean(root.querySelector('[data-original-hint]'))).toBe(tool.mode !== 'convert');
+    // размер: по умолчанию «По длинной стороне» 1920, остальные режимы скрыты
+    expect(Boolean(root.querySelector('input[name="resizeMode"][value="long-side"][checked]'))).toBe(tool.mode === 'resize');
+    if (tool.mode === 'resize') {
+      expect(root.querySelector('input[name="longSide"]')?.getAttribute('value')).toBe('1920');
+      expect(root.querySelector('[data-preset="1920"]')?.getAttribute('aria-pressed')).toBe('true');
+      expect(root.querySelector('[data-resize-percent]')?.hasAttribute('hidden')).toBe(true);
+      expect(root.querySelector('[data-resize-box]')?.hasAttribute('hidden')).toBe(true);
+    }
     expect(config).not.toHaveProperty('decoder');
     // шаблоны строк заполнены при сборке
     expect(JSON.stringify(config.strings)).not.toMatch(/\{formats?\}/);

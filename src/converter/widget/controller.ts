@@ -4,6 +4,7 @@
 import { track } from '../../lib/analytics';
 import { checkInput } from '../pipeline/input';
 import { SNIFF_BYTES } from '../pipeline/sniff';
+import type { ResizeSpec } from '../pipeline/resize';
 import type { ErrorCode, WarningCode } from '../pipeline/types';
 import { type OutputOption, type WidgetConfig, readConfig } from './config';
 import { NameAllocator, outputName, withTimestamp } from './filenames';
@@ -21,12 +22,25 @@ interface Settings {
   keepMetadata: boolean;
   /** Страница «Сжать фото»: целевой размер в байтах вместо качества с ползунка; иначе null. */
   targetBytes: number | null;
+  /** Страница «Изменить размер»: как уменьшать; иначе null. */
+  resize: ResizeSpec | null;
 }
 
 /** Целевой размер — в десятичных килобайтах и мегабайтах: файл «до 1 МБ» пройдёт и лимит 1 000 000, и 1 048 576 байт. */
 const TARGET_UNITS: Record<string, number> = { kb: 1000, mb: 1000 * 1000 };
 const MIN_TARGET_BYTES = 10 * 1000;
 const DEFAULT_TARGET_BYTES = 500 * 1000;
+const DEFAULT_LONG_SIDE = 1920;
+/** Больше точек по стороне не бывает ни у одного поддерживаемого формата. */
+const MAX_DIMENSION = 100_000;
+
+/** Целое число точек из поля («1 920», «1920px» не принимаем — только цифры и пробелы); иначе null. */
+function parseDimension(value: FormDataEntryValue | null): number | null {
+  const text = String(value ?? '').replace(/\s/g, '');
+  if (!/^\d+$/.test(text)) return null;
+  const n = Number(text);
+  return n >= 1 && n <= MAX_DIMENSION ? n : null;
+}
 
 interface Item {
   file: File;
@@ -42,6 +56,8 @@ interface Item {
   warnings: WarningCode[];
   /** Качество, подобранное под целевой размер (показывается в строке файла). */
   quality: number | null;
+  /** Размеры до и после уменьшения (страница «Изменить размер»). */
+  dimensions: { before: [number, number]; after: [number, number] } | null;
   row: HTMLLIElement;
 }
 
@@ -54,7 +70,8 @@ const sameSettings = (a: Settings, b: Settings) =>
   a.output.id === b.output.id &&
   a.keepMetadata === b.keepMetadata &&
   isLossless(a) === isLossless(b) &&
-  (!isLossy(a) || (a.targetBytes === b.targetBytes && (a.targetBytes !== null || a.quality === b.quality)));
+  (!isLossy(a) || (a.targetBytes === b.targetBytes && (a.targetBytes !== null || a.quality === b.quality))) &&
+  JSON.stringify(a.resize) === JSON.stringify(b.resize);
 
 /** Сконвертированный файл или «уже в этом формате» — после смены настроек их можно сконвертировать заново. */
 function isOutdated(item: Item, current: Settings): boolean {
@@ -88,6 +105,10 @@ export class ConverterWidget {
   /** Только на странице «Сжать фото»: переключатель «По качеству / До размера» и поле целевого размера. */
   private readonly compressionRow: HTMLElement | null;
   private readonly targetRow: HTMLElement | null;
+  /** Только на странице «Изменить размер»: строки трёх режимов, готовые размеры и подпись масштаба. */
+  private readonly resizeRows: Record<ResizeSpec['mode'], HTMLElement> | null;
+  private readonly presets: HTMLButtonElement[];
+  private readonly percentValue: HTMLOutputElement | null;
   private readonly pngWarning: HTMLElement;
   private readonly status: HTMLElement;
   private readonly notice: HTMLElement;
@@ -121,6 +142,12 @@ export class ConverterWidget {
     this.originalHint = root.querySelector('[data-original-hint]');
     this.compressionRow = root.querySelector('[data-compression-row]');
     this.targetRow = root.querySelector('[data-target-row]');
+    const longRow = root.querySelector<HTMLElement>('[data-resize-long]');
+    this.resizeRows = longRow
+      ? { 'long-side': longRow, percent: element(root, '[data-resize-percent]'), box: element(root, '[data-resize-box]') }
+      : null;
+    this.presets = [...root.querySelectorAll<HTMLButtonElement>('[data-preset]')];
+    this.percentValue = root.querySelector('[data-percent-value]');
     this.pngWarning = element(root, '[data-png-warning]');
     this.status = element(root, '[data-status-text]');
     this.notice = element(root, '[data-notice]');
@@ -172,6 +199,12 @@ export class ConverterWidget {
     this.form.addEventListener('input', () => this.syncSettings());
     this.form.addEventListener('change', () => this.syncSettings());
     this.form.addEventListener('submit', (event) => event.preventDefault());
+    for (const preset of this.presets) {
+      preset.addEventListener('click', () => {
+        (this.form.elements.namedItem('longSide') as HTMLInputElement).value = preset.dataset.preset!;
+        this.syncSettings();
+      });
+    }
     this.zipButton.addEventListener('click', () => void this.downloadAll());
     this.reconvertButton.addEventListener('click', () => this.reconvert());
     this.clearButton.addEventListener('click', () => this.clear());
@@ -186,7 +219,23 @@ export class ConverterWidget {
       lossless: data.get('lossless') !== null,
       keepMetadata: data.get('keepMetadata') !== null,
       targetBytes: data.get('compression') === 'target' ? this.targetBytes(data) : null,
+      resize: this.resizeRows ? this.resizeSpec(data) : null,
     };
+  }
+
+  /** Как уменьшать — из полей; пустое или неверное число: у стороны — по умолчанию, у ширины/высоты — без ограничения. */
+  private resizeSpec(data: FormData): ResizeSpec {
+    const mode = data.get('resizeMode');
+    if (mode === 'percent') return { mode, percent: Number(data.get('percent') ?? 50) };
+    if (mode === 'box') {
+      return {
+        mode,
+        width: parseDimension(data.get('boxWidth')),
+        height: parseDimension(data.get('boxHeight')),
+        keepAspect: data.get('keepAspect') !== null,
+      };
+    }
+    return { mode: 'long-side', size: parseDimension(data.get('longSide')) ?? DEFAULT_LONG_SIDE };
   }
 
   /** Целевой размер из поля и единицы; пустое или неверное значение — по умолчанию, слишком маленькое — минимум. */
@@ -204,6 +253,21 @@ export class ConverterWidget {
     if (this.compressionRow) this.compressionRow.hidden = !lossy;
     if (this.targetRow) this.targetRow.hidden = !lossy || settings.targetBytes === null;
     this.qualityRow.hidden = !lossy || settings.targetBytes !== null;
+    if (this.resizeRows && settings.resize) {
+      const resize = settings.resize;
+      for (const [mode, row] of Object.entries(this.resizeRows)) row.hidden = mode !== resize.mode;
+      const data = new FormData(this.form);
+      const longSide = String(data.get('longSide') ?? '');
+      for (const preset of this.presets) preset.setAttribute('aria-pressed', String(preset.dataset.preset === longSide.trim()));
+      if (this.percentValue) this.percentValue.value = `${data.get('percent')} %`;
+      // неверное число подсвечиваем (пустая ширина или высота — допустимо: «без ограничения»)
+      for (const name of ['longSide', 'boxWidth', 'boxHeight']) {
+        const input = this.form.elements.namedItem(name) as HTMLInputElement | null;
+        if (!input) continue;
+        const empty = input.value.trim() === '' && name !== 'longSide';
+        input.setAttribute('aria-invalid', String(!empty && parseDimension(input.value) === null));
+      }
+    }
     this.losslessRow.hidden = !settings.output.hasLossless;
     this.pngWarning.hidden = !settings.output.largeFiles;
     this.qualityValue.value = String(settings.quality);
@@ -231,6 +295,7 @@ export class ConverterWidget {
         error: null,
         warnings: [],
         quality: null,
+        dimensions: null,
         row: document.createElement('li'),
       };
       this.items.push(item);
@@ -291,6 +356,7 @@ export class ConverterWidget {
       metadata: settings.keepMetadata ? 'all' : 'dates',
       targetBytes: settings.targetBytes,
       allowSameFormat: this.config.mode !== 'convert',
+      resize: settings.resize,
     });
     if (generation !== this.generation) return;
     if (!outcome.ok) return this.fail(item, outcome.code);
@@ -300,6 +366,9 @@ export class ConverterWidget {
     item.previewUrl = URL.createObjectURL(new Blob([outcome.preview], { type: outcome.mime }));
     item.name = this.names.allocate(outputName(item.file.name, outcome.extension));
     item.quality = settings.targetBytes !== null ? outcome.quality : null;
+    item.dimensions = settings.resize
+      ? { before: [outcome.sourceWidth, outcome.sourceHeight], after: [outcome.width, outcome.height] }
+      : null;
     item.warnings = outcome.warnings;
     // при сжатии честно говорим, что файл не уменьшился (если причина не названа уже — «у PNG нет качества»)
     if (this.config.mode === 'compress' && item.blob.size >= item.file.size && !item.warnings.includes('target-lossless')) {
@@ -375,6 +444,10 @@ export class ConverterWidget {
       const parts = [this.t.done, fill(this.t.sizes, { before: this.size(item.file.size), after: this.size(item.blob.size) })];
       // при сжатии и изменении размера важна разница в размере: «−85 %»
       if (this.config.mode !== 'convert') parts[1] += ` (${this.change(item.file.size, item.blob.size)})`;
+      if (item.dimensions) {
+        const [before, after] = [item.dimensions.before, item.dimensions.after].map(([width, height]) => fill(this.t.dimensions, { width, height }));
+        parts.splice(1, 0, before === after ? before! : fill(this.t.sizes, { before: before!, after: after! }));
+      }
       if (item.quality !== null) parts.push(fill(this.t.qualityUsed, { quality: item.quality }));
       meta.textContent = parts.join(' · ');
     }
@@ -434,6 +507,7 @@ export class ConverterWidget {
         error: null,
         warnings: [],
         quality: null,
+        dimensions: null,
       });
       this.run.total++;
       this.renderRow(item);

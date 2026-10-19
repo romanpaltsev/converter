@@ -198,6 +198,85 @@
   width: 7.5rem;
 }
 
+.field[aria-invalid='true'] {
+  border-color: var(--error);
+}
+
+/* число с единицей справа: «1920 пикс.» */
+.field-unit {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.field-unit__label {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+/* поле с подписью сверху: «Ширина», «Высота» */
+.field-caption {
+  display: grid;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-weight: 550;
+}
+
+.field-caption .field {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.field-group:has(.field-caption) {
+  align-items: end;
+}
+
+.field-times {
+  padding-bottom: 9px;
+  color: var(--muted);
+}
+
+/* готовые значения (длинная сторона): нажатие подставляет число в поле */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  min-height: 34px;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    background-color 0.2s var(--ease),
+    border-color 0.2s var(--ease),
+    color 0.2s var(--ease);
+}
+
+.chip:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.chip[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.settings__target-span {
+  grid-column: 2;
+}
+
 .field:hover {
   border-color: var(--accent);
 }
@@ -206,6 +285,10 @@
   border-color: var(--accent);
   outline: none;
   box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+.settings__quality--wide {
+  grid-template-columns: auto 1fr 5ch;
 }
 
 .settings__quality[hidden],
@@ -496,6 +579,19 @@
   .settings__format .segmented__option span {
     min-width: 0;
     padding: 6px 8px;
+  }
+
+  /* длинные подписи режимов — столбиком */
+  .settings__format .segmented--stack {
+    flex-direction: column;
+  }
+
+  .settings__target-span {
+    grid-column: auto;
+  }
+
+  .field--number {
+    width: 6rem;
   }
 
   .settings__target {

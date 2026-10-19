@@ -2,6 +2,7 @@
 
 import type { MetadataMode } from '../metadata/exif-filter';
 import type { Nclx } from '../color/nclx';
+import type { ResizeSpec } from './resize';
 
 export type DecoderId = 'heic' | 'avif' | 'jpeg' | 'png' | 'webp';
 export type EncoderId = 'jpeg' | 'png' | 'webp';
@@ -25,6 +26,8 @@ export interface ConvertOptions {
   targetBytes: number | null;
   /** Вход и выход могут совпадать по формату (сжатие и изменение размера, а не конвертация). */
   allowSameFormat: boolean;
+  /** Уменьшение (страница «Изменить размер»); null — размер не меняется. */
+  resize: ResizeSpec | null;
 }
 
 /** Коды ошибок; тексты для пользователя — в словарях интерфейса. */
@@ -53,7 +56,9 @@ export type WarningCode =
   | 'target-not-reached'
   | 'target-lossless'
   /** Ставит виджет, а не worker: при сжатии результат не меньше исходника. */
-  | 'not-smaller';
+  | 'not-smaller'
+  /** Заданный размер не меньше исходника — изображение не увеличиваем. */
+  | 'not-resized';
 
 export class ConvertError extends Error {
   /** После ошибки экземпляр WASM-модуля нельзя использовать дальше (нужен новый worker и повторная попытка). */

@@ -1,0 +1,48 @@
+# Texts for /en/resize-image. Draft for the owner's review (see CONTENT.md).
+title: "Resize Images Online — By Pixels or Percentage, No Upload"
+description: "Resize JPG, PNG, WebP, HEIC and AVIF images to the pixel dimensions or percentage you need, right in your browser. Free, no sign-up, no upload."
+h1: "Resize Images Online"
+subtitle: "By the longest side, by percentage or to exact dimensions. Your files never leave your device."
+breadcrumb: "Resize images"
+card:
+  title: "Resize images"
+  text: "Shrink photos to the pixels you need — by side, by percentage or exactly."
+app:
+  name: "Image Resizer"
+  description: "An online image resizer that runs in your browser without uploading your photos."
+howTo:
+  title: "How to resize an image"
+  steps:
+    - "Choose how to resize: by the longest side (for example 1920 pixels), by percentage, or to an exact width and height."
+    - "Click the box above or drag your images onto it — you can add many at once. Everything happens in your browser."
+    - "Download the files one by one or all at once as a ZIP. Each file's row shows its dimensions before and after."
+why:
+  title: "Why use this resizer"
+  items:
+    - title: "Your files stay with you"
+      text: "Images are resized on your device. They are never uploaded to a server, so nobody else ever sees them."
+    - title: "Clean downscaling"
+      text: "Resizing uses the Lanczos filter found in photo editors, so fine detail stays crisp, without jagged edges."
+    - title: "Format and rotation are kept"
+      text: "JPG stays JPG, PNG stays PNG with its transparency. HEIC photos from an iPhone and AVIF images are saved as JPG. Photos are rotated just as in your gallery."
+    - title: "Batch resizing"
+      text: "Resize up to 100 images at a time with the same settings and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "How do I resize a photo to 1920 pixels?"
+      a: "Keep “Longest side” and pick 1920, or type your own number. The longest side becomes 1920 pixels and the other one shrinks proportionally: a 4032 × 3024 photo becomes 1920 × 1440."
+    - q: "What's the difference between the modes?"
+      a: "“Longest side” works best for a batch of landscape and portrait photos — none of them ends up larger than the limit. “Percentage” shrinks every image by the same factor. “Width and height” fits the image within a box, or stretches it to exactly that box if “Keep aspect ratio” is unticked."
+    - q: "Can I make an image bigger?"
+      a: "No, images are only made smaller: enlarging doesn't add detail, it just makes the file bigger. If a photo is already smaller than the requested size, it keeps its dimensions and its row explains why."
+    - q: "Will the quality suffer?"
+      a: "A smaller image has fewer pixels but stays sharp thanks to the Lanczos filter. JPG and WebP are saved at quality 90, which you can change with the slider. PNG is saved losslessly."
+    - q: "Will the file get lighter?"
+      a: "Yes, usually a lot: halving each side leaves a quarter of the pixels. To hit a specific size in kilobytes, use the “Compress images” page."
+    - q: "Is transparency preserved?"
+      a: "Yes, with the “Original” format for PNG and WebP, or when you pick PNG or WebP explicitly. JPG has no transparency, so transparent areas turn white."
+    - q: "What happens to the location and the date taken?"
+      a: "By default the capture date is kept, while the location, phone model and other details are removed. Tick “Keep all metadata” to copy everything."
+    - q: "Is it safe to resize my photos here?"
+      a: "Yes. The site only downloads the tool itself; your images are processed in your browser and are never sent to a server."
