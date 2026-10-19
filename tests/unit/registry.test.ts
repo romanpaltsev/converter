@@ -43,6 +43,8 @@ describe('реестр инструментов', () => {
       'webp-to-png': ['png-to-webp', 'webp-to-jpg', 'heic-to-png', 'avif-to-png'],
       'gif-to-jpg': ['gif-to-png', 'heic-to-jpg', 'avif-to-jpg', 'png-to-jpg'],
       'gif-to-png': ['gif-to-jpg', 'heic-to-png', 'avif-to-png', 'jpg-to-png'],
+      'bmp-to-jpg': ['bmp-to-png', 'heic-to-jpg', 'avif-to-jpg', 'png-to-jpg'],
+      'bmp-to-png': ['bmp-to-jpg', 'heic-to-png', 'avif-to-png', 'jpg-to-png'],
     });
   });
 

@@ -13,6 +13,7 @@ export const DECODER_BY_KIND: Partial<Record<SniffKind, DecoderId>> = {
   png: 'png',
   webp: 'webp',
   gif: 'gif',
+  bmp: 'bmp',
 };
 
 /** Виды JPEG, которые читает MozJPEG из jSquash: baseline, extended и progressive (арифметическое кодирование — нет). */
@@ -25,7 +26,7 @@ const SAME_FORMAT: Partial<Record<SniffKind, { encoder: EncoderId; error: ErrorC
   webp: { encoder: 'webp', error: 'already-webp' },
 };
 
-/** Выход «Исходный формат»: тот же формат; у кого кодировщика нет — HEIC и AVIF в JPG, GIF (палитра, прозрачность) в PNG. */
+/** Выход «Исходный формат»: тот же формат; у кого кодировщика нет — HEIC и AVIF в JPG, GIF (палитра, прозрачность) и BMP (без потерь) в PNG. */
 export const ORIGINAL_ENCODER: Partial<Record<SniffKind, EncoderId>> = {
   heic: 'jpeg',
   avif: 'jpeg',
@@ -33,6 +34,7 @@ export const ORIGINAL_ENCODER: Partial<Record<SniffKind, EncoderId>> = {
   png: 'png',
   webp: 'webp',
   gif: 'png',
+  bmp: 'png',
 };
 
 export type InputCheck = { ok: true; decoder: DecoderId; encoder: EncoderId } | { ok: false; code: ErrorCode };

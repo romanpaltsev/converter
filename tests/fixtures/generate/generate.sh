@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Генерация синтетических фикстур (без личных данных).
 # Запуск: npm run fixtures [-- секции] (собирает Docker-образ и выполняет этот скрипт внутри него).
-# Секции через запятую: heic, jpeg-png, webp, avif, gif (по умолчанию — все). Секция пересоздаёт только свои файлы:
+# Секции через запятую: heic, jpeg-png, webp, avif, gif, bmp (по умолчанию — все). Секция пересоздаёт только свои файлы:
 # HEIC-фикстуры не меняются побайтно, когда добавляются фикстуры других форматов.
 # Внутри контейнера: /out — tests/fixtures, /icc — src/converter/color/icc.
 set -euo pipefail
@@ -318,6 +318,27 @@ echo "== offset.gif: холст 400x300, единственный кадр 200x1
 echo "== самопроверка GIF"
 magick identify "$OUT/basic.gif" "$OUT/interlaced.gif" "$OUT/alpha.gif" "$OUT/offset.gif"
 magick identify -format '%f: кадр %s, %wx%h%X%Y, interlace=%[interlace]\n' "$OUT/animated.gif" "$OUT/interlaced.gif"
+fi
+
+if want bmp; then
+echo "== basic.bmp (24 бита), palette4.bmp (4 бита), mono.bmp (1 бит), rle8.bmp, rgb565.bmp (16 бит, маски)"
+quadrants 400 300 bmp-quad.png
+"${IM[@]}" bmp-quad.png -type truecolor "bmp3:$OUT/basic.bmp"
+"${IM[@]}" bmp-quad.png +dither -colors 4 -type palette "bmp3:$OUT/palette4.bmp"
+"${IM[@]}" bmp-quad.png +dither -colors 4 -type palette -compress RLE "bmp3:$OUT/rle8.bmp"
+"${IM[@]}" bmp-quad.png -define bmp:subtype=RGB565 "bmp:$OUT/rgb565.bmp"
+"${IM[@]}" -size 64x32 xc:white -fill black -draw 'rectangle 0,0 31,31' -type bilevel "bmp3:$OUT/mono.bmp"
+
+echo "== alpha.bmp: 32 бита с альфой (BITMAPV5HEADER + BI_BITFIELDS) — красный круг на прозрачном фоне"
+"${IM[@]}" -size 200x150 xc:none -fill "#e00000" -draw "circle 100,75 100,20" "bmp:$OUT/alpha.bmp"
+
+echo "== p3.bmp: 24 бита, встроенный ICC Display P3 (BITMAPV5HEADER, PROFILE_EMBEDDED)"
+"${IM[@]}" bmp-quad.png -profile "$ICC_P3" -type truecolor "bmp:$OUT/p3.bmp"
+
+echo "== самопроверка BMP"
+for f in basic palette4 rle8 rgb565 mono alpha p3; do
+  magick identify -format "$f: %wx%h %[bmp:format] %z бит, сжатие=%C, профиль=%[profiles]\n" "$OUT/$f.bmp" 2>/dev/null || magick identify "$OUT/$f.bmp"
+done
 fi
 
 ls -la "$OUT"

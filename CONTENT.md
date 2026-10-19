@@ -1094,6 +1094,146 @@
 - **Why convert GIF to PNG?** Every editor and website understands PNG, it's handy for further editing, and it isn't limited to 256 colors — so your edits won't get dithered.
 - **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
 
+### bmp-to-jpg
+
+#### Русский — `/bmp-v-jpg`
+
+Файл: `src/content/tools/ru/bmp-to-jpg.yaml`
+
+- **title:** BMP в JPG онлайн — бесплатно, без загрузки на сервер _(52 симв.)_
+- **description:** Конвертируйте изображения BMP в JPG прямо в браузере: файл станет в разы легче. Бесплатно, без регистрации, файлы не загружаются на сервер. _(139 симв.)_
+- **H1:** Конвертер BMP в JPG
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** BMP в JPG
+- **Карточка:** BMP → JPG — Тяжёлый BMP — в лёгкий JPG для почты, сайтов и мессенджеров.
+- **JSON-LD:** Конвертер BMP в JPG — Онлайн-конвертер изображений BMP в JPG, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать BMP в JPG**
+
+1. Нажмите на область выше или перетащите на неё BMP-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте JPG по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Изображения не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Файл в разы легче.** BMP обычно хранит изображение без сжатия, а JPG сжимает его — для фотографий и скриншотов разница в размере обычно многократная.
+- **Сжатие MozJPEG.** JPG создаётся кодировщиком MozJPEG от Mozilla. Качество настраивается ползунком.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое BMP?** BMP — старый формат изображений Windows. Обычно он хранит каждый пиксель без сжатия, поэтому файлы получаются большими, и многие сайты и мессенджеры их не принимают.
+- **Насколько уменьшится файл?** Зависит от изображения, но обычно в разы: BMP обычно не сжат. Размер до и после виден в строке каждого файла.
+- **Теряется ли качество?** JPG сжимает с потерями, поэтому изображение немного меняется. При качестве 90 (значение по умолчанию) разница на глаз обычно не видна. Если нужна точная копия, выберите PNG — он тоже заметно легче BMP.
+- **Какие BMP поддерживаются?** Почти все, что встречаются на практике: 1, 4, 8, 16, 24 и 32 бита на пиксель, со сжатием RLE и без, включая файлы с прозрачностью и встроенным цветовым профилем.
+- **Что будет с прозрачностью?** В JPG прозрачности нет, поэтому прозрачные области ложатся на белый фон. Чтобы сохранить прозрачность, выберите PNG или WebP.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/bmp-to-jpg`
+
+Файл: `src/content/tools/en/bmp-to-jpg.yaml`
+
+- **title:** BMP to JPG Converter — Free, Private, No Upload _(47 симв.)_
+- **description:** Convert BMP images to JPG right in your browser and make them many times lighter. Free, no sign-up, and your files never leave your device. _(139 симв.)_
+- **H1:** BMP to JPG Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** BMP to JPG
+- **Карточка:** BMP → JPG — Turn a bulky BMP into a light JPG for email, websites and chat.
+- **JSON-LD:** BMP to JPG Converter — An online BMP to JPG converter that runs in your browser without uploading your images.
+
+**How to convert BMP to JPG**
+
+1. Click the box above or drag your BMP files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each JPG separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Much smaller files.** BMP usually stores images uncompressed, while JPG compresses them — for photos and screenshots the difference is usually several times.
+- **MozJPEG encoding.** JPGs are created with Mozilla's MozJPEG encoder. You can adjust the quality with the slider.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **What is a BMP file?** BMP is an old Windows image format. It usually stores every pixel uncompressed, so files are large, and many websites and messaging apps don't accept them.
+- **How much smaller will the file get?** It depends on the image, but usually several times smaller, since BMP is usually uncompressed. Each file's row shows the size before and after.
+- **Will I lose quality?** JPG compression is lossy, so the image changes slightly. At the default quality of 90 the difference is usually invisible. If you need an exact copy, choose PNG — it's also much lighter than BMP.
+- **Which BMP files are supported?** Practically all you'll come across: 1, 4, 8, 16, 24 and 32 bits per pixel, with or without RLE compression, including files with transparency and an embedded color profile.
+- **What happens to transparency?** JPG has no transparency, so transparent areas are placed on a white background. To keep transparency, choose PNG or WebP.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
+### bmp-to-png
+
+#### Русский — `/bmp-v-png`
+
+Файл: `src/content/tools/ru/bmp-to-png.yaml`
+
+- **title:** BMP в PNG онлайн — без потерь, без загрузки на сервер _(53 симв.)_
+- **description:** Конвертируйте изображения BMP в PNG прямо в браузере: без потери качества и заметно легче. Бесплатно, без регистрации, файлы не загружаются на сервер. _(150 симв.)_
+- **H1:** Конвертер BMP в PNG
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** BMP в PNG
+- **Карточка:** BMP → PNG — Без потерь и легче — для скриншотов, схем и редактирования.
+- **JSON-LD:** Конвертер BMP в PNG — Онлайн-конвертер изображений BMP в PNG, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать BMP в PNG**
+
+1. Нажмите на область выше или перетащите на неё BMP-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте PNG по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Изображения не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Без потерь.** PNG хранит каждый пиксель точно, как BMP, но сжимает данные — изображение не меняется, а файл становится легче.
+- **Прозрачность сохраняется.** Если в BMP есть альфа-канал, прозрачные области остаются прозрачными в PNG.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое BMP?** BMP — старый формат изображений Windows. Обычно он хранит каждый пиксель без сжатия, поэтому файлы получаются большими, и многие сайты и мессенджеры их не принимают.
+- **Изменится ли изображение?** Нет. PNG сжимает без потерь: все пиксели останутся точно такими же, как в BMP.
+- **Насколько уменьшится файл?** Скриншоты, схемы и рисунки с однотонными областями сжимаются в PNG очень сильно. Фотографии — заметно слабее; для них может быть удобнее JPG.
+- **Какие BMP поддерживаются?** Почти все, что встречаются на практике: 1, 4, 8, 16, 24 и 32 бита на пиксель, со сжатием RLE и без, включая файлы с прозрачностью и встроенным цветовым профилем.
+- **Сохранятся ли цвета?** Да. Если в BMP встроен цветовой профиль, он переносится в PNG; если нет — используется sRGB, как и в самом BMP.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/bmp-to-png`
+
+Файл: `src/content/tools/en/bmp-to-png.yaml`
+
+- **title:** BMP to PNG Converter — Lossless, Private, No Upload _(51 симв.)_
+- **description:** Convert BMP images to PNG right in your browser: no quality loss and much smaller files. Free, no sign-up, and your files never leave your device. _(146 симв.)_
+- **H1:** BMP to PNG Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** BMP to PNG
+- **Карточка:** BMP → PNG — Lossless and lighter — for screenshots, diagrams and editing.
+- **JSON-LD:** BMP to PNG Converter — An online BMP to PNG converter that runs in your browser without uploading your images.
+
+**How to convert BMP to PNG**
+
+1. Click the box above or drag your BMP files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each PNG separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Lossless.** PNG keeps every pixel exactly like BMP but compresses the data, so the image stays the same while the file gets lighter.
+- **Transparency is kept.** If the BMP has an alpha channel, transparent areas stay transparent in the PNG.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **What is a BMP file?** BMP is an old Windows image format. It usually stores every pixel uncompressed, so files are large, and many websites and messaging apps don't accept them.
+- **Will the image change?** No. PNG compression is lossless: every pixel stays exactly as it was in the BMP.
+- **How much smaller will the file get?** Screenshots, diagrams and drawings with flat areas compress very well as PNG. Photos compress much less; JPG may suit them better.
+- **Which BMP files are supported?** Practically all you'll come across: 1, 4, 8, 16, 24 and 32 bits per pixel, with or without RLE compression, including files with transparency and an embedded color profile.
+- **Are the colors preserved?** Yes. If the BMP has an embedded color profile, it's copied into the PNG; otherwise sRGB is used, just like in the BMP itself.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
 ## Другие страницы
 
 ### Главная
@@ -1204,7 +1344,7 @@
 | `widget.dropTitle` | Перетащите {format}-файлы сюда | Drop {format} files here |
 | `widget.dropTitleAny` | Перетащите изображения сюда | Drop images here |
 | `widget.originalFormat` | Исходный | Original |
-| `widget.originalHint` | Формат файла сохраняется; HEIC и AVIF сохраняются в JPG, GIF — в PNG. | The file keeps its format; HEIC and AVIF are saved as JPG, GIF as PNG. |
+| `widget.originalHint` | Формат файла сохраняется; HEIC и AVIF сохраняются в JPG, GIF и BMP — в PNG. | The file keeps its format; HEIC and AVIF are saved as JPG, GIF and BMP as PNG. |
 | `widget.compression` | Сжатие | Compression |
 | `widget.byQuality` | По качеству | By quality |
 | `widget.byTarget` | До размера | To file size |

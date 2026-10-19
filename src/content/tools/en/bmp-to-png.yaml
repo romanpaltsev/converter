@@ -1,0 +1,44 @@
+# Texts for /en/bmp-to-png. Draft for the owner's review (see CONTENT.md).
+title: "BMP to PNG Converter — Lossless, Private, No Upload"
+description: "Convert BMP images to PNG right in your browser: no quality loss and much smaller files. Free, no sign-up, and your files never leave your device."
+h1: "BMP to PNG Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "BMP to PNG"
+card:
+  title: "BMP → PNG"
+  text: "Lossless and lighter — for screenshots, diagrams and editing."
+app:
+  name: "BMP to PNG Converter"
+  description: "An online BMP to PNG converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert BMP to PNG"
+  steps:
+    - "Click the box above or drag your BMP files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each PNG separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them."
+    - title: "Lossless"
+      text: "PNG keeps every pixel exactly like BMP but compresses the data, so the image stays the same while the file gets lighter."
+    - title: "Transparency is kept"
+      text: "If the BMP has an alpha channel, transparent areas stay transparent in the PNG."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is a BMP file?"
+      a: "BMP is an old Windows image format. It usually stores every pixel uncompressed, so files are large, and many websites and messaging apps don't accept them."
+    - q: "Will the image change?"
+      a: "No. PNG compression is lossless: every pixel stays exactly as it was in the BMP."
+    - q: "How much smaller will the file get?"
+      a: "Screenshots, diagrams and drawings with flat areas compress very well as PNG. Photos compress much less; JPG may suit them better."
+    - q: "Which BMP files are supported?"
+      a: "Practically all you'll come across: 1, 4, 8, 16, 24 and 32 bits per pixel, with or without RLE compression, including files with transparency and an embedded color profile."
+    - q: "Are the colors preserved?"
+      a: "Yes. If the BMP has an embedded color profile, it's copied into the PNG; otherwise sRGB is used, just like in the BMP itself."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

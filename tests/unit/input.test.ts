@@ -58,6 +58,11 @@ describe('checkInput', () => {
     expect(checkInput(head('animated.gif'), 'png')).toEqual({ ok: true, decoder: 'gif', encoder: 'png' });
   });
 
+  test('BMP — свой декодер; «Исходный» — PNG', () => {
+    expect(checkInput(head('basic.bmp'), 'jpeg')).toEqual({ ok: true, decoder: 'bmp', encoder: 'jpeg' });
+    expect(checkInput(head('rle8.bmp'), 'original', true)).toEqual({ ok: true, decoder: 'bmp', encoder: 'png' });
+  });
+
   test('AVIF — декодер avif, в том числе анимированный (avis)', () => {
     expect(checkInput(head('photo.avif'), 'jpeg')).toEqual({ ok: true, decoder: 'avif', encoder: 'jpeg' });
     expect(checkInput(head('animated.avif'), 'webp')).toEqual({ ok: true, decoder: 'avif', encoder: 'webp' });

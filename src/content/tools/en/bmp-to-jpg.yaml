@@ -1,0 +1,44 @@
+# Texts for /en/bmp-to-jpg. Draft for the owner's review (see CONTENT.md).
+title: "BMP to JPG Converter — Free, Private, No Upload"
+description: "Convert BMP images to JPG right in your browser and make them many times lighter. Free, no sign-up, and your files never leave your device."
+h1: "BMP to JPG Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "BMP to JPG"
+card:
+  title: "BMP → JPG"
+  text: "Turn a bulky BMP into a light JPG for email, websites and chat."
+app:
+  name: "BMP to JPG Converter"
+  description: "An online BMP to JPG converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert BMP to JPG"
+  steps:
+    - "Click the box above or drag your BMP files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each JPG separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them."
+    - title: "Much smaller files"
+      text: "BMP usually stores images uncompressed, while JPG compresses them — for photos and screenshots the difference is usually several times."
+    - title: "MozJPEG encoding"
+      text: "JPGs are created with Mozilla's MozJPEG encoder. You can adjust the quality with the slider."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is a BMP file?"
+      a: "BMP is an old Windows image format. It usually stores every pixel uncompressed, so files are large, and many websites and messaging apps don't accept them."
+    - q: "How much smaller will the file get?"
+      a: "It depends on the image, but usually several times smaller, since BMP is usually uncompressed. Each file's row shows the size before and after."
+    - q: "Will I lose quality?"
+      a: "JPG compression is lossy, so the image changes slightly. At the default quality of 90 the difference is usually invisible. If you need an exact copy, choose PNG — it's also much lighter than BMP."
+    - q: "Which BMP files are supported?"
+      a: "Practically all you'll come across: 1, 4, 8, 16, 24 and 32 bits per pixel, with or without RLE compression, including files with transparency and an embedded color profile."
+    - q: "What happens to transparency?"
+      a: "JPG has no transparency, so transparent areas are placed on a white background. To keep transparency, choose PNG or WebP."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

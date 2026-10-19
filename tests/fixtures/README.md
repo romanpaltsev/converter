@@ -3,7 +3,7 @@
 Все файлы здесь синтетические (без личных данных), генерируются командой `npm run fixtures`
 (Docker-образ `tests/fixtures/generate`: Debian forky, heif-enc 1.23.6, exiftool, ImageMagick, cjpeg, apngasm).
 Результат закоммичен, перегенерировать нужно только при изменении `generate/generate.sh`. Генератор разбит на секции:
-Секции: `heic`, `jpeg-png`, `webp`, `avif`, `gif`. `npm run fixtures -- jpeg-png` пересоздаёт только JPEG/PNG, не трогая HEIC (heif-enc другой версии изменил бы их побайтно).
+Секции: `heic`, `jpeg-png`, `webp`, `avif`, `gif`, `bmp`. `npm run fixtures -- jpeg-png` пересоздаёт только JPEG/PNG, не трогая HEIC (heif-enc другой версии изменил бы их побайтно).
 
 | Файл | Что проверяем |
 |---|---|
@@ -46,6 +46,10 @@
 | `alpha.gif` | красный круг на прозрачном фоне 800×600 (прозрачный индекс палитры) |
 | `animated.gif` | два кадра 640×480, первый — квадранты |
 | `offset.gif` | холст 400×300, кадр 200×100 со смещением +100+50 — вокруг прозрачно |
+| `basic.bmp`, `palette4.bmp`, `rle8.bmp`, `rgb565.bmp` | квадранты 400×300: 24 бита; палитра 4 бита; палитра 8 бит с RLE8; 16 бит 565 (маски, V5) |
+| `mono.bmp` | 1 бит, 64×32: левая половина чёрная |
+| `alpha.bmp` | 32 бита с альфой (V5, BITFIELDS): красный круг на прозрачном фоне 200×150 |
+| `p3.bmp` | 24 бита, встроенный ICC Display P3 (V5, PROFILE_EMBEDDED) |
 | `too-wide.png` | 16400×8 — шире предела WebP (16 383 точки) |
 | `exif/big-endian.tiff`, `exif/little-endian.tiff` | сырые EXIF-блоки (TIFF) с датами, GPS, Make/Model, Orientation = 6 — для unit-тестов |
 
