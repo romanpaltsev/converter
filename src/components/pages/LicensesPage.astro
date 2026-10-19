@@ -18,6 +18,7 @@ import libwebpBsd from '../../content/licenses/libwebp-BSD.txt?raw';
 import libwebpPatents from '../../content/licenses/libwebp-PATENTS.txt?raw';
 import dav1dBsd from '../../content/licenses/dav1d-BSD.txt?raw';
 import emscripten from '../../content/licenses/emscripten-MIT-NCSA.txt?raw';
+import interOfl from '../../content/licenses/inter-OFL.txt?raw';
 
 interface Props {
   locale: Locale;
@@ -39,6 +40,7 @@ const TEXTS: Record<LicenseTextId, string> = {
   'dav1d-bsd': dav1dBsd,
   emscripten,
   'client-zip-mit': clientZipMit,
+  'inter-ofl': interOfl,
 };
 const ORDER: LicenseTextId[] = [
   'lgpl-3.0',
@@ -52,6 +54,7 @@ const ORDER: LicenseTextId[] = [
   'dav1d-bsd',
   'emscripten',
   'client-zip-mit',
+  'inter-ofl',
 ];
 const site = import.meta.env.SITE;
 const jsonLd = [
@@ -112,7 +115,7 @@ const jsonLd = [
 
 <style>
   .title {
-    margin-top: 32px;
+    margin-top: clamp(24px, 5vw, 48px);
   }
 
   .table-wrap {
@@ -143,6 +146,8 @@ const jsonLd = [
     margin: 8px 0;
     border: 1px solid var(--border);
     border-radius: var(--radius-small);
+    background: var(--surface);
+    overflow: hidden;
   }
 
   .license summary {

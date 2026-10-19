@@ -14,7 +14,8 @@ export type LicenseTextId =
   | 'libwebp-patents'
   | 'dav1d-bsd'
   | 'emscripten'
-  | 'client-zip-mit';
+  | 'client-zip-mit'
+  | 'inter-ofl';
 
 export interface ThirdPartyComponent {
   name: string;
@@ -130,6 +131,14 @@ export const COMPONENTS: ThirdPartyComponent[] = [
     source: 'https://github.com/Touffy/client-zip',
   },
   {
+    name: 'Inter (@fontsource-variable/inter)',
+    version: '5.3.0',
+    purpose: { ru: 'шрифт интерфейса', en: 'interface font' },
+    license: 'SIL OFL 1.1',
+    texts: ['inter-ofl'],
+    source: 'https://github.com/rsms/inter',
+  },
+  {
     name: 'Compact ICC Profiles',
     version: '—',
     purpose: { ru: 'цветовые профили sRGB, Display P3, Rec. 2020', en: 'sRGB, Display P3 and Rec. 2020 color profiles' },
@@ -151,6 +160,7 @@ export const LICENSE_TITLES: Record<LicenseTextId, string> = {
   'dav1d-bsd': 'dav1d (BSD-2-Clause, VideoLAN)',
   emscripten: 'Emscripten (MIT / University of Illinois NCSA)',
   'client-zip-mit': 'client-zip (MIT)',
+  'inter-ofl': 'Inter (SIL Open Font License 1.1)',
 };
 
 /** Обязательная фраза лицензии IJG для бинарных дистрибутивов libjpeg. */

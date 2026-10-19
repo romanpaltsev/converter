@@ -21,6 +21,10 @@ const targets = LOCALES.filter((l) => l !== locale).map((l) => ({
   {
     targets.map((t) => (
       <a href={t.href} hreflang={t.locale} lang={LOCALE_META[t.locale].htmlLang}>
+        <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+          <circle cx="8" cy="8" r="6.25" />
+          <path d="M1.75 8h12.5M8 1.75c1.7 1.8 2.5 3.9 2.5 6.25S9.7 12.45 8 14.25C6.3 12.45 5.5 10.35 5.5 8S6.3 3.55 8 1.75Z" />
+        </svg>
         {t.label}
       </a>
     ))
@@ -29,17 +33,33 @@ const targets = LOCALES.filter((l) => l !== locale).map((l) => ({
 
 <style>
   .lang a {
-    display: inline-block;
-    padding: 6px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 34px;
+    padding: 5px 12px;
     border: 1px solid var(--border);
-    border-radius: 999px;
-    font-size: 0.9rem;
+    border-radius: 10px;
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    font-size: 0.875rem;
+    font-weight: 550;
     text-decoration: none;
     color: var(--text);
+    transition:
+      border-color 0.2s var(--ease),
+      color 0.2s var(--ease);
+  }
+
+  .lang svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.3;
+    color: var(--muted);
   }
 
   .lang a:hover {
-    border-color: var(--accent);
-    color: var(--accent);
+    border-color: var(--border-strong);
+    color: var(--text);
   }
 </style>

@@ -35,13 +35,15 @@ const jsonLd = [
 ---
 
 <BaseLayout locale={locale} pageId={pageId} title={c.title} description={c.description} jsonLd={jsonLd}>
-  <nav class="breadcrumbs" aria-label={UI[locale].nav.breadcrumbs}>
-    <a href={pagePath('home', locale)}>{UI[locale].nav.home}</a>
-    <span aria-hidden="true">›</span>
-    <span aria-current="page">{c.breadcrumb}</span>
-  </nav>
-  <h1>{c.h1}</h1>
-  <p class="lead">{c.subtitle}</p>
+  <div class="hero">
+    <nav class="breadcrumbs" aria-label={UI[locale].nav.breadcrumbs}>
+      <a href={pagePath('home', locale)}>{UI[locale].nav.home}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{c.breadcrumb}</span>
+    </nav>
+    <h1>{c.h1}</h1>
+    <p class="lead">{c.subtitle}</p>
+  </div>
 
   <ConverterWidget tool={tool} locale={locale} />
 
@@ -82,35 +84,55 @@ const jsonLd = [
     </div>
   </section>
 
-  <section class="section">
+  <section class="section related">
     <h2>{UI[locale].tool.relatedTitle}</h2>
     <ToolCards locale={locale} toolIds={relatedTools(tool).map((t) => t.id)} />
   </section>
 </BaseLayout>
 
 <style>
+  .hero {
+    padding: clamp(20px, 4vw, 48px) 0 clamp(20px, 3vw, 32px);
+    text-align: center;
+  }
+
+  .hero h1 {
+    margin-bottom: 14px;
+  }
+
+  .hero .lead {
+    max-width: 34rem;
+    margin: 0 auto;
+  }
+
   .breadcrumbs {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin: 16px 0 12px;
+    justify-content: center;
+    gap: 8px;
+    margin: 0 0 16px;
     color: var(--muted);
-    font-size: 0.9rem;
+    font-size: 0.875rem;
   }
 
-  .lead {
-    margin: -4px 0 16px;
+  .breadcrumbs a {
     color: var(--muted);
-    font-size: 1.05rem;
+    text-decoration: none;
   }
 
-  .section {
-    margin-top: 40px;
+  .breadcrumbs a:hover {
+    color: var(--text);
+    text-decoration: underline;
+  }
+
+  .breadcrumbs span[aria-hidden] {
+    opacity: 0.5;
   }
 
   .steps {
     display: grid;
-    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+    gap: 12px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -118,80 +140,89 @@ const jsonLd = [
   }
 
   .steps li {
-    position: relative;
-    padding-left: 44px;
-    min-height: 32px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
     counter-increment: step;
   }
 
   .steps li::before {
     content: counter(step);
-    position: absolute;
-    left: 0;
-    top: -2px;
     display: grid;
     place-items: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    margin-bottom: 12px;
+    border-radius: 9px;
     background: var(--accent-soft);
     color: var(--accent);
     font-weight: 700;
+    font-variant-numeric: tabular-nums;
   }
 
-  .features {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 12px 24px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .features h3 {
-    margin-bottom: 4px;
-  }
-
-  .features p {
-    margin: 0;
-    color: var(--muted);
+  /* четыре соседних конвертера — сеткой 2 × 2 */
+  .related :global(.cards) {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   }
 
   .faq {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+
+  .faq details + details {
     border-top: 1px solid var(--border);
   }
 
-  .faq details {
-    border-bottom: 1px solid var(--border);
-  }
-
   .faq summary {
-    padding: 14px 32px 14px 0;
+    position: relative;
+    padding: 16px 52px 16px 20px;
     font-weight: 600;
     cursor: pointer;
     list-style: none;
-    position: relative;
+    transition: background-color 0.2s var(--ease);
+  }
+
+  .faq summary:hover {
+    background: var(--surface-muted);
+  }
+
+  .faq summary:focus-visible {
+    outline-offset: -2px;
   }
 
   .faq summary::-webkit-details-marker {
     display: none;
   }
 
+  /* шеврон: поворачивается при раскрытии */
   .faq summary::after {
-    content: '+';
+    content: '';
     position: absolute;
-    right: 4px;
-    top: 10px;
-    font-size: 1.4rem;
-    color: var(--accent);
+    right: 20px;
+    top: 50%;
+    width: 9px;
+    height: 9px;
+    margin-top: -7px;
+    border-right: 2px solid var(--muted);
+    border-bottom: 2px solid var(--muted);
+    transform: rotate(45deg);
+    transition: transform 0.25s var(--ease);
   }
 
   .faq details[open] summary::after {
-    content: '−';
+    margin-top: -2px;
+    transform: rotate(-135deg);
   }
 
   .faq p {
-    margin: 0 0 14px;
+    margin: 0;
+    padding: 0 20px 18px;
     color: var(--muted);
   }
 </style>

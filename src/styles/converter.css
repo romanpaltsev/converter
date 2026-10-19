@@ -1,28 +1,35 @@
-/* Стили виджета конвертера. Глобальные (не scoped): строки файлов создаёт JavaScript. */
+/* Стили виджета конвертера. Глобальные (не scoped): строки файлов создаёт JavaScript.
+   Виджет — одна приподнятая панель: зона выбора файлов, настройки, статус и результаты. */
 
 .converter {
   display: grid;
-  gap: 16px;
-  margin: 8px 0 0;
+  gap: 8px;
+  margin: 0;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-large);
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
 }
 
 .dropzone {
   display: grid;
   justify-items: center;
-  gap: 4px;
+  align-content: center;
+  gap: 2px;
   width: 100%;
-  min-height: 168px;
+  min-height: 176px;
   padding: 24px 16px;
-  border: 2px dashed var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
+  border: 1.5px dashed var(--border-strong);
+  border-radius: calc(var(--radius-large) - 6px);
+  background: var(--surface-muted);
   color: var(--text);
   font: inherit;
   text-align: center;
   cursor: pointer;
   transition:
-    border-color 0.15s,
-    background-color 0.15s;
+    border-color 0.2s var(--ease),
+    background-color 0.2s var(--ease);
 }
 
 .dropzone:hover,
@@ -32,13 +39,27 @@
 }
 
 .dropzone__icon {
-  color: var(--accent);
-  margin-bottom: 4px;
+  box-sizing: content-box;
+  margin-bottom: 10px;
+  padding: 11px;
+  border-radius: 14px;
+  background: var(--accent);
+  color: var(--accent-text);
+  box-shadow:
+    0 6px 16px -4px var(--accent-ring),
+    0 2px 4px var(--accent-ring);
+  transition: transform 0.25s var(--ease);
+}
+
+.dropzone:hover .dropzone__icon,
+.dropzone.is-dragging .dropzone__icon {
+  transform: translateY(-2px);
 }
 
 .dropzone__title {
-  font-size: 1.15rem;
+  font-size: 1.125rem;
   font-weight: 650;
+  letter-spacing: -0.01em;
 }
 
 .dropzone__action {
@@ -47,22 +68,22 @@
 }
 
 .dropzone__hint {
+  margin-top: 6px;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
 .settings {
   display: grid;
-  gap: 12px;
-  padding: 14px 16px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  gap: 14px;
+  padding: 14px 12px 10px;
 }
 
 .settings__format {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: 8px 16px;
   margin: 0;
   padding: 0;
   border: 0;
@@ -70,13 +91,17 @@
 
 .settings__label {
   float: left; /* legend внутри flex-контейнера */
-  font-weight: 600;
+  min-width: 5.5rem;
+  color: var(--muted);
+  font-size: 0.9375rem;
+  font-weight: 550;
 }
 
 .segmented {
   display: inline-flex;
+  gap: 2px;
   padding: 3px;
-  border-radius: 999px;
+  border-radius: 12px;
   background: var(--surface-strong);
 }
 
@@ -94,22 +119,33 @@
 
 .segmented__option span {
   display: block;
-  min-width: 64px;
+  min-width: 68px;
   padding: 6px 14px;
-  border-radius: 999px;
+  border-radius: 9px;
   text-align: center;
+  font-size: 0.9375rem;
   font-weight: 600;
   color: var(--muted);
+  transition:
+    background-color 0.2s var(--ease),
+    color 0.2s var(--ease),
+    box-shadow 0.2s var(--ease);
+}
+
+.segmented__option input:hover + span {
+  color: var(--text);
 }
 
 .segmented__option input:checked + span {
-  background: var(--bg);
+  background: var(--surface);
   color: var(--text);
-  box-shadow: var(--shadow);
+  box-shadow:
+    var(--shadow-sm),
+    0 0 0 1px var(--border);
 }
 
 .segmented__option input:focus-visible + span {
-  outline: 3px solid var(--focus);
+  outline: 2px solid var(--focus);
   outline-offset: 1px;
 }
 
@@ -117,7 +153,7 @@
   display: grid;
   grid-template-columns: auto 1fr 3ch;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
 .settings__quality[hidden],
@@ -129,10 +165,12 @@
 
 .settings__quality input[type='range'] {
   width: 100%;
+  margin: 0;
   accent-color: var(--accent);
 }
 
 .settings__quality output {
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
@@ -153,9 +191,9 @@
 }
 
 .settings__hint {
-  margin: 4px 0 0 28px;
+  margin: 2px 0 0 28px;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
 }
 
 .converter__results .settings__hint {
@@ -163,11 +201,11 @@
 }
 
 .notice {
-  margin: 0;
-  padding: 10px 12px;
+  margin: 0 4px;
+  padding: 10px 14px;
   border-radius: var(--radius-small);
-  background: var(--surface);
-  font-size: 0.95rem;
+  background: var(--surface-muted);
+  font-size: 0.9375rem;
 }
 
 .notice--warning,
@@ -184,17 +222,19 @@
 
 .converter__status {
   margin: 0;
+  padding: 0 12px;
   font-weight: 600;
 }
 
 /* пустая живая область остаётся в DOM (так её надёжнее озвучивают), но не занимает места */
 .converter__status:empty {
-  margin-top: -16px;
+  margin-top: -8px;
 }
 
 .converter__results {
   display: grid;
   gap: 12px;
+  padding: 4px 4px 4px;
 }
 
 .converter__results[hidden] {
@@ -203,7 +243,7 @@
 
 .files {
   display: grid;
-  gap: 8px;
+  gap: 6px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -211,18 +251,23 @@
 
 .file {
   display: grid;
-  grid-template-columns: 48px 1fr auto;
+  grid-template-columns: 52px 1fr auto;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
+  gap: 14px;
+  padding: 10px 12px 10px 10px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.file[data-status='error'] {
+  border-color: color-mix(in srgb, var(--error) 30%, var(--border));
 }
 
 .file__thumb {
   display: block;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   border-radius: var(--radius-small);
   background: var(--surface-strong);
   overflow: hidden;
@@ -263,7 +308,8 @@
 .file__note {
   margin: 0;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .file[data-status='done'] .file__meta {
@@ -286,15 +332,21 @@
   align-items: center;
   justify-content: center;
   min-height: 44px;
-  padding: 8px 16px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--bg);
+  padding: 8px 18px;
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  background: var(--surface);
   color: var(--text);
   font: inherit;
   font-weight: 600;
   text-decoration: none;
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition:
+    background-color 0.2s var(--ease),
+    border-color 0.2s var(--ease),
+    color 0.2s var(--ease),
+    box-shadow 0.2s var(--ease);
 }
 
 .button:hover {
@@ -307,7 +359,7 @@
 }
 
 .button:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -315,6 +367,10 @@
   border-color: var(--accent);
   background: var(--accent);
   color: var(--accent-text);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 18%),
+    0 4px 12px -4px var(--accent-ring),
+    var(--shadow-sm);
 }
 
 .button--primary:hover {
@@ -323,25 +379,59 @@
   color: var(--accent-text);
 }
 
+.button--primary:disabled:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
 .button--ghost {
   border-color: transparent;
   background: transparent;
+  color: var(--muted);
+  box-shadow: none;
+}
+
+.button--ghost:hover {
+  border-color: transparent;
+  background: var(--surface-muted);
+  color: var(--text);
 }
 
 .button--small {
   min-height: 36px;
   padding: 6px 14px;
-  font-size: 0.9rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 480px) {
+  .converter {
+    padding: 6px;
+    border-radius: 20px;
+  }
+
+  .dropzone {
+    min-height: 160px;
+    border-radius: 15px;
+  }
+
+  .settings__quality {
+    gap: 12px;
+  }
+
+  .settings__label {
+    min-width: 0;
+  }
 }
 
 @media (max-width: 420px) {
   .file {
-    grid-template-columns: 40px 1fr;
+    grid-template-columns: 44px 1fr;
   }
 
   .file__thumb {
-    width: 40px;
-    height: 40px;
+    width: 44px;
+    height: 44px;
   }
 
   .file__download {

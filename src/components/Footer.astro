@@ -20,8 +20,17 @@ const tools = await Promise.all(
 ---
 
 <footer class="footer">
-  <div class="container">
-    <p class="footer__privacy">{t.footer.privacy}</p>
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <p class="footer__name">{SITE_NAME[locale]}</p>
+      <p class="footer__privacy">
+        <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
+          <rect x="3" y="7" width="10" height="7" rx="2"></rect>
+          <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"></path>
+        </svg>
+        {t.footer.privacy}
+      </p>
+    </div>
     <nav aria-label={t.nav.siteLinks}>
       <ul class="footer__links">
         {
@@ -31,33 +40,75 @@ const tools = await Promise.all(
             </li>
           ))
         }
+      </ul>
+      <ul class="footer__links footer__links--secondary">
         <li><a href={pagePath('licenses', locale)}>{t.nav.licenses}</a></li>
         <li><a href={pagePath('contacts', locale)}>{t.nav.contacts}</a></li>
       </ul>
     </nav>
-    <p class="footer__name">{SITE_NAME[locale]}</p>
   </div>
 </footer>
 
 <style>
   .footer {
-    margin-top: 56px;
-    padding: 24px 0 32px;
+    margin-top: clamp(64px, 8vw, 96px);
+    padding: 40px 0 48px;
     border-top: 1px solid var(--border);
+    background: var(--surface-muted);
     color: var(--muted);
-    font-size: 0.95rem;
+    font-size: 0.9375rem;
+  }
+
+  .footer__inner {
+    display: grid;
+    gap: 28px;
+  }
+
+  .footer__name {
+    margin: 0 0 6px;
+    color: var(--text);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .footer__privacy {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    max-width: 30rem;
+    margin: 0;
+  }
+
+  .footer__privacy svg {
+    flex: none;
+    margin-top: 3px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4;
   }
 
   .footer__links {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
     gap: 8px 20px;
-    margin: 0 0 12px;
+    margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .footer__name {
-    margin: 0;
+  .footer__links--secondary {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer__links a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .footer__links a:hover {
+    color: var(--text);
+    text-decoration: underline;
   }
 </style>

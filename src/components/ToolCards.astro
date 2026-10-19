@@ -39,7 +39,7 @@ const cards = await Promise.all(
 <style>
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
     gap: 12px;
     margin: 0;
     padding: 0;
@@ -48,19 +48,54 @@ const cards = await Promise.all(
 
   .card {
     position: relative;
-    padding: 16px;
+    padding: 18px 44px 18px 20px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    transition:
+      border-color 0.2s var(--ease),
+      box-shadow 0.2s var(--ease),
+      transform 0.2s var(--ease);
   }
 
   .card:hover {
-    border-color: var(--accent);
+    border-color: var(--border-strong);
+    box-shadow: var(--shadow);
+    transform: translateY(-2px);
+  }
+
+  .card:has(a:focus-visible) {
+    outline: 2px solid var(--focus);
+    outline-offset: 3px;
+  }
+
+  /* стрелка «перейти» в правом верхнем углу */
+  .card::after {
+    content: '';
+    position: absolute;
+    right: 18px;
+    top: 21px;
+    width: 16px;
+    height: 16px;
+    background: var(--muted);
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8h10M9 4l4 4-4 4' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    transition:
+      transform 0.2s var(--ease),
+      background-color 0.2s var(--ease);
+  }
+
+  .card:hover::after {
+    background: var(--accent);
+    transform: translateX(3px);
   }
 
   .card__title {
     margin: 0 0 6px;
-    font-size: 1.15rem;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 
   .card__title a {
@@ -68,15 +103,22 @@ const cards = await Promise.all(
     text-decoration: none;
   }
 
+  .card__title a:focus-visible {
+    outline: none;
+  }
+
   /* вся карточка кликабельна, но ссылка одна — для доступности */
   .card__title a::after {
     content: '';
     position: absolute;
     inset: 0;
+    z-index: 1;
   }
 
   .card__text {
     margin: 0;
     color: var(--muted);
+    font-size: 0.9375rem;
+    line-height: 1.5;
   }
 </style>

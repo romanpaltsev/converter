@@ -15,8 +15,14 @@ const { locale, pageId } = Astro.props;
 <header class="header">
   <div class="container header__inner">
     <a class="logo" href={pagePath('home', locale)}>
-      <svg class="logo__icon" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-        <rect x="2" y="2" width="20" height="20" rx="6" fill="currentColor"></rect>
+      <svg class="logo__icon" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+        <defs>
+          <linearGradient id="logo-gradient" x1="0" y1="0" x2="1" y2="1">
+            <stop class="logo__stop-start" offset="0"></stop>
+            <stop class="logo__stop-end" offset="1"></stop>
+          </linearGradient>
+        </defs>
+        <rect x="1" y="1" width="22" height="22" rx="7" fill="url(#logo-gradient)"></rect>
         <path class="logo__arrows" d="M7 9.5h7.5M11.5 6.5l3 3-3 3M17 14.5H9.5M12.5 11.5l-3 3 3 3" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
       </svg>
       <span>{SITE_NAME[locale]}</span>
@@ -30,7 +36,13 @@ const { locale, pageId } = Astro.props;
 
 <style>
   .header {
-    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+    background: color-mix(in srgb, var(--bg) 78%, transparent);
+    backdrop-filter: saturate(1.6) blur(14px);
+    -webkit-backdrop-filter: saturate(1.6) blur(14px);
   }
 
   .header__inner {
@@ -38,25 +50,38 @@ const { locale, pageId } = Astro.props;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    min-height: 56px;
+    min-height: 60px;
   }
 
   .logo {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.0625rem;
+    letter-spacing: -0.02em;
     color: var(--text);
     text-decoration: none;
   }
 
+  .logo:hover {
+    color: var(--text);
+  }
+
   .logo__icon {
-    color: var(--accent);
+    filter: drop-shadow(0 2px 4px var(--accent-ring));
+  }
+
+  .logo__stop-start {
+    stop-color: #6d6af7;
+  }
+
+  .logo__stop-end {
+    stop-color: #4338ca;
   }
 
   .logo__arrows {
-    stroke: var(--bg);
+    stroke: #ffffff;
   }
 
   .header__actions {

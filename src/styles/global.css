@@ -1,51 +1,70 @@
-/* Глобальные стили: токены темы, базовая типографика. Тема — по prefers-color-scheme.
-   Контраст цветов текста и элементов управления — не ниже WCAG AA (проверяется axe в e2e). */
+/* Глобальные стили: шрифт, токены темы, типографика, общие примитивы (карточки, кнопки-ссылки).
+   Тема — по prefers-color-scheme. Контраст текста и элементов управления — не ниже WCAG AA (проверяет axe в e2e). */
+
+/* Inter Variable (OFL) со своего домена: браузер скачивает только нужные поднаборы (латиница, кириллица) */
+@import '@fontsource-variable/inter/wght.css';
 
 :root {
   color-scheme: light dark;
-  --bg: #ffffff;
-  --surface: #f4f6f9;
-  --surface-strong: #e9edf2;
-  --text: #16191d;
-  --muted: #555e69;
-  --border: #d3d9e0;
-  --accent: #1f55d1;
-  --accent-hover: #1a47b0;
+  --bg: #fbfbfd;
+  --surface: #ffffff;
+  --surface-muted: #f4f5f8;
+  --surface-strong: #e9ebf1;
+  --text: #0e1116;
+  --muted: #5a6070;
+  --border: #e4e6ed;
+  --border-strong: #cdd1dc;
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
   --accent-text: #ffffff;
-  --accent-soft: #e8efff;
-  --success: #17703f;
+  --accent-soft: #eef0ff;
+  --accent-ring: rgb(79 70 229 / 18%);
+  --glow: rgb(99 102 241 / 13%);
+  --success: #15793d;
+  --success-soft: #e7f6ec;
   --warning-bg: #fff6e0;
   --warning-text: #6b4600;
   --error: #b42318;
   --error-bg: #fdeceb;
-  --focus: #1f55d1;
-  --radius: 12px;
-  --radius-small: 8px;
-  --shadow: 0 1px 2px rgb(16 24 40 / 6%), 0 1px 3px rgb(16 24 40 / 10%);
-  --font: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --focus: #4f46e5;
+  --radius: 16px;
+  --radius-large: 24px;
+  --radius-small: 10px;
+  --shadow-sm: 0 1px 2px rgb(16 20 40 / 5%);
+  --shadow: 0 1px 2px rgb(16 20 40 / 5%), 0 4px 12px -2px rgb(16 20 40 / 6%);
+  --shadow-lg: 0 1px 2px rgb(16 20 40 / 4%), 0 12px 32px -8px rgb(16 20 40 / 12%), 0 32px 64px -24px rgb(16 20 40 / 10%);
+  --font: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --content-width: 46rem;
+  --content-width: 50rem;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #101216;
-    --surface: #181b21;
-    --surface-strong: #232830;
-    --text: #e9ebee;
-    --muted: #a7afba;
-    --border: #343a44;
-    --accent: #84a9ff;
-    --accent-hover: #a3bfff;
-    --accent-text: #0c1222;
-    --accent-soft: #1b2540;
+    --bg: #0b0c10;
+    --surface: #14161c;
+    --surface-muted: #181a21;
+    --surface-strong: #24272f;
+    --text: #eceef2;
+    --muted: #a0a6b4;
+    --border: #262932;
+    --border-strong: #3a3e4a;
+    --accent: #a5b4fc;
+    --accent-hover: #c7d2fe;
+    --accent-text: #0d0f24;
+    --accent-soft: #1d2040;
+    --accent-ring: rgb(165 180 252 / 22%);
+    --glow: rgb(99 102 241 / 20%);
     --success: #6fd39d;
+    --success-soft: #13291d;
     --warning-bg: #3a2c0c;
     --warning-text: #f3cf86;
     --error: #ff9b91;
     --error-bg: #3b1714;
-    --focus: #a3bfff;
-    --shadow: none;
+    --focus: #c7d2fe;
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
+    --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 4px 12px -2px rgb(0 0 0 / 30%);
+    --shadow-lg: 0 1px 0 rgb(255 255 255 / 4%) inset, 0 16px 40px -12px rgb(0 0 0 / 60%);
   }
 }
 
@@ -61,34 +80,51 @@ html {
 }
 
 body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   margin: 0;
-  background: var(--bg);
+  /* мягкое свечение акцентного цвета под шапкой */
+  background:
+    radial-gradient(ellipse 72rem 30rem at 50% -8rem, var(--glow), transparent 70%) no-repeat,
+    var(--bg);
   color: var(--text);
   font-family: var(--font);
   font-size: 1rem;
-  line-height: 1.55;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+main {
+  flex: 1 0 auto;
 }
 
 h1,
 h2,
 h3 {
-  line-height: 1.2;
   margin: 0 0 0.6em;
+  line-height: 1.2;
   text-wrap: balance;
 }
 
 h1 {
-  font-size: clamp(1.6rem, 1.2rem + 2vw, 2.25rem);
-  letter-spacing: -0.01em;
+  font-size: clamp(2rem, 1.35rem + 2.8vw, 3rem);
+  font-weight: 750;
+  line-height: 1.08;
+  letter-spacing: -0.035em;
 }
 
 h2 {
-  font-size: clamp(1.3rem, 1.1rem + 1vw, 1.6rem);
+  font-size: clamp(1.45rem, 1.2rem + 1vw, 1.875rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
 }
 
 h3 {
-  font-size: 1.1rem;
+  font-size: 1.075rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
 }
 
 p {
@@ -97,7 +133,8 @@ p {
 
 a {
   color: var(--accent);
-  text-underline-offset: 0.15em;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
 }
 
 a:hover {
@@ -105,8 +142,12 @@ a:hover {
 }
 
 :focus-visible {
-  outline: 3px solid var(--focus);
-  outline-offset: 2px;
+  outline: 2px solid var(--focus);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--accent-ring);
 }
 
 img {
@@ -117,7 +158,72 @@ img {
   width: 100%;
   max-width: var(--content-width);
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 20px;
+}
+
+/* общий вводный абзац под H1 */
+.lead {
+  color: var(--muted);
+  font-size: clamp(1.05rem, 1rem + 0.3vw, 1.175rem);
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+/* общий заголовок секции на страницах */
+.section {
+  margin-top: clamp(48px, 6vw, 72px);
+}
+
+/* карточки-преимущества с отметкой (страницы-конвертеры и главная) */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.features li {
+  position: relative;
+  padding: 20px 20px 20px 64px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.features li::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: var(--accent-soft);
+}
+
+.features li::after {
+  content: '';
+  position: absolute;
+  left: 27px;
+  top: 27px;
+  width: 16px;
+  height: 16px;
+  background: var(--accent);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3L13 4.5' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center / contain no-repeat;
+}
+
+.features h3 {
+  margin: 4px 0 4px;
+}
+
+.features p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
 }
 
 .visually-hidden {
@@ -141,7 +247,7 @@ img {
   background: var(--accent);
   color: var(--accent-text);
   border-radius: var(--radius-small);
-  z-index: 10;
+  z-index: 30;
 }
 
 .skip-link:focus {
