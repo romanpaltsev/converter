@@ -5,11 +5,16 @@ import { convertImage } from '../pipeline/convert';
 import { loadDecoder } from '../pipeline/decoders';
 import { loadEncoder } from '../pipeline/encoders';
 import { checkInput } from '../pipeline/input';
+import { PDF_PAGE_LIMIT } from '../pdf/limits';
 import { preparePdfPage } from '../pipeline/pdf-page';
-import { estimateNeeds, freshFootprint, projectFootprint } from '../pipeline/memory';
+import { chooseProfile } from '../color/nclx';
+import { loadProfile } from '../color/profiles';
+import { estimateNeeds, estimatePdfNeeds, freshFootprint, projectFootprint } from '../pipeline/memory';
+import { downscale } from '../pipeline/preview';
 import { targetSize } from '../pipeline/resize';
 import { sniff } from '../pipeline/sniff';
 import { type ConvertOptions, ConvertError, type ErrorCode, WEBP_MAX_DIMENSION } from '../pipeline/types';
+import type { PDFDocumentProxy } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type { FromWorker, ToWorker } from './protocol';
 
 interface WorkerScope {
@@ -126,7 +131,7 @@ async function handleStrip(message: Extract<ToWorker, { type: 'strip' }>): Promi
   try {
     const bytes = new Uint8Array(await message.file.arrayBuffer());
     const { kind } = sniff(bytes);
-    if (kind === 'unknown') throw new ConvertError('not-image');
+    if (kind === 'unknown' || kind === 'pdf') throw new ConvertError(kind === 'pdf' ? 'pdf-input' : 'not-image');
     const footprint = 3 * bytes.length;
     if (footprint > message.memoryLimit) {
       post({ type: 'needs-memory', id, footprint, fresh: footprint });
@@ -151,7 +156,7 @@ async function handlePdfPage(message: Extract<ToWorker, { type: 'pdf-page' }>): 
     const input = checkInput(bytes, 'jpeg', true);
     if (!input.ok) throw new ConvertError(input.code);
     const { kind } = sniff(bytes);
-    if (kind === 'unknown') throw new ConvertError('not-image');
+    if (kind === 'unknown' || kind === 'pdf') throw new ConvertError(kind === 'pdf' ? 'pdf-input' : 'not-image');
     const [decoder, encoder] = await Promise.all([loadDecoder(input.decoder), loadEncoder('jpeg')]);
     modules.set(decoder.module, decoder);
     modules.set(encoder.module, encoder);
@@ -192,13 +197,89 @@ async function handlePdfPage(message: Extract<ToWorker, { type: 'pdf-page' }>): 
   }
 }
 
+/** «PDF в JPG»: pdf.js грузится только на этих страницах; страницы — по одной, сразу закодированными. */
+async function handlePdfRender(message: Extract<ToWorker, { type: 'pdf-render' }>): Promise<void> {
+  const { id, options } = message;
+  let render: typeof import('../pdf/render') | null = null;
+  let doc: PDFDocumentProxy | null = null;
+  try {
+    render = await import('../pdf/render');
+    const { openPdf, renderPage, pageSize, pdfErrorKind } = render;
+    const bytes = new Uint8Array(await message.file.arrayBuffer());
+    if (sniff(bytes).kind !== 'pdf') throw new ConvertError('not-pdf');
+    const fileBytes = bytes.length;
+    const encoder = await loadEncoder(options.encoder);
+    modules.set(encoder.module, encoder);
+    try {
+      // pdf.js забирает буфер себе (передаёт его своей «рабочей» части)
+      doc = await openPdf(bytes);
+    } catch (error) {
+      const kind = pdfErrorKind(error);
+      if (kind === 'encrypted') throw new ConvertError('pdf-encrypted', String(error));
+      if (kind === 'broken') throw new ConvertError('decode-failed', String(error));
+      throw error;
+    }
+    // память — по первой странице (у документов они обычно одного размера)
+    const first = await doc.getPage(1);
+    const view = first.getViewport({ scale: 1 });
+    const size = pageSize(view.width, view.height, options.dpi);
+    first.cleanup();
+    const needs = estimatePdfNeeds({ encoder: options.encoder, encoderModule: encoder.module, lossless: options.lossless, pagePixels: size.width * size.height, fileBytes });
+    const footprint = projectFootprint(needs, currentHeaps());
+    const fresh = freshFootprint(needs);
+    if (footprint > message.memoryLimit) {
+      post({ type: 'needs-memory', id, footprint, fresh });
+      return;
+    }
+    post({ type: 'started', id, footprint, fresh });
+
+    // холст pdf.js — sRGB: такой профиль и встраиваем, как конвертеры
+    const icc = await loadProfile(chooseProfile(null).profile);
+    const encode: ConvertOptions = { encoder: options.encoder, quality: options.quality, lossless: options.lossless, metadata: 'dates', targetBytes: null, allowSameFormat: true, resize: null };
+    const total = Math.min(doc.numPages, PDF_PAGE_LIMIT);
+    for (let page = 1; page <= total; page++) {
+      const rendered = await renderPage(doc, page, options.dpi);
+      const image = { rgba: rendered.rgba, width: rendered.width, height: rendered.height, hasAlpha: false };
+      const small = downscale({ data: rendered.rgba, width: rendered.width, height: rendered.height });
+      const preview = (await encoder.encode({ rgba: small.data, width: small.width, height: small.height, hasAlpha: false }, { ...encode, quality: 75, lossless: false })).buffer as ArrayBuffer;
+      const meta = { exif: null, icc: icc.length <= encoder.maxIccBytes ? icc : null };
+      const buffer = encoder.embed(await encoder.encode(image, encode, meta), meta).buffer as ArrayBuffer;
+      post(
+        {
+          type: 'pdf-rendered',
+          id,
+          page,
+          total,
+          buffer,
+          preview,
+          mime: encoder.mime,
+          extension: encoder.extension,
+          width: rendered.width,
+          height: rendered.height,
+          warnings: rendered.downscaled ? ['pdf-page-downscaled'] : [],
+        },
+        [buffer, preview],
+      );
+    }
+    const heap = [...currentHeaps().values()].reduce((sum, value) => sum + value, 0);
+    post({ type: 'pdf-done', id, total, limited: doc.numPages > total, heap });
+  } catch (error) {
+    // битый файл бывает обнаружен и на середине — при разборе очередной страницы
+    if (render?.pdfErrorKind(error) === 'broken') postError(id, new ConvertError('decode-failed', String(error)));
+    else postError(id, error);
+  } finally {
+    // документ и «рабочую» часть pdf.js — освободить: следующий PDF откроется заново
+    await doc?.loadingTask.destroy();
+  }
+}
+
 /** «Посмотреть EXIF»: модуль грузится только на этой странице; миниатюра передаётся без копирования. */
 async function handleInspect(message: Extract<ToWorker, { type: 'inspect' }>): Promise<void> {
   const { id } = message;
   try {
     const bytes = new Uint8Array(await message.file.arrayBuffer());
     const { kind } = sniff(bytes);
-    if (kind === 'unknown') throw new ConvertError('not-image');
+    if (kind === 'unknown' || kind === 'pdf') throw new ConvertError(kind === 'pdf' ? 'pdf-input' : 'not-image');
     const footprint = 3 * bytes.length;
     if (footprint > message.memoryLimit) {
       post({ type: 'needs-memory', id, footprint, fresh: footprint });
@@ -233,5 +314,7 @@ scope.onmessage = (event) => {
     void handleInspect(message);
   } else if (message.type === 'pdf-page') {
     void handlePdfPage(message);
+  } else if (message.type === 'pdf-render') {
+    void handlePdfRender(message);
   }
 };

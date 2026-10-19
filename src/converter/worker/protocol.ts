@@ -24,7 +24,17 @@ export type ToWorker =
   /** «Посмотреть EXIF»: только чтение, без WASM. */
   | { type: 'inspect'; id: number; file: Blob; memoryLimit: number }
   /** «Изображения в PDF»: картинка страницы и превью. */
-  | { type: 'pdf-page'; id: number; file: Blob; memoryLimit: number };
+  | { type: 'pdf-page'; id: number; file: Blob; memoryLimit: number }
+  /** «PDF в JPG»: страницы по одной — сообщениями pdf-rendered, в конце pdf-done. */
+  | { type: 'pdf-render'; id: number; file: Blob; options: PdfRenderOptions; memoryLimit: number };
+
+export interface PdfRenderOptions {
+  encoder: EncoderId;
+  quality: number;
+  lossless: boolean;
+  /** Точек на дюйм: 72, 150 или 300. */
+  dpi: number;
+}
 
 export interface WorkerStats {
   /** Размеры куч WASM после обработки (байты) по модулям: libheif, mozjpeg-enc, squoosh-png… */
@@ -62,6 +72,23 @@ export type FromWorker =
   /** Метаданные удалены; changed = false — удалять было нечего, buffer — исходный файл. */
   | { type: 'stripped'; id: number; buffer: ArrayBuffer; changed: boolean; removed: RemovedKind[]; warnings: WarningCode[] }
   | { type: 'inspected'; id: number; report: MetadataReport }
+  /** Страница PDF готова (промежуточное сообщение). */
+  | {
+      type: 'pdf-rendered';
+      id: number;
+      /** Номер страницы (с 1) и сколько страниц будет всего. */
+      page: number;
+      total: number;
+      buffer: ArrayBuffer;
+      preview: ArrayBuffer;
+      mime: string;
+      extension: string;
+      width: number;
+      height: number;
+      warnings: WarningCode[];
+    }
+  /** Все страницы готовы; limited — страниц больше предела, сохранены первые. */
+  | { type: 'pdf-done'; id: number; total: number; limited: boolean; heap: number }
   | {
       type: 'pdf-page';
       id: number;

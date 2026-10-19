@@ -33,7 +33,7 @@ const PAGES = [
   '/en/contacts',
 ];
 // страницы-конвертеры собраны из одного шаблона — для axe достаточно представителей каждого вида
-const AXE_PAGES = ['/', '/en/', '/heic-v-jpg', '/szhat-foto', '/en/resize-image', '/en/remove-exif', '/posmotret-exif', '/en/jpg-to-pdf', '/en/png-to-webp', '/webp-v-png', '/licenses', '/en/contacts'];
+const AXE_PAGES = ['/', '/en/', '/heic-v-jpg', '/szhat-foto', '/en/resize-image', '/en/remove-exif', '/posmotret-exif', '/en/jpg-to-pdf', '/en/pdf-to-png', '/en/png-to-webp', '/webp-v-png', '/licenses', '/en/contacts'];
 
 test.describe('заголовки ответа', () => {
   for (const path of PAGES) {
@@ -131,7 +131,7 @@ test.describe('интерфейс', () => {
     await expect(page.locator('.file[data-status="done"]')).toHaveCount(1);
   });
 
-  for (const path of ['/heic-v-jpg', '/en/heic-to-png', '/szhat-foto', '/en/compress-image', '/izmenit-razmer-foto', '/udalit-metadannye-foto', '/posmotret-exif', '/jpg-v-pdf']) {
+  for (const path of ['/heic-v-jpg', '/en/heic-to-png', '/szhat-foto', '/en/compress-image', '/izmenit-razmer-foto', '/udalit-metadannye-foto', '/posmotret-exif', '/jpg-v-pdf', '/pdf-v-jpg']) {
     test(`${path}: конвертер в первом экране телефона (360×640)`, async ({ page }) => {
       await page.setViewportSize({ width: 360, height: 640 });
       await openConverter(page, path);
@@ -202,6 +202,15 @@ test.describe('доступность (axe, WCAG 2.1 AA)', () => {
       await openConverter(page, '/jpg-v-pdf');
       await page.setInputFiles('[data-input]', ['photo.jpg', 'alpha.png', 'garbage.heic'].map(fixture));
       await expect(page.locator('.file:is([data-status="done"], [data-status="error"])')).toHaveCount(3);
+      const result = await new AxeBuilder({ page }).include('[data-converter]').withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
+      expect(result.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
+    });
+
+    test(`PDF в картинки: строки документа и страниц, ошибки (${scheme})`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme: scheme });
+      await openConverter(page, '/pdf-v-jpg');
+      await page.setInputFiles('[data-input]', ['two-pages.pdf', 'encrypted.pdf'].map(fixture));
+      await expect(page.locator('.file:not(.file--page):is([data-status="done"], [data-status="error"])')).toHaveCount(2);
       const result = await new AxeBuilder({ page }).include('[data-converter]').withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
       expect(result.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
     });

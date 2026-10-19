@@ -10,12 +10,16 @@ export type SniffResult =
   | { kind: 'bmp' }
   | { kind: 'tiff' }
   | { kind: 'jxl' }
+  /** PDF — не изображение: на страницах картинок — понятная ошибка, на «PDF в JPG» — вход. */
+  | { kind: 'pdf' }
   | { kind: 'unknown' };
 
 export type SniffKind = SniffResult['kind'];
+/** Форматы изображений (то, что читают декодеры). */
+export type ImageKind = Exclude<SniffKind, 'unknown' | 'pdf'>;
 
 /** Название, расширение и MIME-тип по формату — для файлов, которые остаются в своём формате («Удалить метаданные»). */
-export const KIND_FILES: Record<Exclude<SniffKind, 'unknown'>, { label: string; extension: string; mime: string }> = {
+export const KIND_FILES: Record<ImageKind, { label: string; extension: string; mime: string }> = {
   heic: { label: 'HEIC', extension: 'heic', mime: 'image/heic' },
   avif: { label: 'AVIF', extension: 'avif', mime: 'image/avif' },
   jpeg: { label: 'JPG', extension: 'jpg', mime: 'image/jpeg' },
@@ -83,5 +87,7 @@ export function sniff(bytes: Uint8Array): SniffResult {
   if (ascii(bytes, 0, 2) === 'BM' && bytes.length >= 26) return { kind: 'bmp' };
   const tiffHeader = ascii(bytes, 0, 4);
   if (tiffHeader === 'II*\0' || tiffHeader === 'MM\0*') return { kind: 'tiff' };
+  // заголовок PDF бывает не в самом начале: читатели ищут его в первом килобайте
+  if (ascii(bytes, 0, Math.min(bytes.length, 1024)).includes('%PDF-')) return { kind: 'pdf' };
   return { kind: 'unknown' };
 }

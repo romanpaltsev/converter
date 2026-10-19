@@ -3,7 +3,7 @@
 Онлайн-конвертер файлов: статический сайт на Astro (ru/en), конвертация полностью в браузере
 (module Web Worker + WASM), файлы на сервер не загружаются. Сейчас: HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF и JPEG XL → JPG, PNG, WebP, ICO или AVIF
 (23 страницы-конвертера), «Сжать фото», «Изменить размер», «Удалить метаданные», «Посмотреть EXIF» и «Изображения в PDF»
-(JPG, PNG, HEIC → PDF). Дальше по плану: «PDF в JPG» и «Объединить PDF» (pdf.js).
+(JPG, PNG, HEIC → PDF), «PDF в JPG/PNG». Дальше по плану: «Объединить PDF» (pdf.js).
 Обзор и команды — README.md, деплой — DEPLOY.md, тесты и замеры — TESTING.md, тексты — CONTENT.md.
 
 ## Правила работы
@@ -28,8 +28,8 @@
 
 Astro 7.4 (Vite 8 + Rolldown, Zod 4), TypeScript 6.0 strict (не 7.x: `@astrojs/check` поддерживает только ^5/^6),
 libheif-js 1.23.5 (libheif 1.23.5 + libde265 1.0.15), @jsquash/jpeg 1.6.0 (MozJPEG 3.3.1), @jsquash/png 3.1.1,
-client-zip 2.5.1, utif2 4.1.0 (UTIF.js, с ним pako 1.0.11), jxl-oxide-wasm 0.12.6, pdfjs-dist 6.4.299 (пока только
-в тестах: разбор PDF), шрифт Inter Variable (@fontsource-variable/inter 5.3.0, OFL), Vitest 5, Playwright 1.64, Node 24 LTS, nginx 1.30. Версии закреплены точно (`.npmrc`: `save-exact`).
+client-zip 2.5.1, utif2 4.1.0 (UTIF.js, с ним pako 1.0.11), jxl-oxide-wasm 0.12.6, pdfjs-dist 6.4.299 (legacy-сборка:
+«PDF в JPG/PNG»; в тестах — разбор PDF), шрифт Inter Variable (@fontsource-variable/inter 5.3.0, OFL), Vitest 5, Playwright 1.64, Node 24 LTS, nginx 1.30. Версии закреплены точно (`.npmrc`: `save-exact`).
 
 ## Устройство
 
@@ -53,7 +53,8 @@ src/converter/metadata/       TIFF/EXIF, фильтр EXIF, APP1/APP2 в JPEG, e
                               на месте, exif-tags.ts — словарь тегов; strip/ — «Удалить метаданные» по форматам;
                               inspect/ — «Посмотреть EXIF» (сводка, таблица тегов, профиль, размер по заголовкам)
 src/converter/color/          ICC-профили (CC0) и выбор по nclx
-src/converter/pdf/            writer.ts — свой писатель PDF («Изображения в PDF»)
+src/converter/pdf/            writer.ts — свой писатель PDF («Изображения в PDF»); render.ts — pdf.js в worker'е
+                              («PDF в JPG/PNG»), limits.ts — пределы для интерфейса
 src/converter/worker/         convert.worker.ts (конвертация), zip.worker.ts (ZIP), protocol.ts
 src/converter/widget/         виджет: controller.ts (очередь, DOM), worker-pool.ts (сколько файлов одновременно, память),
                               worker-client.ts (один worker: запуск, модули, задание)
@@ -239,6 +240,25 @@ scripts/                      serve-dist (тестовый сервер как n
     и поля применяются при сборке — файлы заново не обрабатываются.
   - Проверка — pdf.js в Node (`pdfjs-dist` 6.4.299, legacy-сборка): размеры страниц, матрицы, пиксели FlateDecode
     и SMask, xref по смещениям; в e2e — сжатые данные исходного JPEG есть в PDF байт в байт.
+- **«PDF в JPG/PNG»** (`/pdf-v-jpg`, `/pdf-v-png`; режим `from-pdf`): pdf.js 6.4.299 (Mozilla, Apache-2.0; legacy-сборка —
+  для старых браузеров) целиком в нашем worker'е (`pdf/render.ts`), грузится только на этих страницах (≈ 140 + 370 КБ gzip).
+  - «Рабочая» часть pdf.js — в том же потоке («fake worker»: `globalThis.pdfjsWorker`). Подвох: pdf.worker, загруженный
+    в worker'е, сам подписывается на `self` и шлёт «ready» в наш основной поток (static-блок WorkerMessageHandler
+    проверяет «window нет, postMessage есть») — на время загрузки ставим `globalThis.window`, потом удаляем.
+  - Без DOM: свой CanvasFactory (OffscreenCanvas) и FilterFactory («none» — мягкие маски и функции переноса pdf.js
+    считает сам по пикселям), `disableFontFace` (глифы — контурами), `useWorkerFetch`. Стандартные шрифты, CMap, ICC
+    и WASM (JPEG 2000, JBIG2, qcms) копируются из пакета в `dist/_astro/pdfjs/<версия>/` (интеграция в
+    `astro.config.mjs`, в dev — middleware; QuickJS не копируем — JavaScript в PDF не выполняется); `eval` в pdf.js 6 нет.
+  - Страница рисуется на белом фоне при 72 / 150 (по умолчанию) / 300 dpi, `/Rotate` учитывается; больше 16 Мп или
+    16 384 точек по стороне — уменьшается (предел холста iOS) с предупреждением. Пиксели — `getImageData`, кодируют наши
+    JPEG/PNG/WebP, встраивается sRGB. Не больше 300 страниц из документа (`pdf/limits.ts`). Пароль — `pdf-encrypted`,
+    битый файл — `decode-failed`, не PDF — `not-pdf`; PDF на странице картинок — `pdf-input` с подсказкой.
+  - Worker шлёт страницы по одной (`pdf-rendered`), строки страниц (`file--page`, имя `документ_01.jpg`) появляются
+    под строкой PDF; смена формата или dpi — «Конвертировать заново»: старые страницы убираются. Память — по размеру
+    первой страницы (`estimatePdfNeeds`).
+  - Отступление от «Canvas не использовать»: растеризовать PDF без холста может только PDFium (WASM 5,5 МБ); pdf.js
+    рисует на OffscreenCanvas в worker'е, а кодирование — по-прежнему наше. Результат в браузерах может немного
+    отличаться (сглаживание).
 - **GIF на входе** — свой декодер на TypeScript (`decoders/gif.ts`, без WASM): LZW, палитра, чересстрочность. Первый
   кадр — как в браузере: на прозрачном холсте логического экрана (фон GIF не рисуется), прозрачный индекс — прозрачный
   пиксель, обрезанный файл — декодированная часть, остальное прозрачно; у анимации — предупреждение. Цвет — sRGB.

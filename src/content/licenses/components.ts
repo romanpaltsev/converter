@@ -20,7 +20,12 @@ export type LicenseTextId =
   | 'jxl-oxide-mit'
   | 'libaom-bsd'
   | 'libaom-patents'
-  | 'inter-ofl';
+  | 'inter-ofl'
+  | 'pdfium-bsd'
+  | 'openjpeg-bsd'
+  | 'qcms-mit'
+  | 'liberation-fonts'
+  | 'adobe-cmaps-bsd';
 
 export interface ThirdPartyComponent {
   name: string;
@@ -171,6 +176,70 @@ export const COMPONENTS: ThirdPartyComponent[] = [
     source: 'https://github.com/tirr-c/jxl-oxide',
   },
   {
+    name: 'PDF.js (pdfjs-dist)',
+    version: '6.4.299',
+    purpose: { ru: 'чтение и отрисовка PDF («PDF в JPG/PNG»)', en: 'reading and rendering PDFs (“PDF to JPG/PNG”)' },
+    license: 'Apache 2.0',
+    texts: ['apache-2.0'],
+    source: 'https://github.com/mozilla/pdf.js/tree/v6.4.299',
+  },
+  {
+    name: 'OpenJPEG (сборка PDF.js)',
+    version: '6.4.299',
+    purpose: { ru: 'картинки JPEG 2000 внутри PDF', en: 'JPEG 2000 images inside PDFs' },
+    license: 'BSD-2-Clause',
+    texts: ['openjpeg-bsd'],
+    source: 'https://github.com/uclouvain/openjpeg',
+  },
+  {
+    name: 'JBIG2 из PDFium (сборка PDF.js)',
+    version: '6.4.299',
+    purpose: { ru: 'чёрно-белые сканы JBIG2 внутри PDF', en: 'black-and-white JBIG2 scans inside PDFs' },
+    license: 'BSD-3-Clause / Apache 2.0',
+    texts: ['pdfium-bsd', 'apache-2.0'],
+    source: 'https://pdfium.googlesource.com/pdfium/',
+  },
+  {
+    name: 'qcms (сборка PDF.js)',
+    version: '6.4.299',
+    purpose: { ru: 'цветовые профили ICC внутри PDF', en: 'ICC color profiles inside PDFs' },
+    license: 'MIT',
+    texts: ['qcms-mit'],
+    source: 'https://github.com/FirefoxGraphics/qcms',
+  },
+  {
+    name: 'Foxit (шрифты из PDFium)',
+    version: '6.4.299',
+    purpose: { ru: 'стандартные шрифты PDF (Times, Courier, Symbol)', en: 'standard PDF fonts (Times, Courier, Symbol)' },
+    license: 'BSD-3-Clause',
+    texts: ['pdfium-bsd'],
+    source: 'https://pdfium.googlesource.com/pdfium/+/main/third_party/foxitfonts/',
+  },
+  {
+    name: 'Liberation Sans',
+    version: '6.4.299',
+    purpose: { ru: 'стандартные шрифты PDF (Helvetica, Arial)', en: 'standard PDF fonts (Helvetica, Arial)' },
+    license: 'GNU GPL 2 с исключением для шрифтов',
+    texts: ['liberation-fonts'],
+    source: 'https://github.com/liberationfonts/liberation-fonts',
+  },
+  {
+    name: 'Adobe CMap',
+    version: '6.4.299',
+    purpose: { ru: 'кодировки китайских, японских и корейских шрифтов в PDF', en: 'Chinese, Japanese and Korean font encodings in PDFs' },
+    license: 'BSD-3-Clause',
+    texts: ['adobe-cmaps-bsd'],
+    source: 'https://github.com/adobe-type-tools/cmap-resources',
+  },
+  {
+    name: 'CGATS001Compat (профиль ICC из PDF.js)',
+    version: '6.4.299',
+    purpose: { ru: 'цвета CMYK внутри PDF', en: 'CMYK colors inside PDFs' },
+    license: 'CC0 1.0',
+    texts: [],
+    source: 'https://github.com/saucecontrol/Compact-ICC-Profiles',
+  },
+  {
     name: 'Inter (@fontsource-variable/inter)',
     version: '5.3.0',
     purpose: { ru: 'шрифт интерфейса', en: 'interface font' },
@@ -206,6 +275,11 @@ export const LICENSE_TITLES: Record<LicenseTextId, string> = {
   'libaom-bsd': 'libaom (BSD-2-Clause, Alliance for Open Media)',
   'libaom-patents': 'libaom — Alliance for Open Media Patent License 1.0',
   'inter-ofl': 'Inter (SIL Open Font License 1.1)',
+  'pdfium-bsd': 'PDFium (BSD-3-Clause): Foxit fonts, JBIG2',
+  'openjpeg-bsd': 'OpenJPEG (BSD-2-Clause)',
+  'qcms-mit': 'qcms (MIT, Mozilla)',
+  'liberation-fonts': 'Liberation Fonts (GNU GPL 2 with font exception, Red Hat)',
+  'adobe-cmaps-bsd': 'Adobe CMap resources (BSD-3-Clause)',
 };
 
 /** Обязательная фраза лицензии IJG для бинарных дистрибутивов libjpeg. */

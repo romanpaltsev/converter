@@ -12,13 +12,13 @@ import type { StripMode } from '../../src/converter/metadata/strip/types';
 import { TAG, parseTiff } from '../../src/converter/metadata/tiff';
 import { blankGps, entryNumbers, readIfdAt, readLayout } from '../../src/converter/metadata/tiff-layout';
 import { readWebpChunks } from '../../src/converter/metadata/webp-chunks';
-import { type SniffKind, sniff } from '../../src/converter/pipeline/sniff';
+import { type ImageKind, sniff } from '../../src/converter/pipeline/sniff';
 import { fixture, iccFixture } from './helpers/fixtures';
 
 const P3 = iccFixture('DisplayP3Compat-v2-magic.icc');
 
 function strip(bytes: Uint8Array, mode: StripMode) {
-  return stripMetadata(bytes, sniff(bytes).kind as Exclude<SniffKind, 'unknown'>, mode);
+  return stripMetadata(bytes, sniff(bytes).kind as ImageKind, mode);
 }
 
 /** Всё, что видит независимый читатель (exifr): EXIF, GPS, XMP, IPTC, текстовые чанки PNG. */

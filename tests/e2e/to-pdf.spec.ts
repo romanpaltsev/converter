@@ -1,10 +1,10 @@
 // «Изображения в PDF»: страницы в порядке списка, A4/Letter/по размеру фото, JPEG без перекодирования,
 // прозрачность — маской, метаданные фото в документ не попадают. PDF разбирается независимо — pdf.js в Node.
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { OPS, getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type { Page } from '@playwright/test';
 import { convertFiles as process, expect, openConverter, test } from './fixtures';
-import { downloadBytes, expectTimestamped, fixture } from './files';
+import { decodeInBrowser, dominant, downloadBytes, expectTimestamped, fixture, pngInfo } from './files';
 
 async function downloadPdf(page: Page, name: string): Promise<Buffer> {
   const pending = page.waitForEvent('download');
@@ -83,6 +83,25 @@ test.describe('изображения в PDF', () => {
     // 1200×800 пикселей при 96 dpi — 900×600 пунктов, плюс поля по 10 мм
     expect(view).toEqual([0, 0, 956.69, 656.69]);
     expect([image.width, image.height]).toEqual([1200, 800]);
+  });
+
+  test('туда и обратно: «JPG в PDF», затем «PDF в PNG» — повёрнутое фото стоит правильно (рисует pdf.js)', async ({ page }, testInfo) => {
+    await openConverter(page, '/jpg-v-pdf');
+    await process(page, ['rotated.jpg']);
+    const pdfPath = testInfo.outputPath('rotated.pdf');
+    writeFileSync(pdfPath, await downloadPdf(page, 'rotated.pdf'));
+
+    await openConverter(page, '/pdf-v-png');
+    await page.getByRole('radio', { name: '72 dpi' }).check();
+    await page.setInputFiles('[data-input]', [pdfPath]);
+    await expect(page.locator('.file--page[data-status="done"]')).toHaveCount(1);
+    const pending = page.waitForEvent('download');
+    await page.locator('.file--page .file__download').click();
+    const png = await downloadBytes(await pending);
+    // A4 при 72 dpi; фото 600×800 вписано по ширине и стоит по центру
+    expect(pngInfo(png)).toMatchObject({ width: 595, height: 841 });
+    const points: [number, number][] = [[150, 220], [450, 220], [150, 620], [450, 620]];
+    expect((await decodeInBrowser(page, png, 'image/png', points)).pixels.map(dominant)).toEqual(['r', 'g', 'b', 'y']);
   });
 
   test('en: Letter; файл с ошибкой и убранный файл в PDF не попадают', async ({ page }) => {

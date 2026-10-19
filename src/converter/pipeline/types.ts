@@ -46,6 +46,11 @@ export type ErrorCode =
   | 'decode-failed'
   | 'unsupported-variant'
   | 'out-of-memory'
+  /** PDF на странице картинок. */
+  | 'pdf-input'
+  /** На странице «PDF в JPG» — не PDF. */
+  | 'not-pdf'
+  | 'pdf-encrypted'
   | 'internal';
 
 /** Предупреждения не мешают конвертации, но показываются в строке файла. */
@@ -65,7 +70,11 @@ export type WarningCode =
   /** Заданный размер не меньше исходника — изображение не увеличиваем. */
   | 'not-resized'
   /** «Удалить метаданные»: EXIF сжат Brotli (JPEG XL) — его не прочитать, поэтому он удалён целиком, даже дата. */
-  | 'exif-compressed-removed';
+  | 'exif-compressed-removed'
+  /** «PDF в JPG»: страница больше предела холста — нарисована с меньшим разрешением. */
+  | 'pdf-page-downscaled'
+  /** «PDF в JPG»: страниц больше предела — сохранены первые. */
+  | 'pdf-page-limit';
 
 export class ConvertError extends Error {
   /** После ошибки экземпляр WASM-модуля нельзя использовать дальше (нужен новый worker и повторная попытка). */

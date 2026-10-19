@@ -3,7 +3,7 @@
 
 import type { Nclx } from '../../color/nclx';
 import { readJpegFrame, readPngHeader, readWebpHeader } from '../../pipeline/headers';
-import type { SniffKind } from '../../pipeline/sniff';
+import type { ImageKind } from '../../pipeline/sniff';
 import { readOrientation } from '../exif-filter';
 import { tiffFromExifChunk, tiffFromHeifExif } from '../heif-exif';
 import { type Box, isExifItem, readBoxes, readHeifInfo, readItemData } from '../heif-items';
@@ -100,7 +100,7 @@ async function inflateIcc(compressed: Uint8Array): Promise<Uint8Array | null> {
   }
 }
 
-async function sources(bytes: Uint8Array, kind: Exclude<SniffKind, 'unknown'>): Promise<Sources> {
+async function sources(bytes: Uint8Array, kind: ImageKind): Promise<Sources> {
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   switch (kind) {
     case 'jpeg': {
@@ -202,7 +202,7 @@ async function sources(bytes: Uint8Array, kind: Exclude<SniffKind, 'unknown'>): 
   }
 }
 
-export async function inspectFile(bytes: Uint8Array, kind: Exclude<SniffKind, 'unknown'>): Promise<MetadataReport> {
+export async function inspectFile(bytes: Uint8Array, kind: ImageKind): Promise<MetadataReport> {
   const src = await sources(bytes, kind);
   let data: ExifData | null = null;
   if (src.exif) {

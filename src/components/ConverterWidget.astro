@@ -4,9 +4,10 @@
 import '../styles/converter.css';
 import { LOCALE_META, MAX_FILES_PER_BATCH, type Locale } from '../config/site';
 import { STRIP_MODES } from '../converter/metadata/strip/types';
+import { PDF_PAGE_LIMIT } from '../converter/pdf/limits';
 import type { OutputOption, WidgetConfig } from '../converter/widget/config';
 import { UI, format } from '../i18n/ui';
-import { INPUT_FORMATS, OUTPUT_FORMATS, type ToolConfig } from '../tools/registry';
+import { INPUT_FORMATS, OUTPUT_FORMATS, SOURCE_FORMATS, type ToolConfig } from '../tools/registry';
 
 interface Props {
   tool: ToolConfig;
@@ -15,7 +16,7 @@ interface Props {
 
 const { tool, locale } = Astro.props;
 const list = (items: string[]) => new Intl.ListFormat(LOCALE_META[locale].htmlLang, { type: 'conjunction' }).format(items);
-const inputs = tool.inputFormats.map((id) => INPUT_FORMATS[id]);
+const inputs = tool.inputFormats.map((id) => SOURCE_FORMATS[id]);
 const converts = tool.mode === 'convert';
 // «Удалить метаданные»: без выбора формата и качества — только что удалять
 const strips = tool.mode === 'strip';
@@ -25,21 +26,26 @@ const inspects = tool.mode === 'inspect';
 const pdfs = tool.mode === 'to-pdf';
 const PAGE_SIZES = ['a4', 'letter', 'image'] as const;
 const MARGINS = ['none', 'small'] as const;
+// «PDF в JPG/PNG»: формат и качество — как у конвертеров, плюс разрешение; метаданных у страниц нет
+const fromPdf = tool.mode === 'from-pdf';
+const DPI = [72, 150, 300] as const;
+const DEFAULT_DPI = 150;
 // шаблоны строк заполняем здесь: формат страницы и список всех поддерживаемых форматов
 const supported = list(Object.values(INPUT_FORMATS).map((f) => f.label));
 const base = UI[locale].widget;
 const t = {
   ...base,
-  dropTitle: converts || pdfs ? format(base.dropTitle, { format: list(inputs.map((f) => f.label)) }) : base.dropTitleAny,
-  // сжатие и изменение размера — не «конвертация»
-  progress: converts ? base.progress : base.progressProcess,
-  converting: converts ? base.converting : base.processing,
-  reconvert: converts ? base.reconvert : base.reprocess,
+  dropTitle: converts || pdfs || fromPdf ? format(base.dropTitle, { format: list(inputs.map((f) => f.label)) }) : base.dropTitleAny,
+  // сжатие, размер и метаданные — не «конвертация»; PDF в картинки и обратно — она
+  progress: converts || pdfs || fromPdf ? base.progress : base.progressProcess,
+  converting: converts || pdfs || fromPdf ? base.converting : base.processing,
+  reconvert: converts || pdfs || fromPdf ? base.reconvert : base.reprocess,
   errors: {
     ...base.errors,
     'not-image': format(base.errors['not-image'], { formats: supported }),
     'unsupported-image': format(base.errors['unsupported-image'], { formats: supported }),
   },
+  warnings: { ...base.warnings, 'pdf-page-limit': format(base.warnings['pdf-page-limit'], { limit: PDF_PAGE_LIMIT }) },
 };
 const accept = inputs.map((f) => f.accept).join(',');
 const outputs: OutputOption[] = tool.outputs.map((id) => {
@@ -142,8 +148,26 @@ const DEFAULT_LONG_SIDE = 1920;
               </fieldset>
             )
           }
+          {
+            fromPdf && (
+              <Fragment>
+                <fieldset class="settings__format">
+                  <legend class="settings__label">{t.resolution}</legend>
+                  <div class="segmented">
+                    {DPI.map((dpi) => (
+                      <label class="segmented__option">
+                        <input type="radio" name="dpi" value={dpi} checked={dpi === DEFAULT_DPI} />
+                        <span>{format(t.dpi, { value: dpi })}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+                <p class="settings__hint settings__hint--aligned">{t.pdfRenderHint}</p>
+              </Fragment>
+            )
+          }
           {tool.outputs.includes('ico') && <p class="settings__hint settings__hint--aligned" data-ico-hint hidden={tool.defaultOutput !== 'ico'}>{t.icoHint}</p>}
-          {!converts && !strips && !pdfs && <p class="settings__hint settings__hint--aligned" data-original-hint hidden={tool.defaultOutput !== 'original'}>{t.originalHint}</p>}
+          {!converts && !strips && !pdfs && !fromPdf && <p class="settings__hint settings__hint--aligned" data-original-hint hidden={tool.defaultOutput !== 'original'}>{t.originalHint}</p>}
           {
             tool.mode === 'compress' && (
               <fieldset class="settings__format" data-compression-row>
@@ -257,14 +281,20 @@ const DEFAULT_LONG_SIDE = 1920;
                   <input type="checkbox" name="lossless" />
                   <span>{t.lossless}</span>
                 </label>
-                <div class="settings__meta" data-meta-row hidden={tool.defaultOutput === 'ico'}>
-                  <label class="checkbox">
-                    <input type="checkbox" name="keepMetadata" aria-describedby={`${id}-meta-hint`} />
-                    <span>{t.keepMetadata}</span>
-                  </label>
-                  <p class="settings__hint" id={`${id}-meta-hint`}>{t.keepMetadataHint}</p>
-                </div>
-                <p class="notice notice--warning" data-png-warning hidden={!initial.largeFiles}>{converts ? t.pngWarning : t.pngCompressWarning}</p>
+                {
+                  !fromPdf && (
+                    <Fragment>
+                      <div class="settings__meta" data-meta-row hidden={tool.defaultOutput === 'ico'}>
+                        <label class="checkbox">
+                          <input type="checkbox" name="keepMetadata" aria-describedby={`${id}-meta-hint`} />
+                          <span>{t.keepMetadata}</span>
+                        </label>
+                        <p class="settings__hint" id={`${id}-meta-hint`}>{t.keepMetadataHint}</p>
+                      </div>
+                      <p class="notice notice--warning" data-png-warning hidden={!initial.largeFiles}>{converts ? t.pngWarning : t.pngCompressWarning}</p>
+                    </Fragment>
+                  )
+                }
               </Fragment>
             )
           }

@@ -25,10 +25,10 @@ header() { curl -s -D - -o /dev/null "${@:2}" | tr -d '\r' | grep -i "^$1:" | he
 
 echo "== страницы"
 for path in / /heic-v-jpg /heic-v-png /heic-v-webp /jpg-v-png /jpg-v-webp /png-v-jpg /png-v-webp /webp-v-jpg /webp-v-png \
-  /szhat-foto /izmenit-razmer-foto /udalit-metadannye-foto /posmotret-exif /jpg-v-pdf /png-v-pdf /heic-v-pdf \
+  /szhat-foto /izmenit-razmer-foto /udalit-metadannye-foto /posmotret-exif /jpg-v-pdf /png-v-pdf /heic-v-pdf /pdf-v-jpg /pdf-v-png \
   /licenses /contacts /en/ /en/heic-to-jpg /en/heic-to-png /en/heic-to-webp /en/jpg-to-png /en/jpg-to-webp /en/png-to-jpg \
   /en/png-to-webp /en/webp-to-jpg /en/webp-to-png /en/compress-image /en/resize-image /en/remove-exif /en/exif-viewer \
-  /en/jpg-to-pdf /en/png-to-pdf /en/heic-to-pdf \
+  /en/jpg-to-pdf /en/png-to-pdf /en/heic-to-pdf /en/pdf-to-jpg /en/pdf-to-png \
   /en/licenses /en/contacts \
   /robots.txt /sitemap-index.xml /favicon.svg; do
   check "GET $path" 200 "$(status "$BASE$path")"
@@ -46,6 +46,9 @@ check "POST / → 405" 405 "$(status -X POST "$BASE/")"
 
 echo "== заголовки"
 check "CSP" "script-src 'self' 'wasm-unsafe-eval'" "$(header content-security-policy "$BASE/heic-v-jpg")"
+PDFJS=$(node -p "require('./node_modules/pdfjs-dist/package.json').version" 2>/dev/null || echo 6.4.299)
+check "pdf.js: стандартный шрифт" 200 "$(status "$BASE/_astro/pdfjs/$PDFJS/standard_fonts/LiberationSans-Regular.ttf")"
+check "pdf.js: WASM JPEG 2000" "application/wasm" "$(header content-type "$BASE/_astro/pdfjs/$PDFJS/wasm/openjpeg.wasm")"
 check "nosniff" "nosniff" "$(header x-content-type-options "$BASE/")"
 check "Referrer-Policy" "strict-origin-when-cross-origin" "$(header referrer-policy "$BASE/")"
 check "Permissions-Policy" "camera=()" "$(header permissions-policy "$BASE/")"

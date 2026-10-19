@@ -61,6 +61,17 @@ test('удаление метаданных: без WASM и без запрос�
   }
 });
 
+test('PDF в JPG: pdf.js и его шрифты — только со своего сайта, без запросов с данными', async ({ page, network }) => {
+  await openConverter(page, '/pdf-v-jpg');
+  await page.setInputFiles('[data-input]', ['text.pdf'].map(fixture));
+  await expect(page.locator('.file--page[data-status="done"]')).toHaveCount(1);
+  for (const request of network.requests) {
+    expect(request.method, request.url).toBe('GET');
+    expect(request.hasBody, request.url).toBe(false);
+    expect(request.url).toMatch(/^\/(pdf-v-jpg|_astro\/[\w.-]+|_astro\/pdfjs\/[\d.]+\/[\w]+\/[\w.-]+|favicon\.svg)$/);
+  }
+});
+
 test('просмотр EXIF: без WASM и без запросов с данными файлов', async ({ page, network }) => {
   await openConverter(page, '/posmotret-exif');
   await page.setInputFiles('[data-input]', ['exif-gps.jpg', 'exif-gps.heic'].map(fixture));

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { UI } from '../../src/i18n/ui';
-import { INPUT_FORMATS, TOOLS } from '../../src/tools/registry';
+import { SOURCE_FORMATS, TOOLS } from '../../src/tools/registry';
 import { readHtml } from './helpers';
 
 describe('сборка: разметка виджета', () => {
@@ -9,7 +9,7 @@ describe('сборка: разметка виджета', () => {
     const { doc } = readHtml(file);
     const root = doc.querySelector('[data-converter]')!;
     expect(root).toBeTruthy();
-    expect(root.querySelector('input[type="file"]')?.getAttribute('accept')).toBe(tool.inputFormats.map((id) => INPUT_FORMATS[id].accept).join(','));
+    expect(root.querySelector('input[type="file"]')?.getAttribute('accept')).toBe(tool.inputFormats.map((id) => SOURCE_FORMATS[id].accept).join(','));
     expect(root.querySelector('input[type="file"]')?.hasAttribute('multiple')).toBe(true);
     expect(root.querySelector('button[data-dropzone]')).toBeTruthy();
     expect(root.querySelector('[data-status-text][role="status"][aria-live="polite"]')).toBeTruthy();
@@ -29,6 +29,13 @@ describe('сборка: разметка виджета', () => {
         expect(root.querySelector(selector)).toBeNull();
       }
       expect(root.querySelector('[data-zip]')?.text).toBe(ui.downloadPdf);
+    } else if (tool.mode === 'from-pdf') {
+      // «PDF в JPG/PNG»: формат и качество, разрешение 150 dpi; метаданных у страниц нет
+      expect(root.querySelector('input[name="format"][checked]')?.getAttribute('value')).toBe(tool.defaultOutput);
+      expect(root.querySelector('input[name="dpi"][checked]')?.getAttribute('value')).toBe('150');
+      expect(root.querySelector('[data-meta-row]')).toBeNull();
+      expect(root.querySelector('[data-png-warning]')).toBeNull();
+      expect(root.querySelector('[data-zip]')?.hasAttribute('hidden')).toBe(false);
     } else if (tool.mode === 'inspect') {
       // «Посмотреть EXIF»: настроек и архива нет — форма пустая и скрыта, кнопка ZIP скрыта
       expect(root.querySelector('form[data-settings]')?.hasAttribute('hidden')).toBe(true);

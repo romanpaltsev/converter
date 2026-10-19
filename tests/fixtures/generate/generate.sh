@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Генерация синтетических фикстур (без личных данных).
 # Запуск: npm run fixtures [-- секции] (собирает Docker-образ и выполняет этот скрипт внутри него).
-# Секции через запятую: heic, jpeg-png, webp, avif, gif, bmp, tiff, jxl (по умолчанию — все). Секция пересоздаёт только свои файлы:
+# Секции через запятую: heic, jpeg-png, webp, avif, gif, bmp, tiff, jxl, pdf (по умолчанию — все). Секция пересоздаёт только свои файлы:
 # HEIC-фикстуры не меняются побайтно, когда добавляются фикстуры других форматов.
 # Внутри контейнера: /out — tests/fixtures, /icc — src/converter/color/icc.
 set -euo pipefail
@@ -409,6 +409,55 @@ cjxl -q 100 "$OUT/animated.png" "$OUT/animated.jxl" >/dev/null 2>&1
 echo "== самопроверка JXL"
 for f in basic codestream alpha exif-gps exif-brotli rotated animated; do
   printf '%s: ' "$f"; jxlinfo "$OUT/$f.jxl" 2>&1 | grep -m3 -E 'JPEG XL|box|Orientation|animation|Exif|colorspace' | tr '\n' ';'; echo
+done
+fi
+
+if want pdf; then
+echo "== quadrants.pdf: страница 600x400 pt, картинка 600x400 с квадрантами (без потерь)"
+# PDF пишем сами (у ImageMagick в файле даты создания — фикстура менялась бы при каждой генерации), а qpdf
+# дописывает таблицу xref и сжимает потоки (FlateDecode). Код выхода 3 у qpdf — только предупреждения.
+pdf_raw() { # файл-результат, содержимое страницы (файл), размер страницы, ресурсы, [картинка RGB, ширина, высота]
+  local out=$1 content=$2 box=$3 resources=$4 rgb=${5:-} w=${6:-} h=${7:-}
+  {
+    printf '%%PDF-1.4\n1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n'
+    printf '3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [%s] /Resources %s /Contents 4 0 R >> endobj\n' "$box" "$resources"
+    printf '4 0 obj << /Length %d >>\nstream\n' "$(stat -c %s "$content")"
+    cat "$content"
+    printf '\nendstream\nendobj\n'
+    if [[ -n "$rgb" ]]; then
+      printf '5 0 obj << /Type /XObject /Subtype /Image /Width %d /Height %d /ColorSpace /DeviceRGB /BitsPerComponent 8 /Length %d >>\nstream\n' "$w" "$h" "$(stat -c %s "$rgb")"
+      cat "$rgb"
+      printf '\nendstream\nendobj\n'
+    else
+      printf '5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj\n'
+    fi
+    printf 'trailer << /Size 6 /Root 1 0 R >>\n%%%%EOF\n'
+  } > "raw-$out"
+  qpdf --deterministic-id "raw-$out" "$OUT/$out" 2>/dev/null || [ $? -eq 3 ]
+}
+quadrants 600 400 pdf-quad.png
+"${IM[@]}" pdf-quad.png -depth 8 "rgb:pdf-quad.rgb"
+printf 'q 600 0 0 400 0 0 cm /Im1 Do Q' > quad-content.txt
+pdf_raw quadrants.pdf quad-content.txt '0 0 600 400' '<< /XObject << /Im1 5 0 R >> >>' pdf-quad.rgb 600 400
+
+echo "== text.pdf: A4, синий прямоугольник и «Hello PDF» шрифтом Helvetica без встраивания (нужны стандартные шрифты)"
+printf '0 0 0.88 rg 50 600 495 150 re f\n0 g BT /F1 72 Tf 60 400 Td (Hello PDF) Tj ET' > text-content.txt
+pdf_raw text.pdf text-content.txt '0 0 595 842' '<< /Font << /F1 5 0 R >> >>'
+
+echo "== two-pages.pdf: квадранты (страница повёрнута /Rotate 90) + текст"
+qpdf --deterministic-id --empty --pages "$OUT/quadrants.pdf" "$OUT/text.pdf" -- two.pdf
+qpdf --deterministic-id --rotate=+90:1 two.pdf "$OUT/two-pages.pdf"
+
+echo "== encrypted.pdf: под паролем (AES-256); garbage.pdf: заголовок PDF и мусор"
+qpdf --deterministic-id --encrypt secret secret 256 -- "$OUT/quadrants.pdf" "$OUT/encrypted.pdf" 2>/dev/null \
+  || qpdf --encrypt secret secret 256 -- "$OUT/quadrants.pdf" "$OUT/encrypted.pdf"
+{ printf '%%PDF-1.7\n'; for i in $(seq 1 200); do printf 'garbage line %03d without any objects\n' "$i"; done; } > "$OUT/garbage.pdf"
+
+echo "== самопроверка PDF"
+for f in quadrants text two-pages encrypted; do
+  printf '%s: страниц %s; ' "$f" "$(qpdf --password=secret --show-npages "$OUT/$f.pdf" 2>/dev/null || echo '?')"
+  qpdf --password=secret --check "$OUT/$f.pdf" 2>&1 | grep -m2 -E 'No syntax|rror|ncrypt|R = ' | tr '\n' ';' || true
+  echo
 done
 fi
 

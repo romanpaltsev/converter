@@ -405,6 +405,10 @@
   background: var(--surface);
 }
 
+.file--page {
+  margin-left: clamp(16px, 4vw, 32px);
+}
+
 .file[data-status='error'] {
   border-color: color-mix(in srgb, var(--error) 30%, var(--border));
 }

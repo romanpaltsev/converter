@@ -10,7 +10,7 @@ import type { PdfImage } from '../pdf/writer';
 import { readJpegFrame } from './headers';
 import { applyOrientation } from './orientation';
 import { downscale } from './preview';
-import type { SniffKind } from './sniff';
+import type { ImageKind } from './sniff';
 import type { ConvertOptions, DecoderSession, Encoder, WarningCode } from './types';
 
 /** Качество JPEG для страниц из форматов с потерями: заметно не отличить, а PDF не раздувается. */
@@ -35,7 +35,7 @@ export async function deflate(data: Uint8Array): Promise<Uint8Array> {
 }
 
 /** WebP без потерь (VP8L) — сжимаем без потерь и в PDF; у WebP с потерями — JPEG. */
-function isLossless(kind: Exclude<SniffKind, 'unknown'>, bytes: Uint8Array): boolean {
+function isLossless(kind: ImageKind, bytes: Uint8Array): boolean {
   if (kind === 'png' || kind === 'gif' || kind === 'bmp' || kind === 'tiff') return true;
   if (kind !== 'webp') return false;
   const text = String.fromCharCode(...bytes.subarray(0, Math.min(bytes.length, 4096)));
@@ -71,7 +71,7 @@ function pack(rgba: Uint8Array, components: 1 | 3): Uint8Array {
 
 export async function preparePdfPage(
   bytes: Uint8Array,
-  kind: Exclude<SniffKind, 'unknown'>,
+  kind: ImageKind,
   session: DecoderSession,
   jpeg: Encoder,
   options: ConvertOptions,

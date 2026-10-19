@@ -1,9 +1,9 @@
 # Фикстуры для тестов
 
 Все файлы здесь синтетические (без личных данных), генерируются командой `npm run fixtures`
-(Docker-образ `tests/fixtures/generate`: Debian forky, heif-enc 1.23.6, exiftool, ImageMagick, cjpeg, apngasm).
+(Docker-образ `tests/fixtures/generate`: Debian forky, heif-enc 1.23.6, exiftool, ImageMagick, cjpeg, apngasm, qpdf).
 Результат закоммичен, перегенерировать нужно только при изменении `generate/generate.sh`. Генератор разбит на секции:
-Секции: `heic`, `jpeg-png`, `webp`, `avif`, `gif`, `bmp`, `tiff`, `jxl`. `npm run fixtures -- jpeg-png` пересоздаёт только JPEG/PNG, не трогая HEIC (heif-enc другой версии изменил бы их побайтно).
+Секции: `heic`, `jpeg-png`, `webp`, `avif`, `gif`, `bmp`, `tiff`, `jxl`, `pdf`. `npm run fixtures -- jpeg-png` пересоздаёт только JPEG/PNG, не трогая HEIC (heif-enc другой версии изменил бы их побайтно).
 
 | Файл | Что проверяем |
 |---|---|
@@ -61,6 +61,10 @@
 | `exif-gps.jxl`, `exif-brotli.jxl` | перепаковка exif-gps.jpg (ICC P3, даты, GPS): Exif несжатый; Exif в brob (brotli) |
 | `rotated.jxl` | перепаковка rotated.jpg: Orientation 6 в заголовке кодового потока → 600×800 |
 | `too-wide.png` | 16400×8 — шире предела WebP (16 383 точки) |
+| `quadrants.pdf` | страница 600×400 pt, на ней картинка 600×400 с квадрантами (без потерь) |
+| `text.pdf` | A4: синий прямоугольник и «Hello PDF» шрифтом Helvetica без встраивания — нужны стандартные шрифты pdf.js |
+| `two-pages.pdf` | квадранты (страница повёрнута `/Rotate 90`) + текст |
+| `encrypted.pdf`, `garbage.pdf` | под паролем (AES-256; при каждой генерации файл другой — случайная соль шифрования); заголовок PDF и мусор — понятные ошибки |
 | `exif/big-endian.tiff`, `exif/little-endian.tiff` | сырые EXIF-блоки (TIFF) с датами, GPS, Make/Model, Orientation = 6 — для unit-тестов |
 
 Реальные снимки владельца — только в `private/` (исключена из git).

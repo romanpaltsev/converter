@@ -54,6 +54,8 @@ export type InputCheck = { ok: true; decoder: DecoderId; encoder: EncoderId } | 
 export function checkInput(bytes: Uint8Array, output: OutputTarget, allowSameFormat = false): InputCheck {
   const { kind } = sniff(bytes);
   if (kind === 'unknown') return { ok: false, code: 'not-image' };
+  // PDF — документ, а не картинка: для него свои страницы («PDF в JPG»)
+  if (kind === 'pdf') return { ok: false, code: 'pdf-input' };
   const encoder = output === 'original' ? ORIGINAL_ENCODER[kind] : output;
   const same = SAME_FORMAT[kind];
   if (same && !allowSameFormat && same.encoder === encoder) return { ok: false, code: same.error };

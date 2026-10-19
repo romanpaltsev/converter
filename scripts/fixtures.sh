@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Пересоздаёт синтетические фикстуры в tests/fixtures (нужен Docker). Аргумент — секции (heic,jpeg-png,webp,avif,gif,bmp,tiff,jxl), по умолчанию все.
+# Пересоздаёт синтетические фикстуры в tests/fixtures (нужен Docker). Аргумент — секции (heic,jpeg-png,webp,avif,gif,bmp,tiff,jxl,pdf), по умолчанию все.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 docker build -q -t converter-fixtures tests/fixtures/generate >/dev/null

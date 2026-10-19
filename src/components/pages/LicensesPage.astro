@@ -24,6 +24,11 @@ import pakoMit from '../../content/licenses/pako-MIT.txt?raw';
 import jxlOxideMit from '../../content/licenses/jxl-oxide-MIT.txt?raw';
 import libaomBsd from '../../content/licenses/libaom-BSD.txt?raw';
 import libaomPatents from '../../content/licenses/libaom-PATENTS.txt?raw';
+import pdfiumBsd from '../../content/licenses/pdfium-BSD.txt?raw';
+import openjpegBsd from '../../content/licenses/openjpeg-BSD.txt?raw';
+import qcmsMit from '../../content/licenses/qcms-MIT.txt?raw';
+import liberationFonts from '../../content/licenses/liberation-fonts.txt?raw';
+import adobeCmapsBsd from '../../content/licenses/adobe-cmaps-BSD.txt?raw';
 
 interface Props {
   locale: Locale;
@@ -51,6 +56,11 @@ const TEXTS: Record<LicenseTextId, string> = {
   'libaom-bsd': libaomBsd,
   'libaom-patents': libaomPatents,
   'inter-ofl': interOfl,
+  'pdfium-bsd': pdfiumBsd,
+  'openjpeg-bsd': openjpegBsd,
+  'qcms-mit': qcmsMit,
+  'liberation-fonts': liberationFonts,
+  'adobe-cmaps-bsd': adobeCmapsBsd,
 };
 const ORDER: LicenseTextId[] = [
   'lgpl-3.0',
@@ -69,6 +79,11 @@ const ORDER: LicenseTextId[] = [
   'utif-mit',
   'pako-mit',
   'jxl-oxide-mit',
+  'pdfium-bsd',
+  'openjpeg-bsd',
+  'qcms-mit',
+  'liberation-fonts',
+  'adobe-cmaps-bsd',
   'inter-ofl',
 ];
 const site = import.meta.env.SITE;

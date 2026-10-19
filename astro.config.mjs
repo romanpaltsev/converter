@@ -1,5 +1,7 @@
 // @ts-check
-import { existsSync } from 'node:fs';
+import { createReadStream, existsSync, readFileSync } from 'node:fs';
+import { cp } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import sitemap from '@astrojs/sitemap';
 import { defineConfig, envField } from 'astro/config';
 import { alternates, findPageByPath } from './src/i18n/routes.ts';
@@ -9,6 +11,37 @@ if (existsSync('.env')) process.loadEnvFile('.env');
 
 /** Адрес сайта: переезд на финальный домен — смена одной переменной SITE_URL. */
 const SITE_URL = (process.env.SITE_URL || 'https://converter.hotbar.pro').replace(/\/+$/, '');
+
+/**
+ * pdf.js («PDF в JPG/PNG») загружает стандартные шрифты, CMap, ICC и WASM-декодеры по адресам каталогов —
+ * кладём их рядом со сборкой. Версия в пути: под /_astro/ nginx кэширует на год, а новая версия — новый адрес.
+ * @returns {import('astro').AstroIntegration}
+ */
+function pdfjsAssets() {
+  const source = new URL('./node_modules/pdfjs-dist/', import.meta.url);
+  const { version } = JSON.parse(readFileSync(new URL('package.json', source), 'utf8'));
+  const target = `_astro/pdfjs/${version}/`;
+  const dirs = ['standard_fonts', 'cmaps', 'iccs', 'wasm'];
+  // скрипты PDF (QuickJS) не нужны: JavaScript внутри PDF не выполняем
+  const filter = (/** @type {string} */ file) => !/quickjs/.test(file);
+  return {
+    name: 'pdfjs-assets',
+    hooks: {
+      'astro:build:done': async ({ dir }) => {
+        for (const name of dirs) await cp(new URL(`${name}/`, source), new URL(`${target}${name}/`, dir), { recursive: true, filter });
+      },
+      'astro:server:setup': ({ server }) => {
+        server.middlewares.use(`/${target}`, (request, response, next) => {
+          const path = decodeURIComponent((request.url ?? '').split('?')[0] ?? '');
+          const file = new URL(`.${path}`, source);
+          const name = path.split('/')[1] ?? '';
+          if (!dirs.includes(name) || !filter(path) || !existsSync(fileURLToPath(file))) return next();
+          createReadStream(file).pipe(response);
+        });
+      },
+    },
+  };
+}
 
 export default defineConfig({
   site: SITE_URL,
@@ -31,6 +64,7 @@ export default defineConfig({
     },
   },
   integrations: [
+    pdfjsAssets(),
     sitemap({
       filter: (page) => !/\/404(\.html)?\/?$/.test(new URL(page).pathname),
       // Встроенная i18n-опция не поддерживает разные слаги на разных языках —

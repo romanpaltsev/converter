@@ -6,7 +6,7 @@ import type { MetadataReport } from '../metadata/inspect/types';
 import type { RemovedKind, StripMode } from '../metadata/strip/types';
 import type { PdfImage } from '../pdf/writer';
 import type { ConvertOptions, DecoderId, EncoderId, ErrorCode, WarningCode } from '../pipeline/types';
-import type { FromWorker, ToWorker, WorkerStats } from '../worker/protocol';
+import type { FromWorker, PdfRenderOptions, ToWorker, WorkerStats } from '../worker/protocol';
 
 export interface ConvertSuccess {
   status: 'done';
@@ -66,6 +66,11 @@ export interface PdfPageSuccess {
 
 export type PdfPageOutcome = PdfPageSuccess | ConvertFailure | NeedsMemory;
 
+/** Страница PDF, нарисованная и закодированная worker'ом. */
+export type RenderedPdfPage = Omit<Extract<FromWorker, { type: 'pdf-rendered' }>, 'type' | 'id'>;
+
+export type PdfRenderOutcome = { status: 'done'; total: number; limited: boolean } | ConvertFailure | NeedsMemory;
+
 type OnStarted = (footprint: number, fresh: number) => void;
 
 /** То, что нужно пулу от worker'а (в unit-тестах пула — подделка). */
@@ -85,6 +90,7 @@ export class WorkerClient implements PoolClient {
   private nextId = 1;
   private pending: ((reply: FromWorker) => void) | null = null;
   private onStarted: OnStarted | null = null;
+  private onPage: ((page: RenderedPdfPage) => void) | null = null;
   /** Модули, уже загруженные (или загружаемые) в текущем worker'е; после пересоздания — пусто. */
   private readonly decoders = new Set<DecoderId>();
   private readonly encoders = new Set<EncoderId>();
@@ -95,9 +101,9 @@ export class WorkerClient implements PoolClient {
     return this.worker !== null;
   }
 
-  /** Запускает worker и загружает в него недостающие WASM-модули: декодер и кодировщик. */
-  load(decoder: DecoderId, encoder: EncoderId): Promise<void> {
-    const decoders = this.decoders.has(decoder) ? [] : [decoder];
+  /** Запускает worker и загружает в него недостающие WASM-модули: декодер (если нужен) и кодировщик. */
+  load(decoder: DecoderId | null, encoder: EncoderId): Promise<void> {
+    const decoders = decoder === null || this.decoders.has(decoder) ? [] : [decoder];
     const encoders = this.encoders.has(encoder) ? [] : [encoder];
     if (this.loading && decoders.length === 0 && encoders.length === 0) return this.loading;
     decoders.forEach((id) => this.decoders.add(id));
@@ -166,6 +172,7 @@ export class WorkerClient implements PoolClient {
     this.worker = null;
     this.loading = null;
     this.onStarted = null;
+    this.onPage = null;
     this.files = 0;
     this.heapBytes = 0;
     this.decoders.clear();
@@ -193,6 +200,19 @@ export class WorkerClient implements PoolClient {
     return failure(reply);
   }
 
+  /** «PDF в JPG»: страницы приходят по одной в onPage, результат — когда готовы все. */
+  async pdfRender(file: Blob, options: PdfRenderOptions, memoryLimit: number, onStarted: OnStarted, onPage: (page: RenderedPdfPage) => void): Promise<PdfRenderOutcome> {
+    this.onPage = onPage;
+    const reply = await this.request((id) => ({ type: 'pdf-render', id, file, options, memoryLimit }), onStarted);
+    this.onPage = null;
+    if (reply.type === 'pdf-done') {
+      this.files++;
+      this.heapBytes = reply.heap;
+      return { status: 'done', total: reply.total, limited: reply.limited };
+    }
+    return failure(reply);
+  }
+
   private request(build: (id: number) => ToWorker, onStarted: OnStarted): Promise<FromWorker> {
     const worker = this.ensureWorker();
     const message = build(this.nextId++);
@@ -210,6 +230,11 @@ export class WorkerClient implements PoolClient {
       const reply = event.data;
       if (reply.type === 'started') {
         this.onStarted?.(reply.footprint, reply.fresh);
+        return;
+      }
+      if (reply.type === 'pdf-rendered') {
+        const { type: _type, id: _id, ...page } = reply;
+        this.onPage?.(page);
         return;
       }
       const pending = this.pending;

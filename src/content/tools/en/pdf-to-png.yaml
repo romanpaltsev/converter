@@ -1,0 +1,46 @@
+# Texts for /en/pdf-to-png. Draft for the owner's review (see CONTENT.md).
+title: "PDF to PNG Converter — Lossless Images of PDF Pages"
+description: "Convert PDF to PNG right in your browser: every page becomes a separate lossless image at 72, 150 or 300 dpi. No sign-up and no uploads."
+h1: "PDF to PNG"
+subtitle: "PDF pages into lossless images. Your files never leave your device."
+breadcrumb: "PDF to PNG"
+card:
+  title: "PDF to PNG"
+  text: "Turn PDF pages into lossless PNG images."
+app:
+  name: "PDF to PNG Converter"
+  description: "An online tool that saves PDF pages as PNG images right in your browser, without uploading files."
+howTo:
+  title: "How to convert PDF to PNG"
+  steps:
+    - "Pick a resolution: 150 dpi for screens, 300 dpi for printing and small print."
+    - "Click the box above or drop your PDFs onto it — several at once is fine. Pages appear as they're ready."
+    - "Download pages one by one or all at once as a ZIP."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Crisp text"
+      text: "PNG is lossless: letters, lines and tables stay sharp, with no compression artifacts."
+    - title: "Documents stay on your device"
+      text: "The PDF is opened and rendered right in your browser — contracts, statements and scans are never uploaded."
+    - title: "All pages at once"
+      text: "Each page is saved as its own image with the page number in the file name, and everything downloads as one ZIP."
+    - title: "For slides and guides"
+      text: "A PDF page as a PNG is easy to drop into a presentation, a document or a how-to guide."
+faq:
+  title: "FAQ"
+  items:
+    - q: "Why PNG rather than JPG for PDF pages?"
+      a: "PNG is lossless, so text and lines stay perfectly crisp. JPG files are smaller and suit pages with photos better."
+    - q: "Why are the PNG files so large?"
+      a: "Lossless images take more space, especially at 300 dpi. If size matters, pick 150 dpi or the JPG format."
+    - q: "Which resolution should I choose?"
+      a: "150 dpi works for screens and presentations. For printing and small print choose 300 dpi. 72 dpi gives the smallest files."
+    - q: "Will the images have a transparent background?"
+      a: "No, pages are saved on a white background, just like paper."
+    - q: "Can I open a password-protected PDF?"
+      a: "No — open the PDF and save a copy without the password first. If a file is protected, its row will say so."
+    - q: "How many pages can I convert?"
+      a: "Up to 300 pages per PDF and up to 100 files at a time. Very large pages, such as drawings, are saved at a lower resolution, and the row notes it."
+    - q: "Is it safe?"
+      a: "Yes. Only the tool itself is loaded from the site; your PDF is processed in your browser and never sent to a server."

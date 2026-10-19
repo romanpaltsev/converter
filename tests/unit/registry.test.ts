@@ -15,7 +15,7 @@ describe('реестр инструментов', () => {
   });
 
   test('сжатие, размер и метаданные: любой вход, по умолчанию «Исходный», перелинковка задана вручную', () => {
-    const editors = TOOLS.filter((t) => t.mode !== 'convert' && t.mode !== 'to-pdf');
+    const editors = TOOLS.filter((t) => t.mode !== 'convert' && t.mode !== 'to-pdf' && t.mode !== 'from-pdf');
     expect(editors.map((t) => t.id)).toEqual(['compress-image', 'resize-image', 'remove-metadata', 'exif-viewer']);
     for (const tool of editors) {
       expect(tool.inputFormats).toEqual(Object.keys(INPUT_FORMATS));
@@ -23,6 +23,18 @@ describe('реестр инструментов', () => {
       // метаданные удаляются и читаются без перекодирования — формат не выбирается
       expect(tool.outputs).toEqual(FIXED_OUTPUT_MODES.includes(tool.mode) ? ['original'] : ['original', 'jpeg', 'png', 'webp']);
       for (const id of tool.related ?? []) expect(TOOLS.map((t) => t.id)).toContain(id);
+    }
+  });
+
+  test('PDF в картинки: вход — PDF, выход — JPG, PNG или WebP', () => {
+    const fromPdf = TOOLS.filter((t) => t.mode === 'from-pdf');
+    expect(fromPdf.map((t) => [t.id, t.slugs.ru, t.defaultOutput])).toEqual([
+      ['pdf-to-jpg', 'pdf-v-jpg', 'jpeg'],
+      ['pdf-to-png', 'pdf-v-png', 'png'],
+    ]);
+    for (const tool of fromPdf) {
+      expect(tool.inputFormats).toEqual(['pdf']);
+      expect(tool.outputs).toEqual(['jpeg', 'png', 'webp']);
     }
   });
 
@@ -48,6 +60,8 @@ describe('реестр инструментов', () => {
       'jpg-to-pdf': ['png-to-pdf', 'heic-to-pdf', 'compress-image', 'jpg-to-png'],
       'png-to-pdf': ['jpg-to-pdf', 'heic-to-pdf', 'png-to-jpg', 'compress-image'],
       'heic-to-pdf': ['jpg-to-pdf', 'png-to-pdf', 'heic-to-jpg', 'heic-to-png'],
+      'pdf-to-jpg': ['pdf-to-png', 'jpg-to-pdf', 'png-to-pdf', 'compress-image'],
+      'pdf-to-png': ['pdf-to-jpg', 'png-to-pdf', 'jpg-to-pdf', 'png-to-jpg'],
       'heic-to-jpg': ['heic-to-png', 'heic-to-webp', 'avif-to-jpg', 'png-to-jpg'],
       'heic-to-png': ['heic-to-jpg', 'heic-to-webp', 'avif-to-png', 'jpg-to-png'],
       'heic-to-webp': ['heic-to-jpg', 'heic-to-png', 'jpg-to-webp', 'png-to-webp'],

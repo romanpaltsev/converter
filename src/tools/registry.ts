@@ -23,6 +23,11 @@ export const INPUT_FORMATS = {
   jxl: { label: 'JPEG XL', accept: '.jxl,image/jxl', decoder: 'jxl' },
 } as const satisfies Record<string, { label: string; accept: string; decoder: DecoderId }>;
 
+/** Документы — вход инструментов «PDF в JPG/PNG» (не изображения: декодеров изображений у них нет). */
+export const DOCUMENT_FORMATS = {
+  pdf: { label: 'PDF', accept: '.pdf,application/pdf' },
+} as const satisfies Record<string, { label: string; accept: string }>;
+
 export const OUTPUT_FORMATS = {
   jpeg: { label: 'JPG', extension: 'jpg', encoder: 'jpeg', hasQuality: true, hasLossless: false, largeFiles: false },
   png: { label: 'PNG', extension: 'png', encoder: 'png', hasQuality: false, hasLossless: false, largeFiles: true },
@@ -35,6 +40,9 @@ export const OUTPUT_FORMATS = {
 >;
 
 export type InputFormatId = keyof typeof INPUT_FORMATS;
+export type DocumentFormatId = keyof typeof DOCUMENT_FORMATS;
+/** Всё, что инструмент называет своим входом (accept, заголовок зоны). */
+export const SOURCE_FORMATS: Record<InputFormatId | DocumentFormatId, { label: string; accept: string }> = { ...INPUT_FORMATS, ...DOCUMENT_FORMATS };
 export type OutputFormatId = keyof typeof OUTPUT_FORMATS;
 /** Выбор в переключателе формата: конкретный формат или «Исходный» (формат входа; HEIC и AVIF — в JPG). */
 export type OutputChoiceId = OutputFormatId | 'original';
@@ -44,9 +52,10 @@ export type OutputChoiceId = OutputFormatId | 'original';
  * compress — «Сжать фото» (качество или целевой размер); resize — «Изменить размер»;
  * strip — «Удалить метаданные» (без перекодирования: формат и пиксели те же, выбора формата нет);
  * inspect — «Посмотреть EXIF» (только чтение: настроек и файлов-результатов нет);
- * to-pdf — «Изображения в PDF» (все файлы — страницы одного документа, порядок задаёт пользователь).
+ * to-pdf — «Изображения в PDF» (все файлы — страницы одного документа, порядок задаёт пользователь);
+ * from-pdf — «PDF в JPG/PNG» (каждая страница PDF — отдельная картинка).
  */
-export type ToolMode = 'convert' | 'compress' | 'resize' | 'strip' | 'inspect' | 'to-pdf';
+export type ToolMode = 'convert' | 'compress' | 'resize' | 'strip' | 'inspect' | 'to-pdf' | 'from-pdf';
 
 /** Режимы, у которых формат результата не выбирается. */
 export const FIXED_OUTPUT_MODES: ToolMode[] = ['strip', 'inspect', 'to-pdf'];
@@ -57,7 +66,7 @@ export interface ToolConfig {
   /** Слаг страницы на каждом языке (без префикса /en/). */
   slugs: Record<Locale, string>;
   /** Форматы, которые страница называет своими (accept, заголовок зоны); остальные поддерживаемые тоже принимаются. */
-  inputFormats: InputFormatId[];
+  inputFormats: (InputFormatId | DocumentFormatId)[];
   defaultOutput: OutputChoiceId;
   /** Допустимые выходные форматы (переключатель в виджете), по порядку. */
   outputs: OutputChoiceId[];
@@ -157,6 +166,28 @@ export const TOOLS: ToolConfig[] = [
     defaultQuality: 90,
     content: 'heic-to-pdf',
     related: ['jpg-to-pdf', 'png-to-pdf', 'heic-to-jpg', 'heic-to-png'],
+  },
+  {
+    id: 'pdf-to-jpg',
+    mode: 'from-pdf',
+    slugs: { ru: 'pdf-v-jpg', en: 'pdf-to-jpg' },
+    inputFormats: ['pdf'],
+    defaultOutput: 'jpeg',
+    outputs: ALL_OUTPUTS,
+    defaultQuality: 90,
+    content: 'pdf-to-jpg',
+    related: ['pdf-to-png', 'jpg-to-pdf', 'png-to-pdf', 'compress-image'],
+  },
+  {
+    id: 'pdf-to-png',
+    mode: 'from-pdf',
+    slugs: { ru: 'pdf-v-png', en: 'pdf-to-png' },
+    inputFormats: ['pdf'],
+    defaultOutput: 'png',
+    outputs: ALL_OUTPUTS,
+    defaultQuality: 90,
+    content: 'pdf-to-png',
+    related: ['pdf-to-jpg', 'png-to-pdf', 'jpg-to-pdf', 'png-to-jpg'],
   },
   {
     id: 'heic-to-jpg',

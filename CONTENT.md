@@ -524,6 +524,150 @@
 - **What about the location and the date taken?** Only the images go into the PDF: location, phone model and the date taken aren't carried over.
 - **Is it safe?** Yes. Only the tool itself is loaded from the site; the PDF is created in your browser and your files are never sent to a server.
 
+### pdf-to-jpg
+
+#### Русский — `/pdf-v-jpg`
+
+Файл: `src/content/tools/ru/pdf-to-jpg.yaml`
+
+- **title:** PDF в JPG онлайн — сохранить страницы PDF как картинки _(54 симв.)_
+- **description:** Переведите PDF в JPG прямо в браузере: каждая страница — отдельная картинка, 72, 150 или 300 dpi. Без регистрации и загрузки файлов на сервер. _(142 симв.)_
+- **H1:** PDF в JPG
+- **Подзаголовок:** Каждая страница — отдельная картинка. Бесплатно, файлы не покидают ваше устройство.
+- **Хлебные крошки:** PDF в JPG
+- **Карточка:** PDF в JPG — Сохранить страницы PDF как картинки JPG.
+- **JSON-LD:** Конвертер PDF в JPG — Онлайн-сервис, который сохраняет страницы PDF как изображения JPG прямо в браузере, без загрузки файлов на сервер.
+
+**Как перевести PDF в JPG**
+
+1. Выберите разрешение: 150 dpi — для экрана и почты, 300 dpi — для печати. Формат можно сменить на PNG или WebP.
+2. Нажмите на область выше или перетащите на неё PDF — можно сразу несколько. Страницы появятся по мере готовности.
+3. Скачайте страницы по одной или все сразу ZIP-архивом.
+
+**Почему здесь**
+
+- **Документы остаются у вас.** PDF открывается и рисуется прямо в браузере — договоры, выписки и сканы не загружаются на сервер.
+- **Чёткие страницы.** 300 dpi — как у сканера: мелкий текст и таблицы читаются даже на печати.
+- **Все страницы сразу.** Каждая страница сохраняется отдельной картинкой с номером в имени файла, а все вместе — одним ZIP-архивом.
+- **JPG, PNG или WebP.** JPG — для фото и почты, PNG — для текста и схем без потерь, WebP — компактнее JPG.
+
+**Частые вопросы**
+
+- **Как сохранить одну страницу PDF как картинку?** Добавьте PDF — каждая страница появится отдельной строкой. Скачайте нужную кнопкой «Скачать» в её строке.
+- **Какое разрешение выбрать?** 150 dpi подходит для экрана, мессенджеров и почты. Для печати и мелкого текста выберите 300 dpi — картинки будут чётче, но и тяжелее. 72 dpi — самые маленькие файлы.
+- **Что лучше: JPG или PNG?** Для страниц с фотографиями — JPG: файлы меньше. Для текста, таблиц и схем — PNG: буквы останутся резкими, без ореолов сжатия.
+- **Можно ли открыть PDF с паролем?** Нет: защищённый паролем PDF нужно сначала открыть и сохранить копию без пароля. Если файл защищён, об этом будет сказано в его строке.
+- **Можно ли будет выделить текст на картинке?** Нет. Страница сохраняется как изображение: текст будет виден, но выделить или найти его в картинке нельзя.
+- **Сколько страниц можно сохранить?** До 300 страниц из одного PDF и до 100 файлов за раз. Очень большие страницы (например, чертежи) сохраняются с меньшим разрешением — в строке будет пометка.
+- **Безопасно ли это?** Да. С сайта загружается только сам инструмент, а PDF обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/pdf-to-jpg`
+
+Файл: `src/content/tools/en/pdf-to-jpg.yaml`
+
+- **title:** PDF to JPG Converter — Save PDF Pages as Images _(47 симв.)_
+- **description:** Convert PDF to JPG right in your browser: every page becomes a separate image at 72, 150 or 300 dpi. No sign-up and no uploads. _(127 симв.)_
+- **H1:** PDF to JPG
+- **Подзаголовок:** Every page becomes a separate image. Free, and your files never leave your device.
+- **Хлебные крошки:** PDF to JPG
+- **Карточка:** PDF to JPG — Save PDF pages as JPG images.
+- **JSON-LD:** PDF to JPG Converter — An online tool that saves PDF pages as JPG images right in your browser, without uploading files.
+
+**How to convert PDF to JPG**
+
+1. Pick a resolution: 150 dpi for screens and email, 300 dpi for printing. You can switch the format to PNG or WebP.
+2. Click the box above or drop your PDFs onto it — several at once is fine. Pages appear as they're ready.
+3. Download pages one by one or all at once as a ZIP.
+
+**Why use this converter**
+
+- **Documents stay on your device.** The PDF is opened and rendered right in your browser — contracts, statements and scans are never uploaded.
+- **Sharp pages.** 300 dpi is scanner quality: small print and tables stay readable, even on paper.
+- **All pages at once.** Each page is saved as its own image with the page number in the file name, and everything downloads as one ZIP.
+- **JPG, PNG or WebP.** JPG for photos and email, PNG for lossless text and diagrams, WebP for files smaller than JPG.
+
+**FAQ**
+
+- **How do I save one page of a PDF as an image?** Add the PDF — every page shows up as its own row. Download the one you need with the “Download” button on its row.
+- **Which resolution should I choose?** 150 dpi works for screens, messengers and email. For printing and small print choose 300 dpi: images are sharper but heavier. 72 dpi gives the smallest files.
+- **JPG or PNG — which is better?** JPG for pages with photos: files are smaller. PNG for text, tables and diagrams: letters stay crisp, without compression halos.
+- **Can I open a password-protected PDF?** No — open the PDF and save a copy without the password first. If a file is protected, its row will say so.
+- **Will the text be selectable in the image?** No. Pages are saved as pictures: the text is visible, but you can't select or search it in the image.
+- **How many pages can I convert?** Up to 300 pages per PDF and up to 100 files at a time. Very large pages, such as drawings, are saved at a lower resolution, and the row notes it.
+- **Is it safe?** Yes. Only the tool itself is loaded from the site; your PDF is processed in your browser and never sent to a server.
+
+### pdf-to-png
+
+#### Русский — `/pdf-v-png`
+
+Файл: `src/content/tools/ru/pdf-to-png.yaml`
+
+- **title:** PDF в PNG онлайн — страницы PDF в картинки без потерь _(53 симв.)_
+- **description:** Переведите PDF в PNG прямо в браузере: каждая страница — отдельная картинка без потерь, 72, 150 или 300 dpi. Без регистрации и загрузки на сервер. _(146 симв.)_
+- **H1:** PDF в PNG
+- **Подзаголовок:** Страницы PDF — в картинки без потери качества. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** PDF в PNG
+- **Карточка:** PDF в PNG — Страницы PDF — в картинки PNG без потерь.
+- **JSON-LD:** Конвертер PDF в PNG — Онлайн-сервис, который сохраняет страницы PDF как изображения PNG прямо в браузере, без загрузки файлов на сервер.
+
+**Как перевести PDF в PNG**
+
+1. Выберите разрешение: 150 dpi — для экрана, 300 dpi — для печати и мелкого текста.
+2. Нажмите на область выше или перетащите на неё PDF — можно сразу несколько. Страницы появятся по мере готовности.
+3. Скачайте страницы по одной или все сразу ZIP-архивом.
+
+**Почему здесь**
+
+- **Чёткий текст.** PNG хранит картинку без потерь: буквы, линии и таблицы остаются резкими, без артефактов сжатия.
+- **Документы остаются у вас.** PDF открывается и рисуется прямо в браузере — договоры, выписки и сканы не загружаются на сервер.
+- **Все страницы сразу.** Каждая страница сохраняется отдельной картинкой с номером в имени файла, а все вместе — одним ZIP-архивом.
+- **Для презентаций и инструкций.** Страницу PDF в PNG удобно вставить в презентацию, документ или инструкцию.
+
+**Частые вопросы**
+
+- **Чем PNG лучше JPG для страниц PDF?** PNG сжимает без потерь, поэтому текст и линии остаются идеально чёткими. JPG меньше по размеру и лучше подходит для страниц с фотографиями.
+- **Почему PNG-файлы такие большие?** Картинка без потерь весит больше, особенно при 300 dpi. Если важен размер, выберите 150 dpi или формат JPG.
+- **Какое разрешение выбрать?** 150 dpi подходит для экрана и презентаций. Для печати и мелкого текста выберите 300 dpi. 72 dpi — самые маленькие файлы.
+- **Будет ли у картинок прозрачный фон?** Нет, страницы сохраняются на белом фоне — как на бумаге.
+- **Можно ли открыть PDF с паролем?** Нет: защищённый паролем PDF нужно сначала открыть и сохранить копию без пароля. Если файл защищён, об этом будет сказано в его строке.
+- **Сколько страниц можно сохранить?** До 300 страниц из одного PDF и до 100 файлов за раз. Очень большие страницы (например, чертежи) сохраняются с меньшим разрешением — в строке будет пометка.
+- **Безопасно ли это?** Да. С сайта загружается только сам инструмент, а PDF обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/pdf-to-png`
+
+Файл: `src/content/tools/en/pdf-to-png.yaml`
+
+- **title:** PDF to PNG Converter — Lossless Images of PDF Pages _(51 симв.)_
+- **description:** Convert PDF to PNG right in your browser: every page becomes a separate lossless image at 72, 150 or 300 dpi. No sign-up and no uploads. _(136 симв.)_
+- **H1:** PDF to PNG
+- **Подзаголовок:** PDF pages into lossless images. Your files never leave your device.
+- **Хлебные крошки:** PDF to PNG
+- **Карточка:** PDF to PNG — Turn PDF pages into lossless PNG images.
+- **JSON-LD:** PDF to PNG Converter — An online tool that saves PDF pages as PNG images right in your browser, without uploading files.
+
+**How to convert PDF to PNG**
+
+1. Pick a resolution: 150 dpi for screens, 300 dpi for printing and small print.
+2. Click the box above or drop your PDFs onto it — several at once is fine. Pages appear as they're ready.
+3. Download pages one by one or all at once as a ZIP.
+
+**Why use this converter**
+
+- **Crisp text.** PNG is lossless: letters, lines and tables stay sharp, with no compression artifacts.
+- **Documents stay on your device.** The PDF is opened and rendered right in your browser — contracts, statements and scans are never uploaded.
+- **All pages at once.** Each page is saved as its own image with the page number in the file name, and everything downloads as one ZIP.
+- **For slides and guides.** A PDF page as a PNG is easy to drop into a presentation, a document or a how-to guide.
+
+**FAQ**
+
+- **Why PNG rather than JPG for PDF pages?** PNG is lossless, so text and lines stay perfectly crisp. JPG files are smaller and suit pages with photos better.
+- **Why are the PNG files so large?** Lossless images take more space, especially at 300 dpi. If size matters, pick 150 dpi or the JPG format.
+- **Which resolution should I choose?** 150 dpi works for screens and presentations. For printing and small print choose 300 dpi. 72 dpi gives the smallest files.
+- **Will the images have a transparent background?** No, pages are saved on a white background, just like paper.
+- **Can I open a password-protected PDF?** No — open the PDF and save a copy without the password first. If a file is protected, its row will say so.
+- **How many pages can I convert?** Up to 300 pages per PDF and up to 100 files at a time. Very large pages, such as drawings, are saved at a lower resolution, and the row notes it.
+- **Is it safe?** Yes. Only the tool itself is loaded from the site; your PDF is processed in your browser and never sent to a server.
+
 ### heic-to-jpg
 
 #### Русский — `/heic-v-jpg`
@@ -2338,6 +2482,12 @@
 | `widget.pdfFailed` | Не удалось собрать PDF. Попробуйте ещё раз. | Couldn't create the PDF. Please try again. |
 | `widget.pageNumber` | Стр. {number} | Page {number} |
 | `widget.passthrough` | без перекодирования | not re-encoded |
+| `widget.resolution` | Разрешение | Resolution |
+| `widget.dpi` | {value} dpi | {value} dpi |
+| `widget.pdfRenderHint` | Страницы сохраняются картинками на белом фоне: 150 dpi — для экрана и почты, 300 dpi — для печати. | Pages are saved as images on a white background: 150 dpi for screens and email, 300 dpi for printing. |
+| `widget.pdfPages` | PDF · страниц: {count} | PDF · pages: {count} |
+| `widget.pdfRendering` | Страница {page} из {total}… | Page {page} of {total}… |
+| `widget.pageOf` | Стр. {number} из {total} | Page {number} of {total} |
 | `widget.moveUp` | Переместить выше: {name} | Move up: {name} |
 | `widget.moveDown` | Переместить ниже: {name} | Move down: {name} |
 | `widget.removeFile` | Убрать из списка: {name} | Remove from the list: {name} |
@@ -2427,6 +2577,9 @@
 | `widget.errors.decode-failed` | Не удалось прочитать файл — возможно, он повреждён. | Could not read the file — it may be damaged. |
 | `widget.errors.unsupported-variant` | Этот вариант формата не поддерживается. | This variant of the format isn't supported. |
 | `widget.errors.out-of-memory` | Браузеру не хватило памяти для этого файла. Закройте другие вкладки и попробуйте снова. | The browser ran out of memory for this file. Close other tabs and try again. |
+| `widget.errors.pdf-input` | Это PDF-документ, а не картинка. Чтобы сохранить его страницы как изображения, откройте «PDF в JPG». | This is a PDF document, not an image. To save its pages as images, open “PDF to JPG”. |
+| `widget.errors.not-pdf` | Это не PDF-файл. | This isn't a PDF file. |
+| `widget.errors.pdf-encrypted` | PDF защищён паролем. Снимите пароль (например, сохраните копию без защиты) и попробуйте снова. | This PDF is password-protected. Remove the password (for example, save an unprotected copy) and try again. |
 | `widget.errors.internal` | Что-то пошло не так. Попробуйте ещё раз. | Something went wrong. Please try again. |
 | `widget.warnings.hdr-tone` | HDR-снимок: цвета могут немного отличаться от оригинала. | HDR photo: colors may differ slightly from the original. |
 | `widget.warnings.exif-unreadable` | Метаданные исходного файла повреждены и не сохранены. | The original metadata is damaged and was not kept. |
@@ -2441,6 +2594,8 @@
 | `widget.warnings.not-smaller` | Файл не стал меньше: исходник уже хорошо сжат. | The file didn't get smaller: the original is already well compressed. |
 | `widget.warnings.not-resized` | Изображение уже не больше заданного размера — размер не изменён. | The image is already no larger than the requested size — its size was kept. |
 | `widget.warnings.exif-compressed-removed` | EXIF в этом файле сжат, и выборочно его не поправить — он удалён целиком, вместе с датой. | This file's EXIF is compressed and can't be edited selectively, so it was removed entirely, date included. |
+| `widget.warnings.pdf-page-downscaled` | Страница очень большая — сохранена с меньшим разрешением. | The page is very large, so it was saved at a lower resolution. |
+| `widget.warnings.pdf-page-limit` | Страниц слишком много — сохранены первые {limit}. | Too many pages — the first {limit} were saved. |
 | `notFound.title` | Страница не найдена | Page not found |
 | `notFound.text` | Такой страницы нет. Возможно, адрес изменился или в нём опечатка. | This page does not exist. The address may have changed or contain a typo. |
 | `notFound.toHome` | На главную | Go to the home page |

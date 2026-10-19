@@ -46,6 +46,18 @@ export function estimateNeeds(input: NeedsInput): MemoryNeeds {
 }
 
 /**
+ * «PDF в JPG»: страницы рисуются по одной — память на страницу (холст, его копия, превью) и кучу кодировщика,
+ * плюс разобранный документ pdf.js (шрифты, картинки страниц) — порядка нескольких размеров файла.
+ */
+export function estimatePdfNeeds(input: { encoder: EncoderId; encoderModule: string; lossless: boolean; pagePixels: number; fileBytes: number }): MemoryNeeds {
+  const encoderHeap = input.encoder === 'webp' && input.lossless ? WEBP_LOSSLESS_HEAP : ENCODER_HEAP[input.encoder];
+  return {
+    heaps: new Map([[input.encoderModule, input.pagePixels * encoderHeap]]),
+    js: 8 * input.fileBytes + 12 * input.pagePixels,
+  };
+}
+
+/**
  * Сколько займёт worker, у которого кучи модулей уже такие (current): кучи не уменьшаются, а растут только
  * до потребности. Модули, которых ещё нет, займут не меньше начальной кучи.
  */

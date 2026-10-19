@@ -3,12 +3,12 @@ import { iccDescription, nclxDescription } from '../../src/converter/metadata/in
 import { exifThumbnail, summarizeExif, tagRows } from '../../src/converter/metadata/inspect/exif-report';
 import { inspectFile, readJxlSize } from '../../src/converter/metadata/inspect';
 import { TAG, type TiffEntry, parseTiff, shortEntry, writeTiff } from '../../src/converter/metadata/tiff';
-import { type SniffKind, sniff } from '../../src/converter/pipeline/sniff';
+import { type ImageKind, sniff } from '../../src/converter/pipeline/sniff';
 import { fixture, iccFixture } from './helpers/fixtures';
 
 const inspect = (name: string) => {
   const bytes = fixture(name);
-  return inspectFile(bytes, sniff(bytes).kind as Exclude<SniffKind, 'unknown'>);
+  return inspectFile(bytes, sniff(bytes).kind as ImageKind);
 };
 
 /** Сводка синтетических фикстур exif-gps.* (их пишет exiftool, см. tests/fixtures/generate). */

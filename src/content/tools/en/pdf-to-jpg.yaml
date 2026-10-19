@@ -1,0 +1,46 @@
+# Texts for /en/pdf-to-jpg. Draft for the owner's review (see CONTENT.md).
+title: "PDF to JPG Converter — Save PDF Pages as Images"
+description: "Convert PDF to JPG right in your browser: every page becomes a separate image at 72, 150 or 300 dpi. No sign-up and no uploads."
+h1: "PDF to JPG"
+subtitle: "Every page becomes a separate image. Free, and your files never leave your device."
+breadcrumb: "PDF to JPG"
+card:
+  title: "PDF to JPG"
+  text: "Save PDF pages as JPG images."
+app:
+  name: "PDF to JPG Converter"
+  description: "An online tool that saves PDF pages as JPG images right in your browser, without uploading files."
+howTo:
+  title: "How to convert PDF to JPG"
+  steps:
+    - "Pick a resolution: 150 dpi for screens and email, 300 dpi for printing. You can switch the format to PNG or WebP."
+    - "Click the box above or drop your PDFs onto it — several at once is fine. Pages appear as they're ready."
+    - "Download pages one by one or all at once as a ZIP."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Documents stay on your device"
+      text: "The PDF is opened and rendered right in your browser — contracts, statements and scans are never uploaded."
+    - title: "Sharp pages"
+      text: "300 dpi is scanner quality: small print and tables stay readable, even on paper."
+    - title: "All pages at once"
+      text: "Each page is saved as its own image with the page number in the file name, and everything downloads as one ZIP."
+    - title: "JPG, PNG or WebP"
+      text: "JPG for photos and email, PNG for lossless text and diagrams, WebP for files smaller than JPG."
+faq:
+  title: "FAQ"
+  items:
+    - q: "How do I save one page of a PDF as an image?"
+      a: "Add the PDF — every page shows up as its own row. Download the one you need with the “Download” button on its row."
+    - q: "Which resolution should I choose?"
+      a: "150 dpi works for screens, messengers and email. For printing and small print choose 300 dpi: images are sharper but heavier. 72 dpi gives the smallest files."
+    - q: "JPG or PNG — which is better?"
+      a: "JPG for pages with photos: files are smaller. PNG for text, tables and diagrams: letters stay crisp, without compression halos."
+    - q: "Can I open a password-protected PDF?"
+      a: "No — open the PDF and save a copy without the password first. If a file is protected, its row will say so."
+    - q: "Will the text be selectable in the image?"
+      a: "No. Pages are saved as pictures: the text is visible, but you can't select or search it in the image."
+    - q: "How many pages can I convert?"
+      a: "Up to 300 pages per PDF and up to 100 files at a time. Very large pages, such as drawings, are saved at a lower resolution, and the row notes it."
+    - q: "Is it safe?"
+      a: "Yes. Only the tool itself is loaded from the site; your PDF is processed in your browser and never sent to a server."

@@ -6,7 +6,7 @@ import type { MetadataReport } from '../metadata/inspect/types';
 import type { RemovedKind, StripMode } from '../metadata/strip/types';
 import { type PageSize, type PdfImage, type PdfLayout, SMALL_MARGIN } from '../pdf/writer';
 import { checkInput } from '../pipeline/input';
-import { KIND_FILES, SNIFF_BYTES, type SniffKind, sniff } from '../pipeline/sniff';
+import { type ImageKind, KIND_FILES, SNIFF_BYTES, sniff } from '../pipeline/sniff';
 import type { ResizeSpec } from '../pipeline/resize';
 import { ENCODER_EXTENSIONS, type ErrorCode, type WarningCode } from '../pipeline/types';
 import { type OutputOption, type WidgetConfig, readConfig } from './config';
@@ -33,6 +33,8 @@ interface Settings {
   strip: StripMode | null;
   /** «Изображения в PDF»: размер страниц и поля (применяются при сборке — файлы заново не обрабатываются); иначе null. */
   pdf: PdfLayout | null;
+  /** «PDF в JPG/PNG»: разрешение страниц; иначе null. */
+  dpi: number | null;
 }
 
 /** Целевой размер — в десятичных килобайтах и мегабайтах: файл «до 1 МБ» пройдёт и лимит 1 000 000, и 1 048 576 байт. */
@@ -70,10 +72,14 @@ interface Item {
   format: string | null;
   /** «Посмотреть EXIF»: что прочитано из файла и его формат (для «Скачать без метаданных»). */
   report: MetadataReport | null;
-  kind: Exclude<SniffKind, 'unknown'> | null;
+  kind: ImageKind | null;
   /** «Изображения в PDF»: картинка страницы; passthrough — JPEG вставлен без перекодирования. */
   pdf: PdfImage | null;
   passthrough: boolean;
+  /** «PDF в JPG/PNG»: у строки PDF — сколько страниц нарисовано и сколько всего; у строки страницы — её PDF и номер. */
+  pages: { done: number; total: number | null } | null;
+  parent: Item | null;
+  page: { number: number; total: number } | null;
   /** Размеры до и после уменьшения (страница «Изменить размер»). */
   dimensions: { before: [number, number]; after: [number, number] } | null;
   /** Оценка памяти, если файл не поместился рядом с другими (ждёт в очереди первым). */
@@ -94,7 +100,8 @@ const sameSettings = (a: Settings, b: Settings) =>
   isLossless(a) === isLossless(b) &&
   (!isLossy(a) || (a.targetBytes === b.targetBytes && (a.targetBytes !== null || a.quality === b.quality))) &&
   JSON.stringify(a.resize) === JSON.stringify(b.resize) &&
-  a.strip === b.strip;
+  a.strip === b.strip &&
+  a.dpi === b.dpi;
 
 /** Сконвертированный файл или «уже в этом формате» — после смены настроек их можно сконвертировать заново. */
 function isOutdated(item: Item, current: Settings): boolean {
@@ -258,6 +265,7 @@ export class ConverterWidget {
         this.config.mode === 'to-pdf'
           ? { size: (data.get('pageSize') ?? 'a4') as PageSize, margin: data.get('margin') === 'small' ? SMALL_MARGIN : 0 }
           : null,
+      dpi: this.config.mode === 'from-pdf' ? Number(data.get('dpi') ?? 150) : null,
     };
   }
 
@@ -325,28 +333,7 @@ export class ConverterWidget {
     if (files.length > max) this.showNotice(fill(this.t.batchLimit, { max }), 'warning');
     else this.hideNotice();
     for (const file of files.slice(0, max)) {
-      const item: Item = {
-        file,
-        status: 'queued',
-        settings: null,
-        name: null,
-        blob: null,
-        url: null,
-        previewUrl: null,
-        error: null,
-        warnings: [],
-        quality: null,
-        removed: null,
-        format: null,
-        report: null,
-        kind: null,
-        pdf: null,
-        passthrough: false,
-        dimensions: null,
-        estimate: null,
-        retry: false,
-        row: document.createElement('li'),
-      };
+      const item = this.blankItem(file);
       this.items.push(item);
       this.renderRow(item);
       this.list.append(item.row);
@@ -408,6 +395,7 @@ export class ConverterWidget {
     if (settings.strip) return this.strip(item, head, settings.strip, lease, generation);
     if (this.config.mode === 'inspect') return this.inspect(item, head, lease, generation);
     if (this.config.mode === 'to-pdf') return this.pdfPage(item, head, lease, generation);
+    if (settings.dpi !== null) return this.renderPdf(item, head, settings, lease, generation);
     const input = checkInput(head, settings.output.encoder, this.config.mode !== 'convert');
     if (!input.ok) {
       this.fail(item, input.code);
@@ -483,8 +471,8 @@ export class ConverterWidget {
   /** «Удалить метаданные»: формат и имя файла остаются, WASM не нужен. */
   private async strip(item: Item, head: Uint8Array, mode: StripMode, lease: Lease, generation: number): Promise<boolean> {
     const { kind } = sniff(head);
-    if (kind === 'unknown') {
-      this.fail(item, 'not-image');
+    if (kind === 'unknown' || kind === 'pdf') {
+      this.fail(item, kind === 'pdf' ? 'pdf-input' : 'not-image');
       return false;
     }
     // имя и расширение остаются (без расширения — по формату)
@@ -522,8 +510,8 @@ export class ConverterWidget {
   /** «Посмотреть EXIF»: только чтение, результата-файла нет. */
   private async inspect(item: Item, head: Uint8Array, lease: Lease, generation: number): Promise<boolean> {
     const { kind } = sniff(head);
-    if (kind === 'unknown') {
-      this.fail(item, 'not-image');
+    if (kind === 'unknown' || kind === 'pdf') {
+      this.fail(item, kind === 'pdf' ? 'pdf-input' : 'not-image');
       return false;
     }
     this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
@@ -602,6 +590,131 @@ export class ConverterWidget {
     this.renderAll(); // номера страниц у следующих строк
     this.updateActions();
     return false;
+  }
+
+  /** «PDF в JPG/PNG»: страницы приходят по одной и сразу становятся строками под строкой PDF. */
+  private async renderPdf(item: Item, head: Uint8Array, settings: Settings, lease: Lease, generation: number): Promise<boolean> {
+    if (sniff(head).kind !== 'pdf') {
+      this.fail(item, 'not-pdf');
+      return false;
+    }
+    const encoder = settings.output.encoder === 'original' ? 'jpeg' : settings.output.encoder;
+    if (!this.loadedOnce) this.setStatus(this.t.loading);
+    try {
+      await lease.client.load(null, encoder);
+      this.loadedOnce = true;
+    } catch {
+      if (generation !== this.generation) return false;
+      this.showNotice(this.t.loadFailed, 'error');
+      this.fail(item, 'internal');
+      return true;
+    }
+    if (generation !== this.generation) return false;
+    this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
+    item.pages = { done: 0, total: null };
+    // имена страниц: «отчёт_01.jpg» — номер с ведущими нулями, чтобы файлы шли по порядку
+    const base = outputName(item.file.name, 'x').slice(0, -2);
+    let last = item;
+    const outcome = await lease.client.pdfRender(
+      item.file,
+      { encoder, quality: settings.quality, lossless: isLossless(settings), dpi: settings.dpi! },
+      lease.memoryLimit,
+      (footprint, fresh) => {
+        if (generation !== this.generation) return;
+        lease.started(footprint, fresh);
+        this.pump();
+      },
+      (rendered) => {
+        if (generation !== this.generation) return;
+        const digits = String(rendered.total).length;
+        const name = this.names.allocate(`${base}_${String(rendered.page).padStart(digits, '0')}.${rendered.extension}`);
+        const blob = new Blob([rendered.buffer], { type: rendered.mime });
+        const page: Item = {
+          ...this.blankItem(item.file),
+          status: 'done',
+          name,
+          blob,
+          url: URL.createObjectURL(blob),
+          previewUrl: URL.createObjectURL(new Blob([rendered.preview], { type: rendered.mime })),
+          warnings: rendered.warnings,
+          dimensions: { before: [rendered.width, rendered.height], after: [rendered.width, rendered.height] },
+          parent: item,
+          page: { number: rendered.page, total: rendered.total },
+        };
+        this.items.splice(this.items.indexOf(last) + 1, 0, page);
+        last.row.after(page.row);
+        last = page;
+        this.renderRow(page);
+        item.pages = { done: rendered.page, total: rendered.total };
+        this.renderRow(item);
+        this.updateActions();
+      },
+    );
+    if (generation !== this.generation) return false;
+    if (outcome.status === 'needs-memory') {
+      this.removePages(item);
+      item.estimate = outcome.fresh;
+      this.requeue(item);
+      return true;
+    }
+    if (outcome.status === 'error') {
+      this.removePages(item);
+      item.pages = null;
+      if (outcome.fatal && !item.retry) {
+        item.retry = true;
+        this.requeue(item);
+        return true;
+      }
+      this.fail(item, outcome.code);
+      return outcome.fatal || outcome.recycle;
+    }
+    item.pages = { done: outcome.total, total: outcome.total };
+    item.format = 'PDF';
+    if (outcome.limited) item.warnings = ['pdf-page-limit'];
+    item.status = 'done';
+    this.run.done++;
+    this.renderRow(item);
+    this.updateActions();
+    return false;
+  }
+
+  /** Убрать строки страниц этого PDF (перед повторной обработкой или после ошибки). */
+  private removePages(pdf: Item): void {
+    for (const page of this.items.filter((other) => other.parent === pdf)) {
+      this.revokeUrls(page);
+      if (page.name) this.names.release(page.name);
+      page.row.remove();
+    }
+    this.items = this.items.filter((other) => other.parent !== pdf);
+  }
+
+  /** Пустая строка для файла: всё по нулям, статус «в очереди». */
+  private blankItem(file: File): Item {
+    return {
+      file,
+      status: 'queued',
+      settings: null,
+      name: null,
+      blob: null,
+      url: null,
+      previewUrl: null,
+      error: null,
+      warnings: [],
+      quality: null,
+      removed: null,
+      format: null,
+      report: null,
+      kind: null,
+      pdf: null,
+      passthrough: false,
+      pages: null,
+      parent: null,
+      page: null,
+      dimensions: null,
+      estimate: null,
+      retry: false,
+      row: document.createElement('li'),
+    };
   }
 
   /** Переставить файл (страницу) на одну позицию; фокус остаётся на той же кнопке. */
@@ -720,7 +833,8 @@ export class ConverterWidget {
 
   private renderRow(item: Item): void {
     const row = item.row;
-    row.className = 'file';
+    // страницы PDF — с отступом под строкой своего документа
+    row.className = item.parent ? 'file file--page' : 'file';
     row.dataset.status = item.status;
     row.replaceChildren();
 
@@ -752,7 +866,12 @@ export class ConverterWidget {
     const meta = document.createElement('p');
     meta.className = 'file__meta';
     if (item.status === 'queued') meta.textContent = this.t.queued;
-    if (item.status === 'converting') meta.textContent = this.t.converting;
+    if (item.status === 'converting') {
+      // «PDF в JPG»: какая страница рисуется
+      const pages = item.pages;
+      meta.textContent = pages?.total ? fill(this.t.pdfRendering, { page: Math.min(pages.done + 1, pages.total), total: pages.total }) : this.t.converting;
+    }
+    if (item.status === 'done' && item.pages?.total) meta.textContent = fill(this.t.pdfPages, { count: item.pages.total });
     if (item.status === 'error') meta.textContent = this.t.failed;
     if (item.status === 'done' && item.report) {
       const { width, height } = item.report;
@@ -768,7 +887,11 @@ export class ConverterWidget {
       if (item.passthrough) parts.push(this.t.passthrough);
       meta.textContent = parts.join(' · ');
     }
-    if (item.status === 'done' && item.blob) {
+    if (item.status === 'done' && item.page && item.blob && item.dimensions) {
+      // страница PDF: размер исходного PDF к ней не относится
+      const [width, height] = item.dimensions.after;
+      meta.textContent = [fill(this.t.pageOf, item.page), fill(this.t.dimensions, { width, height }), this.size(item.blob.size)].join(' · ');
+    } else if (item.status === 'done' && item.blob) {
       const parts = [this.t.done, fill(this.t.sizes, { before: this.size(item.file.size), after: this.size(item.blob.size) })];
       // при сжатии и изменении размера важна разница в размере: «−85 %»; размер не изменился — одно число
       if (item.blob.size === item.file.size) parts[1] = this.size(item.file.size);
@@ -856,30 +979,13 @@ export class ConverterWidget {
 
   private reconvert(): void {
     const current = this.currentSettings();
-    for (const item of this.items) {
-      if (!isOutdated(item, current)) continue;
+    for (const item of this.items.filter((other) => isOutdated(other, current))) {
+      // у PDF старые страницы уходят: появятся новые
+      this.removePages(item);
       this.revokeUrls(item);
       if (item.name) this.names.release(item.name);
-      Object.assign(item, {
-        status: 'queued',
-        settings: null,
-        name: null,
-        blob: null,
-        url: null,
-        previewUrl: null,
-        error: null,
-        warnings: [],
-        quality: null,
-        removed: null,
-        format: null,
-        report: null,
-        kind: null,
-        pdf: null,
-        passthrough: false,
-        dimensions: null,
-        estimate: null,
-        retry: false,
-      });
+      const { row } = item;
+      Object.assign(item, this.blankItem(item.file), { row });
       this.run.total++;
       this.renderRow(item);
     }
