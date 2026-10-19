@@ -15,8 +15,11 @@ describe('сборка: разметка виджета', () => {
     expect(root.querySelector('input[name="quality"]')?.getAttribute('value')).toBe(String(tool.defaultQuality));
     expect(root.querySelector('input[name="keepMetadata"]')?.hasAttribute('checked')).toBe(false);
     expect(root.querySelector('[data-status-text][role="status"][aria-live="polite"]')).toBeTruthy();
-    // ползунок скрыт для PNG, предупреждение о размере — наоборот
-    expect(root.querySelector('[data-quality-row]')?.hasAttribute('hidden')).toBe(tool.defaultOutput === 'png');
+    // ползунок скрыт для форматов без качества (PNG, ICO), предупреждение о размере — только у PNG
+    expect(root.querySelector('[data-quality-row]')?.hasAttribute('hidden')).toBe(tool.defaultOutput === 'png' || tool.defaultOutput === 'ico');
+    // ICO: пояснение про размеры видно, метаданные скрыты
+    expect(root.querySelector('[data-ico-hint]')?.hasAttribute('hidden') ?? null).toBe(tool.outputs.includes('ico') ? tool.defaultOutput !== 'ico' : null);
+    expect(root.querySelector('[data-meta-row]')?.hasAttribute('hidden')).toBe(tool.defaultOutput === 'ico');
     expect(root.querySelector('[data-png-warning]')?.hasAttribute('hidden')).toBe(tool.defaultOutput !== 'png');
     // «Без потерь» — только у WebP
     expect(root.querySelector('[data-lossless-row]')?.hasAttribute('hidden')).toBe(tool.defaultOutput !== 'webp');

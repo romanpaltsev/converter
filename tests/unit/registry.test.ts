@@ -20,7 +20,7 @@ describe('реестр инструментов', () => {
     for (const tool of editors) {
       expect(tool.inputFormats).toEqual(Object.keys(INPUT_FORMATS));
       expect(tool.defaultOutput).toBe('original');
-      expect(tool.outputs).toEqual(['original', ...Object.keys(OUTPUT_FORMATS)]);
+      expect(tool.outputs).toEqual(['original', 'jpeg', 'png', 'webp']);
       for (const id of tool.related ?? []) expect(TOOLS.map((t) => t.id)).toContain(id);
     }
   });
@@ -35,10 +35,12 @@ describe('реестр инструментов', () => {
       'heic-to-webp': ['heic-to-jpg', 'heic-to-png', 'jpg-to-webp', 'png-to-webp'],
       'avif-to-jpg': ['avif-to-png', 'heic-to-jpg', 'png-to-jpg', 'webp-to-jpg'],
       'avif-to-png': ['avif-to-jpg', 'heic-to-png', 'jpg-to-png', 'webp-to-png'],
-      'jpg-to-png': ['png-to-jpg', 'jpg-to-webp', 'heic-to-png', 'avif-to-png'],
-      'jpg-to-webp': ['webp-to-jpg', 'jpg-to-png', 'heic-to-webp', 'png-to-webp'],
-      'png-to-jpg': ['jpg-to-png', 'png-to-webp', 'heic-to-jpg', 'avif-to-jpg'],
-      'png-to-webp': ['webp-to-png', 'png-to-jpg', 'heic-to-webp', 'jpg-to-webp'],
+      'jpg-to-png': ['png-to-jpg', 'jpg-to-webp', 'jpg-to-ico', 'heic-to-png'],
+      'jpg-to-webp': ['webp-to-jpg', 'jpg-to-png', 'jpg-to-ico', 'heic-to-webp'],
+      'jpg-to-ico': ['jpg-to-png', 'jpg-to-webp', 'png-to-ico'],
+      'png-to-jpg': ['jpg-to-png', 'png-to-webp', 'png-to-ico', 'heic-to-jpg'],
+      'png-to-webp': ['webp-to-png', 'png-to-jpg', 'png-to-ico', 'heic-to-webp'],
+      'png-to-ico': ['png-to-jpg', 'png-to-webp', 'jpg-to-ico'],
       'webp-to-jpg': ['jpg-to-webp', 'webp-to-png', 'heic-to-jpg', 'avif-to-jpg'],
       'webp-to-png': ['png-to-webp', 'webp-to-jpg', 'heic-to-png', 'avif-to-png'],
       'gif-to-jpg': ['gif-to-png', 'heic-to-jpg', 'avif-to-jpg', 'png-to-jpg'],

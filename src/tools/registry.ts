@@ -26,6 +26,7 @@ export const OUTPUT_FORMATS = {
   jpeg: { label: 'JPG', extension: 'jpg', encoder: 'jpeg', hasQuality: true, hasLossless: false, largeFiles: false },
   png: { label: 'PNG', extension: 'png', encoder: 'png', hasQuality: false, hasLossless: false, largeFiles: true },
   webp: { label: 'WebP', extension: 'webp', encoder: 'webp', hasQuality: true, hasLossless: true, largeFiles: false },
+  ico: { label: 'ICO', extension: 'ico', encoder: 'ico', hasQuality: false, hasLossless: false, largeFiles: false },
 } as const satisfies Record<
   string,
   { label: string; extension: string; encoder: EncoderId; hasQuality: boolean; hasLossless: boolean; largeFiles: boolean }
@@ -60,8 +61,10 @@ export interface ToolConfig {
   related?: string[];
 }
 
-/** Все выходные форматы: на любой странице можно выбрать любой (по умолчанию — целевой формат страницы). */
+/** Основные выходные форматы: на любой странице можно выбрать любой (по умолчанию — целевой формат страницы). */
 const ALL_OUTPUTS: OutputFormatId[] = ['jpeg', 'png', 'webp'];
+/** Страницы иконок: ICO плюс основные (на остальных ICO не предлагаем — переключатель и так плотный). */
+const ICON_OUTPUTS: OutputFormatId[] = ['ico', 'png', 'jpeg', 'webp'];
 /** Сжатие и изменение размера: по умолчанию формат сохраняется. */
 const SAME_OR_ANY: OutputChoiceId[] = ['original', 'jpeg', 'png', 'webp'];
 const ALL_INPUTS: InputFormatId[] = ['heic', 'avif', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tiff'];
@@ -161,6 +164,16 @@ export const TOOLS: ToolConfig[] = [
     content: 'jpg-to-webp',
   },
   {
+    id: 'jpg-to-ico',
+    mode: 'convert',
+    slugs: { ru: 'jpg-v-ico', en: 'jpg-to-ico' },
+    inputFormats: ['jpeg'],
+    defaultOutput: 'ico',
+    outputs: ICON_OUTPUTS,
+    defaultQuality: 90,
+    content: 'jpg-to-ico',
+  },
+  {
     id: 'png-to-jpg',
     mode: 'convert',
     slugs: { ru: 'png-v-jpg', en: 'png-to-jpg' },
@@ -179,6 +192,16 @@ export const TOOLS: ToolConfig[] = [
     outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'png-to-webp',
+  },
+  {
+    id: 'png-to-ico',
+    mode: 'convert',
+    slugs: { ru: 'png-v-ico', en: 'png-to-ico' },
+    inputFormats: ['png'],
+    defaultOutput: 'ico',
+    outputs: ICON_OUTPUTS,
+    defaultQuality: 90,
+    content: 'png-to-ico',
   },
   {
     id: 'webp-to-jpg',

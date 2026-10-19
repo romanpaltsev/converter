@@ -197,6 +197,31 @@ export async function decodeInBrowser(page: Page, bytes: Uint8Array, mime: strin
   );
 }
 
+export interface IcoEntry {
+  width: number;
+  height: number;
+  bitCount: number;
+  data: Uint8Array;
+}
+
+/** Записи ICO: размер (0 → 256), глубина и данные каждого изображения. */
+export function icoEntries(bytes: Uint8Array): IcoEntry[] {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  if (view.getUint16(0, true) !== 0 || view.getUint16(2, true) !== 1) throw new Error('не ICO');
+  const count = view.getUint16(4, true);
+  return Array.from({ length: count }, (_, i) => {
+    const entry = 6 + i * 16;
+    const size = view.getUint32(entry + 8, true);
+    const offset = view.getUint32(entry + 12, true);
+    return {
+      width: bytes[entry] || 256,
+      height: bytes[entry + 1] || 256,
+      bitCount: view.getUint16(entry + 6, true),
+      data: bytes.subarray(offset, offset + size),
+    };
+  });
+}
+
 /** Какой цвет преобладает: r, g, b, y (жёлтый), w (белый) или t (прозрачный). */
 export function dominant([r, g, b, a]: number[]): string {
   if (a! < 32) return 't';

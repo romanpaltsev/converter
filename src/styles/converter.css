@@ -291,6 +291,7 @@
   grid-template-columns: auto 1fr 5ch;
 }
 
+.settings__meta[hidden],
 .settings__quality[hidden],
 .settings__target[hidden],
 .settings__format[hidden],

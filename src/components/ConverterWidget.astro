@@ -87,6 +87,7 @@ const DEFAULT_LONG_SIDE = 1920;
         }
       </div>
     </fieldset>
+    {tool.outputs.includes('ico') && <p class="settings__hint settings__hint--aligned" data-ico-hint hidden={tool.defaultOutput !== 'ico'}>{t.icoHint}</p>}
     {!converts && <p class="settings__hint settings__hint--aligned" data-original-hint hidden={tool.defaultOutput !== 'original'}>{t.originalHint}</p>}
     {
       tool.mode === 'compress' && (
@@ -194,7 +195,7 @@ const DEFAULT_LONG_SIDE = 1920;
       <input type="checkbox" name="lossless" />
       <span>{t.lossless}</span>
     </label>
-    <div class="settings__meta">
+    <div class="settings__meta" data-meta-row hidden={tool.defaultOutput === 'ico'}>
       <label class="checkbox">
         <input type="checkbox" name="keepMetadata" aria-describedby={`${id}-meta-hint`} />
         <span>{t.keepMetadata}</span>

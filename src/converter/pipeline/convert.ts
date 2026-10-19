@@ -65,7 +65,8 @@ export async function convertImage(session: DecoderSession, encoder: Encoder, op
     );
 
     const meta = { exif: exif.tiff, icc };
-    const lossy = options.encoder !== 'png' && !options.lossless;
+    // качество есть только у JPEG и WebP с потерями (PNG и ICO — без потерь)
+    const lossy = (options.encoder === 'jpeg' || options.encoder === 'webp') && !options.lossless;
     let bytes: Uint8Array;
     let quality: number | null = lossy ? options.quality : null;
     if (options.targetBytes !== null && lossy) {

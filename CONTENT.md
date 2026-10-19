@@ -666,6 +666,76 @@
 - **What happens to the metadata?** By default the capture date is kept, while the location, camera model and other details are removed. Tick “Keep all metadata” to copy the full EXIF data, including location.
 - **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
 
+### jpg-to-ico
+
+#### Русский — `/jpg-v-ico`
+
+Файл: `src/content/tools/ru/jpg-to-ico.yaml`
+
+- **title:** JPG в ICO онлайн — иконка и фавикон из фото, без загрузки _(57 симв.)_
+- **description:** Сделайте иконку ICO из JPG прямо в браузере: фавикон для сайта или иконку Windows, все размеры от 16 до 256 пикселей в одном файле. Бесплатно и без регистрации. _(160 симв.)_
+- **H1:** Конвертер JPG в ICO
+- **Подзаголовок:** Фавикон и иконка Windows. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** JPG в ICO
+- **Карточка:** JPG → ICO — Иконка или фавикон из фотографии — все размеры в одном файле.
+- **JSON-LD:** Конвертер JPG в ICO — Онлайн-конвертер JPG в ICO для фавиконов и иконок, который работает в браузере без загрузки файлов на сервер.
+
+**Как сделать ICO из JPG**
+
+1. Нажмите на область выше или перетащите на неё JPG — лучше квадратную картинку от 256 × 256 пикселей.
+2. Подождите немного: иконка собирается прямо в браузере, файлы никуда не отправляются.
+3. Скачайте ICO по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Иконка собирается на вашем устройстве. Фото не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Все размеры в одном файле.** В ICO попадают размеры 16, 32, 48, 64, 128 и 256 пикселей — система и браузер сами выберут подходящий.
+- **Поворот учитывается.** Фото с телефона поворачивается так же, как в галерее, а прямоугольный снимок аккуратно вписывается в квадрат.
+- **Чёткие маленькие размеры.** Каждый размер уменьшается отдельно фильтром Lanczos, поэтому даже иконка 16 × 16 не выглядит размытой кашей.
+
+**Частые вопросы**
+
+- **Как сделать фавикон для сайта?** Сконвертируйте логотип в ICO, назовите файл favicon.ico и положите в корень сайта. Браузеры найдут его сами; для надёжности добавьте в код страницы строку <link rel="icon" href="/favicon.ico">.
+- **Какие размеры будут в иконке?** 16, 32, 48, 64, 128 и 256 пикселей — но не больше исходной картинки: иконку из маленького изображения не раздуваем.
+- **Что будет с прямоугольным фото?** Иконки квадратные, поэтому фото целиком впишется в квадрат, а по краям появятся прозрачные поля. Если нужна иконка без полей, заранее обрежьте фото до квадрата.
+- **Будет ли у иконки прозрачный фон?** У JPG прозрачности нет, поэтому фон фото останется в иконке. Прозрачными будут только поля вокруг прямоугольного снимка. Для логотипа на прозрачном фоне используйте PNG.
+- **Подойдёт ли иконка для Windows?** Да. ICO с размерами до 256 × 256 подходит для ярлыков, папок и программ в Windows 7, 10 и 11.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/jpg-to-ico`
+
+Файл: `src/content/tools/en/jpg-to-ico.yaml`
+
+- **title:** JPG to ICO Converter — Icon and Favicon from a Photo _(52 симв.)_
+- **description:** Make an ICO icon from a JPG right in your browser: a website favicon or a Windows icon with every size from 16 to 256 pixels in one file. Free, no upload. _(154 симв.)_
+- **H1:** JPG to ICO Converter
+- **Подзаголовок:** Favicons and Windows icons. Your files never leave your device.
+- **Хлебные крошки:** JPG to ICO
+- **Карточка:** JPG → ICO — An icon or favicon from a photo — every size in one file.
+- **JSON-LD:** JPG to ICO Converter — An online JPG to ICO converter for favicons and icons that runs in your browser without uploading your photos.
+
+**How to convert JPG to ICO**
+
+1. Click the box above or drag your JPG onto it — ideally a square image of 256 × 256 pixels or more.
+2. Wait a moment while your browser builds the icon. Nothing gets uploaded.
+3. Download each ICO separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** The icon is built on your device. Photos are never uploaded to a server, so nobody else ever sees them.
+- **Every size in one file.** The ICO holds 16, 32, 48, 64, 128 and 256 pixel versions — the system and the browser pick the one they need.
+- **Rotation is respected.** A phone photo is rotated just as in your gallery, and a non-square shot is neatly fitted into a square.
+- **Crisp small sizes.** Each size is downscaled separately with the Lanczos filter, so even the 16 × 16 icon doesn't turn into a blurry mess.
+
+**Frequently asked questions**
+
+- **How do I make a favicon for my website?** Convert your logo to ICO, name the file favicon.ico and put it in the root of your site. Browsers find it on their own; to be safe, add <link rel="icon" href="/favicon.ico"> to your pages.
+- **Which sizes are in the icon?** 16, 32, 48, 64, 128 and 256 pixels — but none larger than the original image, so a small picture isn't blown up.
+- **What happens to a non-square photo?** Icons are square, so the whole photo is fitted into a square with transparent margins around it. Crop the photo to a square first if you want an icon without margins.
+- **Will the icon have a transparent background?** JPG has no transparency, so the photo's background stays in the icon; only the margins around a non-square photo are transparent. Use a PNG for a logo on a transparent background.
+- **Will the icon work on Windows?** Yes. An ICO with sizes up to 256 × 256 works for shortcuts, folders and apps on Windows 7, 10 and 11.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
 ### png-to-jpg
 
 #### Русский — `/png-v-jpg`
@@ -808,6 +878,76 @@
 - **Will the WebP be smaller than the PNG?** Usually, especially with lossy compression. Each file's row shows its size before and after conversion.
 - **What if the PNG is animated?** Animation isn't kept: the first frame is saved, and the file's row shows a warning.
 - **What happens to the metadata?** By default the capture date is kept if the PNG has one, while the location and other details are removed. Tick “Keep all metadata” to copy the full EXIF data. The color profile is always kept.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
+### png-to-ico
+
+#### Русский — `/png-v-ico`
+
+Файл: `src/content/tools/ru/png-to-ico.yaml`
+
+- **title:** PNG в ICO онлайн — фавикон и иконка, без загрузки на сервер _(59 симв.)_
+- **description:** Сделайте иконку ICO из PNG прямо в браузере: фавикон для сайта или иконку Windows, все размеры от 16 до 256 пикселей в одном файле. Бесплатно и без регистрации. _(160 симв.)_
+- **H1:** Конвертер PNG в ICO
+- **Подзаголовок:** Фавикон и иконка Windows. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** PNG в ICO
+- **Карточка:** PNG → ICO — Фавикон для сайта или иконка Windows — все размеры в одном файле.
+- **JSON-LD:** Конвертер PNG в ICO — Онлайн-конвертер PNG в ICO для фавиконов и иконок, который работает в браузере без загрузки файлов на сервер.
+
+**Как сделать ICO из PNG**
+
+1. Нажмите на область выше или перетащите на неё PNG — лучше квадратную картинку от 256 × 256 пикселей.
+2. Подождите немного: иконка собирается прямо в браузере, файлы никуда не отправляются.
+3. Скачайте ICO по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Иконка собирается на вашем устройстве. Картинки не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Все размеры в одном файле.** В ICO попадают размеры 16, 32, 48, 64, 128 и 256 пикселей — система и браузер сами выберут подходящий.
+- **Прозрачность сохраняется.** Прозрачный фон PNG остаётся прозрачным в иконке, а прямоугольная картинка аккуратно вписывается в квадрат.
+- **Чёткие маленькие размеры.** Каждый размер уменьшается отдельно фильтром Lanczos, поэтому даже иконка 16 × 16 не выглядит размытой кашей.
+
+**Частые вопросы**
+
+- **Как сделать фавикон для сайта?** Сконвертируйте логотип в ICO, назовите файл favicon.ico и положите в корень сайта. Браузеры найдут его сами; для надёжности добавьте в код страницы строку <link rel="icon" href="/favicon.ico">.
+- **Какие размеры будут в иконке?** 16, 32, 48, 64, 128 и 256 пикселей — но не больше исходной картинки: иконку из маленького изображения не раздуваем. Из картинки меньше 16 пикселей получится один размер 16 × 16.
+- **Что будет с прямоугольной картинкой?** Иконки квадратные, поэтому картинка целиком впишется в квадрат, а по краям появятся прозрачные поля. Ничего не обрезается.
+- **Сохранится ли прозрачность?** Да. Каждый размер хранится внутри ICO как PNG с прозрачностью — так иконки хранят Windows и все современные браузеры.
+- **Подойдёт ли иконка для Windows?** Да. ICO с размерами до 256 × 256 подходит для ярлыков, папок и программ в Windows 7, 10 и 11.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/png-to-ico`
+
+Файл: `src/content/tools/en/png-to-ico.yaml`
+
+- **title:** PNG to ICO Converter — Favicon and Icon Maker, No Upload _(56 симв.)_
+- **description:** Make an ICO icon from a PNG right in your browser: a website favicon or a Windows icon with every size from 16 to 256 pixels in one file. Free, no sign-up. _(155 симв.)_
+- **H1:** PNG to ICO Converter
+- **Подзаголовок:** Favicons and Windows icons. Your files never leave your device.
+- **Хлебные крошки:** PNG to ICO
+- **Карточка:** PNG → ICO — A website favicon or a Windows icon — every size in one file.
+- **JSON-LD:** PNG to ICO Converter — An online PNG to ICO converter for favicons and icons that runs in your browser without uploading your images.
+
+**How to convert PNG to ICO**
+
+1. Click the box above or drag your PNG onto it — ideally a square image of 256 × 256 pixels or more.
+2. Wait a moment while your browser builds the icon. Nothing gets uploaded.
+3. Download each ICO separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** The icon is built on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Every size in one file.** The ICO holds 16, 32, 48, 64, 128 and 256 pixel versions — the system and the browser pick the one they need.
+- **Transparency is kept.** A transparent PNG background stays transparent in the icon, and a non-square image is neatly fitted into a square.
+- **Crisp small sizes.** Each size is downscaled separately with the Lanczos filter, so even the 16 × 16 icon doesn't turn into a blurry mess.
+
+**Frequently asked questions**
+
+- **How do I make a favicon for my website?** Convert your logo to ICO, name the file favicon.ico and put it in the root of your site. Browsers find it on their own; to be safe, add <link rel="icon" href="/favicon.ico"> to your pages.
+- **Which sizes are in the icon?** 16, 32, 48, 64, 128 and 256 pixels — but none larger than the original image, so a small picture isn't blown up. An image under 16 pixels becomes a single 16 × 16 icon.
+- **What happens to a non-square image?** Icons are square, so the whole image is fitted into a square with transparent margins around it. Nothing is cropped.
+- **Is transparency preserved?** Yes. Each size is stored inside the ICO as a PNG with transparency — the way Windows and all modern browsers store icons.
+- **Will the icon work on Windows?** Yes. An ICO with sizes up to 256 × 256 works for shortcuts, folders and apps on Windows 7, 10 and 11.
 - **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
 
 ### webp-to-jpg
@@ -1484,6 +1624,7 @@
 | `widget.dropTitle` | Перетащите {format}-файлы сюда | Drop {format} files here |
 | `widget.dropTitleAny` | Перетащите изображения сюда | Drop images here |
 | `widget.originalFormat` | Исходный | Original |
+| `widget.icoHint` | В иконку войдут размеры от 16 до 256 пикселей (не больше исходника); прямоугольная картинка впишется в квадрат с прозрачными полями. Метаданные в ICO не сохраняются. | The icon gets sizes from 16 to 256 pixels (no larger than the original); a non-square image is fitted into a square with transparent margins. ICO keeps no metadata. |
 | `widget.originalHint` | Формат файла сохраняется; HEIC, AVIF и TIFF сохраняются в JPG, GIF и BMP — в PNG. | The file keeps its format; HEIC, AVIF and TIFF are saved as JPG, GIF and BMP as PNG. |
 | `widget.compression` | Сжатие | Compression |
 | `widget.byQuality` | По качеству | By quality |

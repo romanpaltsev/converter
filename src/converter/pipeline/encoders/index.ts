@@ -6,6 +6,7 @@ const loaders: Record<EncoderId, () => Promise<Encoder>> = {
   jpeg: () => import('./jpeg').then((m) => m.loadJpegEncoder()),
   png: () => import('./png').then((m) => m.loadPngEncoder()),
   webp: () => import('./webp').then((m) => m.loadWebpEncoder()),
+  ico: () => import('./ico').then((m) => m.loadIcoEncoder()),
 };
 
 const cache = new Map<EncoderId, Promise<Encoder>>();

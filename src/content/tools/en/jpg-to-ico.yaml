@@ -1,0 +1,44 @@
+# Texts for /en/jpg-to-ico. Draft for the owner's review (see CONTENT.md).
+title: "JPG to ICO Converter — Icon and Favicon from a Photo"
+description: "Make an ICO icon from a JPG right in your browser: a website favicon or a Windows icon with every size from 16 to 256 pixels in one file. Free, no upload."
+h1: "JPG to ICO Converter"
+subtitle: "Favicons and Windows icons. Your files never leave your device."
+breadcrumb: "JPG to ICO"
+card:
+  title: "JPG → ICO"
+  text: "An icon or favicon from a photo — every size in one file."
+app:
+  name: "JPG to ICO Converter"
+  description: "An online JPG to ICO converter for favicons and icons that runs in your browser without uploading your photos."
+howTo:
+  title: "How to convert JPG to ICO"
+  steps:
+    - "Click the box above or drag your JPG onto it — ideally a square image of 256 × 256 pixels or more."
+    - "Wait a moment while your browser builds the icon. Nothing gets uploaded."
+    - "Download each ICO separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "The icon is built on your device. Photos are never uploaded to a server, so nobody else ever sees them."
+    - title: "Every size in one file"
+      text: "The ICO holds 16, 32, 48, 64, 128 and 256 pixel versions — the system and the browser pick the one they need."
+    - title: "Rotation is respected"
+      text: "A phone photo is rotated just as in your gallery, and a non-square shot is neatly fitted into a square."
+    - title: "Crisp small sizes"
+      text: "Each size is downscaled separately with the Lanczos filter, so even the 16 × 16 icon doesn't turn into a blurry mess."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "How do I make a favicon for my website?"
+      a: "Convert your logo to ICO, name the file favicon.ico and put it in the root of your site. Browsers find it on their own; to be safe, add <link rel=\"icon\" href=\"/favicon.ico\"> to your pages."
+    - q: "Which sizes are in the icon?"
+      a: "16, 32, 48, 64, 128 and 256 pixels — but none larger than the original image, so a small picture isn't blown up."
+    - q: "What happens to a non-square photo?"
+      a: "Icons are square, so the whole photo is fitted into a square with transparent margins around it. Crop the photo to a square first if you want an icon without margins."
+    - q: "Will the icon have a transparent background?"
+      a: "JPG has no transparency, so the photo's background stays in the icon; only the margins around a non-square photo are transparent. Use a PNG for a logo on a transparent background."
+    - q: "Will the icon work on Windows?"
+      a: "Yes. An ICO with sizes up to 256 × 256 works for shortcuts, folders and apps on Windows 7, 10 and 11."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

@@ -102,6 +102,9 @@ export class ConverterWidget {
   private readonly qualityValue: HTMLOutputElement;
   /** Только на страницах сжатия и размера. */
   private readonly originalHint: HTMLElement | null;
+  /** Только на страницах иконок: пояснение про размеры ICO; метаданные для ICO скрываются. */
+  private readonly icoHint: HTMLElement | null;
+  private readonly metaRow: HTMLElement;
   /** Только на странице «Сжать фото»: переключатель «По качеству / До размера» и поле целевого размера. */
   private readonly compressionRow: HTMLElement | null;
   private readonly targetRow: HTMLElement | null;
@@ -140,6 +143,8 @@ export class ConverterWidget {
     this.losslessRow = element(root, '[data-lossless-row]');
     this.qualityValue = element(root, '[data-quality-value]');
     this.originalHint = root.querySelector('[data-original-hint]');
+    this.icoHint = root.querySelector('[data-ico-hint]');
+    this.metaRow = element(root, '[data-meta-row]');
     this.compressionRow = root.querySelector('[data-compression-row]');
     this.targetRow = root.querySelector('[data-target-row]');
     const longRow = root.querySelector<HTMLElement>('[data-resize-long]');
@@ -250,6 +255,8 @@ export class ConverterWidget {
     const settings = this.currentSettings();
     const lossy = isLossy(settings);
     if (this.originalHint) this.originalHint.hidden = settings.output.id !== 'original';
+    if (this.icoHint) this.icoHint.hidden = settings.output.id !== 'ico';
+    this.metaRow.hidden = settings.output.id === 'ico';
     if (this.compressionRow) this.compressionRow.hidden = !lossy;
     if (this.targetRow) this.targetRow.hidden = !lossy || settings.targetBytes === null;
     this.qualityRow.hidden = !lossy || settings.targetBytes !== null;

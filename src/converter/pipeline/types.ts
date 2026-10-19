@@ -5,7 +5,7 @@ import type { Nclx } from '../color/nclx';
 import type { ResizeSpec } from './resize';
 
 export type DecoderId = 'heic' | 'avif' | 'jpeg' | 'png' | 'webp' | 'gif' | 'bmp' | 'tiff';
-export type EncoderId = 'jpeg' | 'png' | 'webp';
+export type EncoderId = 'jpeg' | 'png' | 'webp' | 'ico';
 /** Выбор формата в интерфейсе: конкретный кодировщик или «как у исходника» (страницы сжатия и размера). */
 export type OutputTarget = EncoderId | 'original';
 
