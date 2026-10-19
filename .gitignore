@@ -22,3 +22,6 @@ tests/fixtures/private/*
 # прочее
 .DS_Store
 *.log
+
+# дампы памяти упавших процессов (например, WebKit в Docker-прогоне e2e) — не коммитить
+/core.[0-9]*
