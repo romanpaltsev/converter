@@ -10,6 +10,21 @@ export const FIXTURES = new URL('../fixtures/', import.meta.url).pathname;
 export const fixture = (name: string) => FIXTURES + name;
 export const iccProfile = (name: string) => new Uint8Array(readFileSync(new URL(`../../src/converter/color/icc/${name}`, import.meta.url)));
 
+/**
+ * Имя скачанного файла: name с датой и временем перед расширением (IMG_1234_2026-10-19_00-45-12.jpg),
+ * и это время — почти «сейчас» (часовой пояс браузера и тестов один и тот же).
+ */
+export function expectTimestamped(actual: string, name: string): void {
+  const dot = name.lastIndexOf('.');
+  const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const pattern = new RegExp(`^${escape(name.slice(0, dot))}_(\\d{4})-(\\d{2})-(\\d{2})_(\\d{2})-(\\d{2})-(\\d{2})${escape(name.slice(dot))}$`);
+  const match = pattern.exec(actual);
+  if (!match) throw new Error(`имя «${actual}» не похоже на «${name}» с датой и временем`);
+  const [year, month, day, hours, minutes, seconds] = match.slice(1).map(Number);
+  const stamp = new Date(year!, month! - 1, day, hours, minutes, seconds).getTime();
+  if (Math.abs(Date.now() - stamp) > 15 * 60_000) throw new Error(`время в имени «${actual}» далеко от текущего`);
+}
+
 export async function downloadBytes(download: Download): Promise<Buffer> {
   const path = await download.path();
   return readFileSync(path!);

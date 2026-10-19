@@ -1,7 +1,7 @@
 // Медленные проверки из критериев готовности: npm run test:e2e:slow.
 import { copyFileSync, mkdirSync } from 'node:fs';
 import { expect, openConverter, test } from './fixtures';
-import { downloadBytes, fixture, jpegIcc, jpegInfo, readExif, webpInfo } from './files';
+import { downloadBytes, expectTimestamped, fixture, jpegIcc, jpegInfo, readExif, webpInfo } from './files';
 
 const BATCH = 50;
 
@@ -43,7 +43,7 @@ test('@slow-chromium пачка из 50 файлов по 24 Мп без зав�
   // интерфейс отзывчив сразу после пачки: кнопка ZIP нажимается, архив собирается
   const pending = page.waitForEvent('download', { timeout: 5 * 60_000 });
   await page.getByRole('button', { name: 'Скачать всё (ZIP)' }).click();
-  expect((await pending).suggestedFilename()).toBe('heic-to-jpg.zip');
+  expectTimestamped((await pending).suggestedFilename(), 'heic-to-jpg.zip');
 
   const metrics = await read();
   const describe = (list: { start: number; duration: number }[]) =>

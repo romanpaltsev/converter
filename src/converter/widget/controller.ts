@@ -6,7 +6,7 @@ import { checkInput } from '../pipeline/input';
 import { SNIFF_BYTES } from '../pipeline/sniff';
 import type { ErrorCode, WarningCode } from '../pipeline/types';
 import { type OutputOption, type WidgetConfig, readConfig } from './config';
-import { NameAllocator, outputName } from './filenames';
+import { NameAllocator, outputName, withTimestamp } from './filenames';
 import { formatBytes } from './sizes';
 import { supportsConverter } from './support';
 import { WorkerClient } from './worker-client';
@@ -338,10 +338,13 @@ export class ConverterWidget {
     row.append(thumb, body);
 
     if (item.status === 'done' && item.url && item.name) {
+      const name = item.name;
       const link = document.createElement('a');
       link.className = 'button button--small file__download';
       link.href = item.url;
-      link.download = item.name;
+      link.download = name;
+      // дата и время в имени — на момент нажатия: повторное скачивание не перезапишет прошлый файл
+      link.addEventListener('click', () => (link.download = withTimestamp(name, new Date())));
       link.textContent = this.t.download;
       link.setAttribute('aria-label', fill(this.t.downloadLabel, { name: item.name }));
       row.append(link);
@@ -407,9 +410,10 @@ export class ConverterWidget {
     this.zipButton.setAttribute('aria-busy', 'true');
     this.updateActions();
     try {
+      const started = new Date();
       const { createZip, saveBlob } = await import('./zip');
       const zip = await createZip(done.map((item) => ({ name: item.name!, blob: item.blob! })));
-      saveBlob(zip, `${this.config.zipName}.zip`);
+      saveBlob(zip, withTimestamp(`${this.config.zipName}.zip`, started));
     } catch {
       this.showNotice(this.t.zipFailed, 'error');
     } finally {

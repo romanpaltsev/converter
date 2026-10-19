@@ -1,7 +1,7 @@
 import { copyFileSync, mkdirSync } from 'node:fs';
 import type { Page } from '@playwright/test';
 import { expect, openConverter, test } from './fixtures';
-import { downloadBytes, fixture, jpegInfo, unzip } from './files';
+import { downloadBytes, expectTimestamped, fixture, jpegInfo, unzip } from './files';
 
 async function waitForRows(page: Page, count: number): Promise<void> {
   await expect(page.locator('.file:is([data-status="done"], [data-status="error"])')).toHaveCount(count, { timeout: 120_000 });
@@ -35,8 +35,9 @@ test('«Скачать всё (ZIP)»: все готовые файлы, оди�
   const pending = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Скачать всё (ZIP)' }).click();
   const zip = await pending;
-  expect(zip.suggestedFilename()).toBe('heic-to-jpg.zip');
+  expectTimestamped(zip.suggestedFilename(), 'heic-to-jpg.zip');
   const files = unzip(await downloadBytes(zip));
+  // внутри архива — короткие имена: дата и время уже в имени архива
   expect(Object.keys(files).sort()).toEqual(['basic.jpg', 'basic_2.jpg', 'rotated.jpg']);
   expect(jpegInfo(files['rotated.jpg']!)).toMatchObject({ width: 600, height: 800 });
   expect(jpegInfo(files['basic_2.jpg']!)).toMatchObject({ width: 1200, height: 800 });
