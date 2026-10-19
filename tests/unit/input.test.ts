@@ -17,6 +17,7 @@ describe('checkInput', () => {
     expect(checkInput(head('photo.jpg'), 'jpeg')).toEqual({ ok: false, code: 'already-jpeg' });
     expect(checkInput(head('not-heic.heic'), 'png')).toEqual({ ok: false, code: 'already-png' });
     expect(checkInput(head('basic.webp'), 'webp')).toEqual({ ok: false, code: 'already-webp' });
+    expect(checkInput(head('photo.avif'), 'avif')).toEqual({ ok: false, code: 'already-avif' });
   });
 
   test('сжатие и изменение размера: тот же формат разрешён, «Исходный» — формат входа, HEIC и AVIF → JPG', () => {

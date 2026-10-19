@@ -65,13 +65,13 @@ export async function convertImage(session: DecoderSession, encoder: Encoder, op
     );
 
     const meta = { exif: exif.tiff, icc };
-    // качество есть только у JPEG и WebP с потерями (PNG и ICO — без потерь)
-    const lossy = (options.encoder === 'jpeg' || options.encoder === 'webp') && !options.lossless;
+    // качество есть только у JPEG, WebP и AVIF с потерями (PNG и ICO — без потерь)
+    const lossy = (options.encoder === 'jpeg' || options.encoder === 'webp' || options.encoder === 'avif') && !options.lossless;
     let bytes: Uint8Array;
     let quality: number | null = lossy ? options.quality : null;
     if (options.targetBytes !== null && lossy) {
       const target = await encodeToTarget(
-        async (q) => encoder.embed(await encoder.encode(pixels, { ...options, quality: q }), meta),
+        async (q) => encoder.embed(await encoder.encode(pixels, { ...options, quality: q }, meta), meta),
         options.targetBytes,
       );
       bytes = target.bytes;
@@ -80,7 +80,7 @@ export async function convertImage(session: DecoderSession, encoder: Encoder, op
     } else {
       // PNG и WebP без потерь качества не имеют — целевой размер к ним не применить
       if (options.targetBytes !== null) warnings.push('target-lossless');
-      bytes = encoder.embed(await encoder.encode(pixels, options), meta);
+      bytes = encoder.embed(await encoder.encode(pixels, options, meta), meta);
     }
     return {
       bytes,

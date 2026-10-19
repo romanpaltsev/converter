@@ -1,0 +1,44 @@
+# Texts for /en/png-to-avif. Draft for the owner's review (see CONTENT.md).
+title: "PNG to AVIF Converter — Keeps Transparency, No Upload"
+description: "Convert PNG images to AVIF right in your browser: transparency is kept and files usually get several times lighter. Free, no sign-up."
+h1: "PNG to AVIF Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "PNG to AVIF"
+card:
+  title: "PNG → AVIF"
+  text: "With transparency and much lighter — for websites and interfaces."
+app:
+  name: "PNG to AVIF Converter"
+  description: "An online PNG to AVIF converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert PNG to AVIF"
+  steps:
+    - "Click the box above or drag your PNG files onto it — you can add many at once."
+    - "Wait a bit: AVIF encoding happens in your browser and takes longer than JPG or WebP."
+    - "Download each AVIF separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them."
+    - title: "Transparency is kept"
+      text: "AVIF supports transparency, so a transparent PNG background stays transparent."
+    - title: "Several times lighter"
+      text: "PNG stores images losslessly, while AVIF uses lossy compression — photos and complex images usually get several times smaller."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is AVIF?"
+      a: "AVIF is a modern image format based on the AV1 video codec. Every modern browser supports it, which makes it great for websites: pages load faster."
+    - q: "Is transparency preserved?"
+      a: "Yes. AVIF stores an alpha channel, so transparent areas of the PNG stay transparent."
+    - q: "Is AVIF good for screenshots and logos?"
+      a: "For photos and complex illustrations, yes. Screenshots with small text and logos with sharp edges may show visible artifacts with lossy compression — keep those as PNG or raise the quality."
+    - q: "Why does encoding take so long?"
+      a: "The AV1 encoder works hard to find the best way to compress every part of the image. In the browser it runs on a single thread, so a large image can take tens of seconds."
+    - q: "Which quality should I choose?"
+      a: "The default of 75 is usually indistinguishable from the original on photos. Raise it for images with text and thin lines."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

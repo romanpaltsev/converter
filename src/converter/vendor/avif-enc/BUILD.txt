@@ -1,0 +1,3 @@
+libheif 1.23.6 + libaom 3.15.2 (только кодировщик), emcc (Emscripten gcc/clang-like replacement + linker emulating GNU ld) 6.0.12 (5488e0871d46d19a3209988190fa6a653126256f)
+68d34dfd1fd012a50d24c24edd6477870373d0800a383bcbd923ee21942ce34e  avif_enc.mjs
+10b05a0ac3d230d82ef37ef36be3ba162ef63cad19d1d7f01e8f5b919beafd44  avif_enc.wasm

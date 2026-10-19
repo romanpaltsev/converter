@@ -1,8 +1,8 @@
 # CLAUDE.md — ключевые решения и устройство проекта
 
 Онлайн-конвертер файлов: статический сайт на Astro (ru/en), конвертация полностью в браузере
-(module Web Worker + WASM), файлы на сервер не загружаются. Сейчас: HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF и JPEG XL → JPG, PNG, WebP или ICO
-(21 страница-конвертер), «Сжать фото» и «Изменить размер». В работе (просьба владельца 19.10.2026): AVIF на выходе. Дальше по плану: PDF.
+(module Web Worker + WASM), файлы на сервер не загружаются. Сейчас: HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF и JPEG XL → JPG, PNG, WebP, ICO или AVIF
+(23 страницы-конвертера), «Сжать фото» и «Изменить размер». Дальше по плану: PDF. Дальше по плану: PDF.
 Обзор и команды — README.md, деплой — DEPLOY.md, тесты и замеры — TESTING.md, тексты — CONTENT.md.
 
 ## Правила работы
@@ -44,6 +44,7 @@ src/converter/pipeline/       sniff + checkInput (input.ts) → декодер (
 src/converter/pipeline/codecs общий загрузчик модуля PNG (декодер и кодировщик — один экземпляр)
 src/converter/vendor/webp/    собранная libwebp 1.6.0 (WASM + glue, BUILD.txt); исходники сборки — codecs/webp/
 src/converter/vendor/avif/    собранные libheif 1.23.6 + dav1d 1.5.4 (декодер AVIF, BUILD.txt); исходники — codecs/avif/
+src/converter/vendor/avif-enc/ собранные libheif 1.23.6 + libaom 3.15.2 (кодировщик AVIF); исходники — codecs/avif-enc/
 src/converter/metadata/       TIFF/EXIF, фильтр EXIF, APP1/APP2 в JPEG, eXIf/iCCP в PNG, чанки RIFF в WebP, CRC32, zlib
 src/converter/color/          ICC-профили (CC0) и выбор по nclx
 src/converter/worker/         convert.worker.ts (конвертация), zip.worker.ts (ZIP), protocol.ts
@@ -201,6 +202,15 @@ scripts/                      serve-dist (тестовый сервер как n
   (размеры уже повёрнутые) → orientation = 1; пустой ICC — sRGB. EXIF — из несжатого бокса «Exif» (как у HEIF);
   сжатый brotli бокс «brob» (cjxl так делает по умолчанию) не читаем: Brotli в браузере не распаковать без
   JS-декодера со словарём ~120 КБ — тогда метаданные не переносятся (сказано в FAQ). «Исходный» формат — JPG.
+- **AVIF на выходе — своя сборка libheif 1.23.6 + libaom 3.15.2** (`codecs/avif-enc`, `npm run codecs -- avif-enc`):
+  libaom только кодировщик, 8 бит, generic без ассемблера, без потоков; обёртка `avif_enc.c` — одна функция
+  RGBA + качество + скорость + ICC + EXIF → файл. Метаданные пишет libheif при кодировании (colr/prof, элемент Exif),
+  поэтому у `Encoder.encode` есть третий аргумент `meta`, а `embed` у AVIF ничего не делает. 4:2:0, скорость libaom 7.
+  Размер: 4,2 МБ, в gzip 1,34 МБ — грузится только при выборе AVIF на выходе. Замеры (десктоп, Chromium, вместе
+  с декодированием HEIC): 1200×800 — 1,4 с; 24 Мп — 25 с; 48 Мп — 47 с (памяти хватает). Качество по умолчанию на
+  страницах «в AVIF» — 75. AVIF предлагается только на них (`AVIF_OUTPUTS`: JPG → AVIF, PNG → AVIF): кодирование
+  медленное, а «Исходный» для AVIF на сжатии и размере по-прежнему JPG (иначе «до размера» — 7 кодирований AV1).
+  Вход AVIF + выход AVIF — «уже в формате AVIF».
 - MozJPEG кодирует с `baseline: true`: без него при качестве ниже ~25 таблицы квантования 16-битные (SOF1, не baseline)
   и libjpeg пишет предупреждение в консоль.
 - **Без `<select>` в виджете**: в WebKit его внутренние элементы ставят инлайн-стили → нарушение CSP `style-src-attr`.

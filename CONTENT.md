@@ -736,6 +736,76 @@
 - **Will the icon work on Windows?** Yes. An ICO with sizes up to 256 × 256 works for shortcuts, folders and apps on Windows 7, 10 and 11.
 - **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
 
+### jpg-to-avif
+
+#### Русский — `/jpg-v-avif`
+
+Файл: `src/content/tools/ru/jpg-to-avif.yaml`
+
+- **title:** JPG в AVIF онлайн — лёгкие картинки для сайта, без загрузки _(59 симв.)_
+- **description:** Конвертируйте фото JPG в AVIF прямо в браузере: современный формат для сайтов, который при том же качестве обычно легче JPG. Бесплатно, без регистрации. _(152 симв.)_
+- **H1:** Конвертер JPG в AVIF
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** JPG в AVIF
+- **Карточка:** JPG → AVIF — Фото для сайта — в современный формат, который обычно легче JPG.
+- **JSON-LD:** Конвертер JPG в AVIF — Онлайн-конвертер изображений JPG в AVIF, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать JPG в AVIF**
+
+1. Нажмите на область выше или перетащите на неё JPG-файлы — можно сразу несколько.
+2. Подождите: кодирование AVIF идёт прямо в браузере и занимает больше времени, чем JPG или WebP.
+3. Скачайте AVIF по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Фотографии не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Легче при том же качестве.** AVIF основан на видеокодеке AV1 и обычно сжимает фотографии сильнее, чем JPG. Размер до и после виден в строке каждого файла.
+- **Цвета и метаданные.** Цветовой профиль переносится в AVIF. По умолчанию сохраняется дата съёмки, а геолокация удаляется.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое AVIF?** AVIF — современный формат изображений на основе видеокодека AV1. Его поддерживают все современные браузеры, поэтому он удобен для сайтов: страницы грузятся быстрее.
+- **Насколько AVIF меньше JPG?** Зависит от снимка и выбранного качества. Обычно AVIF заметно легче JPG при сопоставимом качестве, но сжатый JPG может уменьшиться не так сильно. Размер до и после показан в строке каждого файла.
+- **Почему кодирование такое долгое?** Кодировщик AV1 тщательно подбирает, как сжать каждый участок изображения. В браузере он работает в один поток, поэтому большое фото может кодироваться десятки секунд. Зато всё происходит на вашем устройстве.
+- **Какое качество выбрать?** Значение по умолчанию — 75: на фотографиях разница с оригиналом обычно незаметна. Для превью и фонов можно уменьшить, для детальных снимков — увеличить.
+- **Откроется ли AVIF на компьютере?** AVIF открывают современные браузеры и многие программы, в том числе просмотрщик фото в Windows 11 и macOS. Для старых программ надёжнее оставить JPG.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/jpg-to-avif`
+
+Файл: `src/content/tools/en/jpg-to-avif.yaml`
+
+- **title:** JPG to AVIF Converter — Lighter Images for the Web, No Upload _(61 симв.)_
+- **description:** Convert JPG photos to AVIF right in your browser: a modern web format that's usually lighter than JPG at the same quality. Free, no sign-up. _(140 симв.)_
+- **H1:** JPG to AVIF Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** JPG to AVIF
+- **Карточка:** JPG → AVIF — Web photos in a modern format that's usually lighter than JPG.
+- **JSON-LD:** JPG to AVIF Converter — An online JPG to AVIF converter that runs in your browser without uploading your images.
+
+**How to convert JPG to AVIF**
+
+1. Click the box above or drag your JPG files onto it — you can add many at once.
+2. Wait a bit: AVIF encoding happens in your browser and takes longer than JPG or WebP.
+3. Download each AVIF separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Photos are never uploaded to a server, so nobody else ever sees them.
+- **Lighter at the same quality.** AVIF is based on the AV1 video codec and usually compresses photos better than JPG. Each file's row shows the size before and after.
+- **Colors and metadata.** The color profile is copied into the AVIF. By default the capture date is kept and the location is removed.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **What is AVIF?** AVIF is a modern image format based on the AV1 video codec. Every modern browser supports it, which makes it great for websites: pages load faster.
+- **How much smaller is AVIF than JPG?** It depends on the photo and the quality you pick. AVIF is usually noticeably lighter than JPG at similar quality, though an already heavily compressed JPG may shrink less. Each file's row shows the size before and after.
+- **Why does encoding take so long?** The AV1 encoder works hard to find the best way to compress every part of the image. In the browser it runs on a single thread, so a large photo can take tens of seconds. In return, everything stays on your device.
+- **Which quality should I choose?** The default of 75 is usually indistinguishable from the original on photos. Go lower for thumbnails and backgrounds, higher for very detailed shots.
+- **Will AVIF open on my computer?** Modern browsers and many apps open AVIF, including the Photos app on Windows 11 and Preview on macOS. For older software, JPG is the safer choice.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
 ### png-to-jpg
 
 #### Русский — `/png-v-jpg`
@@ -948,6 +1018,76 @@
 - **What happens to a non-square image?** Icons are square, so the whole image is fitted into a square with transparent margins around it. Nothing is cropped.
 - **Is transparency preserved?** Yes. Each size is stored inside the ICO as a PNG with transparency — the way Windows and all modern browsers store icons.
 - **Will the icon work on Windows?** Yes. An ICO with sizes up to 256 × 256 works for shortcuts, folders and apps on Windows 7, 10 and 11.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
+### png-to-avif
+
+#### Русский — `/png-v-avif`
+
+Файл: `src/content/tools/ru/png-to-avif.yaml`
+
+- **title:** PNG в AVIF онлайн — с прозрачностью, без загрузки на сервер _(59 симв.)_
+- **description:** Конвертируйте картинки PNG в AVIF прямо в браузере: прозрачность сохраняется, а файлы обычно становятся в разы легче. Бесплатно, без регистрации. _(145 симв.)_
+- **H1:** Конвертер PNG в AVIF
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** PNG в AVIF
+- **Карточка:** PNG → AVIF — С прозрачностью и в разы легче — для сайтов и интерфейсов.
+- **JSON-LD:** Конвертер PNG в AVIF — Онлайн-конвертер изображений PNG в AVIF, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать PNG в AVIF**
+
+1. Нажмите на область выше или перетащите на неё PNG-файлы — можно сразу несколько.
+2. Подождите: кодирование AVIF идёт прямо в браузере и занимает больше времени, чем JPG или WebP.
+3. Скачайте AVIF по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Изображения не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Прозрачность сохраняется.** AVIF поддерживает прозрачность, поэтому прозрачный фон PNG остаётся прозрачным.
+- **В разы легче.** PNG хранит изображение без потерь, а AVIF сжимает его с потерями — для фотографий и сложных картинок файл обычно становится в разы меньше.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое AVIF?** AVIF — современный формат изображений на основе видеокодека AV1. Его поддерживают все современные браузеры, поэтому он удобен для сайтов: страницы грузятся быстрее.
+- **Сохранится ли прозрачность?** Да. AVIF хранит альфа-канал, поэтому прозрачные области PNG остаются прозрачными.
+- **Подходит ли AVIF для скриншотов и логотипов?** Для фотографий и сложных иллюстраций — да. Для скриншотов с мелким текстом и логотипов с чёткими краями сжатие с потерями может дать заметные артефакты — их лучше оставить в PNG или поднять качество.
+- **Почему кодирование такое долгое?** Кодировщик AV1 тщательно подбирает, как сжать каждый участок изображения. В браузере он работает в один поток, поэтому большая картинка может кодироваться десятки секунд.
+- **Какое качество выбрать?** Значение по умолчанию — 75: на фотографиях разница с оригиналом обычно незаметна. Для картинок с текстом и тонкими линиями лучше поднять качество.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/png-to-avif`
+
+Файл: `src/content/tools/en/png-to-avif.yaml`
+
+- **title:** PNG to AVIF Converter — Keeps Transparency, No Upload _(53 симв.)_
+- **description:** Convert PNG images to AVIF right in your browser: transparency is kept and files usually get several times lighter. Free, no sign-up. _(133 симв.)_
+- **H1:** PNG to AVIF Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** PNG to AVIF
+- **Карточка:** PNG → AVIF — With transparency and much lighter — for websites and interfaces.
+- **JSON-LD:** PNG to AVIF Converter — An online PNG to AVIF converter that runs in your browser without uploading your images.
+
+**How to convert PNG to AVIF**
+
+1. Click the box above or drag your PNG files onto it — you can add many at once.
+2. Wait a bit: AVIF encoding happens in your browser and takes longer than JPG or WebP.
+3. Download each AVIF separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Transparency is kept.** AVIF supports transparency, so a transparent PNG background stays transparent.
+- **Several times lighter.** PNG stores images losslessly, while AVIF uses lossy compression — photos and complex images usually get several times smaller.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **What is AVIF?** AVIF is a modern image format based on the AV1 video codec. Every modern browser supports it, which makes it great for websites: pages load faster.
+- **Is transparency preserved?** Yes. AVIF stores an alpha channel, so transparent areas of the PNG stay transparent.
+- **Is AVIF good for screenshots and logos?** For photos and complex illustrations, yes. Screenshots with small text and logos with sharp edges may show visible artifacts with lossy compression — keep those as PNG or raise the quality.
+- **Why does encoding take so long?** The AV1 encoder works hard to find the best way to compress every part of the image. In the browser it runs on a single thread, so a large image can take tens of seconds.
+- **Which quality should I choose?** The default of 75 is usually indistinguishable from the original on photos. Raise it for images with text and thin lines.
 - **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
 
 ### webp-to-jpg
@@ -1701,7 +1841,7 @@
 - **intro:** Конвертер работает на открытых библиотеках. Ниже — список компонентов, которые загружаются в браузер, их лицензии и ссылки на исходный код.
 - **columns:** Компонент · Для чего · Лицензия · Исходный код
 - **lgpl:** libheif и libde265 распространяются по лицензии GNU LGPL версии 3. Они загружаются в браузер отдельным модулем WebAssembly без изменений; исходный код этих версий доступен по ссылкам в таблице, полные тексты GNU LGPL и GNU GPL (на которую LGPL ссылается) приведены ниже.
-- **patents:** Формат HEVC (H.265), на котором основан HEIC, может быть защищён патентами.
+- **patents:** Формат HEVC (H.265), на котором основан HEIC, может быть защищён патентами. Для WebP и AV1 (AVIF) авторы кодеков дают бесплатную патентную лицензию — её тексты приведены ниже.
 - **fullTexts:** Полные тексты лицензий
 
 #### English
@@ -1715,7 +1855,7 @@
 - **intro:** This converter is built on open-source libraries. Below are the components that run in your browser, their licenses and links to their source code.
 - **columns:** Component · Used for · License · Source code
 - **lgpl:** libheif and libde265 are distributed under the GNU LGPL version 3. They are loaded into your browser unmodified as a separate WebAssembly module; the source code of these exact versions is linked in the table, and the full texts of the GNU LGPL and the GNU GPL (which the LGPL refers to) are included below.
-- **patents:** The HEVC (H.265) format that HEIC is based on may be covered by patents.
+- **patents:** The HEVC (H.265) format that HEIC is based on may be covered by patents. For WebP and AV1 (AVIF), the codec authors grant a royalty-free patent license — its texts are included below.
 - **fullTexts:** Full license texts
 
 ### Контакты
@@ -1831,6 +1971,7 @@
 | `widget.errors.already-jpeg` | Файл уже в формате JPG — выберите другой формат выше. | This file is already a JPG — pick another format above. |
 | `widget.errors.already-png` | Файл уже в формате PNG — выберите другой формат выше. | This file is already a PNG — pick another format above. |
 | `widget.errors.already-webp` | Файл уже в формате WebP — выберите другой формат выше. | This file is already a WebP — pick another format above. |
+| `widget.errors.already-avif` | Файл уже в формате AVIF — выберите другой формат выше. | This file is already an AVIF — pick another format above. |
 | `widget.errors.too-large-for-webp` | WebP вмещает изображения не больше 16 383 точек по стороне — выберите JPG или PNG. | WebP can't store images larger than 16,383 px per side — choose JPG or PNG. |
 | `widget.errors.unsupported-image` | Этот формат изображений пока не поддерживается. Поддерживаются {formats}. | This image format isn't supported yet. Supported: {formats}. |
 | `widget.errors.cmyk-unsupported` | Изображения в цветовой модели CMYK (для печати) пока не поддерживаются. | CMYK images (used for print) aren't supported yet. |

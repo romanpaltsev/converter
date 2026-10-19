@@ -1,0 +1,44 @@
+# Texts for /en/jpg-to-avif. Draft for the owner's review (see CONTENT.md).
+title: "JPG to AVIF Converter — Lighter Images for the Web, No Upload"
+description: "Convert JPG photos to AVIF right in your browser: a modern web format that's usually lighter than JPG at the same quality. Free, no sign-up."
+h1: "JPG to AVIF Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "JPG to AVIF"
+card:
+  title: "JPG → AVIF"
+  text: "Web photos in a modern format that's usually lighter than JPG."
+app:
+  name: "JPG to AVIF Converter"
+  description: "An online JPG to AVIF converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert JPG to AVIF"
+  steps:
+    - "Click the box above or drag your JPG files onto it — you can add many at once."
+    - "Wait a bit: AVIF encoding happens in your browser and takes longer than JPG or WebP."
+    - "Download each AVIF separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Photos are never uploaded to a server, so nobody else ever sees them."
+    - title: "Lighter at the same quality"
+      text: "AVIF is based on the AV1 video codec and usually compresses photos better than JPG. Each file's row shows the size before and after."
+    - title: "Colors and metadata"
+      text: "The color profile is copied into the AVIF. By default the capture date is kept and the location is removed."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is AVIF?"
+      a: "AVIF is a modern image format based on the AV1 video codec. Every modern browser supports it, which makes it great for websites: pages load faster."
+    - q: "How much smaller is AVIF than JPG?"
+      a: "It depends on the photo and the quality you pick. AVIF is usually noticeably lighter than JPG at similar quality, though an already heavily compressed JPG may shrink less. Each file's row shows the size before and after."
+    - q: "Why does encoding take so long?"
+      a: "The AV1 encoder works hard to find the best way to compress every part of the image. In the browser it runs on a single thread, so a large photo can take tens of seconds. In return, everything stays on your device."
+    - q: "Which quality should I choose?"
+      a: "The default of 75 is usually indistinguishable from the original on photos. Go lower for thumbnails and backgrounds, higher for very detailed shots."
+    - q: "Will AVIF open on my computer?"
+      a: "Modern browsers and many apps open AVIF, including the Photos app on Windows 11 and Preview on macOS. For older software, JPG is the safer choice."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

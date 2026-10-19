@@ -18,6 +18,8 @@ export type LicenseTextId =
   | 'utif-mit'
   | 'pako-mit'
   | 'jxl-oxide-mit'
+  | 'libaom-bsd'
+  | 'libaom-patents'
   | 'inter-ofl';
 
 export interface ThirdPartyComponent {
@@ -58,7 +60,10 @@ export const COMPONENTS: ThirdPartyComponent[] = [
   {
     name: 'libheif',
     version: '1.23.6',
-    purpose: { ru: 'чтение файлов AVIF (своя сборка с dav1d)', en: 'reading AVIF files (own build with dav1d)' },
+    purpose: {
+      ru: 'чтение и запись AVIF (свои сборки: с dav1d — декодер, с libaom — кодировщик)',
+      en: 'reading and writing AVIF (own builds: with dav1d for decoding, with libaom for encoding)',
+    },
     license: 'GNU LGPL 3.0',
     texts: ['lgpl-3.0', 'gpl-3.0'],
     source: 'https://github.com/strukturag/libheif/tree/v1.23.6',
@@ -70,6 +75,14 @@ export const COMPONENTS: ThirdPartyComponent[] = [
     license: 'BSD-2-Clause',
     texts: ['dav1d-bsd'],
     source: 'https://code.videolan.org/videolan/dav1d/-/tree/1.5.4',
+  },
+  {
+    name: 'libaom',
+    version: '3.15.2',
+    purpose: { ru: 'кодирование AV1 (AVIF на выходе)', en: 'AV1 encoding (AVIF output)' },
+    license: 'BSD-2-Clause + AOM Patent License 1.0',
+    texts: ['libaom-bsd', 'libaom-patents'],
+    source: 'https://aomedia.googlesource.com/aom/+/refs/tags/v3.15.2',
   },
   {
     name: 'MozJPEG (libjpeg-turbo)',
@@ -118,8 +131,8 @@ export const COMPONENTS: ThirdPartyComponent[] = [
     name: 'Emscripten',
     version: '6.0.12',
     purpose: {
-      ru: 'сборка libwebp и декодера AVIF в WebAssembly: среда выполнения и стандартные библиотеки C и C++',
-      en: 'WebAssembly builds of libwebp and the AVIF decoder: runtime and C/C++ standard libraries',
+      ru: 'сборка libwebp, декодера и кодировщика AVIF в WebAssembly: среда выполнения и стандартные библиотеки C и C++',
+      en: 'WebAssembly builds of libwebp and the AVIF decoder and encoder: runtime and C/C++ standard libraries',
     },
     license: 'MIT / NCSA',
     texts: ['emscripten'],
@@ -190,6 +203,8 @@ export const LICENSE_TITLES: Record<LicenseTextId, string> = {
   'utif-mit': 'UTIF.js (MIT, Photopea)',
   'pako-mit': 'pako (MIT)',
   'jxl-oxide-mit': 'jxl-oxide (MIT, Wonwoo Choi)',
+  'libaom-bsd': 'libaom (BSD-2-Clause, Alliance for Open Media)',
+  'libaom-patents': 'libaom — Alliance for Open Media Patent License 1.0',
   'inter-ofl': 'Inter (SIL Open Font License 1.1)',
 };
 

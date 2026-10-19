@@ -26,6 +26,7 @@ const SAME_FORMAT: Partial<Record<SniffKind, { encoder: EncoderId; error: ErrorC
   jpeg: { encoder: 'jpeg', error: 'already-jpeg' },
   png: { encoder: 'png', error: 'already-png' },
   webp: { encoder: 'webp', error: 'already-webp' },
+  avif: { encoder: 'avif', error: 'already-avif' },
 };
 
 /**

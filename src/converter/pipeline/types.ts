@@ -5,7 +5,7 @@ import type { Nclx } from '../color/nclx';
 import type { ResizeSpec } from './resize';
 
 export type DecoderId = 'heic' | 'avif' | 'jpeg' | 'png' | 'webp' | 'gif' | 'bmp' | 'tiff' | 'jxl';
-export type EncoderId = 'jpeg' | 'png' | 'webp' | 'ico';
+export type EncoderId = 'jpeg' | 'png' | 'webp' | 'ico' | 'avif';
 /** Выбор формата в интерфейсе: конкретный кодировщик или «как у исходника» (страницы сжатия и размера). */
 export type OutputTarget = EncoderId | 'original';
 
@@ -36,6 +36,7 @@ export type ErrorCode =
   | 'already-jpeg'
   | 'already-png'
   | 'already-webp'
+  | 'already-avif'
   | 'too-large-for-webp'
   | 'unsupported-image'
   | 'cmyk-unsupported'
@@ -117,6 +118,12 @@ export interface Decoder {
   heapBytes(): number;
 }
 
+/** Метаданные результата: EXIF (структура TIFF) и ICC. */
+export interface EncodeMeta {
+  exif: Uint8Array | null;
+  icc: Uint8Array | null;
+}
+
 export interface Encoder {
   readonly module: string;
   readonly mime: string;
@@ -125,8 +132,12 @@ export interface Encoder {
   readonly maxExifBytes: number;
   /** Ограничение на размер ICC-профиля (JPEG — 255 сегментов APP2). */
   readonly maxIccBytes: number;
-  encode(image: RawImage, options: ConvertOptions): Promise<Uint8Array>;
-  embed(file: Uint8Array, meta: { exif: Uint8Array | null; icc: Uint8Array | null }): Uint8Array;
+  /**
+   * Кодирование. meta нужна только тем, кто пишет метаданные при кодировании (AVIF: их раскладывает libheif);
+   * остальные вставляют их после — в embed.
+   */
+  encode(image: RawImage, options: ConvertOptions, meta?: EncodeMeta): Promise<Uint8Array>;
+  embed(file: Uint8Array, meta: EncodeMeta): Uint8Array;
   /** Текущий размер кучи WASM. */
   heapBytes(): number;
 }

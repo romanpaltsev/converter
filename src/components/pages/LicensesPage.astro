@@ -22,6 +22,8 @@ import interOfl from '../../content/licenses/inter-OFL.txt?raw';
 import utifMit from '../../content/licenses/utif-MIT.txt?raw';
 import pakoMit from '../../content/licenses/pako-MIT.txt?raw';
 import jxlOxideMit from '../../content/licenses/jxl-oxide-MIT.txt?raw';
+import libaomBsd from '../../content/licenses/libaom-BSD.txt?raw';
+import libaomPatents from '../../content/licenses/libaom-PATENTS.txt?raw';
 
 interface Props {
   locale: Locale;
@@ -46,6 +48,8 @@ const TEXTS: Record<LicenseTextId, string> = {
   'utif-mit': utifMit,
   'pako-mit': pakoMit,
   'jxl-oxide-mit': jxlOxideMit,
+  'libaom-bsd': libaomBsd,
+  'libaom-patents': libaomPatents,
   'inter-ofl': interOfl,
 };
 const ORDER: LicenseTextId[] = [
@@ -58,6 +62,8 @@ const ORDER: LicenseTextId[] = [
   'libwebp-bsd',
   'libwebp-patents',
   'dav1d-bsd',
+  'libaom-bsd',
+  'libaom-patents',
   'emscripten',
   'client-zip-mit',
   'utif-mit',

@@ -28,6 +28,7 @@ export const OUTPUT_FORMATS = {
   png: { label: 'PNG', extension: 'png', encoder: 'png', hasQuality: false, hasLossless: false, largeFiles: true },
   webp: { label: 'WebP', extension: 'webp', encoder: 'webp', hasQuality: true, hasLossless: true, largeFiles: false },
   ico: { label: 'ICO', extension: 'ico', encoder: 'ico', hasQuality: false, hasLossless: false, largeFiles: false },
+  avif: { label: 'AVIF', extension: 'avif', encoder: 'avif', hasQuality: true, hasLossless: false, largeFiles: false },
 } as const satisfies Record<
   string,
   { label: string; extension: string; encoder: EncoderId; hasQuality: boolean; hasLossless: boolean; largeFiles: boolean }
@@ -66,6 +67,8 @@ export interface ToolConfig {
 const ALL_OUTPUTS: OutputFormatId[] = ['jpeg', 'png', 'webp'];
 /** Страницы иконок: ICO плюс основные (на остальных ICO не предлагаем — переключатель и так плотный). */
 const ICON_OUTPUTS: OutputFormatId[] = ['ico', 'png', 'jpeg', 'webp'];
+/** Страницы «в AVIF»: AVIF плюс основные (кодирование медленное — на остальных страницах не предлагаем). */
+const AVIF_OUTPUTS: OutputFormatId[] = ['avif', 'jpeg', 'png', 'webp'];
 /** Сжатие и изменение размера: по умолчанию формат сохраняется. */
 const SAME_OR_ANY: OutputChoiceId[] = ['original', 'jpeg', 'png', 'webp'];
 const ALL_INPUTS: InputFormatId[] = ['heic', 'avif', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'jxl'];
@@ -175,6 +178,16 @@ export const TOOLS: ToolConfig[] = [
     content: 'jpg-to-ico',
   },
   {
+    id: 'jpg-to-avif',
+    mode: 'convert',
+    slugs: { ru: 'jpg-v-avif', en: 'jpg-to-avif' },
+    inputFormats: ['jpeg'],
+    defaultOutput: 'avif',
+    outputs: AVIF_OUTPUTS,
+    defaultQuality: 75,
+    content: 'jpg-to-avif',
+  },
+  {
     id: 'png-to-jpg',
     mode: 'convert',
     slugs: { ru: 'png-v-jpg', en: 'png-to-jpg' },
@@ -203,6 +216,16 @@ export const TOOLS: ToolConfig[] = [
     outputs: ICON_OUTPUTS,
     defaultQuality: 90,
     content: 'png-to-ico',
+  },
+  {
+    id: 'png-to-avif',
+    mode: 'convert',
+    slugs: { ru: 'png-v-avif', en: 'png-to-avif' },
+    inputFormats: ['png'],
+    defaultOutput: 'avif',
+    outputs: AVIF_OUTPUTS,
+    defaultQuality: 75,
+    content: 'png-to-avif',
   },
   {
     id: 'webp-to-jpg',
