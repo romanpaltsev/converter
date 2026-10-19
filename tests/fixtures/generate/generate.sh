@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Генерация синтетических фикстур (без личных данных).
 # Запуск: npm run fixtures [-- секции] (собирает Docker-образ и выполняет этот скрипт внутри него).
-# Секции через запятую: heic, jpeg-png, webp (по умолчанию — все). Секция пересоздаёт только свои файлы:
+# Секции через запятую: heic, jpeg-png, webp, avif (по умолчанию — все). Секция пересоздаёт только свои файлы:
 # HEIC-фикстуры не меняются побайтно, когда добавляются фикстуры других форматов.
 # Внутри контейнера: /out — tests/fixtures, /icc — src/converter/color/icc.
 set -euo pipefail
@@ -250,6 +250,52 @@ for f in exif-gps basic rotated exif-prefixed lossless-alpha lossy-alpha animate
   printf '%s: ' "$f"; webpinfo -quiet "$OUT/$f.webp" >/dev/null && echo ok
 done
 exiftool -s -s -s -Orientation "$OUT/rotated.webp" "$OUT/exif-prefixed.webp"
+fi
+
+if want avif; then
+# Кодировщик AV1 — aom (libheif-plugin-aomenc). photo.avif остаётся в секции heic: она старше этой.
+avif() { # выход вход [опции heif-enc...]
+  local out=$1 in=$2
+  shift 2
+  heif-enc -A -q 60 "$@" -o "$OUT/$out" "$in" >/dev/null
+}
+quadrants 1200 800 avif-wide.png
+quadrants 600 800 avif-display.png
+
+echo "== exif-gps.avif: ICC Display P3, даты, GPS, камера, XMP (exiftool)"
+photo 1200 800 avif-photo.png "AVIF + EXIF"
+"${IM[@]}" avif-photo.png -profile "$ICC_P3" -alpha off -depth 8 png24:avif-photo-p3.png
+avif exif-gps.avif avif-photo-p3.png
+exiftool -q -overwrite_original "${EXIF_DATES[@]}" "${EXIF_PRIVATE[@]}" "-Orientation#=1" "$OUT/exif-gps.avif"
+
+echo "== rotated.avif: irot из EXIF Orientation 6, на экране 600x800"
+"${IM[@]}" avif-display.png -rotate -90 -quality 95 avif-rotated-stored.jpg
+exiftool -q -overwrite_original "${EXIF_DATES[@]}" "-Orientation#=6" avif-rotated-stored.jpg
+avif rotated.avif avif-rotated-stored.jpg
+
+echo "== nclx-p3.avif: цвет задан только nclx (Display P3), без ICC"
+avif nclx-p3.avif avif-wide.png --colour_primaries 12 --transfer_characteristic 13 --matrix_coefficients 6 --full_range_flag 1
+
+echo "== 10bit.avif, hdr-pq.avif: 10 бит; BT.2020 + PQ"
+"${IM[@]}" -size 1200x800 gradient:'#102040-#f0c080' -depth 16 png48:avif-10bit.png
+avif 10bit.avif avif-10bit.png -b 10
+avif hdr-pq.avif avif-10bit.png -b 10 --colour_primaries 9 --transfer_characteristic 16 --matrix_coefficients 9 --full_range_flag 0
+
+echo "== alpha.avif: красный круг на прозрачном фоне"
+"${IM[@]}" -size 800x600 xc:none -fill '#e00000' -draw 'circle 400,300 400,80' png32:avif-alpha.png
+avif alpha.avif avif-alpha.png
+
+echo "== animated.avif: последовательность (бренд avis) + основное изображение — квадранты 640x480"
+quadrants 640 480 avif-anim-1.png
+"${IM[@]}" avif-anim-1.png -negate png24:avif-anim-2.png
+heif-enc -A -q 60 -S -o "$OUT/animated.avif" avif-anim-1.png avif-anim-2.png >/dev/null
+
+echo "== самопроверка AVIF"
+for f in exif-gps rotated nclx-p3 10bit hdr-pq alpha animated; do
+  printf '%s: ' "$f"; heif-info "$OUT/$f.avif" 2>&1 | grep -m1 -E 'MIME|brand|image:' || echo '?'
+done
+heif-dec "$OUT/rotated.avif" avif-rotated-check.png >/dev/null
+"${IM[@]}" avif-rotated-check.png -format "rotated: %wx%h TL=%[pixel:p{50,50}] BR=%[pixel:p{550,750}]\n" info:
 fi
 
 ls -la "$OUT"

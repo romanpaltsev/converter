@@ -16,6 +16,7 @@ import pngMit from '../../content/licenses/png-crate-MIT.txt?raw';
 import clientZipMit from '../../content/licenses/client-zip-MIT.txt?raw';
 import libwebpBsd from '../../content/licenses/libwebp-BSD.txt?raw';
 import libwebpPatents from '../../content/licenses/libwebp-PATENTS.txt?raw';
+import dav1dBsd from '../../content/licenses/dav1d-BSD.txt?raw';
 import emscripten from '../../content/licenses/emscripten-MIT-NCSA.txt?raw';
 
 interface Props {
@@ -35,6 +36,7 @@ const TEXTS: Record<LicenseTextId, string> = {
   'png-mit': pngMit,
   'libwebp-bsd': libwebpBsd,
   'libwebp-patents': libwebpPatents,
+  'dav1d-bsd': dav1dBsd,
   emscripten,
   'client-zip-mit': clientZipMit,
 };
@@ -47,6 +49,7 @@ const ORDER: LicenseTextId[] = [
   'png-mit',
   'libwebp-bsd',
   'libwebp-patents',
+  'dav1d-bsd',
   'emscripten',
   'client-zip-mit',
 ];

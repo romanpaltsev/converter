@@ -1,6 +1,6 @@
 # Конвертер
 
-Бесплатный онлайн-конвертер изображений: **HEIC, JPG, PNG и WebP** — в **JPG, PNG или WebP** (9 страниц-конвертеров
+Бесплатный онлайн-конвертер изображений: **HEIC, AVIF, JPG, PNG и WebP** — в **JPG, PNG или WebP** (11 страниц-конвертеров
 на двух языках). Конвертация идёт полностью
 в браузере (WebAssembly в Web Worker): файлы не загружаются на сервер. Интерфейс на русском и английском.
 
@@ -11,7 +11,7 @@
 
 - HEIC/HEIF, JPG, PNG и WebP → JPG (MozJPEG, качество 1–100), PNG или WebP (качество или «без потерь»);
   до 100 файлов за раз, перетаскивание и выбор.
-- Формат определяется по сигнатуре, любая страница принимает любой поддерживаемый формат; AVIF, GIF и прочее —
+- Формат определяется по сигнатуре, любая страница принимает любой поддерживаемый формат; GIF, TIFF и прочее —
   понятная ошибка в строке файла, очередь идёт дальше.
 - Поворот (irot/imir у HEIC, EXIF Orientation у JPG и PNG) применяется к пикселям, в EXIF всегда Orientation = 1.
 - ICC-профиль переносится всегда (Display P3 у iPhone); цвет из nclx — встраивается эквивалентный профиль.
@@ -48,7 +48,7 @@ npm run preview    # dist/ с теми же заголовками, что у ng
 | `npm run smoke:docker` | сборка Docker-образа, проверки curl'ом; `-- --e2e` — ещё и все e2e против контейнера |
 | `npm run lighthouse` | Lighthouse (мобильный) против Docker-образа |
 | `npm run fixtures` | пересоздать синтетические фикстуры (Docker); `-- jpeg-png` — только одну секцию |
-| `npm run codecs` | пересобрать libwebp в WebAssembly (`codecs/webp` → `src/converter/vendor/webp`, Docker) |
+| `npm run codecs` | пересобрать свои WASM-модули: libwebp (`codecs/webp`) и декодер AVIF — libheif + dav1d (`codecs/avif`) → `src/converter/vendor/`, Docker; `-- webp` или `-- avif` — один |
 | `npm run content` | пересобрать `CONTENT.md` из текстов |
 
 ## Структура
@@ -65,7 +65,7 @@ src/converter/metadata/     EXIF (TIFF), сегменты JPEG, чанки PNG, 
 src/converter/color/        выбор и загрузка ICC-профилей
 src/converter/worker/       Web Worker'ы: конвертация и сборка ZIP
 src/converter/widget/       виджет на странице (TypeScript без фреймворков)
-src/converter/vendor/webp/   собранная libwebp (WASM); исходники сборки — codecs/webp/
+src/converter/vendor/        свои сборки WASM: webp/ (libwebp), avif/ (libheif + dav1d); исходники — codecs/
 nginx/, Dockerfile, docker-compose.yml, deploy/   деплой
 tests/unit, tests/dist, tests/e2e, tests/fixtures
 ```

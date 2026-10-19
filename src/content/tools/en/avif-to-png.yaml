@@ -1,0 +1,46 @@
+# Texts for /en/avif-to-png. Draft for the owner's review (see CONTENT.md).
+title: "AVIF to PNG Converter — Free, Private, No Upload"
+description: "Convert AVIF images to PNG right in your browser. Transparency is kept and your files never leave your device. Free, no sign-up."
+h1: "AVIF to PNG Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "AVIF to PNG"
+card:
+  title: "AVIF → PNG"
+  text: "No further loss and transparency kept — ready for editing."
+app:
+  name: "AVIF to PNG Converter"
+  description: "An online AVIF to PNG converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert AVIF to PNG"
+  steps:
+    - "Click the box above or drag your AVIF files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each PNG separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them."
+    - title: "Transparency is kept"
+      text: "PNG supports transparency just like AVIF, so transparent backgrounds stay transparent."
+    - title: "No further loss"
+      text: "PNG stores pixels exactly as they are, so converting doesn't reduce the quality."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is AVIF?"
+      a: "AVIF is a modern image format based on the AV1 video codec. Websites use it because it keeps images very small. Many apps and editors still can't open it, though, so it's often easier to convert the image to a widely supported format such as PNG."
+    - q: "Should I pick PNG or JPG?"
+      a: "Pick PNG when you need transparency or an exact lossless copy: logos, icons, screenshots and images you'll keep editing. Pick JPG for photos when a small file matters more."
+    - q: "Is transparency kept?"
+      a: "Yes. PNG supports transparency, so transparent areas of the AVIF stay transparent."
+    - q: "Why is the PNG so much bigger than the AVIF?"
+      a: "PNG is lossless, while AVIF stores images with very efficient lossy compression, so a PNG can be several times larger. For photos where size matters more, pick JPG."
+    - q: "What if the AVIF is HDR or 10-bit?"
+      a: "The PNG is saved with 8 bits per channel in standard dynamic range. Colors of HDR images may differ slightly, and the file's row shows a warning. For an animated AVIF, the main frame is saved."
+    - q: "What happens to the metadata?"
+      a: "By default the capture date is kept if the AVIF has one, while the location and other details are removed. Tick “Keep all metadata” to copy the full EXIF data. The color profile is always kept."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

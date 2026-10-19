@@ -1,0 +1,46 @@
+# Texts for /en/avif-to-jpg. Draft for the owner's review (see CONTENT.md).
+title: "AVIF to JPG Converter — Free, Private, No Upload"
+description: "Convert AVIF images to JPG right in your browser. Free, no sign-up, and your files never leave your device. The JPG opens in any app."
+h1: "AVIF to JPG Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "AVIF to JPG"
+card:
+  title: "AVIF → JPG"
+  text: "The newest web image format, as a JPG that opens everywhere."
+app:
+  name: "AVIF to JPG Converter"
+  description: "An online AVIF to JPG converter that runs in your browser without uploading your images."
+howTo:
+  title: "How to convert AVIF to JPG"
+  steps:
+    - "Click the box above or drag your AVIF files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each JPG separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them."
+    - title: "True-to-original colors"
+      text: "The AVIF's color profile is carried over to the JPG, so wide-gamut images don't come out looking dull."
+    - title: "MozJPEG encoding"
+      text: "JPGs are made with MozJPEG, Mozilla's advanced JPEG encoder. Fine-tune the quality with the slider."
+    - title: "Batch conversion"
+      text: "Convert up to 100 images at a time and download them as a single ZIP file."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is AVIF?"
+      a: "AVIF is a modern image format based on the AV1 video codec. Websites use it because it keeps images very small. Many apps, photo editors and services still can't open it, though, so it's often easier to work with the image as a JPG."
+    - q: "Why do images from websites download as AVIF?"
+      a: "Websites serve images as AVIF so pages load faster, and your browser saves the file in the same format. Converting it to JPG makes it work in any app."
+    - q: "Will I lose quality?"
+      a: "JPG compression is lossy, so the image changes slightly. At the default quality of 90 the difference is usually invisible. If you need an exact copy with no further loss, pick PNG."
+    - q: "Why is the JPG bigger than the AVIF?"
+      a: "AVIF compresses far more efficiently than JPG, so the same image at similar quality takes up more space as a JPG. That's expected — lower the quality slider if you need a smaller file."
+    - q: "What about transparency, HDR and animation?"
+      a: "JPG has no transparency, so transparent areas turn white. HDR images are saved in standard range — colors may differ slightly, and the file's row shows a warning. For an animated AVIF, the main frame is saved."
+    - q: "What happens to the metadata?"
+      a: "By default the capture date is kept if the AVIF has one, while the location and other details are removed. Tick “Keep all metadata” to copy the full EXIF data. The color profile is always kept."
+    - q: "Is it safe to convert my images here?"
+      a: "Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server."

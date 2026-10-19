@@ -17,15 +17,17 @@ describe('реестр инструментов', () => {
   test('перелинковка: обратная пара, тот же вход, тот же выход', () => {
     const table = Object.fromEntries(TOOLS.map((tool) => [tool.id, relatedTools(tool).map((t) => t.id)]));
     expect(table).toEqual({
-      'heic-to-jpg': ['heic-to-png', 'heic-to-webp', 'png-to-jpg', 'webp-to-jpg'],
-      'heic-to-png': ['heic-to-jpg', 'heic-to-webp', 'jpg-to-png', 'webp-to-png'],
+      'heic-to-jpg': ['heic-to-png', 'heic-to-webp', 'avif-to-jpg', 'png-to-jpg'],
+      'heic-to-png': ['heic-to-jpg', 'heic-to-webp', 'avif-to-png', 'jpg-to-png'],
       'heic-to-webp': ['heic-to-jpg', 'heic-to-png', 'jpg-to-webp', 'png-to-webp'],
-      'jpg-to-png': ['png-to-jpg', 'jpg-to-webp', 'heic-to-png', 'webp-to-png'],
+      'avif-to-jpg': ['avif-to-png', 'heic-to-jpg', 'png-to-jpg', 'webp-to-jpg'],
+      'avif-to-png': ['avif-to-jpg', 'heic-to-png', 'jpg-to-png', 'webp-to-png'],
+      'jpg-to-png': ['png-to-jpg', 'jpg-to-webp', 'heic-to-png', 'avif-to-png'],
       'jpg-to-webp': ['webp-to-jpg', 'jpg-to-png', 'heic-to-webp', 'png-to-webp'],
-      'png-to-jpg': ['jpg-to-png', 'png-to-webp', 'heic-to-jpg', 'webp-to-jpg'],
+      'png-to-jpg': ['jpg-to-png', 'png-to-webp', 'heic-to-jpg', 'avif-to-jpg'],
       'png-to-webp': ['webp-to-png', 'png-to-jpg', 'heic-to-webp', 'jpg-to-webp'],
-      'webp-to-jpg': ['jpg-to-webp', 'webp-to-png', 'heic-to-jpg', 'png-to-jpg'],
-      'webp-to-png': ['png-to-webp', 'webp-to-jpg', 'heic-to-png', 'jpg-to-png'],
+      'webp-to-jpg': ['jpg-to-webp', 'webp-to-png', 'heic-to-jpg', 'avif-to-jpg'],
+      'webp-to-png': ['png-to-webp', 'webp-to-jpg', 'heic-to-png', 'avif-to-png'],
     });
   });
 

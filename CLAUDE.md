@@ -1,8 +1,8 @@
 # CLAUDE.md — ключевые решения и устройство проекта
 
 Онлайн-конвертер файлов: статический сайт на Astro (ru/en), конвертация полностью в браузере
-(module Web Worker + WASM), файлы на сервер не загружаются. Сейчас: HEIC, JPG, PNG и WebP → JPG, PNG или WebP
-(9 страниц-конвертеров). Дальше по плану: AVIF → JPG/PNG, сжатие и изменение размера, позже PDF.
+(module Web Worker + WASM), файлы на сервер не загружаются. Сейчас: HEIC, AVIF, JPG, PNG и WebP → JPG, PNG или WebP
+(11 страниц-конвертеров). Дальше по плану: сжатие и изменение размера, позже PDF.
 Обзор и команды — README.md, деплой — DEPLOY.md, тесты и замеры — TESTING.md, тексты — CONTENT.md.
 
 ## Правила работы
@@ -43,6 +43,7 @@ src/converter/pipeline/       sniff + checkInput (input.ts) → декодер (
                               кодировщик (encoders/) → метаданные; превью; headers.ts — размеры до декодирования
 src/converter/pipeline/codecs общий загрузчик модуля PNG (декодер и кодировщик — один экземпляр)
 src/converter/vendor/webp/    собранная libwebp 1.6.0 (WASM + glue, BUILD.txt); исходники сборки — codecs/webp/
+src/converter/vendor/avif/    собранные libheif 1.23.6 + dav1d 1.5.4 (декодер AVIF, BUILD.txt); исходники — codecs/avif/
 src/converter/metadata/       TIFF/EXIF, фильтр EXIF, APP1/APP2 в JPEG, eXIf/iCCP в PNG, чанки RIFF в WebP, CRC32, zlib
 src/converter/color/          ICC-профили (CC0) и выбор по nclx
 src/converter/worker/         convert.worker.ts (конвертация), zip.worker.ts (ZIP), protocol.ts
@@ -122,6 +123,14 @@ scripts/                      serve-dist (тестовый сервер как n
   В libwebp 1.6.0 сломана SIMD-сборка под Emscripten (AVX2 добавили в начало списка, и проверка «индекс ≥ 2» выкидывает
   SSE2) — `build.sh` правит `cmake/cpu.cmake`: для Emscripten SSE4.1 + SSE2, без AVX2. Размер в gzip: декодер 74 КБ,
   кодировщик 143 КБ. Метаданные входа — `metadata/webp-chunks.ts` (ICCP, EXIF с префиксом «Exif\0\0» и без).
+- **AVIF на входе — своя сборка libheif 1.23.6 + dav1d 1.5.4** (решение 19.10.2026): в libheif-js нет декодера AV1
+  («a suitable decoder plugin is dav1d»). Отдельный модуль `avif_dec` (`codecs/avif/`, `npm run codecs -- avif`): только
+  dav1d, без libde265 и кодировщиков, без embind (`__EMSCRIPTEN_STANDALONE_WASM__`), экспортирует ровно те функции C API,
+  что вызывает `decoders/heif.ts`. Сессия libheif общая для HEIC и AVIF (`heif.ts`): ICC/nclx/Exif, irot/imir/clap,
+  10/12 бит → 8 — одинаково; `heic.ts` и `avif.ts` только загружают свои модули. dav1d без потоков и без ассемблера
+  (в WASM его нет), SIMD — авто-векторизацией (`-msimd128`). Размер: 1,55 МБ, в gzip 541 КБ — грузится только для AVIF.
+  Анимированный AVIF (бренд `avis`) — основное изображение и предупреждение «первый кадр». HEIC по-прежнему читает
+  libheif-js 1.23.5 (1.23.6 в npm ещё нет; libde265-сборке исправления 1.23.6 не критичны — они в unci/OpenJPEG/FFmpeg).
 - **WebP на выходе** — та же libwebp: с потерями — `method 4` и качество с ползунка, без потерь — пресет уровня 4
   (`WebPConfigLosslessPreset`). Метаданные пишет `insertWebpMetadata()`: VP8X → ICCP → ALPH → VP8/VP8L → EXIF (TIFF без
   префикса, как у ExifTool). Предел формата — 16 383 точки по стороне: проверка в worker'е до декодирования.

@@ -3,7 +3,7 @@
 import type { MetadataMode } from '../metadata/exif-filter';
 import type { Nclx } from '../color/nclx';
 
-export type DecoderId = 'heic' | 'jpeg' | 'png' | 'webp';
+export type DecoderId = 'heic' | 'avif' | 'jpeg' | 'png' | 'webp';
 export type EncoderId = 'jpeg' | 'png' | 'webp';
 
 /** WebP вмещает изображения не больше 16 383 точек по стороне. */
@@ -21,7 +21,6 @@ export interface ConvertOptions {
 /** Коды ошибок; тексты для пользователя — в словарях интерфейса. */
 export type ErrorCode =
   | 'not-image'
-  | 'avif-unsupported'
   | 'already-jpeg'
   | 'already-png'
   | 'already-webp'

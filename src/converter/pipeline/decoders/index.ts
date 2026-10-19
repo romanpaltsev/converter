@@ -4,6 +4,7 @@ import type { Decoder, DecoderId } from '../types';
 
 const loaders: Record<DecoderId, () => Promise<Decoder>> = {
   heic: () => import('./heic').then((m) => m.loadHeicDecoder()),
+  avif: () => import('./avif').then((m) => m.loadAvifDecoder()),
   jpeg: () => import('./jpeg').then((m) => m.loadJpegDecoder()),
   png: () => import('./png').then((m) => m.loadPngDecoder()),
   webp: () => import('./webp').then((m) => m.loadWebpDecoder()),

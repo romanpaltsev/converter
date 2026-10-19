@@ -8,6 +8,7 @@ import type { DecoderId, EncoderId, ErrorCode } from './types';
 /** Чем читается формат. Форматы без декодера пока не поддерживаются. */
 export const DECODER_BY_KIND: Partial<Record<SniffKind, DecoderId>> = {
   heic: 'heic',
+  avif: 'avif',
   jpeg: 'jpeg',
   png: 'png',
   webp: 'webp',
@@ -28,7 +29,6 @@ export type InputCheck = { ok: true; decoder: DecoderId } | { ok: false; code: E
 export function checkInput(bytes: Uint8Array, output: EncoderId): InputCheck {
   const { kind } = sniff(bytes);
   if (kind === 'unknown') return { ok: false, code: 'not-image' };
-  if (kind === 'avif') return { ok: false, code: 'avif-unsupported' };
   const same = SAME_FORMAT[kind];
   if (same?.encoder === output) return { ok: false, code: same.error };
   const decoder = DECODER_BY_KIND[kind];

@@ -228,6 +228,150 @@
 - **What happens to the location and the date taken?** By default the date and time the photo was taken are kept, while GPS location, phone model, serial numbers and other details are removed. Tick “Keep all metadata” to copy the full EXIF data, including location.
 - **Is it safe to convert my photos here?** Yes. The site only downloads the converter itself; your photos are processed in your browser and are never sent to a server.
 
+### avif-to-jpg
+
+#### Русский — `/avif-v-jpg`
+
+Файл: `src/content/tools/ru/avif-to-jpg.yaml`
+
+- **title:** AVIF в JPG онлайн — бесплатно, без загрузки на сервер _(53 симв.)_
+- **description:** Конвертируйте картинки AVIF в JPG прямо в браузере: бесплатно, без регистрации, файлы не загружаются на сервер. JPG откроется в любой программе. _(144 симв.)_
+- **H1:** Конвертер AVIF в JPG
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** AVIF в JPG
+- **Карточка:** AVIF → JPG — Новый формат картинок с сайтов — в JPG, который открывается везде.
+- **JSON-LD:** Конвертер AVIF в JPG — Онлайн-конвертер изображений AVIF в JPG, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать AVIF в JPG**
+
+1. Нажмите на область выше или перетащите на неё AVIF-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте JPG по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Изображения не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Цвета как в оригинале.** Цветовой профиль AVIF переносится в JPG, поэтому снимки с широким цветовым охватом не тускнеют.
+- **Сжатие MozJPEG.** JPG создаётся кодировщиком MozJPEG от Mozilla. Качество настраивается ползунком.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое AVIF?** AVIF — современный формат изображений на основе видеокодека AV1. Сайты используют его, потому что картинки в нём занимают мало места. Но его открывают ещё не все программы, фоторедакторы и сервисы, поэтому картинку удобнее перевести в JPG.
+- **Почему картинка с сайта скачивается в AVIF?** Сайты отдают картинки в AVIF, чтобы страницы грузились быстрее, и браузер сохраняет файл в том же формате. Конвертация в JPG делает картинку пригодной для любых программ.
+- **Теряется ли качество?** JPG сжимает с потерями, поэтому картинка немного меняется. При качестве 90 (значение по умолчанию) разница обычно не видна. Если нужна точная копия без новых потерь, выберите PNG.
+- **Почему JPG больше, чем AVIF?** AVIF сжимает намного эффективнее JPG, поэтому та же картинка в JPG при сопоставимом качестве весит больше. Это нормально; уменьшите качество ползунком, если нужен файл поменьше.
+- **Что будет с прозрачностью, HDR и анимацией?** В JPG нет прозрачности, поэтому прозрачные области становятся белыми. HDR-изображения сохраняются в обычном диапазоне — цвета могут немного отличаться, и в строке файла появится предупреждение. У анимированного AVIF сохраняется основной кадр.
+- **Что происходит с метаданными?** По умолчанию сохраняется дата съёмки, если она есть в AVIF, а геолокация и другие сведения удаляются. Если отметить «Сохранить все метаданные», перенесутся все данные EXIF. Цветовой профиль переносится всегда.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/avif-to-jpg`
+
+Файл: `src/content/tools/en/avif-to-jpg.yaml`
+
+- **title:** AVIF to JPG Converter — Free, Private, No Upload _(48 симв.)_
+- **description:** Convert AVIF images to JPG right in your browser. Free, no sign-up, and your files never leave your device. The JPG opens in any app. _(133 симв.)_
+- **H1:** AVIF to JPG Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** AVIF to JPG
+- **Карточка:** AVIF → JPG — The newest web image format, as a JPG that opens everywhere.
+- **JSON-LD:** AVIF to JPG Converter — An online AVIF to JPG converter that runs in your browser without uploading your images.
+
+**How to convert AVIF to JPG**
+
+1. Click the box above or drag your AVIF files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each JPG separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **True-to-original colors.** The AVIF's color profile is carried over to the JPG, so wide-gamut images don't come out looking dull.
+- **MozJPEG encoding.** JPGs are made with MozJPEG, Mozilla's advanced JPEG encoder. Fine-tune the quality with the slider.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **What is AVIF?** AVIF is a modern image format based on the AV1 video codec. Websites use it because it keeps images very small. Many apps, photo editors and services still can't open it, though, so it's often easier to work with the image as a JPG.
+- **Why do images from websites download as AVIF?** Websites serve images as AVIF so pages load faster, and your browser saves the file in the same format. Converting it to JPG makes it work in any app.
+- **Will I lose quality?** JPG compression is lossy, so the image changes slightly. At the default quality of 90 the difference is usually invisible. If you need an exact copy with no further loss, pick PNG.
+- **Why is the JPG bigger than the AVIF?** AVIF compresses far more efficiently than JPG, so the same image at similar quality takes up more space as a JPG. That's expected — lower the quality slider if you need a smaller file.
+- **What about transparency, HDR and animation?** JPG has no transparency, so transparent areas turn white. HDR images are saved in standard range — colors may differ slightly, and the file's row shows a warning. For an animated AVIF, the main frame is saved.
+- **What happens to the metadata?** By default the capture date is kept if the AVIF has one, while the location and other details are removed. Tick “Keep all metadata” to copy the full EXIF data. The color profile is always kept.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
+### avif-to-png
+
+#### Русский — `/avif-v-png`
+
+Файл: `src/content/tools/ru/avif-to-png.yaml`
+
+- **title:** AVIF в PNG онлайн — бесплатно, без загрузки на сервер _(53 симв.)_
+- **description:** Конвертируйте картинки AVIF в PNG прямо в браузере: прозрачность сохраняется, файлы не загружаются на сервер. Бесплатно и без регистрации. _(138 симв.)_
+- **H1:** Конвертер AVIF в PNG
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** AVIF в PNG
+- **Карточка:** AVIF → PNG — Без новых потерь и с прозрачностью — для редактирования.
+- **JSON-LD:** Конвертер AVIF в PNG — Онлайн-конвертер изображений AVIF в PNG, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать AVIF в PNG**
+
+1. Нажмите на область выше или перетащите на неё AVIF-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте PNG по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Изображения не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Прозрачность сохраняется.** PNG поддерживает прозрачность так же, как AVIF, поэтому прозрачный фон останется прозрачным.
+- **Без новых потерь.** PNG сохраняет пиксели без изменений: при конвертации качество не ухудшается.
+- **Сразу много файлов.** Добавьте до 100 изображений за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое AVIF?** AVIF — современный формат изображений на основе видеокодека AV1. Сайты используют его, потому что картинки в нём занимают мало места. Но многие программы и редакторы его пока не открывают, поэтому картинку удобнее перевести в распространённый формат, например PNG.
+- **Когда лучше PNG, а когда JPG?** PNG — если важны прозрачность или точная копия без потерь: для логотипов, иконок, скриншотов и картинок, которые будут дальше редактировать. JPG — для фотографий, когда важен небольшой размер файла.
+- **Сохранится ли прозрачность?** Да. PNG поддерживает прозрачность, поэтому прозрачные области AVIF останутся прозрачными.
+- **Почему PNG намного больше, чем AVIF?** PNG сжимает без потерь, а AVIF хранит картинки с потерями и сжимает очень эффективно, поэтому PNG может весить в разы больше. Для фотографий, где важнее размер, выберите JPG.
+- **А если AVIF в HDR или с глубиной цвета 10 бит?** PNG сохраняется с 8 битами на канал и в обычном диапазоне яркости. У HDR-изображений цвета могут немного отличаться — в строке файла появится предупреждение. У анимированного AVIF сохраняется основной кадр.
+- **Что происходит с метаданными?** По умолчанию сохраняется дата съёмки, если она есть в AVIF, а геолокация и другие сведения удаляются. Если отметить «Сохранить все метаданные», перенесутся все данные EXIF. Цветовой профиль переносится всегда.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а изображения обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/avif-to-png`
+
+Файл: `src/content/tools/en/avif-to-png.yaml`
+
+- **title:** AVIF to PNG Converter — Free, Private, No Upload _(48 симв.)_
+- **description:** Convert AVIF images to PNG right in your browser. Transparency is kept and your files never leave your device. Free, no sign-up. _(128 симв.)_
+- **H1:** AVIF to PNG Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** AVIF to PNG
+- **Карточка:** AVIF → PNG — No further loss and transparency kept — ready for editing.
+- **JSON-LD:** AVIF to PNG Converter — An online AVIF to PNG converter that runs in your browser without uploading your images.
+
+**How to convert AVIF to PNG**
+
+1. Click the box above or drag your AVIF files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each PNG separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Everything runs on your device. Images are never uploaded to a server, so nobody else ever sees them.
+- **Transparency is kept.** PNG supports transparency just like AVIF, so transparent backgrounds stay transparent.
+- **No further loss.** PNG stores pixels exactly as they are, so converting doesn't reduce the quality.
+- **Batch conversion.** Convert up to 100 images at a time and download them as a single ZIP file.
+
+**Frequently asked questions**
+
+- **What is AVIF?** AVIF is a modern image format based on the AV1 video codec. Websites use it because it keeps images very small. Many apps and editors still can't open it, though, so it's often easier to convert the image to a widely supported format such as PNG.
+- **Should I pick PNG or JPG?** Pick PNG when you need transparency or an exact lossless copy: logos, icons, screenshots and images you'll keep editing. Pick JPG for photos when a small file matters more.
+- **Is transparency kept?** Yes. PNG supports transparency, so transparent areas of the AVIF stay transparent.
+- **Why is the PNG so much bigger than the AVIF?** PNG is lossless, while AVIF stores images with very efficient lossy compression, so a PNG can be several times larger. For photos where size matters more, pick JPG.
+- **What if the AVIF is HDR or 10-bit?** The PNG is saved with 8 bits per channel in standard dynamic range. Colors of HDR images may differ slightly, and the file's row shows a warning. For an animated AVIF, the main frame is saved.
+- **What happens to the metadata?** By default the capture date is kept if the AVIF has one, while the location and other details are removed. Tick “Keep all metadata” to copy the full EXIF data. The color profile is always kept.
+- **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
+
 ### jpg-to-png
 
 #### Русский — `/jpg-v-png`
@@ -670,10 +814,10 @@
 
 Файл: `src/content/pages/ru/home.yaml`
 
-- **title:** Конвертер изображений онлайн — HEIC, JPG, PNG и WebP в браузере _(63 симв.)_
-- **description:** Бесплатные онлайн-конвертеры изображений: HEIC, JPG, PNG и WebP. Без регистрации и без загрузки на сервер — всё работает в вашем браузере. _(138 симв.)_
+- **title:** Конвертер изображений онлайн — HEIC, AVIF, JPG, PNG и WebP в браузере _(69 симв.)_
+- **description:** Бесплатные онлайн-конвертеры изображений: HEIC, AVIF, JPG, PNG и WebP. Без регистрации и без загрузки на сервер — всё работает в вашем браузере. _(144 симв.)_
 - **h1:** Конвертер изображений прямо в браузере
-- **intro:** Переводите фото и картинки между форматами HEIC, JPG, PNG и WebP. Конвертация идёт на вашем устройстве: файлы не загружаются на сервер, а дата съёмки сохраняется.
+- **intro:** Переводите фото и картинки между форматами HEIC, AVIF, JPG, PNG и WebP. Конвертация идёт на вашем устройстве: файлы не загружаются на сервер, а дата съёмки сохраняется.
 - **toolsTitle:** Конвертеры
 - **features:**
   - **Без загрузки на сервер.** Изображения обрабатываются в браузере и не покидают ваше устройство.
@@ -684,10 +828,10 @@
 
 Файл: `src/content/pages/en/home.yaml`
 
-- **title:** Free Online Image Converter — HEIC, JPG, PNG and WebP _(53 симв.)_
-- **description:** Free online image converters for HEIC, JPG, PNG and WebP. No sign-up and no uploads — everything runs in your browser. _(118 симв.)_
+- **title:** Free Online Image Converter — HEIC, AVIF, JPG, PNG and WebP _(59 симв.)_
+- **description:** Free online image converters for HEIC, AVIF, JPG, PNG and WebP. No sign-up and no uploads — everything runs in your browser. _(124 симв.)_
 - **h1:** Convert images right in your browser
-- **intro:** Convert photos and pictures between HEIC, JPG, PNG and WebP. Conversion happens on your device: files are never uploaded, and the date taken is kept.
+- **intro:** Convert photos and pictures between HEIC, AVIF, JPG, PNG and WebP. Conversion happens on your device: files are never uploaded, and the date taken is kept.
 - **toolsTitle:** Converters
 - **features:**
   - **No uploads.** Images are processed in your browser and never leave your device.
@@ -805,7 +949,6 @@
 | `widget.units.mb` | МБ | MB |
 | `widget.units.gb` | ГБ | GB |
 | `widget.errors.not-image` | Не удалось распознать файл как изображение. Поддерживаются {formats}. | This file doesn't look like an image. Supported: {formats}. |
-| `widget.errors.avif-unsupported` | Формат AVIF пока не поддерживается. | AVIF is not supported yet. |
 | `widget.errors.already-jpeg` | Файл уже в формате JPG — выберите другой формат выше. | This file is already a JPG — pick another format above. |
 | `widget.errors.already-png` | Файл уже в формате PNG — выберите другой формат выше. | This file is already a PNG — pick another format above. |
 | `widget.errors.already-webp` | Файл уже в формате WebP — выберите другой формат выше. | This file is already a WebP — pick another format above. |

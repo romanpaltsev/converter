@@ -7,7 +7,7 @@ async function waitForRows(page: Page, count: number): Promise<void> {
   await expect(page.locator('.file:is([data-status="done"], [data-status="error"])')).toHaveCount(count, { timeout: 120_000 });
 }
 
-test('ошибки не останавливают очередь, причины понятны; PNG на HEIC-странице тоже конвертируется', async ({ page }) => {
+test('ошибки не останавливают очередь, причины понятны; PNG и AVIF на HEIC-странице тоже конвертируются', async ({ page }) => {
   await openConverter(page, '/heic-v-jpg');
   const names = ['not-heic.heic', 'basic.heic', 'garbage.heic', 'photo.avif', 'photo.jpg', 'rotated.heic'];
   await page.setInputFiles('[data-input]', names.map(fixture));
@@ -17,15 +17,15 @@ test('ошибки не останавливают очередь, причин�
     'done',
     'done',
     'error',
-    'error',
+    'done',
     'error',
     'done',
   ]);
   await expect(rows.nth(0)).toContainText('not-heic.jpg'); // PNG с расширением .heic: формат определяется по сигнатуре
   await expect(rows.nth(2)).toContainText('Не удалось распознать файл как изображение');
-  await expect(rows.nth(3)).toContainText('AVIF пока не поддерживается');
+  await expect(rows.nth(3)).toContainText('photo.jpg'); // AVIF по сигнатуре — свой декодер
   await expect(rows.nth(4)).toContainText('iPhone'); // пояснение про автоматическое перекодирование в JPEG
-  await expect(page.locator('[data-status-text]')).toHaveText('Готово: 3 из 6. Не удалось: 3.');
+  await expect(page.locator('[data-status-text]')).toHaveText('Готово: 4 из 6. Не удалось: 2.');
 });
 
 test('«Скачать всё (ZIP)»: все готовые файлы, одинаковые имена с суффиксами', async ({ page }) => {

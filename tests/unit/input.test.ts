@@ -42,8 +42,12 @@ describe('checkInput', () => {
     expect(checkInput(Uint8Array.of(0x4d, 0x4d, 0, 42, 0, 0, 0, 8), 'jpeg')).toEqual({ ok: false, code: 'unsupported-image' });
   });
 
-  test('AVIF и не изображения', () => {
-    expect(checkInput(head('photo.avif'), 'jpeg')).toEqual({ ok: false, code: 'avif-unsupported' });
+  test('AVIF — декодер avif, в том числе анимированный (avis)', () => {
+    expect(checkInput(head('photo.avif'), 'jpeg')).toEqual({ ok: true, decoder: 'avif' });
+    expect(checkInput(head('animated.avif'), 'webp')).toEqual({ ok: true, decoder: 'avif' });
+  });
+
+  test('не изображения', () => {
     expect(checkInput(head('garbage.heic'), 'jpeg')).toEqual({ ok: false, code: 'not-image' });
     expect(checkInput(new Uint8Array(0), 'png')).toEqual({ ok: false, code: 'not-image' });
   });

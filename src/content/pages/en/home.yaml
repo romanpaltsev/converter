@@ -1,9 +1,9 @@
 # Texts for the home page (/en/). Draft for the owner's review (see CONTENT.md).
 page: home
-title: "Free Online Image Converter — HEIC, JPG, PNG and WebP"
-description: "Free online image converters for HEIC, JPG, PNG and WebP. No sign-up and no uploads — everything runs in your browser."
+title: "Free Online Image Converter — HEIC, AVIF, JPG, PNG and WebP"
+description: "Free online image converters for HEIC, AVIF, JPG, PNG and WebP. No sign-up and no uploads — everything runs in your browser."
 h1: "Convert images right in your browser"
-intro: "Convert photos and pictures between HEIC, JPG, PNG and WebP. Conversion happens on your device: files are never uploaded, and the date taken is kept."
+intro: "Convert photos and pictures between HEIC, AVIF, JPG, PNG and WebP. Conversion happens on your device: files are never uploaded, and the date taken is kept."
 toolsTitle: "Converters"
 features:
   - title: "No uploads"

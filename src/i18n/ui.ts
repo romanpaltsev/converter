@@ -57,7 +57,6 @@ const ru = {
     units: { b: 'Б', kb: 'КБ', mb: 'МБ', gb: 'ГБ' },
     errors: {
       'not-image': 'Не удалось распознать файл как изображение. Поддерживаются {formats}.',
-      'avif-unsupported': 'Формат AVIF пока не поддерживается.',
       'already-jpeg': 'Файл уже в формате JPG — выберите другой формат выше.',
       'already-png': 'Файл уже в формате PNG — выберите другой формат выше.',
       'already-webp': 'Файл уже в формате WebP — выберите другой формат выше.',
@@ -142,7 +141,6 @@ const en: UiStrings = {
     units: { b: 'B', kb: 'KB', mb: 'MB', gb: 'GB' },
     errors: {
       'not-image': "This file doesn't look like an image. Supported: {formats}.",
-      'avif-unsupported': 'AVIF is not supported yet.',
       'already-jpeg': 'This file is already a JPG — pick another format above.',
       'already-png': 'This file is already a PNG — pick another format above.',
       'already-webp': 'This file is already a WebP — pick another format above.',

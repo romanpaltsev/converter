@@ -3,7 +3,7 @@
 Все файлы здесь синтетические (без личных данных), генерируются командой `npm run fixtures`
 (Docker-образ `tests/fixtures/generate`: Debian forky, heif-enc 1.23.6, exiftool, ImageMagick, cjpeg, apngasm).
 Результат закоммичен, перегенерировать нужно только при изменении `generate/generate.sh`. Генератор разбит на секции:
-`npm run fixtures -- jpeg-png` пересоздаёт только JPEG/PNG, не трогая HEIC (heif-enc другой версии изменил бы их побайтно).
+Секции: `heic`, `jpeg-png`, `webp`, `avif`. `npm run fixtures -- jpeg-png` пересоздаёт только JPEG/PNG, не трогая HEIC (heif-enc другой версии изменил бы их побайтно).
 
 | Файл | Что проверяем |
 |---|---|
@@ -21,7 +21,7 @@
 | `grid-48mp.heic` | 8064×6048, grid из тайлов 512×512, ICC P3, даты |
 | `not-heic.heic` | PNG с расширением .heic: формат определяется по сигнатуре, файл конвертируется как PNG |
 | `garbage.heic` | мусор |
-| `photo.avif` | AVIF (пока не поддерживается) |
+| `photo.avif` | AVIF 1200×800 без ICC и EXIF (→ sRGB); на HEIC-странице конвертируется своим декодером |
 | `photo.jpg` | JPEG 1200×800 без ICC и EXIF (→ sRGB); на выходе JPG — «уже в формате JPG» |
 | `exif-gps.jpg` | 1200×800, ICC Display P3, даты, GPS, Make/Model/SerialNumber, XMP |
 | `rotated.jpg`, `transposed.jpg`, `mirrored.jpg` | хранятся повёрнутыми, EXIF Orientation 6, 5 и 2; на экране 600×800 с квадрантами |
@@ -37,6 +37,11 @@
 | `rotated.webp`, `exif-prefixed.webp` | хранятся повёрнутыми, Orientation 6; во втором чанк EXIF с префиксом «Exif\0\0» |
 | `lossless-alpha.webp`, `lossy-alpha.webp` | красный круг на прозрачном фоне: VP8L и VP8X + ALPH |
 | `animated.webp` | два кадра, первый — квадранты 640×480 |
+| `exif-gps.avif` | 1200×800, ICC Display P3, EXIF с датами, GPS и камерой, XMP (exiftool) |
+| `rotated.avif` | хранится 800×600 + irot; на экране 600×800 с квадрантами |
+| `nclx-p3.avif`, `10bit.avif`, `hdr-pq.avif` | цвет только в nclx (Display P3); 10 бит; 10 бит BT.2020 + PQ |
+| `alpha.avif` | красный круг на прозрачном фоне (альфа — вспомогательное изображение) |
+| `animated.avif` | последовательность из двух кадров (бренд `avis`) + основное изображение — квадранты 640×480 |
 | `too-wide.png` | 16400×8 — шире предела WebP (16 383 точки) |
 | `exif/big-endian.tiff`, `exif/little-endian.tiff` | сырые EXIF-блоки (TIFF) с датами, GPS, Make/Model, Orientation = 6 — для unit-тестов |
 

@@ -12,6 +12,7 @@ export type LicenseTextId =
   | 'png-mit'
   | 'libwebp-bsd'
   | 'libwebp-patents'
+  | 'dav1d-bsd'
   | 'emscripten'
   | 'client-zip-mit';
 
@@ -49,6 +50,22 @@ export const COMPONENTS: ThirdPartyComponent[] = [
     license: 'GNU LGPL 3.0',
     texts: ['lgpl-3.0', 'gpl-3.0'],
     source: 'https://github.com/catdad-experiments/libheif-js/tree/1.23.5',
+  },
+  {
+    name: 'libheif',
+    version: '1.23.6',
+    purpose: { ru: 'чтение файлов AVIF (своя сборка с dav1d)', en: 'reading AVIF files (own build with dav1d)' },
+    license: 'GNU LGPL 3.0',
+    texts: ['lgpl-3.0', 'gpl-3.0'],
+    source: 'https://github.com/strukturag/libheif/tree/v1.23.6',
+  },
+  {
+    name: 'dav1d',
+    version: '1.5.4',
+    purpose: { ru: 'декодирование AV1 (AVIF)', en: 'AV1 (AVIF) decoding' },
+    license: 'BSD-2-Clause',
+    texts: ['dav1d-bsd'],
+    source: 'https://code.videolan.org/videolan/dav1d/-/tree/1.5.4',
   },
   {
     name: 'MozJPEG (libjpeg-turbo)',
@@ -97,8 +114,8 @@ export const COMPONENTS: ThirdPartyComponent[] = [
     name: 'Emscripten',
     version: '6.0.12',
     purpose: {
-      ru: 'сборка libwebp в WebAssembly: среда выполнения и стандартная библиотека C',
-      en: 'WebAssembly build of libwebp: runtime and C standard library',
+      ru: 'сборка libwebp и декодера AVIF в WebAssembly: среда выполнения и стандартные библиотеки C и C++',
+      en: 'WebAssembly builds of libwebp and the AVIF decoder: runtime and C/C++ standard libraries',
     },
     license: 'MIT / NCSA',
     texts: ['emscripten'],
@@ -131,6 +148,7 @@ export const LICENSE_TITLES: Record<LicenseTextId, string> = {
   'png-mit': 'png crate (MIT)',
   'libwebp-bsd': 'libwebp (BSD-3-Clause, Google)',
   'libwebp-patents': 'libwebp — Additional IP Rights Grant (Patents)',
+  'dav1d-bsd': 'dav1d (BSD-2-Clause, VideoLAN)',
   emscripten: 'Emscripten (MIT / University of Illinois NCSA)',
   'client-zip-mit': 'client-zip (MIT)',
 };
