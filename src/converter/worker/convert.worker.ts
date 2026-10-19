@@ -1,9 +1,12 @@
-// Module Web Worker конвертера: строго один файл за раз, WASM-модули грузятся по первому запросу.
+// Module Web Worker конвертера: один файл за раз (параллельно работают несколько таких worker'ов — см. widget/worker-pool.ts),
+// WASM-модули грузятся по первому запросу.
 
 import { convertImage } from '../pipeline/convert';
 import { loadDecoder } from '../pipeline/decoders';
 import { loadEncoder } from '../pipeline/encoders';
 import { checkInput } from '../pipeline/input';
+import { estimateNeeds, freshFootprint, projectFootprint } from '../pipeline/memory';
+import { targetSize } from '../pipeline/resize';
 import { ConvertError, type ErrorCode, WEBP_MAX_DIMENSION } from '../pipeline/types';
 import type { FromWorker, ToWorker } from './protocol';
 
@@ -14,9 +17,6 @@ interface WorkerScope {
 
 const scope = self as unknown as WorkerScope;
 const post = (message: FromWorker, transfer: Transferable[] = []) => scope.postMessage(message, transfer);
-
-/** Сколько файлов обработал этот экземпляр worker'а (память WASM после роста не уменьшается). */
-let processed = 0;
 
 /** Ошибки WASM, после которых экземпляр модуля нельзя использовать дальше. */
 function classifyUnexpected(error: unknown): { code: ErrorCode; fatal: true } {
@@ -34,10 +34,8 @@ function heapStats(): Record<string, number> {
   return Object.fromEntries([...modules].map(([name, module]) => [name, module.heapBytes()]));
 }
 
-function reservedHeap(): number {
-  let total = 0;
-  for (const module of modules.values()) total += module.heapBytes();
-  return total;
+function currentHeaps(): Map<string, number> {
+  return new Map([...modules].map(([name, module]) => [name, module.heapBytes()]));
 }
 
 async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): Promise<void> {
@@ -46,32 +44,41 @@ async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): P
     const readStarted = performance.now();
     const bytes = new Uint8Array(await message.file.arrayBuffer());
     const read = performance.now() - readStarted;
-    const input = checkInput(bytes, message.options.encoder, message.options.allowSameFormat);
+    const { options } = message;
+    const input = checkInput(bytes, options.encoder, options.allowSameFormat);
     if (!input.ok) throw new ConvertError(input.code);
-    // кучи прошлых файлов не уменьшаются: если их уже много, следующий файл — в свежем worker'е
-    if (processed > 0 && reservedHeap() > message.freshWorkerAboveHeapBytes) {
-      post({ type: 'needs-fresh-worker', id, pixels: 0 });
-      return;
-    }
 
-    const [decoder, encoder] = await Promise.all([loadDecoder(input.decoder), loadEncoder(message.options.encoder)]);
+    const [decoder, encoder] = await Promise.all([loadDecoder(input.decoder), loadEncoder(options.encoder)]);
     modules.set(decoder.module, decoder);
     modules.set(encoder.module, encoder);
     const session = decoder.open(bytes);
     try {
       // ограничение WebP проверяем до декодирования (бывает у панорам); после уменьшения снимок может и влезть —
       // тогда проверит сам кодировщик
-      const resized = message.options.resize !== null;
-      if (message.options.encoder === 'webp' && !resized && Math.max(session.width, session.height) > WEBP_MAX_DIMENSION) {
+      if (options.encoder === 'webp' && !options.resize && Math.max(session.width, session.height) > WEBP_MAX_DIMENSION) {
         throw new ConvertError('too-large-for-webp');
       }
       const pixels = session.width * session.height;
-      if (processed > 0 && pixels > message.freshWorkerAbovePixels) {
-        post({ type: 'needs-fresh-worker', id, pixels });
+      // память: размер известен до декодирования — решаем, поместится ли файл рядом с другими worker'ами пула
+      const output = options.resize ? targetSize(session.width, session.height, options.resize) : session;
+      const needs = estimateNeeds({
+        decoder: input.decoder,
+        decoderModule: decoder.module,
+        encoder: options.encoder,
+        encoderModule: encoder.module,
+        lossless: options.lossless,
+        pixels,
+        outputPixels: output.width * output.height,
+        fileBytes: bytes.length,
+      });
+      const footprint = projectFootprint(needs, currentHeaps());
+      const fresh = freshFootprint(needs);
+      if (footprint > message.memoryLimit) {
+        post({ type: 'needs-memory', id, footprint, fresh });
         return;
       }
-      const result = await convertImage(session, encoder, message.options);
-      processed++;
+      post({ type: 'started', id, footprint, fresh });
+      const result = await convertImage(session, encoder, options);
       const buffer = result.bytes.buffer as ArrayBuffer;
       const preview = result.preview.buffer as ArrayBuffer;
       post(

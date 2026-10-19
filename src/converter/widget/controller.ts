@@ -5,12 +5,13 @@ import { track } from '../../lib/analytics';
 import { checkInput } from '../pipeline/input';
 import { SNIFF_BYTES } from '../pipeline/sniff';
 import type { ResizeSpec } from '../pipeline/resize';
-import type { ErrorCode, WarningCode } from '../pipeline/types';
+import { ENCODER_EXTENSIONS, type ErrorCode, type WarningCode } from '../pipeline/types';
 import { type OutputOption, type WidgetConfig, readConfig } from './config';
 import { NameAllocator, outputName, withTimestamp } from './filenames';
 import { formatBytes } from './sizes';
 import { supportsConverter } from './support';
 import { WorkerClient } from './worker-client';
+import { type Lease, WorkerPool, currentDevice, poolPolicy } from './worker-pool';
 
 type Status = 'queued' | 'converting' | 'done' | 'error';
 
@@ -58,6 +59,10 @@ interface Item {
   quality: number | null;
   /** Размеры до и после уменьшения (страница «Изменить размер»). */
   dimensions: { before: [number, number]; after: [number, number] } | null;
+  /** Оценка памяти, если файл не поместился рядом с другими (ждёт в очереди первым). */
+  estimate: number | null;
+  /** Повтор после нехватки памяти или сбоя WASM — в одиночку на свежем worker'е. */
+  retry: boolean;
   row: HTMLLIElement;
 }
 
@@ -123,8 +128,7 @@ export class ConverterWidget {
   private readonly clearButton: HTMLButtonElement;
 
   private items: Item[] = [];
-  private client: WorkerClient | null = null;
-  private running = false;
+  private readonly pool = new WorkerPool(poolPolicy(currentDevice()), () => new WorkerClient());
   private zipping = false;
   private loadedOnce = false;
   /** Растёт при очистке: результаты задач из прошлого «поколения» отбрасываются. */
@@ -303,6 +307,8 @@ export class ConverterWidget {
         warnings: [],
         quality: null,
         dimensions: null,
+        estimate: null,
+        retry: false,
         row: document.createElement('li'),
       };
       this.items.push(item);
@@ -312,66 +318,113 @@ export class ConverterWidget {
     }
     this.results.hidden = false;
     this.updateActions();
-    void this.processQueue();
+    this.pump();
   }
 
-  private async processQueue(): Promise<void> {
-    if (this.running) return;
-    this.running = true;
+  /**
+   * Запускает файлы из очереди по порядку, пока пул даёт место (worker'ы, память). Вызывается при добавлении файлов,
+   * когда worker оценил файл и когда файл закончен. Файл, который ждёт памяти, остаётся первым в очереди.
+   */
+  private pump(): void {
     const generation = this.generation;
     for (let item = this.nextQueued(); item; item = this.nextQueued()) {
-      await this.convert(item, generation);
-      if (generation !== this.generation) return; // список очистили — этот цикл больше не нужен
+      const lease = this.pool.acquire(item.estimate, item.retry);
+      if (!lease) break;
+      item.status = 'converting';
+      this.renderRow(item);
+      void this.convert(item, lease, generation);
     }
-    this.running = false;
-    this.finishRun();
+    if (this.pool.running > 0) {
+      if (this.loadedOnce) this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
+    } else if (!this.nextQueued()) {
+      this.pool.trim();
+      this.finishRun();
+    }
   }
 
   private nextQueued(): Item | undefined {
     return this.items.find((item) => item.status === 'queued');
   }
 
-  private async convert(item: Item, generation: number): Promise<void> {
+  private async convert(item: Item, lease: Lease, generation: number): Promise<void> {
+    let recycle = false;
+    try {
+      recycle = await this.process(item, lease, generation);
+    } catch {
+      // например, файл не читается: его удалили с диска после выбора — остальная очередь идёт дальше
+      if (generation === this.generation) this.fail(item, 'internal');
+    } finally {
+      // после «Очистить» пул уже сброшен — этот файл больше никого не интересует
+      if (generation === this.generation) {
+        lease.release(recycle);
+        this.pump();
+      }
+    }
+  }
+
+  /** Обрабатывает файл на выданном worker'е; true — worker нужно пересоздать. */
+  private async process(item: Item, lease: Lease, generation: number): Promise<boolean> {
     // формат по сигнатуре проверяем сразу, без загрузки WASM
     const head = new Uint8Array(await item.file.slice(0, SNIFF_BYTES).arrayBuffer());
-    if (generation !== this.generation) return;
+    if (generation !== this.generation) return false;
     const settings = this.currentSettings();
     item.settings = settings;
     const input = checkInput(head, settings.output.encoder, this.config.mode !== 'convert');
-    if (!input.ok) return this.fail(item, input.code);
+    if (!input.ok) {
+      this.fail(item, input.code);
+      return false;
+    }
+    // имя выделяем сейчас, в порядке очереди: при параллельной обработке файлы заканчиваются вразнобой
+    item.name ??= this.names.allocate(outputName(item.file.name, ENCODER_EXTENSIONS[input.encoder]));
 
-    item.status = 'converting';
-    this.renderRow(item);
-
-    this.client ??= new WorkerClient();
     if (!this.loadedOnce) this.setStatus(this.t.loading);
     try {
-      await this.client.load(input.decoder, input.encoder);
+      await lease.client.load(input.decoder, input.encoder);
       this.loadedOnce = true;
     } catch {
-      if (generation !== this.generation) return;
+      if (generation !== this.generation) return false;
       this.showNotice(this.t.loadFailed, 'error');
-      return this.fail(item, 'internal');
+      this.fail(item, 'internal');
+      return true;
     }
-    if (generation !== this.generation) return;
-    this.setStatus(fill(this.t.progress, { current: this.run.done + this.run.failed + 1, total: this.run.total }));
+    if (generation !== this.generation) return false;
+    this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
 
-    const outcome = await this.client.convert(item.file, input.decoder, {
+    const options = {
       encoder: input.encoder,
       quality: settings.quality,
       lossless: isLossless(settings),
-      metadata: settings.keepMetadata ? 'all' : 'dates',
+      metadata: settings.keepMetadata ? ('all' as const) : ('dates' as const),
       targetBytes: settings.targetBytes,
       allowSameFormat: this.config.mode !== 'convert',
       resize: settings.resize,
+    };
+    const outcome = await lease.client.convert(item.file, options, lease.memoryLimit, (footprint, fresh) => {
+      if (generation !== this.generation) return;
+      lease.started(footprint, fresh);
+      this.pump(); // файл оценён — можно запускать следующий
     });
-    if (generation !== this.generation) return;
-    if (!outcome.ok) return this.fail(item, outcome.code);
+    if (generation !== this.generation) return false;
+    if (outcome.status === 'needs-memory') {
+      // не поместился рядом с другими: ждёт первым в очереди, пока освободится память
+      item.estimate = outcome.fresh;
+      this.requeue(item);
+      return true;
+    }
+    if (outcome.status === 'error') {
+      // нехватка памяти или сбой WASM: один повтор — в одиночку на свежем worker'е (память могли занять другие файлы)
+      if (outcome.fatal && !item.retry) {
+        item.retry = true;
+        this.requeue(item);
+        return true;
+      }
+      this.fail(item, outcome.code);
+      return outcome.fatal || outcome.recycle;
+    }
 
     item.blob = new Blob([outcome.buffer], { type: outcome.mime });
     item.url = URL.createObjectURL(item.blob);
     item.previewUrl = URL.createObjectURL(new Blob([outcome.preview], { type: outcome.mime }));
-    item.name = this.names.allocate(outputName(item.file.name, outcome.extension));
     item.quality = settings.targetBytes !== null ? outcome.quality : null;
     item.dimensions = settings.resize
       ? { before: [outcome.sourceWidth, outcome.sourceHeight], after: [outcome.width, outcome.height] }
@@ -385,9 +438,20 @@ export class ConverterWidget {
     this.run.done++;
     this.renderRow(item);
     this.updateActions();
+    return false;
+  }
+
+  /** Вернуть файл в очередь (на своё место — он пойдёт первым); имя выделится заново при старте. */
+  private requeue(item: Item): void {
+    if (item.name) this.names.release(item.name);
+    item.name = null;
+    item.status = 'queued';
+    this.renderRow(item);
   }
 
   private fail(item: Item, code: ErrorCode): void {
+    if (item.name) this.names.release(item.name);
+    item.name = null;
     item.status = 'error';
     item.error = code;
     this.run.failed++;
@@ -441,7 +505,8 @@ export class ConverterWidget {
     body.className = 'file__body';
     const name = document.createElement('p');
     name.className = 'file__name';
-    name.textContent = item.name ?? item.file.name;
+    // имя результата выделяется при старте, но показываем его только у готового файла
+    name.textContent = item.status === 'done' && item.name ? item.name : item.file.name;
     const meta = document.createElement('p');
     meta.className = 'file__meta';
     if (item.status === 'queued') meta.textContent = this.t.queued;
@@ -515,18 +580,19 @@ export class ConverterWidget {
         warnings: [],
         quality: null,
         dimensions: null,
+        estimate: null,
+        retry: false,
       });
       this.run.total++;
       this.renderRow(item);
     }
     this.updateActions();
-    void this.processQueue();
+    this.pump();
   }
 
   private clear(): void {
     this.generation++;
-    this.running = false;
-    this.client?.recycle(); // прерываем текущую конвертацию
+    this.pool.recycleAll(); // прерываем текущие конвертации
     for (const item of this.items) this.revokeUrls(item);
     this.items = [];
     this.names.clear();

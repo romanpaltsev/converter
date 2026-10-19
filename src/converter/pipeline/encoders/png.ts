@@ -4,14 +4,14 @@
 import { encode as encodePng } from '@jsquash/png/codec/pkg/squoosh_png.js';
 import { insertPngMetadata } from '../../metadata/png-chunks';
 import { loadSquooshPng } from '../codecs/squoosh-png';
-import type { Encoder } from '../types';
+import { ENCODER_EXTENSIONS, type Encoder } from '../types';
 
 export async function loadPngEncoder(): Promise<Encoder> {
   const memory = await loadSquooshPng();
   return {
     module: 'squoosh-png',
     mime: 'image/png',
-    extension: 'png',
+    extension: ENCODER_EXTENSIONS.png,
     maxExifBytes: Number.POSITIVE_INFINITY,
     maxIccBytes: Number.POSITIVE_INFINITY,
     async encode(image) {

@@ -9,6 +9,9 @@ export type EncoderId = 'jpeg' | 'png' | 'webp' | 'ico' | 'avif';
 /** Выбор формата в интерфейсе: конкретный кодировщик или «как у исходника» (страницы сжатия и размера). */
 export type OutputTarget = EncoderId | 'original';
 
+/** Расширение результата по кодировщику (имя файла выделяется до конвертации, чтобы суффиксы _2 шли по очереди). */
+export const ENCODER_EXTENSIONS: Record<EncoderId, string> = { jpeg: 'jpg', png: 'png', webp: 'webp', ico: 'ico', avif: 'avif' };
+
 /** WebP вмещает изображения не больше 16 383 точек по стороне. */
 export const WEBP_MAX_DIMENSION = 16383;
 

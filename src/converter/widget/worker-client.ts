@@ -1,11 +1,12 @@
-// Управление worker'ом конвертера из основного потока: ленивый запуск, по одному файлу,
-// пересоздание (память WASM после роста не уменьшается) и одна повторная попытка после нехватки памяти.
+// Один worker конвертера из основного потока: ленивый запуск, загрузка WASM-модулей, одно задание за раз.
+// Сколько worker'ов работает одновременно, когда файл ждёт памяти и когда worker пересоздаётся, решает пул
+// (worker-pool.ts): память WASM после роста не уменьшается.
 
 import type { ConvertOptions, DecoderId, EncoderId, ErrorCode, WarningCode } from '../pipeline/types';
 import type { FromWorker, ToWorker, WorkerStats } from '../worker/protocol';
 
 export interface ConvertSuccess {
-  ok: true;
+  status: 'done';
   buffer: ArrayBuffer;
   preview: ArrayBuffer;
   mime: string;
@@ -20,43 +21,49 @@ export interface ConvertSuccess {
 }
 
 export interface ConvertFailure {
-  ok: false;
+  status: 'error';
   code: ErrorCode;
   message: string;
+  /** Нужен новый worker и повторная попытка (нехватка памяти, сбой WASM). */
+  fatal: boolean;
+  /** Модуль мог потерять память — worker пересоздаётся без повторной попытки. */
+  recycle: boolean;
 }
 
-export type ConvertOutcome = ConvertSuccess | ConvertFailure;
-
-export interface WorkerPolicy {
-  /** Файл больше этого размера обрабатывается в свежем worker'е, и после него worker пересоздаётся. */
-  freshWorkerAbovePixels: number;
-  /** Если кучи WASM-модулей worker'а в сумме больше порога, следующий файл — в свежем worker'е. */
-  freshWorkerAboveHeapBytes: number;
-  /** Пересоздавать worker после стольких файлов подряд. */
-  recycleEveryFiles: number;
+/** Файл не поместился в лимит памяти и не начат; fresh — сколько он займёт в свежем worker'е. */
+export interface NeedsMemory {
+  status: 'needs-memory';
+  fresh: number;
 }
 
-export const DEFAULT_POLICY: WorkerPolicy = {
-  freshWorkerAbovePixels: 30_000_000,
-  freshWorkerAboveHeapBytes: 1024 * 1024 * 1024,
-  recycleEveryFiles: 20,
-};
+export type ConvertOutcome = ConvertSuccess | ConvertFailure | NeedsMemory;
 
-type Reply = FromWorker;
+/** То, что нужно пулу от worker'а (в unit-тестах пула — подделка). */
+export interface PoolClient {
+  /** Файлов обработано этим экземпляром worker'а. */
+  readonly files: number;
+  /** Кучи WASM-модулей после последнего файла: память, которую держит простаивающий worker. */
+  readonly heapBytes: number;
+  /** Worker запущен (и, значит, держит память и загруженные модули). */
+  readonly alive: boolean;
+  recycle(): void;
+}
 
-export class WorkerClient {
+export class WorkerClient implements PoolClient {
   private worker: Worker | null = null;
   private loading: Promise<void> | null = null;
-  private filesInWorker = 0;
   private nextId = 1;
-  private pending: ((reply: Reply) => void) | null = null;
+  private pending: ((reply: FromWorker) => void) | null = null;
+  private onStarted: ((footprint: number, fresh: number) => void) | null = null;
   /** Модули, уже загруженные (или загружаемые) в текущем worker'е; после пересоздания — пусто. */
   private readonly decoders = new Set<DecoderId>();
   private readonly encoders = new Set<EncoderId>();
-  /** Сколько раз worker создавался — для замеров и тестов. */
-  workersCreated = 0;
+  files = 0;
+  heapBytes = 0;
 
-  constructor(private readonly policy: WorkerPolicy = DEFAULT_POLICY) {}
+  get alive(): boolean {
+    return this.worker !== null;
+  }
 
   /** Запускает worker и загружает в него недостающие WASM-модули: декодер и кодировщик. */
   load(decoder: DecoderId, encoder: EncoderId): Promise<void> {
@@ -79,76 +86,61 @@ export class WorkerClient {
     return this.loading;
   }
 
-  async convert(file: Blob, decoder: DecoderId, options: ConvertOptions): Promise<ConvertOutcome> {
-    for (let attempt = 0; attempt < 2; attempt++) {
-      await this.load(decoder, options.encoder);
-      const reply = await this.request(file, options);
-      if (reply.type === 'needs-fresh-worker') {
-        this.recycle(); // большой файл после других — в чистом worker'е (не считается попыткой)
-        attempt--;
-        continue;
-      }
-      if (reply.type === 'done') {
-        this.filesInWorker++;
-        if (reply.pixels > this.policy.freshWorkerAbovePixels || this.filesInWorker >= this.policy.recycleEveryFiles) this.recycle();
-        return {
-          ok: true,
-          buffer: reply.buffer,
-          preview: reply.preview,
-          mime: reply.mime,
-          extension: reply.extension,
-          width: reply.width,
-          height: reply.height,
-          sourceWidth: reply.sourceWidth,
-          sourceHeight: reply.sourceHeight,
-          quality: reply.quality,
-          warnings: reply.warnings,
-          stats: reply.stats,
-        };
-      }
-      if (reply.type === 'error') {
-        // после фатальной ошибки (нехватка памяти, сбой WASM) пробуем ещё раз в свежем worker'е:
-        // память могли занять предыдущие файлы
-        if (reply.fatal) {
-          this.recycle();
-          if (attempt === 0) continue;
-        }
-        // ошибка внутри WASM без повторной попытки: модуль мог потерять память — следующий файл в новом worker'е
-        if (reply.recycle) this.recycle();
-        return { ok: false, code: reply.code, message: reply.message };
-      }
-      return { ok: false, code: 'internal', message: `unexpected reply ${reply.type}` };
+  /**
+   * Конвертирует один файл. memoryLimit — сколько памяти может занять worker (Infinity — без ограничения);
+   * onStarted вызывается, когда worker оценил файл и начал работу.
+   */
+  async convert(file: Blob, options: ConvertOptions, memoryLimit: number, onStarted: (footprint: number, fresh: number) => void): Promise<ConvertOutcome> {
+    const reply = await this.request(file, options, memoryLimit, onStarted);
+    if (reply.type === 'done') {
+      this.files++;
+      this.heapBytes = Object.values(reply.stats.heap).reduce((sum, bytes) => sum + bytes, 0);
+      return {
+        status: 'done',
+        buffer: reply.buffer,
+        preview: reply.preview,
+        mime: reply.mime,
+        extension: reply.extension,
+        width: reply.width,
+        height: reply.height,
+        sourceWidth: reply.sourceWidth,
+        sourceHeight: reply.sourceHeight,
+        quality: reply.quality,
+        warnings: reply.warnings,
+        stats: reply.stats,
+      };
     }
-    return { ok: false, code: 'out-of-memory', message: 'out of memory after retry' };
+    if (reply.type === 'needs-memory') return { status: 'needs-memory', fresh: reply.fresh };
+    if (reply.type === 'error') return { status: 'error', code: reply.code, message: reply.message, fatal: reply.fatal, recycle: reply.recycle };
+    return { status: 'error', code: 'internal', message: `unexpected reply ${reply.type}`, fatal: false, recycle: true };
   }
 
-  /** Завершает worker; следующий файл запустит новый. */
+  /** Завершает worker и освобождает его память; следующий файл запустит новый. */
   recycle(): void {
     this.worker?.terminate();
-    this.worker = null;
-    this.loading = null;
-    this.filesInWorker = 0;
-    this.decoders.clear();
-    this.encoders.clear();
+    this.reset();
     const pending = this.pending;
     this.pending = null;
     pending?.({ type: 'error', id: 0, code: 'internal', fatal: true, recycle: false, message: 'worker terminated' });
   }
 
-  private request(file: Blob, options: ConvertOptions): Promise<Reply> {
+  private reset(): void {
+    this.worker = null;
+    this.loading = null;
+    this.onStarted = null;
+    this.files = 0;
+    this.heapBytes = 0;
+    this.decoders.clear();
+    this.encoders.clear();
+  }
+
+  private request(file: Blob, options: ConvertOptions, memoryLimit: number, onStarted: (footprint: number, fresh: number) => void): Promise<FromWorker> {
     const worker = this.ensureWorker();
     const id = this.nextId++;
-    return new Promise<Reply>((resolve) => {
+    return new Promise<FromWorker>((resolve) => {
       this.pending = resolve;
-      const fresh = this.filesInWorker === 0;
-      const message: ToWorker = {
-        type: 'convert',
-        id,
-        file,
-        options,
-        freshWorkerAbovePixels: fresh ? Number.POSITIVE_INFINITY : this.policy.freshWorkerAbovePixels,
-        freshWorkerAboveHeapBytes: fresh ? Number.POSITIVE_INFINITY : this.policy.freshWorkerAboveHeapBytes,
-      };
+      this.onStarted = onStarted;
+      const message: ToWorker = { type: 'convert', id, file, options, memoryLimit };
       worker.postMessage(message);
     });
   }
@@ -156,26 +148,27 @@ export class WorkerClient {
   private ensureWorker(): Worker {
     if (this.worker) return this.worker;
     const worker = new Worker(new URL('../worker/convert.worker.ts', import.meta.url), { type: 'module', name: 'converter' });
-    worker.onmessage = (event: MessageEvent<Reply>) => {
+    worker.onmessage = (event: MessageEvent<FromWorker>) => {
+      const reply = event.data;
+      if (reply.type === 'started') {
+        this.onStarted?.(reply.footprint, reply.fresh);
+        return;
+      }
       const pending = this.pending;
       this.pending = null;
-      pending?.(event.data);
+      this.onStarted = null;
+      pending?.(reply);
     };
     // падение worker'а (например, нехватка памяти вкладки) — завершаем текущую задачу ошибкой
     worker.onerror = (event) => {
       event.preventDefault();
       const pending = this.pending;
-      this.worker = null;
-      this.loading = null;
-      this.filesInWorker = 0;
-      this.decoders.clear();
-      this.encoders.clear();
       this.pending = null;
       worker.terminate();
+      this.reset();
       pending?.({ type: 'error', id: 0, code: 'out-of-memory', fatal: true, recycle: false, message: event.message || 'worker crashed' });
     };
     this.worker = worker;
-    this.workersCreated++;
     return worker;
   }
 }

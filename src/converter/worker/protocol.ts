@@ -10,10 +10,11 @@ export type ToWorker =
       id: number;
       file: Blob;
       options: ConvertOptions;
-      /** Если worker уже обрабатывал файлы, а этот больше порога — просим свежий worker. */
-      freshWorkerAbovePixels: number;
-      /** Если worker уже обрабатывал файлы, а кучи его WASM-модулей в сумме больше порога — тоже свежий worker. */
-      freshWorkerAboveHeapBytes: number;
+      /**
+       * Сколько памяти (байт) может занять этот worker вместе с уже выросшими кучами, чтобы остальные worker'ы
+       * пула поместились в бюджет. Infinity — файл обрабатывается в одиночку, без ограничения.
+       */
+      memoryLimit: number;
     };
 
 export interface WorkerStats {
@@ -25,6 +26,13 @@ export interface WorkerStats {
 export type FromWorker =
   | { type: 'loaded' }
   | { type: 'load-failed'; message: string }
+  /**
+   * Файл открыт и оценён, оценка помещается в лимит — работа идёт (промежуточное сообщение, ответ будет позже).
+   * fresh — сколько файл занял бы в свежем worker'е (пул прикидывает по нему следующие файлы пачки).
+   */
+  | { type: 'started'; id: number; footprint: number; fresh: number }
+  /** Оценка не помещается в лимит; работа не начата. fresh — сколько займёт файл в свежем worker'е. */
+  | { type: 'needs-memory'; id: number; footprint: number; fresh: number }
   | {
       type: 'done';
       id: number;
@@ -43,5 +51,4 @@ export type FromWorker =
       stats: WorkerStats;
     }
   /** fatal — нужен новый worker и повторная попытка; recycle — новый worker без повторной попытки. */
-  | { type: 'error'; id: number; code: ErrorCode; fatal: boolean; recycle: boolean; message: string }
-  | { type: 'needs-fresh-worker'; id: number; pixels: number };
+  | { type: 'error'; id: number; code: ErrorCode; fatal: boolean; recycle: boolean; message: string };

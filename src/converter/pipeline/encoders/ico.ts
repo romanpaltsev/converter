@@ -6,7 +6,7 @@
 import { encode as encodePng } from '@jsquash/png/codec/pkg/squoosh_png.js';
 import { loadSquooshPng } from '../codecs/squoosh-png';
 import { resizeRgba } from '../resize';
-import type { Encoder, RawImage } from '../types';
+import { ENCODER_EXTENSIONS, type Encoder, type RawImage } from '../types';
 
 /** Стандартный набор размеров фавикона и иконки Windows. */
 export const ICO_SIZES = [16, 32, 48, 64, 128, 256];
@@ -59,7 +59,7 @@ export async function loadIcoEncoder(): Promise<Encoder> {
   return {
     module: 'squoosh-png',
     mime: 'image/x-icon',
-    extension: 'ico',
+    extension: ENCODER_EXTENSIONS.ico,
     // в ICO нет места для EXIF и ICC: embed их просто не пишет (без предупреждений «не поместилось»)
     maxExifBytes: Number.POSITIVE_INFINITY,
     maxIccBytes: Number.POSITIVE_INFINITY,

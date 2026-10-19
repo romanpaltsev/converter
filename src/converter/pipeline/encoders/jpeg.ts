@@ -3,7 +3,7 @@
 import mozjpegEncode, { init as initMozjpeg } from '@jsquash/jpeg/encode.js';
 import mozjpegWasmUrl from '@jsquash/jpeg/codec/enc/mozjpeg_enc.wasm?url';
 import { MAX_EXIF_TIFF_BYTES, MAX_ICC_BYTES, insertJpegMetadata } from '../../metadata/jpeg-segments';
-import type { Encoder, RawImage } from '../types';
+import { ENCODER_EXTENSIONS, type Encoder, type RawImage } from '../types';
 import { compileWasm } from '../wasm';
 
 interface EmscriptenHeap {
@@ -50,7 +50,7 @@ export async function loadJpegEncoder(): Promise<Encoder> {
   return {
     module: 'mozjpeg-enc',
     mime: 'image/jpeg',
-    extension: 'jpg',
+    extension: ENCODER_EXTENSIONS.jpeg,
     maxExifBytes: MAX_EXIF_TIFF_BYTES,
     maxIccBytes: MAX_ICC_BYTES,
     async encode(image, options) {

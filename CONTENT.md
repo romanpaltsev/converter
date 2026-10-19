@@ -1913,7 +1913,7 @@
 | `widget.targetUnit` | Единица размера | Size unit |
 | `widget.targetHint` | Качество подберётся само: файл вместе с метаданными не превысит этот размер. | Quality is picked automatically so the file, metadata included, stays within this size. |
 | `widget.pngCompressWarning` | PNG сжимается только без потерь, поэтому файл уменьшится ненамного. Чтобы файл стал заметно меньше, выберите JPG или WebP. | PNG is compressed losslessly only, so the file won't shrink much. For a much smaller file, choose JPG or WebP. |
-| `widget.progressProcess` | Обрабатываем {current} из {total}… | Processing {current} of {total}… |
+| `widget.progressProcess` | Обрабатываем: готово {done} из {total}… | Processing: {done} of {total} done… |
 | `widget.processing` | Обрабатывается… | Processing… |
 | `widget.reprocess` | Обработать заново с новыми настройками | Process again with the new settings |
 | `widget.qualityUsed` | качество {quality} | quality {quality} |
@@ -1943,7 +1943,7 @@
 | `widget.pngWarning` | PNG сохраняет снимок без потерь, поэтому файлы получаются большими: фото на 24 Мп весит десятки мегабайт. | PNG is lossless, so files are large: a 24 MP photo takes tens of megabytes. |
 | `widget.noscript` | Для работы конвертера нужен включённый JavaScript. | The converter needs JavaScript to be enabled. |
 | `widget.loading` | Загружаем конвертер… | Loading the converter… |
-| `widget.progress` | Конвертируем {current} из {total}… | Converting {current} of {total}… |
+| `widget.progress` | Конвертируем: готово {done} из {total}… | Converting: {done} of {total} done… |
 | `widget.summary` | Готово: {done} из {total}. | Done: {done} of {total}. |
 | `widget.summaryErrors` | Не удалось: {failed}. | Failed: {failed}. |
 | `widget.batchLimit` | За один раз можно добавить до {max} файлов — взяли первые {max}. | You can add up to {max} files at a time — the first {max} were taken. |

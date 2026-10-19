@@ -4,7 +4,7 @@
 
 import createAvifEncoder, { type AvifEncoderModule } from '../../vendor/avif-enc/avif_enc.mjs';
 import avifEncWasmUrl from '../../vendor/avif-enc/avif_enc.wasm?url';
-import { ConvertError, type Encoder, type EncodeMeta, type RawImage } from '../types';
+import { ConvertError, ENCODER_EXTENSIONS, type Encoder, type EncodeMeta, type RawImage } from '../types';
 import { compileWasm } from '../wasm';
 
 /** Скорость libaom (0–9): выше — быстрее и немного хуже сжатие. */
@@ -83,7 +83,7 @@ export async function loadAvifEncoder(): Promise<Encoder> {
   return {
     module: 'libheif-avif-enc',
     mime: 'image/avif',
-    extension: 'avif',
+    extension: ENCODER_EXTENSIONS.avif,
     maxExifBytes: Number.POSITIVE_INFINITY,
     maxIccBytes: Number.POSITIVE_INFINITY,
     async encode(image, options, meta) {

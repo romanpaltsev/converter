@@ -4,7 +4,7 @@
 import createWebpEncoder, { type WebpEncoderModule } from '../../vendor/webp/webp_enc.mjs';
 import webpEncWasmUrl from '../../vendor/webp/webp_enc.wasm?url';
 import { insertWebpMetadata } from '../../metadata/webp-chunks';
-import { ConvertError, type Encoder, type RawImage, WEBP_MAX_DIMENSION } from '../types';
+import { ConvertError, ENCODER_EXTENSIONS, type Encoder, type RawImage, WEBP_MAX_DIMENSION } from '../types';
 import { compileWasm } from '../wasm';
 
 /** Усилие сжатия без потерь (0–9, как у cwebp -z): компромисс между временем на 24 Мп и размером файла. */
@@ -76,7 +76,7 @@ export async function loadWebpEncoder(): Promise<Encoder> {
   return {
     module: 'libwebp-enc',
     mime: 'image/webp',
-    extension: 'webp',
+    extension: ENCODER_EXTENSIONS.webp,
     maxExifBytes: Number.POSITIVE_INFINITY,
     maxIccBytes: Number.POSITIVE_INFINITY,
     async encode(image, options) {

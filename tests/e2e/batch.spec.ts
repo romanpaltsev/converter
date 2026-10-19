@@ -28,6 +28,26 @@ test('ошибки не останавливают очередь, причин�
   await expect(page.locator('[data-status-text]')).toHaveText('Готово: 4 из 6. Не удалось: 2.');
 });
 
+test('несколько файлов обрабатываются одновременно, имена и порядок — как в очереди', async ({ page }) => {
+  await page.addInitScript(() => {
+    // сколько строк одновременно было в состоянии «конвертируется»
+    const state = window as unknown as { __maxConverting: number };
+    state.__maxConverting = 0;
+    new MutationObserver(() => {
+      state.__maxConverting = Math.max(state.__maxConverting, document.querySelectorAll('.file[data-status="converting"]').length);
+    }).observe(document, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-status'] });
+  });
+  await openConverter(page, '/heic-v-jpg');
+  const cores = await page.evaluate(() => navigator.hardwareConcurrency);
+  await page.setInputFiles('[data-input]', Array.from({ length: 6 }, () => fixture('basic.heic')));
+  await waitForRows(page, 6);
+  await expect(page.locator('.file__name')).toHaveText(['basic.jpg', 'basic_2.jpg', 'basic_3.jpg', 'basic_4.jpg', 'basic_5.jpg', 'basic_6.jpg']);
+  await expect(page.locator('[data-status-text]')).toHaveText('Готово: 6 из 6.');
+  // одно ядро пул оставляет интерфейсу: при трёх и больше ядрах файлы идут параллельно
+  const parallel = await page.evaluate(() => (window as unknown as { __maxConverting: number }).__maxConverting);
+  expect(parallel).toBeGreaterThanOrEqual(cores >= 3 ? 2 : 1);
+});
+
 test('«Скачать всё (ZIP)»: все готовые файлы, одинаковые имена с суффиксами', async ({ page }) => {
   await openConverter(page, '/heic-v-jpg');
   await page.setInputFiles('[data-input]', ['basic.heic', 'basic.heic', 'rotated.heic', 'garbage.heic'].map(fixture));
