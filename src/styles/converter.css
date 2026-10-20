@@ -3,14 +3,25 @@
    и результаты на белом. */
 
 .converter {
+  --card-radius: var(--radius-large);
   display: grid;
   gap: 12px;
   margin: 0;
-  padding: 0 0 18px;
+  padding: 0;
   border: 1px solid var(--border);
-  border-radius: var(--radius-large);
+  border-radius: var(--card-radius);
   background: var(--surface);
   box-shadow: var(--shadow-lg);
+}
+
+/* под зоной загрузки что-то видно (настройки, сообщение, статус, список) — отступ снизу; иначе (главная до выбора
+   файлов, «Посмотреть EXIF») карточка — одна графитовая панель со скруглёнными углами */
+.converter:has(> .settings:not([hidden]), > .notice:not([hidden]), > .converter__status:not(:empty), > .converter__results:not([hidden])) {
+  padding-bottom: 18px;
+}
+
+.converter:not(:has(> .settings:not([hidden]), > .notice:not([hidden]), > .converter__status:not(:empty), > .converter__results:not([hidden]))) .dropzone {
+  border-radius: calc(var(--card-radius) - 1px);
 }
 
 /* всё под зоной загрузки — с полями по бокам */
@@ -27,7 +38,7 @@
   min-height: 224px;
   padding: 32px 20px;
   border: 0;
-  border-radius: calc(var(--radius-large) - 1px) calc(var(--radius-large) - 1px) 0 0;
+  border-radius: calc(var(--card-radius) - 1px) calc(var(--card-radius) - 1px) 0 0;
   background-color: var(--panel);
   /* едва заметная «шахматка» */
   background-image: conic-gradient(var(--panel-pattern) 25%, transparent 0 50%, var(--panel-pattern) 0 75%, transparent 0);
@@ -870,7 +881,7 @@
 
 @media (max-width: 480px) {
   .converter {
-    border-radius: 20px;
+    --card-radius: 20px;
   }
 
   .converter > :not(.dropzone, input) {
@@ -880,7 +891,6 @@
   .dropzone {
     min-height: 168px;
     padding: 24px 14px;
-    border-radius: 19px 19px 0 0;
   }
 
   .dropzone__button {
