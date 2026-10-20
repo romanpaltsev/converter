@@ -2514,6 +2514,9 @@
 | `widget.allLabel` | {target} — формат для всех файлов | {target} — format for all files |
 | `widget.targetMenu` | Формат результата | Output format |
 | `widget.targetGroups.image` | Изображение | Image |
+| `widget.targetGroups.document` | Документ | Document |
+| `widget.pdfCombineHint` | Каждая картинка станет отдельным PDF. Один документ из нескольких картинок — | Each image becomes its own PDF. For one document from several images, use |
+| `widget.pdfCombineLink` | «JPG в PDF» | JPG to PDF |
 | `widget.waiting` | Выберите формат | Choose a format |
 | `widget.sameFormat` | Файл уже в формате {target}. | The file is already in {target} format. |
 | `widget.waitingStatus` | Ждут выбора формата: {count}. | Waiting for a format: {count}. |
@@ -2683,6 +2686,7 @@
 | `widget.errors.pdf-input` | Это PDF-документ, а не картинка. Чтобы сохранить его страницы как изображения, откройте «PDF в JPG». | This is a PDF document, not an image. To save its pages as images, open “PDF to JPG”. |
 | `widget.errors.not-pdf` | Это не PDF-файл. | This isn't a PDF file. |
 | `widget.errors.pdf-encrypted` | PDF защищён паролем. Снимите пароль (например, сохраните копию без защиты) и попробуйте снова. | This PDF is password-protected. Remove the password (for example, save an unprotected copy) and try again. |
+| `widget.errors.pdf-unsupported` | Этот браузер не умеет рисовать страницы PDF. Обновите браузер или откройте сайт в другом. | This browser can't render PDF pages. Please update it or use another browser. |
 | `widget.errors.internal` | Что-то пошло не так. Попробуйте ещё раз. | Something went wrong. Please try again. |
 | `widget.warnings.hdr-tone` | HDR-снимок: цвета могут немного отличаться от оригинала. | HDR photo: colors may differ slightly from the original. |
 | `widget.warnings.exif-unreadable` | Метаданные исходного файла повреждены и не сохранены. | The original metadata is damaged and was not kept. |

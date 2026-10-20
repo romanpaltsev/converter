@@ -46,7 +46,10 @@ const ru = {
     targetMenu: 'Формат результата',
     targetGroups: {
       image: 'Изображение',
+      document: 'Документ',
     },
+    pdfCombineHint: 'Каждая картинка станет отдельным PDF. Один документ из нескольких картинок —',
+    pdfCombineLink: '«JPG в PDF»',
     waiting: 'Выберите формат',
     sameFormat: 'Файл уже в формате {target}.',
     waitingStatus: 'Ждут выбора формата: {count}.',
@@ -215,6 +218,7 @@ const ru = {
       'pdf-input': 'Это PDF-документ, а не картинка. Чтобы сохранить его страницы как изображения, откройте «PDF в JPG».',
       'not-pdf': 'Это не PDF-файл.',
       'pdf-encrypted': 'PDF защищён паролем. Снимите пароль (например, сохраните копию без защиты) и попробуйте снова.',
+      'pdf-unsupported': 'Этот браузер не умеет рисовать страницы PDF. Обновите браузер или откройте сайт в другом.',
       internal: 'Что-то пошло не так. Попробуйте ещё раз.',
     } satisfies Record<ErrorCode, string>,
     warnings: {
@@ -284,7 +288,10 @@ const en: UiStrings = {
     targetMenu: 'Output format',
     targetGroups: {
       image: 'Image',
+      document: 'Document',
     },
+    pdfCombineHint: 'Each image becomes its own PDF. For one document from several images, use',
+    pdfCombineLink: 'JPG to PDF',
     waiting: 'Choose a format',
     sameFormat: 'The file is already in {target} format.',
     waitingStatus: 'Waiting for a format: {count}.',
@@ -453,6 +460,7 @@ const en: UiStrings = {
       'pdf-input': 'This is a PDF document, not an image. To save its pages as images, open “PDF to JPG”.',
       'not-pdf': "This isn't a PDF file.",
       'pdf-encrypted': 'This PDF is password-protected. Remove the password (for example, save an unprotected copy) and try again.',
+      'pdf-unsupported': "This browser can't render PDF pages. Please update it or use another browser.",
       internal: 'Something went wrong. Please try again.',
     },
     warnings: {

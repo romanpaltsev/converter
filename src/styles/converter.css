@@ -97,6 +97,12 @@
   padding: 8px 0 0;
 }
 
+/* несколько строк настроек, которые показываются и скрываются вместе (размер страницы PDF, разрешение) */
+.settings__group {
+  display: grid;
+  gap: 14px;
+}
+
 .settings__format {
   display: flex;
   flex-wrap: wrap;

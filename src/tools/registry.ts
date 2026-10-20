@@ -63,7 +63,7 @@ export const FIXED_OUTPUT_MODES: ToolMode[] = ['strip', 'inspect', 'to-pdf', 'me
 /** Инструменты раздела «PDF» на главной. */
 export const PDF_MODES: ToolMode[] = ['to-pdf', 'from-pdf', 'merge-pdf'];
 /** Универсальный виджет: формат результата выбирается у каждого файла (решение владельца 20.10.2026). */
-export const UNIVERSAL_MODES: ToolMode[] = ['convert'];
+export const UNIVERSAL_MODES: ToolMode[] = ['convert', 'from-pdf'];
 
 export interface ToolConfig {
   id: string;
@@ -75,7 +75,8 @@ export interface ToolConfig {
   /** У пар форматов — предустановка: с этим форматом файлы встают в очередь (его можно сменить у каждого файла). */
   defaultOutput: OutputChoiceId;
   /**
-   * Переключатель формата (общий для всех файлов) — только у режимов без выбора у файла: сжатие, размер, PDF.
+   * Переключатель формата (общий для всех файлов) — только у режимов без выбора у файла: сжатие и размер
+   * («Исходный» и основные форматы); у метаданных, EXIF, «Изображения в PDF» и «Объединить PDF» — ['original'].
    * У пар форматов его нет: формат выбирается у каждого файла (UNIVERSAL_MODES).
    */
   outputs?: OutputChoiceId[];
@@ -87,8 +88,6 @@ export interface ToolConfig {
   related?: string[];
 }
 
-/** «PDF в JPG/PNG»: страницы — в основные форматы. */
-const ALL_OUTPUTS: OutputFormatId[] = ['jpeg', 'png', 'webp'];
 /** Сжатие и изменение размера: по умолчанию формат сохраняется. */
 const SAME_OR_ANY: OutputChoiceId[] = ['original', 'jpeg', 'png', 'webp'];
 const ALL_INPUTS: InputFormatId[] = ['heic', 'avif', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'jxl'];
@@ -189,7 +188,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'pdf-v-jpg', en: 'pdf-to-jpg' },
     inputFormats: ['pdf'],
     defaultOutput: 'jpeg',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'pdf-to-jpg',
     related: ['pdf-to-png', 'jpg-to-pdf', 'merge-pdf', 'compress-image'],
@@ -200,7 +198,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'pdf-v-png', en: 'pdf-to-png' },
     inputFormats: ['pdf'],
     defaultOutput: 'png',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'pdf-to-png',
     related: ['pdf-to-jpg', 'png-to-pdf', 'jpg-to-pdf', 'png-to-jpg'],

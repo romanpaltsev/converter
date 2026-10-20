@@ -7,9 +7,10 @@ import { STRIP_MODES } from '../converter/metadata/strip/types';
 import { PDF_PAGE_LIMIT } from '../converter/pdf/limits';
 import type { SniffKind } from '../converter/pipeline/sniff';
 import type { OutputOption, WidgetConfig } from '../converter/widget/config';
-import { IMAGE_TARGETS, type TargetId, visibleSettings } from '../converter/widget/targets';
+import { ALL_TARGETS, DOCUMENT_TARGETS, IMAGE_TARGETS, type TargetId, visibleSettings } from '../converter/widget/targets';
+import { pagePath, toolPageId } from '../i18n/routes';
 import { UI, format } from '../i18n/ui';
-import { INPUT_FORMATS, type InputFormatId, OUTPUT_FORMATS, SOURCE_FORMATS, type ToolConfig, UNIVERSAL_MODES } from '../tools/registry';
+import { DOCUMENT_FORMATS, INPUT_FORMATS, type InputFormatId, OUTPUT_FORMATS, SOURCE_FORMATS, type ToolConfig, UNIVERSAL_MODES } from '../tools/registry';
 
 interface Props {
   /** null — главная: универсальный конвертер без предустановки формата, принимает все форматы. */
@@ -24,7 +25,7 @@ const spec = tool
   : {
       id: 'home',
       mode: 'convert' as const,
-      inputFormats: Object.keys(INPUT_FORMATS) as InputFormatId[],
+      inputFormats: [...(Object.keys(INPUT_FORMATS) as InputFormatId[]), 'pdf' as const],
       defaultOutput: 'original' as const,
       outputs: undefined,
       defaultQuality: 90,
@@ -37,7 +38,12 @@ const converts = spec.mode === 'convert';
 const universal = UNIVERSAL_MODES.includes(spec.mode);
 const preset = universal && spec.defaultOutput !== 'original' ? (spec.defaultOutput as TargetId) : null;
 const presetKind = preset ? (spec.inputFormats[0] as SniffKind) : null;
-const targets = IMAGE_TARGETS.map((target) => ({ id: target, label: OUTPUT_FORMATS[target].label }));
+const targetLabel = (target: TargetId) => (target === 'pdf' ? DOCUMENT_FORMATS.pdf.label : OUTPUT_FORMATS[target].label);
+const targets = ALL_TARGETS.map((target) => ({ id: target, label: targetLabel(target) }));
+const TARGET_GROUPS = [
+  { name: 'image', targets: IMAGE_TARGETS },
+  { name: 'document', targets: DOCUMENT_TARGETS },
+] as const;
 // какие настройки видны до выбора файлов — нужные формату страницы
 const shown = visibleSettings(preset && presetKind ? [{ kind: presetKind, target: preset }] : [], false);
 // «Удалить метаданные»: без выбора формата и качества — только что удалять
@@ -54,8 +60,8 @@ const MARGINS = ['none', 'small'] as const;
 const fromPdf = spec.mode === 'from-pdf';
 const DPI = [72, 150, 300] as const;
 const DEFAULT_DPI = 150;
-// шаблоны строк заполняем здесь: формат страницы и список всех поддерживаемых форматов
-const supported = list(Object.values(INPUT_FORMATS).map((f) => f.label));
+// шаблоны строк заполняем здесь: формат страницы и список всех поддерживаемых форматов (универсальный виджет читает и PDF)
+const supported = list([...Object.values(INPUT_FORMATS).map((f) => f.label), ...(universal ? [DOCUMENT_FORMATS.pdf.label] : [])]);
 const base = UI[locale].widget;
 const t = {
   ...base,
@@ -143,8 +149,23 @@ const DEFAULT_LONG_SIDE = 1920;
                 </fieldset>
                 <p class="settings__hint settings__hint--aligned" data-strip-hint>{t.stripHints.all}</p>
               </Fragment>
-            ) : pdfs ? (
-              <Fragment>
+            ) : pdfs || universal ? null : (
+              <fieldset class="settings__format">
+                <legend class="settings__label">{t.format}</legend>
+                <div class="segmented">
+                  {outputs.map((output) => (
+                    <label class="segmented__option">
+                      <input type="radio" name="format" value={output.id} checked={output.id === spec.defaultOutput} />
+                      <span>{output.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            )
+          }
+          {
+            (pdfs || universal) && (
+              <div class="settings__group" data-pdf-layout-row hidden={universal && !shown.pdfLayout}>
                 <fieldset class="settings__format">
                   <legend class="settings__label">{t.pageSize}</legend>
                   <div class="segmented">
@@ -168,24 +189,19 @@ const DEFAULT_LONG_SIDE = 1920;
                   </div>
                 </fieldset>
                 <p class="settings__hint settings__hint--aligned">{t.pdfHint}</p>
-              </Fragment>
-            ) : universal ? null : (
-              <fieldset class="settings__format">
-                <legend class="settings__label">{t.format}</legend>
-                <div class="segmented">
-                  {outputs.map((output) => (
-                    <label class="segmented__option">
-                      <input type="radio" name="format" value={output.id} checked={output.id === spec.defaultOutput} />
-                      <span>{output.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
+                {
+                  universal && (
+                    <p class="settings__hint settings__hint--aligned">
+                      {t.pdfCombineHint} <a href={pagePath(toolPageId('jpg-to-pdf'), locale)}>{t.pdfCombineLink}</a>.
+                    </p>
+                  )
+                }
+              </div>
             )
           }
           {
-            fromPdf && (
-              <Fragment>
+            universal && (
+              <div class="settings__group" data-dpi-row hidden={!shown.dpi}>
                 <fieldset class="settings__format">
                   <legend class="settings__label">{t.resolution}</legend>
                   <div class="segmented">
@@ -198,7 +214,7 @@ const DEFAULT_LONG_SIDE = 1920;
                   </div>
                 </fieldset>
                 <p class="settings__hint settings__hint--aligned">{t.pdfRenderHint}</p>
-              </Fragment>
+              </div>
             )
           }
           {
@@ -328,7 +344,7 @@ const DEFAULT_LONG_SIDE = 1920;
                   <span>{t.lossless}</span>
                 </label>
                 {
-                  !fromPdf && (
+                  (universal || !fromPdf) && (
                     <Fragment>
                       <div class="settings__meta" data-meta-row hidden={universal ? !shown.metadata : spec.defaultOutput === 'ico'}>
                         <label class="checkbox">
@@ -385,16 +401,18 @@ const DEFAULT_LONG_SIDE = 1920;
     {
       universal && (
         <div class="picker" id={`${id}-picker`} data-picker role="menu" aria-label={t.targetMenu} hidden>
-          <div class="picker__group" role="group" aria-label={t.targetGroups.image}>
-            <span class="picker__title" aria-hidden="true">
-              {t.targetGroups.image}
-            </span>
-            {targets.map((target) => (
-              <button type="button" class="picker__item" role="menuitemradio" aria-checked="false" data-target={target.id} tabindex="-1">
-                {target.label}
-              </button>
-            ))}
-          </div>
+          {TARGET_GROUPS.map((group) => (
+            <div class="picker__group" role="group" aria-label={t.targetGroups[group.name]}>
+              <span class="picker__title" aria-hidden="true">
+                {t.targetGroups[group.name]}
+              </span>
+              {group.targets.map((target) => (
+                <button type="button" class="picker__item" role="menuitemradio" aria-checked="false" data-target={target} tabindex="-1">
+                  {targetLabel(target)}
+                </button>
+              ))}
+            </div>
+          ))}
         </div>
       )
     }

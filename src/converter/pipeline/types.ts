@@ -51,6 +51,8 @@ export type ErrorCode =
   /** На странице «PDF в JPG» — не PDF. */
   | 'not-pdf'
   | 'pdf-encrypted'
+  /** Браузер не умеет рисовать страницы PDF (нет OffscreenCanvas) — в строке PDF, остальные файлы идут дальше. */
+  | 'pdf-unsupported'
   | 'internal';
 
 /** Предупреждения не мешают конвертации, но показываются в строке файла. */

@@ -248,7 +248,7 @@ test.describe('любой вход на любой странице', () => {
     await expect(row).not.toContainText('iPhone');
     // в меню нет JPG: файл уже в нём
     await fileRow(page, 'photo.jpg').locator('[data-target-button]').click();
-    await expect(page.locator('[data-picker]').getByRole('menuitemradio')).toHaveText(['PNG', 'WebP', 'AVIF', 'ICO']);
+    await expect(page.locator('[data-picker]').getByRole('menuitemradio')).toHaveText(['PNG', 'WebP', 'AVIF', 'ICO', 'PDF']);
     await page.keyboard.press('Escape');
     await expect(page.getByRole('button', { name: 'Конвертировать заново с новыми настройками' })).toBeHidden();
     await pickTarget(page, 'photo.jpg', 'PNG');

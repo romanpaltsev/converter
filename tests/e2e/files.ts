@@ -5,6 +5,7 @@ import { inflateSync } from 'node:zlib';
 import type { Download, Page } from '@playwright/test';
 import exifr from 'exifr';
 import { unzipSync } from 'fflate';
+import { OPS, getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 
 export const FIXTURES = new URL('../fixtures/', import.meta.url).pathname;
 export const fixture = (name: string) => FIXTURES + name;
@@ -231,4 +232,27 @@ export function dominant([r, g, b, a]: number[]): string {
   if (g! > 120 && r! < 100 && b! < 100) return 'g';
   if (b! > 150 && r! < 100 && g! < 100) return 'b';
   return `?(${r},${g},${b},${a})`;
+}
+
+/** PDF разбирается независимо — pdf.js в Node. */
+export async function openPdf(bytes: Uint8Array) {
+  return getDocument({ data: new Uint8Array(bytes), verbosity: 0, isOffscreenCanvasSupported: false }).promise;
+}
+
+/** Размер страницы, матрица, которой рисуется картинка, и сама картинка. */
+export async function pageInfo(pdf: Awaited<ReturnType<typeof openPdf>>, number: number) {
+  const page = await pdf.getPage(number);
+  const ops = await page.getOperatorList();
+  const transform = ops.argsArray[ops.fnArray.indexOf(OPS.transform)] as number[];
+  const index = ops.fnArray.indexOf(OPS.paintImageXObject);
+  const [id] = ops.argsArray[index] as [string];
+  const image = await new Promise<{ width: number; height: number; kind: number; data: Uint8ClampedArray }>((resolve) => page.objs.get(id, resolve));
+  return { view: page.view.map((v) => Math.round(v * 100) / 100), transform: transform.map((v) => Math.round(v * 100) / 100), image };
+}
+
+/** Сжатые данные JPEG (от первого SOS до конца) — по ним видно, что файл вставлен без перекодирования. */
+export function entropyData(jpeg: Buffer): Buffer {
+  let pos = 2;
+  while (jpeg[pos + 1] !== 0xda) pos += 2 + jpeg.readUInt16BE(pos + 2);
+  return jpeg.subarray(pos);
 }

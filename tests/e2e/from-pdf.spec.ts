@@ -1,13 +1,13 @@
 // «PDF в JPG/PNG»: pdf.js рисует страницы в worker'е; размеры по dpi, поворот /Rotate, стандартные шрифты
-// со своего домена, пароль и битый файл — понятные ошибки.
+// со своего домена, пароль и битый файл — понятные ошибки. Тот же универсальный виджет: формат — у каждого файла.
 import type { Page } from '@playwright/test';
-import { convertFiles, downloadFile as download, expect, openConverter, test } from './fixtures';
+import { SETTLED_ROWS, convertFiles, downloadFile as download, expect, fileRow, openConverter, pickTarget, test } from './fixtures';
 import { decodeInBrowser, dominant, downloadBytes, expectTimestamped, fixture, jpegInfo, pngInfo, unzip } from './files';
 
-/** Добавить PDF и дождаться, пока каждый документ закончится: строки страниц не считаются. */
+/** Добавить файлы и дождаться, пока каждый документ закончится (или будет ждать формата): строки страниц не считаются. */
 async function process(page: Page, names: string[]): Promise<void> {
   await page.setInputFiles('[data-input]', names.map(fixture));
-  await expect(page.locator('.file:not(.file--page):is([data-status="done"], [data-status="error"])')).toHaveCount(names.length, { timeout: 120_000 });
+  await expect(page.locator(SETTLED_ROWS)).toHaveCount(names.length, { timeout: 120_000 });
 }
 
 /** Сколько тёмных точек в прямоугольнике картинки (текст на странице). */
@@ -29,7 +29,7 @@ async function darkPixels(page: Page, bytes: Uint8Array, mime: string, [x, y, w,
 }
 
 test.describe('PDF в картинки', () => {
-  test('страницы по 150 dpi: квадранты, поворот /Rotate, текст стандартным шрифтом; ошибки понятные', async ({ page, network }) => {
+  test('страницы по 150 dpi: квадранты, поворот /Rotate, текст стандартным шрифтом; ошибки понятные; JPG ждёт формата', async ({ page, network }) => {
     await openConverter(page, '/pdf-v-jpg');
     await expect(page.getByRole('radio', { name: '150 dpi' })).toBeChecked();
     await process(page, ['quadrants.pdf', 'two-pages.pdf', 'encrypted.pdf', 'garbage.pdf', 'photo.jpg']);
@@ -63,7 +63,9 @@ test.describe('PDF в картинки', () => {
 
     await expect(page.locator('.file').filter({ hasText: 'encrypted.pdf' })).toContainText('PDF защищён паролем');
     await expect(page.locator('.file').filter({ hasText: 'garbage.pdf' })).toContainText('Не удалось прочитать файл');
-    await expect(page.locator('.file').filter({ hasText: 'photo.jpg' })).toContainText('Это не PDF-файл.');
+    // картинка на странице «PDF в JPG» — тоже файл: уже JPG, ждёт выбора другого формата
+    await expect(fileRow(page, 'photo.jpg')).toHaveAttribute('data-status', 'waiting');
+    await expect(fileRow(page, 'photo.jpg')).toContainText('Файл уже в формате JPG.');
   });
 
   test('en: PNG без потерь при 72 dpi, ZIP со всеми страницами, смена разрешения — страницы заново', async ({ page }) => {
@@ -87,9 +89,16 @@ test.describe('PDF в картинки', () => {
     await expect(page.locator('.file')).toHaveCount(5);
   });
 
-  test('PDF на странице картинок — подсказка открыть «PDF в JPG»', async ({ page }) => {
+  test('PDF на странице картинок — страницы в формате страницы; формат у PDF меняется — строки страниц заново', async ({ page }) => {
     await openConverter(page, '/jpg-v-png');
-    await convertFiles(page, ['quadrants.pdf']);
-    await expect(page.locator('.file')).toContainText('Это PDF-документ, а не картинка');
+    await convertFiles(page, ['two-pages.pdf']);
+    await expect(page.locator('.file__name')).toHaveText(['two-pages.pdf', 'two-pages_1.png', 'two-pages_2.png']);
+    // у строки PDF — только форматы страниц
+    await fileRow(page, 'two-pages.pdf').locator('[data-target-button]').click();
+    await expect(page.locator('[data-picker]').getByRole('menuitemradio')).toHaveText(['JPG', 'PNG', 'WebP']);
+    await page.keyboard.press('Escape');
+    await pickTarget(page, 'two-pages.pdf', 'WebP');
+    await expect(page.locator('.file__name')).toHaveText(['two-pages.pdf', 'two-pages_1.webp', 'two-pages_2.webp'], { timeout: 60_000 });
+    await expect(page.locator('.file')).toHaveCount(3);
   });
 });

@@ -9,14 +9,14 @@ import type { PageSize, PdfImage, PdfLayout } from '../pdf/writer';
 import { checkInput } from '../pipeline/input';
 import { type ImageKind, KIND_FILES, SNIFF_BYTES, type SniffKind, sniff } from '../pipeline/sniff';
 import type { ResizeSpec } from '../pipeline/resize';
-import { ENCODER_EXTENSIONS, type ErrorCode, type OutputTarget, type WarningCode } from '../pipeline/types';
+import { ENCODER_EXTENSIONS, type EncoderId, type ErrorCode, type OutputTarget, type WarningCode } from '../pipeline/types';
 import { type OutputOption, type WidgetConfig, readConfig } from './config';
 import { NameAllocator, outputName, withTimestamp } from './filenames';
 import { FormatPicker } from './format-picker';
 import { ReportView } from './report-view';
 import { formatBytes } from './sizes';
 import { supportsConverter, supportsPdfRendering } from './support';
-import { type TargetId, type TargetPair, defaultTarget, ownTarget, settingsKey, sharedTargets, targetsFor, visibleSettings } from './targets';
+import { type TargetId, type TargetPair, type TargetSettings, defaultTarget, jobFor, ownTarget, settingsKey, sharedTargets, targetsFor, visibleSettings } from './targets';
 import { WorkerClient } from './worker-client';
 import { type Lease, WorkerPool, currentDevice, poolPolicy } from './worker-pool';
 
@@ -36,9 +36,10 @@ interface Settings {
   resize: ResizeSpec | null;
   /** Страница «Удалить метаданные»: что удалять; иначе null. */
   strip: StripMode | null;
-  /** «Изображения в PDF»: размер страниц и поля (применяются при сборке — файлы заново не обрабатываются); иначе null. */
+  /** «Изображения в PDF» и картинки в PDF у универсального виджета: размер страниц и поля (применяются при сборке —
+   *  файлы заново не обрабатываются); иначе null. */
   pdf: PdfLayout | null;
-  /** «PDF в JPG/PNG»: разрешение страниц; иначе null. */
+  /** Универсальный виджет: разрешение страниц PDF; иначе null. */
   dpi: number | null;
 }
 
@@ -138,6 +139,11 @@ function fill(template: string, values: Record<string, string | number>): string
   return template.replace(/\{(\w+)\}/g, (match, key: string) => (key in values ? String(values[key]) : match));
 }
 
+/** Общие настройки, важные формату файла (у универсального виджета dpi есть всегда). */
+function targetSettings(settings: Settings): TargetSettings {
+  return { quality: settings.quality, lossless: settings.lossless, keepMetadata: settings.keepMetadata, dpi: settings.dpi ?? 0 };
+}
+
 /** По какому селектору найти «ту же» кнопку в перерисованной строке. */
 function focusSelector(focused: HTMLElement): string | null {
   if (focused.matches('[data-target-button]')) return '[data-target-button]';
@@ -167,8 +173,12 @@ export class ConverterWidget {
   private readonly originalHint: HTMLElement | null;
   /** Только на страницах иконок: пояснение про размеры ICO; метаданные для ICO скрываются. */
   private readonly icoHint: HTMLElement | null;
-  /** Универсальный виджет: «AVIF кодируется долго». */
+  /** Универсальный виджет: «AVIF кодируется долго», размер страницы PDF и разрешение страниц. */
   private readonly avifHint: HTMLElement | null;
+  private readonly pdfLayoutRow: HTMLElement | null;
+  private readonly dpiRow: HTMLElement | null;
+  /** Размер страницы и поля, с которыми собраны готовые PDF: сменились — документы пересобираются. */
+  private layoutKey = '';
   private readonly metaRow: HTMLElement | null;
   /** Только на странице «Удалить метаданные»: пояснение к выбранному режиму. */
   private readonly stripHint: HTMLElement | null;
@@ -225,6 +235,8 @@ export class ConverterWidget {
     this.originalHint = root.querySelector('[data-original-hint]');
     this.icoHint = root.querySelector('[data-ico-hint]');
     this.avifHint = root.querySelector('[data-avif-hint]');
+    this.pdfLayoutRow = root.querySelector('[data-pdf-layout-row]');
+    this.dpiRow = root.querySelector('[data-dpi-row]');
     this.metaRow = root.querySelector('[data-meta-row]');
     this.stripHint = root.querySelector('[data-strip-hint]');
     this.compressionRow = root.querySelector('[data-compression-row]');
@@ -330,10 +342,10 @@ export class ConverterWidget {
       resize: this.resizeRows ? this.resizeSpec(data) : null,
       strip: this.config.mode === 'strip' ? ((data.get('stripMode') ?? 'all') as StripMode) : null,
       pdf:
-        this.config.mode === 'to-pdf'
+        this.config.mode === 'to-pdf' || this.config.universal
           ? { size: (data.get('pageSize') ?? 'a4') as PageSize, margin: data.get('margin') === 'small' ? SMALL_MARGIN : 0 }
           : null,
-      dpi: this.config.mode === 'from-pdf' ? Number(data.get('dpi') ?? 150) : null,
+      dpi: this.config.universal ? Number(data.get('dpi') ?? 150) : null,
     };
   }
 
@@ -406,6 +418,14 @@ export class ConverterWidget {
     if (this.pngWarning) this.pngWarning.hidden = !show.pngWarning;
     if (this.icoHint) this.icoHint.hidden = !show.icoHint;
     if (this.avifHint) this.avifHint.hidden = !show.avifHint;
+    if (this.pdfLayoutRow) this.pdfLayoutRow.hidden = !show.pdfLayout;
+    if (this.dpiRow) this.dpiRow.hidden = !show.dpi;
+    // размер страницы и поля применяются к готовым PDF сразу, без повторной обработки
+    const layout = JSON.stringify(settings.pdf);
+    if (layout !== this.layoutKey) {
+      this.layoutKey = layout;
+      void this.rebuildDocuments(settings.pdf!);
+    }
     // настраивать нечего (например, ни у одного файла ещё не выбран формат) — форма не нужна
     this.form.hidden = !Object.values(show).some(Boolean);
     if (this.qualityValue) this.qualityValue.value = String(settings.quality);
@@ -424,7 +444,8 @@ export class ConverterWidget {
 
   addFiles(files: File[]): void {
     if (files.length === 0) return;
-    const rendersPdf = this.config.mode === 'from-pdf' || this.config.mode === 'merge-pdf';
+    // «Объединить PDF» без OffscreenCanvas бесполезна целиком; в универсальном виджете проверяется строка PDF (classify)
+    const rendersPdf = this.config.mode === 'merge-pdf';
     if (!(rendersPdf ? supportsPdfRendering() : supportsConverter())) {
       this.showNotice(this.t.unsupportedBrowser, 'error');
       return;
@@ -488,11 +509,16 @@ export class ConverterWidget {
     }
     const { kind } = sniff(head);
     item.source = kind;
-    const targets = targetsFor(kind);
-    const check = targets.length > 0 ? checkInput(head, targets[0]!, true) : null;
-    if (!check?.ok) {
+    if (kind === 'pdf' && !supportsPdfRendering()) {
       this.run.total++;
-      this.fail(item, check ? check.code : kind === 'pdf' ? 'pdf-input' : 'not-image');
+      this.fail(item, 'pdf-unsupported');
+      return;
+    }
+    // картинка: CMYK и неподдерживаемый JPEG видны по заголовку (PDF проверит pdf.js в worker'е)
+    const check = kind === 'pdf' ? null : checkInput(head, 'png', true);
+    if (kind === 'unknown' || (check && !check.ok)) {
+      this.run.total++;
+      this.fail(item, check && !check.ok ? check.code : 'not-image');
       return;
     }
     item.target = defaultTarget(kind, this.preset);
@@ -558,14 +584,16 @@ export class ConverterWidget {
     item.settings = settings;
     if (this.config.universal) {
       const pair = { kind: item.source!, target: item.target! };
-      item.key = settingsKey(pair, settings);
-      return this.convertImage(item, head, pair.target, pair.target === 'webp' && settings.lossless, settings, lease, ticket);
+      item.key = settingsKey(pair, targetSettings(settings));
+      const job = jobFor(pair.kind, pair.target);
+      if (job === 'pages') return this.renderPdf(item, head, pair.target as EncoderId, settings, lease, ticket);
+      if (job === 'document') return this.pdfPage(item, head, lease, ticket, settings.pdf);
+      return this.convertImage(item, head, pair.target as EncoderId, pair.target === 'webp' && settings.lossless, settings, lease, ticket);
     }
     if (settings.strip) return this.strip(item, head, settings.strip, lease, ticket);
     if (this.config.mode === 'inspect') return this.inspect(item, head, lease, ticket);
     if (this.config.mode === 'to-pdf') return this.pdfPage(item, head, lease, ticket);
     if (this.config.mode === 'merge-pdf') return this.pdfInfo(item, head, lease, ticket);
-    if (settings.dpi !== null) return this.renderPdf(item, head, settings, lease, ticket);
     return this.convertImage(item, head, settings.output!.encoder, isLossless(settings), settings, lease, ticket);
   }
 
@@ -725,13 +753,17 @@ export class ConverterWidget {
     return false;
   }
 
-  /** «Изображения в PDF»: картинка страницы и превью; сам PDF собирается по кнопке из готовых страниц. */
-  private async pdfPage(item: Item, head: Uint8Array, lease: Lease, ticket: Ticket): Promise<boolean> {
+  /**
+   * Картинка страницы PDF и превью. «Изображения в PDF» — документ собирается по кнопке из готовых страниц;
+   * layout задан — универсальный виджет: у файла свой PDF, собирается сразу.
+   */
+  private async pdfPage(item: Item, head: Uint8Array, lease: Lease, ticket: Ticket, layout: PdfLayout | null = null): Promise<boolean> {
     const input = checkInput(head, 'jpeg', true);
     if (!input.ok) {
       this.fail(item, input.code);
       return false;
     }
+    if (layout) item.name ??= this.names.allocate(outputName(item.file.name, 'pdf'));
     if (!this.loadedOnce) this.setStatus(this.t.loading);
     try {
       await lease.client.load(input.decoder, 'jpeg');
@@ -769,21 +801,42 @@ export class ConverterWidget {
     item.previewUrl = URL.createObjectURL(new Blob([outcome.preview], { type: 'image/jpeg' }));
     item.dimensions = { before: [outcome.width, outcome.height], after: [outcome.width, outcome.height] };
     item.warnings = outcome.warnings;
+    if (layout) {
+      await this.buildDocument(item, layout);
+      if (this.stale(item, ticket)) return false;
+      this.run.formats.pdf = (this.run.formats.pdf ?? 0) + 1;
+    }
     item.status = 'done';
     this.run.done++;
-    this.renderAll(); // номера страниц у следующих строк
-    this.updateActions();
+    if (layout) this.renderRow(item);
+    else this.renderAll(); // номера страниц у следующих строк
+    this.syncSettings();
     return false;
   }
 
+  /** Свой PDF у файла: одна страница с картинкой, размер страницы и поля — из настроек. */
+  private async buildDocument(item: Item, layout: PdfLayout): Promise<void> {
+    const { buildPdf } = await import('../pdf/writer');
+    if (item.url) URL.revokeObjectURL(item.url);
+    item.blob = buildPdf([item.pdf!], layout);
+    item.url = URL.createObjectURL(item.blob);
+  }
+
+  /** Сменились размер страницы или поля: готовые PDF пересобираются из тех же картинок (без повторной обработки). */
+  private async rebuildDocuments(layout: PdfLayout): Promise<void> {
+    for (const item of this.items.filter((other) => other.status === 'done' && other.pdf && other.target === 'pdf')) {
+      await this.buildDocument(item, layout);
+      this.renderRow(item);
+    }
+  }
+
   /** «PDF в JPG/PNG»: страницы приходят по одной и сразу становятся строками под строкой PDF. */
-  private async renderPdf(item: Item, head: Uint8Array, settings: Settings, lease: Lease, ticket: Ticket): Promise<boolean> {
+  /** Страницы PDF — картинками в формате encoder; разрешение — из настроек. */
+  private async renderPdf(item: Item, head: Uint8Array, encoder: EncoderId, settings: Settings, lease: Lease, ticket: Ticket): Promise<boolean> {
     if (sniff(head).kind !== 'pdf') {
       this.fail(item, 'not-pdf');
       return false;
     }
-    const output = settings.output!.encoder;
-    const encoder = output === 'original' ? 'jpeg' : output;
     if (!this.loadedOnce) this.setStatus(this.t.loading);
     try {
       await lease.client.load(null, encoder);
@@ -802,7 +855,7 @@ export class ConverterWidget {
     let last = item;
     const outcome = await lease.client.pdfRender(
       item.file,
-      { encoder, quality: settings.quality, lossless: isLossless(settings), dpi: settings.dpi! },
+      { encoder, quality: settings.quality, lossless: encoder === 'webp' && settings.lossless, dpi: settings.dpi! },
       lease.memoryLimit,
       (footprint, fresh) => {
         if (this.stale(item, ticket)) return;
@@ -858,8 +911,9 @@ export class ConverterWidget {
     if (outcome.limited) item.warnings = ['pdf-page-limit'];
     item.status = 'done';
     this.run.done++;
+    this.run.formats[encoder] = (this.run.formats[encoder] ?? 0) + 1;
     this.renderRow(item);
-    this.updateActions();
+    this.syncSettings();
     return false;
   }
 
@@ -1211,10 +1265,10 @@ export class ConverterWidget {
       // изображение не декодируется (метаданные удаляются без WASM) — вместо превью формат файла
       thumb.classList.add('file__thumb--format');
       thumb.textContent = item.format;
-    } else if (this.config.universal && item.source && item.source !== 'unknown' && item.source !== 'pdf') {
+    } else if (this.config.universal && !item.parent && item.source && item.source !== 'unknown') {
       // универсальный виджет: до результата — формат входа
       thumb.classList.add('file__thumb--format');
-      thumb.textContent = KIND_FILES[item.source].label;
+      thumb.textContent = item.source === 'pdf' ? 'PDF' : KIND_FILES[item.source].label;
     }
 
     const body = document.createElement('div');
@@ -1240,7 +1294,7 @@ export class ConverterWidget {
       if (width && height) parts.push(fill(this.t.dimensions, { width, height }));
       meta.textContent = parts.join(' · ');
     }
-    if (item.status === 'done' && item.pdf && item.dimensions) {
+    if (item.status === 'done' && item.pdf && item.dimensions && this.config.mode === 'to-pdf') {
       // номер страницы — среди готовых файлов в порядке списка
       const number = this.items.filter((other) => other.status === 'done' && other.pdf).indexOf(item) + 1;
       const [width, height] = item.dimensions.after;
@@ -1262,6 +1316,8 @@ export class ConverterWidget {
         parts.splice(1, 0, before === after ? before! : fill(this.t.sizes, { before: before!, after: after! }));
       }
       if (item.quality !== null) parts.push(fill(this.t.qualityUsed, { quality: item.quality }));
+      // картинка → PDF: JPEG вставлен как есть
+      if (item.passthrough) parts.push(this.t.passthrough);
       meta.textContent = parts.join(' · ');
     }
     body.append(name, meta);
@@ -1409,7 +1465,7 @@ export class ConverterWidget {
   private outdated(item: Item, current: Settings): boolean {
     if (!this.config.universal) return isOutdated(item, current);
     if (item.status !== 'done' || item.parent || !item.source || !item.target || item.key === null) return false;
-    return item.key !== settingsKey({ kind: item.source, target: item.target }, current);
+    return item.key !== settingsKey({ kind: item.source, target: item.target }, targetSettings(current));
   }
 
   private reconvert(): void {

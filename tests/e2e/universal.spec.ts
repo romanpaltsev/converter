@@ -1,6 +1,8 @@
-// Формат у каждого файла (страницы пар форматов): меню в строке, «Все файлы в …», смена формата на ходу.
-import { SETTLED_ROWS, convertFiles, expect, fileRow, openConverter, pickTarget, test } from './fixtures';
-import { downloadBytes, expectTimestamped, fixture, unzip } from './files';
+// Формат у каждого файла (главная и страницы пар форматов): меню в строке, «Все файлы в …», смена формата на ходу,
+// картинки в PDF (каждая — свой документ) и PDF в картинки.
+import { readFileSync } from 'node:fs';
+import { SETTLED_ROWS, convertFiles, downloadFile, expect, fileRow, openConverter, pickAll, pickTarget, test } from './fixtures';
+import { downloadBytes, entropyData, expectTimestamped, fixture, openPdf, pageInfo, unzip } from './files';
 
 const menu = (page: import('@playwright/test').Page) => page.locator('[data-picker]');
 
@@ -78,13 +80,13 @@ test.describe('формат у каждого файла', () => {
     await expect(button).toBeFocused();
     await expect(button).toHaveAttribute('aria-expanded', 'false');
 
-    // стрелка вниз открывает меню на первом пункте; «a» — к AVIF, End — к ICO, Home — к JPG, вниз — PNG
+    // стрелка вниз открывает меню на первом пункте; «a» — к AVIF, End — к PDF, Home — к JPG, вниз — PNG
     await page.keyboard.press('ArrowDown');
     await expect(menu(page).getByRole('menuitemradio', { name: 'JPG', exact: true })).toBeFocused();
     await page.keyboard.press('a');
     await expect(menu(page).getByRole('menuitemradio', { name: 'AVIF', exact: true })).toBeFocused();
     await page.keyboard.press('End');
-    await expect(menu(page).getByRole('menuitemradio', { name: 'ICO', exact: true })).toBeFocused();
+    await expect(menu(page).getByRole('menuitemradio', { name: 'PDF', exact: true })).toBeFocused();
     await page.keyboard.press('Home');
     await page.keyboard.press('ArrowDown');
     await expect(menu(page).getByRole('menuitemradio', { name: 'PNG', exact: true })).toBeFocused();
@@ -109,7 +111,7 @@ test.describe('формат у каждого файла', () => {
     await expect(page.locator('[data-target-all]')).toHaveText('JPG');
     await page.locator('[data-target-all]').click();
     // JPG в меню есть: он подходит двум файлам из трёх
-    await expect(menu(page).getByRole('menuitemradio')).toHaveText(['JPG', 'PNG', 'WebP', 'AVIF', 'ICO']);
+    await expect(menu(page).getByRole('menuitemradio')).toHaveText(['JPG', 'PNG', 'WebP', 'AVIF', 'ICO', 'PDF']);
     await menu(page).getByRole('menuitemradio', { name: 'WebP', exact: true }).click();
     // photo.jpg и alpha.png — в WebP; basic.webp в WebP не бывает — остаётся в JPG
     await expect(page.locator('.file__name')).toHaveText(['photo.webp', 'alpha.webp', 'basic.jpg'], { timeout: 60_000 });
@@ -132,5 +134,51 @@ test.describe('формат у каждого файла', () => {
     const list = await page.locator('[data-files]').boundingBox();
     expect(Math.round(box!.width)).toBe(Math.round(list!.width));
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  });
+});
+
+test.describe('PDF в универсальном виджете', () => {
+  test('«Все файлы в PDF»: у каждой картинки свой PDF, JPEG без перекодирования; «По размеру фото» — без обработки заново', async ({ page }) => {
+    await openConverter(page, '/');
+    await page.setInputFiles('[data-input]', ['rotated.jpg', 'alpha.png'].map(fixture));
+    await expect(page.locator('.file[data-status="waiting"]')).toHaveCount(2);
+    await pickAll(page, 'PDF');
+    await expect(page.locator('.file__name')).toHaveText(['rotated.pdf', 'alpha.pdf'], { timeout: 60_000 });
+    // у PDF — размер страницы и поля, качества и метаданных нет; подсказка про один документ из многих
+    await expect(page.locator('[data-pdf-layout-row]')).toBeVisible();
+    await expect(page.locator('[data-quality-row]')).toBeHidden();
+    await expect(page.locator('[data-meta-row]')).toBeHidden();
+    await expect(page.getByRole('link', { name: '«JPG в PDF»' })).toHaveAttribute('href', '/jpg-v-pdf');
+    await expect(fileRow(page, 'rotated.pdf')).toContainText('600×800 · ');
+    await expect(fileRow(page, 'rotated.pdf')).toContainText('без перекодирования');
+
+    const bytes = await downloadFile(page, 'rotated.pdf');
+    const pdf = await openPdf(bytes);
+    expect(pdf.numPages).toBe(1);
+    // повёрнутое по EXIF фото — книжная страница A4, JPEG внутри байт в байт
+    expect((await pageInfo(pdf, 1)).view).toEqual([0, 0, 595.28, 841.89]);
+    expect(bytes.includes(entropyData(readFileSync(fixture('rotated.jpg'))))).toBe(true);
+
+    await page.getByRole('radio', { name: 'По размеру фото' }).check();
+    await expect(page.getByRole('button', { name: 'Конвертировать заново с новыми настройками' })).toBeHidden();
+    // 600×800 пикселей при 96 dpi — 450×600 пунктов
+    await expect.poll(async () => (await pageInfo(await openPdf(await downloadFile(page, 'rotated.pdf')), 1)).view).toEqual([0, 0, 450, 600]);
+    const alpha = await pageInfo(await openPdf(await downloadFile(page, 'alpha.pdf')), 1);
+    expect(alpha.view).toEqual([0, 0, 600, 450]);
+  });
+
+  test('«PDF в JPG»: dpi и формат у строки PDF; смена разрешения — «Конвертировать заново»', async ({ page }) => {
+    await openConverter(page, '/pdf-v-jpg');
+    await expect(page.locator('[data-dpi-row]')).toBeVisible();
+    await expect(page.locator('[data-meta-row]')).toBeHidden();
+    await convertFiles(page, ['quadrants.pdf']);
+    await expect(page.locator('.file__name')).toHaveText(['quadrants.pdf', 'quadrants_1.jpg']);
+    await expect(fileRow(page, 'quadrants.pdf').locator('[data-target-button]')).toHaveText('JPG');
+    await page.getByRole('radio', { name: '72 dpi' }).check();
+    const reconvert = page.getByRole('button', { name: 'Конвертировать заново с новыми настройками' });
+    await expect(reconvert).toBeVisible();
+    await reconvert.click();
+    await expect(fileRow(page, 'quadrants_1.jpg')).toContainText('600×400', { timeout: 60_000 });
+    await expect(reconvert).toBeHidden();
   });
 });

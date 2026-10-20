@@ -1,10 +1,9 @@
 // «Изображения в PDF»: страницы в порядке списка, A4/Letter/по размеру фото, JPEG без перекодирования,
 // прозрачность — маской, метаданные фото в документ не попадают. PDF разбирается независимо — pdf.js в Node.
 import { readFileSync, writeFileSync } from 'node:fs';
-import { OPS, getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type { Page } from '@playwright/test';
 import { convertFiles as process, expect, openConverter, test } from './fixtures';
-import { decodeInBrowser, dominant, downloadBytes, expectTimestamped, fixture, pngInfo } from './files';
+import { decodeInBrowser, dominant, downloadBytes, entropyData, expectTimestamped, fixture, openPdf, pageInfo, pngInfo } from './files';
 
 async function downloadPdf(page: Page, name: string): Promise<Buffer> {
   const pending = page.waitForEvent('download');
@@ -12,28 +11,6 @@ async function downloadPdf(page: Page, name: string): Promise<Buffer> {
   const file = await pending;
   expectTimestamped(file.suggestedFilename(), name);
   return downloadBytes(file);
-}
-
-async function openPdf(bytes: Buffer) {
-  return getDocument({ data: new Uint8Array(bytes), verbosity: 0, isOffscreenCanvasSupported: false }).promise;
-}
-
-/** Размер страницы и матрица, которой рисуется картинка. */
-async function pageInfo(pdf: Awaited<ReturnType<typeof openPdf>>, number: number) {
-  const page = await pdf.getPage(number);
-  const ops = await page.getOperatorList();
-  const transform = ops.argsArray[ops.fnArray.indexOf(OPS.transform)] as number[];
-  const index = ops.fnArray.indexOf(OPS.paintImageXObject);
-  const [id] = ops.argsArray[index] as [string];
-  const image = await new Promise<{ width: number; height: number; kind: number; data: Uint8ClampedArray }>((resolve) => page.objs.get(id, resolve));
-  return { view: page.view.map((v) => Math.round(v * 100) / 100), transform: transform.map((v) => Math.round(v * 100) / 100), image };
-}
-
-/** Сжатые данные JPEG (от первого SOS до конца) — по ним видно, что файл вставлен без перекодирования. */
-function entropyData(jpeg: Buffer): Buffer {
-  let pos = 2;
-  while (jpeg[pos + 1] !== 0xda) pos += 2 + jpeg.readUInt16BE(pos + 2);
-  return jpeg.subarray(pos);
 }
 
 test.describe('изображения в PDF', () => {

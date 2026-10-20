@@ -15,7 +15,7 @@ describe('реестр инструментов', () => {
   });
 
   test('пары форматов — универсальный виджет: общего переключателя нет, предустановка подходит входу страницы', () => {
-    expect(UNIVERSAL_MODES).toEqual(['convert']);
+    expect(UNIVERSAL_MODES).toEqual(['convert', 'from-pdf']);
     for (const tool of TOOLS.filter((t) => UNIVERSAL_MODES.includes(t.mode))) {
       expect(tool.outputs).toBeUndefined();
       // файл в формате страницы сразу встаёт в очередь с её форматом
@@ -43,16 +43,13 @@ describe('реестр инструментов', () => {
     expect(groups.pdf.map((t) => t.mode)).toEqual(['to-pdf', 'to-pdf', 'to-pdf', 'merge-pdf', 'from-pdf', 'from-pdf']);
   });
 
-  test('PDF в картинки: вход — PDF, выход — JPG, PNG или WebP', () => {
+  test('PDF в картинки: вход — PDF, страницы — в формат страницы (его можно сменить у файла)', () => {
     const fromPdf = TOOLS.filter((t) => t.mode === 'from-pdf');
     expect(fromPdf.map((t) => [t.id, t.slugs.ru, t.defaultOutput])).toEqual([
       ['pdf-to-jpg', 'pdf-v-jpg', 'jpeg'],
       ['pdf-to-png', 'pdf-v-png', 'png'],
     ]);
-    for (const tool of fromPdf) {
-      expect(tool.inputFormats).toEqual(['pdf']);
-      expect(tool.outputs).toEqual(['jpeg', 'png', 'webp']);
-    }
+    for (const tool of fromPdf) expect(tool.inputFormats).toEqual(['pdf']);
   });
 
   test('изображения в PDF: слаги «x-v-pdf» / «x-to-pdf», формат не выбирается, перелинковка вручную', () => {
