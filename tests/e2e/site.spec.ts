@@ -127,7 +127,7 @@ test.describe('меню «Конвертировать» (Popover API)', () => {
     await page.keyboard.press('Enter');
     await expect(menu).toBeVisible();
     await page.keyboard.press('Tab');
-    await expect(menu.getByRole('link', { name: 'Сжать фото' })).toBeFocused();
+    await expect(menu.getByRole('link', { name: 'HEIC → JPG' })).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(menu).toBeHidden();
     await expect(menuButton(page)).toBeFocused();

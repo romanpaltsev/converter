@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { CONTACT_EMAIL, LOCALES } from '../../src/config/site';
 import { PAGES, pagePath, toolPageId } from '../../src/i18n/routes';
-import { TOOLS } from '../../src/tools/registry';
+import { toolGroups } from '../../src/tools/registry';
 import { INDEXING, SITE, TOOL_PAGES, htmlFiles, readHtml, readText, urlPathFor } from './helpers';
 
 const pages = htmlFiles();
@@ -81,6 +81,9 @@ describe('сборка: контакты', () => {
   });
 });
 
+/** Все инструменты по разделам (изображения, обработка фото, PDF…) — как в меню и подвале. */
+const toolHrefs = (locale: 'ru' | 'en') => toolGroups().flatMap((group) => group.tools.map((tool) => pagePath(toolPageId(tool.id), locale)));
+
 describe('сборка: шапка и подвал', () => {
   test.each(pages)('%s: один переключатель языка — в шапке; в подвале все инструменты своего языка', (file) => {
     const { doc } = readHtml(file);
@@ -88,7 +91,7 @@ describe('сборка: шапка и подвал', () => {
     expect(doc.querySelector('header nav.lang')).not.toBeNull();
     const locale = file.startsWith('en/') ? 'en' : 'ru';
     const hrefs = doc.querySelectorAll('footer a').map((a) => a.getAttribute('href'));
-    expect(hrefs).toEqual([...TOOLS.map((tool) => pagePath(toolPageId(tool.id), locale)), pagePath('licenses', locale), pagePath('contacts', locale)]);
+    expect(hrefs).toEqual([...toolHrefs(locale), pagePath('licenses', locale), pagePath('contacts', locale)]);
   });
 
   test.each(pages)('%s: меню «Конвертировать» без JS (Popover API) — все инструменты своего языка', (file) => {
@@ -100,7 +103,7 @@ describe('сборка: шапка и подвал', () => {
     // меню идёт сразу за кнопкой: так оно в порядке Tab после неё во всех браузерах
     expect(button?.nextElementSibling).toBe(menu);
     const locale = file.startsWith('en/') ? 'en' : 'ru';
-    expect(menu!.querySelectorAll('a').map((a) => a.getAttribute('href'))).toEqual(TOOLS.map((tool) => pagePath(toolPageId(tool.id), locale)));
+    expect(menu!.querySelectorAll('a').map((a) => a.getAttribute('href'))).toEqual(toolHrefs(locale));
   });
 });
 

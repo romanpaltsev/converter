@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { type TargetId, defaultTarget } from '../../src/converter/widget/targets';
-import { FIXED_OUTPUT_MODES, INPUT_FORMATS, OUTPUT_FORMATS, PDF_MODES, TOOLS, UNIVERSAL_MODES, relatedTools, toolGroups } from '../../src/tools/registry';
+import { FIXED_OUTPUT_MODES, INPUT_FORMATS, OUTPUT_FORMATS, PDF_MODES, TOOLS, TOOL_CATEGORIES, UNIVERSAL_MODES, relatedTools, toolGroups } from '../../src/tools/registry';
 
 describe('реестр инструментов', () => {
   test('слаги конвертеров: ru «x-v-y», en «x-to-y»; входной формат не совпадает с целевым', () => {
@@ -36,11 +36,17 @@ describe('реестр инструментов', () => {
     }
   });
 
-  test('группы для главной, меню и подвала: обработка фото, PDF, конвертеры — все инструменты по порядку', () => {
+  test('разделы для главной, меню и подвала: по типам файлов, только непустые, каждый инструмент — в одном', () => {
     const groups = toolGroups();
-    expect([groups.photo.length, groups.pdf.length, groups.converters.length]).toEqual([4, 6, 23]);
-    expect([...groups.photo, ...groups.pdf, ...groups.converters]).toEqual(TOOLS);
-    expect(groups.pdf.map((t) => t.mode)).toEqual(['to-pdf', 'to-pdf', 'to-pdf', 'merge-pdf', 'from-pdf', 'from-pdf']);
+    expect(groups.map((g) => [g.id, g.tools.length])).toEqual([
+      ['images', 23],
+      ['photo', 4],
+      ['pdf', 6],
+    ]);
+    expect(groups.map((g) => g.id)).toEqual(TOOL_CATEGORIES.filter((id) => groups.some((g) => g.id === id)));
+    expect(groups.flatMap((g) => g.tools).sort((a, b) => TOOLS.indexOf(a) - TOOLS.indexOf(b))).toEqual(TOOLS);
+    for (const group of groups) expect(group.tools).toEqual(TOOLS.filter((t) => group.tools.includes(t)));
+    expect(groups.find((g) => g.id === 'pdf')!.tools.map((t) => t.mode)).toEqual(['to-pdf', 'to-pdf', 'to-pdf', 'merge-pdf', 'from-pdf', 'from-pdf']);
   });
 
   test('PDF в картинки: вход — PDF, страницы — в формат страницы (его можно сменить у файла)', () => {

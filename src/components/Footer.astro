@@ -13,11 +13,9 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = UI[locale];
-const groups = toolGroups();
+const groups = await Promise.all(toolGroups().map(async (group) => ({ id: group.id, title: t.nav.groups[group.id], links: await toolLinks(group.tools, locale) })));
 const columns = [
-  { id: 'photo', title: t.nav.groups.photo, links: await toolLinks(groups.photo, locale) },
-  { id: 'pdf', title: t.nav.groups.pdf, links: await toolLinks(groups.pdf, locale) },
-  { id: 'converters', title: t.nav.groups.converters, links: await toolLinks(groups.converters, locale) },
+  ...groups,
   {
     id: 'about',
     title: t.nav.groups.about,
@@ -75,36 +73,26 @@ const columns = [
     outline-color: var(--footer-focus);
   }
 
-  /* телефон: две колонки, конвертеры — во всю ширину в две колонки */
+  /* разделы — колонками по ширине (на телефоне — по две); «Изображения» — первой строкой во всю ширину */
   .footer__nav {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr));
     gap: 32px 24px;
   }
 
-  .footer__group--converters {
+  .footer__group--images {
     grid-column: 1 / -1;
   }
 
-  .footer__group--converters .footer__links {
+  .footer__group--images .footer__links {
     display: block;
-    columns: 2;
+    columns: 9.5rem auto;
     column-gap: 24px;
   }
 
-  .footer__group--converters li {
+  .footer__group--images li {
     margin-bottom: 8px;
     break-inside: avoid;
-  }
-
-  @media (min-width: 960px) {
-    .footer__nav {
-      grid-template-columns: 1fr 1fr 2fr 1fr;
-    }
-
-    .footer__group--converters {
-      grid-column: auto;
-    }
   }
 
   .footer__title {

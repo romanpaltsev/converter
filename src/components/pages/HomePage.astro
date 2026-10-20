@@ -1,6 +1,6 @@
 ---
 // Главная: заголовок, конвертер «выберите любой файл, потом формат» (как у convertio), полоса преимуществ со значками,
-// описание и карточки всех инструментов.
+// описание и карточки всех инструментов по разделам (изображения, обработка фото, PDF…).
 import { getEntry } from 'astro:content';
 import ConverterWidget from '../ConverterWidget.astro';
 import ToolCards from '../ToolCards.astro';
@@ -16,7 +16,12 @@ const { locale } = Astro.props;
 const entry = await getEntry('pages', `${locale}/home`);
 if (entry?.data.page !== 'home') throw new Error(`Нет текстов главной (${locale})`);
 const c = entry.data;
-const groups = toolGroups();
+// разделы по типам файлов — в порядке TOOL_CATEGORIES, только те, где уже есть инструменты
+const sections = toolGroups().map((group) => {
+  const text = c.sections[group.id];
+  if (!text) throw new Error(`Нет текстов раздела ${group.id} на главной (${locale})`);
+  return { ...text, id: group.id, toolIds: group.tools.map((tool) => tool.id) };
+});
 ---
 
 <BaseLayout locale={locale} pageId="home" title={c.title} description={c.description}>
@@ -49,18 +54,17 @@ const groups = toolGroups();
 
   <div class="container container--widget">
     <p class="intro">{c.intro}</p>
-    <section class="section">
-      <h2>{c.editToolsTitle}</h2>
-      <ToolCards locale={locale} toolIds={groups.photo.map((t) => t.id)} />
-    </section>
-    <section class="section">
-      <h2>{c.pdfToolsTitle}</h2>
-      <ToolCards locale={locale} toolIds={groups.pdf.map((t) => t.id)} />
-    </section>
-    <section class="section">
-      <h2>{c.toolsTitle}</h2>
-      <ToolCards locale={locale} toolIds={groups.converters.map((t) => t.id)} />
-    </section>
+    {
+      sections.map((section) => (
+        <section class="section" aria-labelledby={`section-${section.id}`}>
+          <div class="section__head" data-group-icon={section.id}>
+            <h2 id={`section-${section.id}`}>{section.title}</h2>
+            <p>{section.text}</p>
+          </div>
+          <ToolCards locale={locale} toolIds={section.toolIds} />
+        </section>
+      ))
+    }
   </div>
 </BaseLayout>
 
@@ -150,6 +154,29 @@ const groups = toolGroups();
     color: var(--muted);
     font-size: 1.0625rem;
     text-align: center;
+  }
+
+  /* заголовок раздела: значок слева, под заголовком — строка о разделе */
+  .section__head {
+    --group-icon-size: 44px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 14px;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .section__head::before {
+    grid-row: span 2;
+  }
+
+  .section__head h2 {
+    margin: 0;
+  }
+
+  .section__head p {
+    margin: 2px 0 0;
+    color: var(--muted);
   }
 
   .intro + .section {

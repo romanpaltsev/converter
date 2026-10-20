@@ -60,7 +60,7 @@ export type ToolMode = 'convert' | 'compress' | 'resize' | 'strip' | 'inspect' |
 
 /** Режимы, у которых формат результата не выбирается. */
 export const FIXED_OUTPUT_MODES: ToolMode[] = ['strip', 'inspect', 'to-pdf', 'merge-pdf'];
-/** Инструменты раздела «PDF» на главной. */
+/** Инструменты раздела «PDF». */
 export const PDF_MODES: ToolMode[] = ['to-pdf', 'from-pdf', 'merge-pdf'];
 /** Универсальный виджет: формат результата выбирается у каждого файла (решение владельца 20.10.2026). */
 export const UNIVERSAL_MODES: ToolMode[] = ['convert', 'from-pdf'];
@@ -92,7 +92,7 @@ export interface ToolConfig {
 const SAME_OR_ANY: OutputChoiceId[] = ['original', 'jpeg', 'png', 'webp'];
 const ALL_INPUTS: InputFormatId[] = ['heic', 'avif', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'jxl'];
 
-/** Сначала обработка (сжатие, размер, метаданные), затем PDF и конвертеры по входному формату: так идут карточки на главной и ссылки в подвале. */
+/** Сначала обработка (сжатие, размер, метаданные), затем PDF и конвертеры по входному формату; на сайте — по разделам (TOOL_CATEGORIES), внутри раздела — в этом порядке. */
 export const TOOLS: ToolConfig[] = [
   {
     id: 'compress-image',
@@ -417,21 +417,28 @@ export function getTool(id: string): ToolConfig {
   return tool;
 }
 
-export interface ToolGroups {
-  /** Сжатие, размер, метаданные, EXIF. */
-  photo: ToolConfig[];
-  pdf: ToolConfig[];
-  /** Пары форматов. */
-  converters: ToolConfig[];
+/**
+ * Разделы сайта по типу файлов (решение владельца 20.10.2026: конвертер «для разных файлов», как convertio) —
+ * в этом порядке идут в меню, подвале и на главной. Раздел без инструментов не показывается: новые типы файлов
+ * (аудио, видео, документы, книги) появляются вместе со своими инструментами.
+ */
+export const TOOL_CATEGORIES = ['images', 'photo', 'pdf', 'audio', 'video', 'documents', 'ebooks'] as const;
+export type ToolCategory = (typeof TOOL_CATEGORIES)[number];
+
+/** Раздел инструмента: пары форматов изображений, обработка фото (сжатие, размер, метаданные, EXIF) и PDF. */
+export function toolCategory(tool: ToolConfig): ToolCategory {
+  if (PDF_MODES.includes(tool.mode)) return 'pdf';
+  return tool.mode === 'convert' ? 'images' : 'photo';
 }
 
-/** Группы инструментов для главной, меню и подвала — в порядке TOOLS. */
-export function toolGroups(): ToolGroups {
-  return {
-    photo: TOOLS.filter((t) => t.mode !== 'convert' && !PDF_MODES.includes(t.mode)),
-    pdf: TOOLS.filter((t) => PDF_MODES.includes(t.mode)),
-    converters: TOOLS.filter((t) => t.mode === 'convert'),
-  };
+export interface ToolGroup {
+  id: ToolCategory;
+  tools: ToolConfig[];
+}
+
+/** Непустые разделы для главной, меню и подвала; инструменты — в порядке TOOLS. */
+export function toolGroups(): ToolGroup[] {
+  return TOOL_CATEGORIES.map((id) => ({ id, tools: TOOLS.filter((tool) => toolCategory(tool) === id) })).filter((group) => group.tools.length > 0);
 }
 
 /**

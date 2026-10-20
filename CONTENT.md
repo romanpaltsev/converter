@@ -2384,18 +2384,16 @@
 
 Файл: `src/content/pages/ru/home.yaml`
 
-- **title:** Конвертер изображений онлайн — HEIC, AVIF, JPG, PNG и WebP в браузере _(69 симв.)_
-- **description:** Бесплатные онлайн-инструменты для фото и PDF: конвертеры HEIC, AVIF, JPG, PNG и WebP, сжатие и удаление метаданных. Без регистрации и загрузки на сервер. _(153 симв.)_
-- **h1:** Конвертер изображений прямо в браузере
-- **subtitle:** Фото и PDF — в нужный формат. Бесплатно, без регистрации и без загрузки на сервер.
-- **intro:** Переводите фото между форматами HEIC, AVIF, JPG, PNG и WebP, сжимайте их до нужного размера, удаляйте метаданные, собирайте картинки в PDF и сохраняйте страницы PDF картинками. Всё происходит на вашем устройстве: файлы не загружаются на сервер.
-- **editToolsTitle:** Обработка фото
-- **pdfToolsTitle:** PDF
-- **toolsTitle:** Конвертеры
+- **title:** Конвертер файлов онлайн — изображения, фото и PDF в браузере _(60 симв.)_
+- **description:** Бесплатный онлайн-конвертер файлов: HEIC, JPG, PNG, WebP, AVIF и другие изображения, PDF, сжатие и обработка фото. Без регистрации и загрузки на сервер. _(152 симв.)_
+- **h1:** Конвертер файлов онлайн
+- **subtitle:** Выберите файлы, затем формат — конвертация идёт прямо в браузере. Бесплатно, без регистрации и без загрузки на сервер.
+- **intro:** Здесь собраны конвертеры для разных типов файлов: изображения переводятся между HEIC, AVIF, JPG, PNG, WebP и другими форматами, PDF — в картинки и обратно. Для фото есть сжатие до нужного размера, изменение размера, просмотр и удаление метаданных. Всё работает на вашем устройстве: файлы не загружаются на сервер.
+- **sections:** [object Object] · [object Object] · [object Object]
 - **featuresTitle:** Почему здесь
 - **features:**
   - **Без загрузки на сервер.** Файлы обрабатываются прямо в браузере и не покидают ваше устройство.
-  - **Все популярные форматы.** HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF, JPEG XL и PDF.
+  - **Все популярные форматы.** Изображения HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF, JPEG XL и документы PDF.
   - **Много файлов сразу.** До 100 файлов за раз, скачать можно одним ZIP-архивом.
   - **Метаданные под контролем.** По умолчанию дата съёмки сохраняется, а геолокация удаляется.
   - **Без регистрации.** Откройте сайт и сразу выберите файлы.
@@ -2405,18 +2403,16 @@
 
 Файл: `src/content/pages/en/home.yaml`
 
-- **title:** Free Online Image Converter — HEIC, AVIF, JPG, PNG and WebP _(59 симв.)_
-- **description:** Free online photo and PDF tools: HEIC, AVIF, JPG, PNG and WebP converters, compression and EXIF removal. No sign-up and no uploads — it all runs in your browser. _(161 симв.)_
-- **h1:** Convert images right in your browser
-- **subtitle:** Photos and PDFs in the format you need. Free, no sign-up, no uploads.
-- **intro:** Convert photos between HEIC, AVIF, JPG, PNG and WebP, compress them to the size you need, strip their metadata, turn images into PDFs and PDF pages into images. Everything happens on your device: files are never uploaded.
-- **editToolsTitle:** Photo tools
-- **pdfToolsTitle:** PDF
-- **toolsTitle:** Converters
+- **title:** Free Online File Converter — Images, Photos and PDF _(51 симв.)_
+- **description:** Free online file converter: HEIC, JPG, PNG, WebP, AVIF and other images, PDF, photo compression and editing. No sign-up and no uploads — it all runs in your browser. _(165 симв.)_
+- **h1:** Online file converter
+- **subtitle:** Pick your files, then a format — conversion runs right in your browser. Free, no sign-up, no uploads.
+- **intro:** Converters for different kinds of files in one place: images between HEIC, AVIF, JPG, PNG, WebP and other formats, PDFs to images and back. For photos there is compression to a target size, resizing, and viewing or removing metadata. Everything happens on your device: files are never uploaded.
+- **sections:** [object Object] · [object Object] · [object Object]
 - **featuresTitle:** Why use it
 - **features:**
   - **No uploads.** Files are processed right in your browser and never leave your device.
-  - **All the popular formats.** HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF, JPEG XL and PDF.
+  - **All the popular formats.** HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF and JPEG XL images, plus PDF documents.
   - **Many files at once.** Up to 100 files per batch, downloaded as a single ZIP if you like.
   - **Metadata under control.** By default the capture date is kept and the location is removed.
   - **No sign-up.** Open the site and pick your files — that's it.
@@ -2495,9 +2491,13 @@
 | `nav.breadcrumbs` | Навигационная цепочка | Breadcrumbs |
 | `nav.convert` | Конвертировать | Convert |
 | `nav.allTools` | Все инструменты | All tools |
+| `nav.groups.images` | Изображения | Images |
 | `nav.groups.photo` | Обработка фото | Photo tools |
 | `nav.groups.pdf` | PDF | PDF |
-| `nav.groups.converters` | Конвертеры | Converters |
+| `nav.groups.audio` | Аудио | Audio |
+| `nav.groups.video` | Видео | Video |
+| `nav.groups.documents` | Документы | Documents |
+| `nav.groups.ebooks` | Электронные книги | eBooks |
 | `nav.groups.about` | О сайте | About |
 | `footer.privacy` | Файлы обрабатываются прямо в браузере и никуда не загружаются. | Files are processed right in your browser and never uploaded anywhere. |
 | `tool.relatedTitle` | Другие конвертеры | More converters |

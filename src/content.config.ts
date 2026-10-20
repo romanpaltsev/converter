@@ -33,17 +33,27 @@ const tools = defineCollection({
 /** Значки преимуществ на главной (контур в круге, рисуются в CSS). */
 export const FEATURE_ICONS = ['lock', 'formats', 'batch', 'location', 'account', 'free'] as const;
 
+const section = z.object({ title: text, text });
+
 const home = z.object({
   page: z.literal('home'),
   ...seo,
   /** Одна строка под H1. */
   subtitle: text,
   intro: text,
-  /** Раздел «Обработка фото»: сжатие, размер, метаданные — инструменты, которые не меняют формат. */
-  editToolsTitle: text,
-  /** Раздел «PDF». */
-  pdfToolsTitle: text,
-  toolsTitle: text,
+  /**
+   * Разделы с карточками инструментов (TOOL_CATEGORIES в реестре): заголовок и строка под ним. Тексты раздела,
+   * у которого ещё нет инструментов, необязательны — такой раздел не показывается.
+   */
+  sections: z.object({
+    images: section,
+    photo: section,
+    pdf: section,
+    audio: section.optional(),
+    video: section.optional(),
+    documents: section.optional(),
+    ebooks: section.optional(),
+  }),
   /** Полоса преимуществ: 3 × 2 карточки со значком. */
   featuresTitle: text,
   features: z.array(z.object({ icon: z.enum(FEATURE_ICONS), title: text, text })).length(6),
