@@ -83,7 +83,8 @@ const menu = await Promise.all(
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    margin-right: 12px;
+    /* «Конвертировать» — заметно отдельно от логотипа, как у convertio */
+    margin-right: 36px;
     font-weight: 700;
     font-size: 1.0625rem;
     letter-spacing: -0.02em;
@@ -155,7 +156,7 @@ const menu = await Promise.all(
 
   @media (max-width: 520px) {
     .logo {
-      margin-right: 0;
+      margin-right: 8px;
     }
 
     .menu-button {
