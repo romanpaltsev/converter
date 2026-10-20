@@ -6,7 +6,8 @@ const FORBIDDEN = /[\\/:*?"<>|\u0000-\u001f]/g;
 
 /** Имя результата без учёта конфликтов. */
 export function outputName(inputName: string, extension: string): string {
-  const clean = inputName.replace(FORBIDDEN, '_').trim();
+  // книга в архиве «роман.fb2.zip» — это «роман», а не «роман.fb2»
+  const clean = inputName.replace(FORBIDDEN, '_').trim().replace(/\.fb2(?=\.zip$)/i, '');
   const dot = clean.lastIndexOf('.');
   let base = dot > 0 ? clean.slice(0, dot) : clean;
   base = base.replace(/[. ]+$/, ''); // Windows не любит точки и пробелы в конце имени

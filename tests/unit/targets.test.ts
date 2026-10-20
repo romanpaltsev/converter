@@ -45,7 +45,7 @@ describe('форматы результата у файла', () => {
     expect(sharedTargets(['jpeg'])).toEqual(['png', 'webp', 'avif', 'ico', 'pdf']);
     expect(sharedTargets(['jpeg', 'png'])).toEqual([...IMAGE_TARGETS, 'pdf']);
     // картинки, документы, таблицы, видео и аудио вместе — все пункты меню
-    expect(sharedTargets(['jpeg', 'png', 'md', 'html', 'csv', 'json', 'mov', 'mp3', 'wav'])).toEqual([...ALL_TARGETS]);
+    expect(sharedTargets(['jpeg', 'png', 'md', 'html', 'csv', 'json', 'fb2', 'epub', 'mov', 'mp3', 'wav'])).toEqual([...ALL_TARGETS]);
     expect(sharedTargets(['mp3', 'wav'])).toEqual([...AUDIO_TARGETS]);
     expect(sharedTargets(['pdf'])).toEqual(['jpeg', 'png', 'webp']);
     expect(sharedTargets([])).toEqual([]);
@@ -110,6 +110,9 @@ describe('документы и таблицы', () => {
     expect(targetsFor('csv')).toEqual(['xlsx', 'json']);
     expect(targetsFor('json')).toEqual(['xlsx', 'csv']);
     expect(targetsFor('xlsx')).toEqual(['csv', 'json']);
+    expect(targetsFor('fb2')).toEqual(['epub', 'pdf', 'txt']);
+    expect(targetsFor('epub')).toEqual(['fb2', 'pdf', 'txt']);
+    expect(jobFor('epub', 'pdf')).toBe('text');
     expect(jobFor('md', 'pdf')).toBe('text');
     expect(jobFor('png', 'pdf')).toBe('document');
     expect(defaultTarget('txt', 'pdf')).toBe('pdf');

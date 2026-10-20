@@ -1,0 +1,44 @@
+# Texts for /en/fb2-to-txt. Draft for the owner's review (see CONTENT.md).
+title: "FB2 to TXT Converter — Ebook to Plain Text, Free"
+description: "Convert FB2 ebooks to plain TXT text right in your browser; .fb2.zip works too. Free, no sign-up, and your files never leave your device."
+h1: "FB2 to TXT Converter"
+subtitle: "An FB2 book as plain text that opens anywhere. Free, no sign-up."
+breadcrumb: "FB2 to TXT"
+card:
+  title: "FB2 → TXT"
+  text: "FB2 books, as a plain text file."
+app:
+  name: "FB2 to TXT Converter"
+  description: "An online FB2 to TXT ebook converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert FB2 to TXT"
+  steps:
+    - "Click the box above or drag your FB2 books onto it — you can add many at once."
+    - "Wait a moment while your browser converts the book. Nothing gets uploaded."
+    - "Download each TXT separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your books stay with you"
+      text: "Conversion runs on your device. Files are never uploaded, so nobody but you can see them."
+    - title: "Clean text"
+      text: "No markup or images: title, authors, description and chapters separated by blank lines."
+    - title: "UTF-8"
+      text: "The text file is saved as UTF-8, so Cyrillic reads correctly in any editor."
+    - title: "Many books at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Why convert FB2 to TXT?"
+      a: "Plain text opens in any editor on any device and is easy to search, analyze or load into apps that don't understand FB2."
+    - q: "What goes into the TXT?"
+      a: "Title, authors, description, chapter headings, paragraphs, epigraphs, poems and footnotes. Images and formatting don't carry over to plain text."
+    - q: "Which encoding is the file in?"
+      a: "UTF-8. The original book can use any encoding — it's detected automatically."
+    - q: "Do .fb2.zip files work?"
+      a: "Yes. FB2 books are often shared as ZIP archives — the converter finds the file inside. The encoding is detected automatically too, including windows-1251 used by older books."
+    - q: "Can I convert several books?"
+      a: "Yes, up to 100 files at once. Download them one by one or all together in a single ZIP file."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your book is processed in your browser and never sent to a server."

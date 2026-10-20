@@ -14,6 +14,9 @@ describe('outputName', () => {
     ['trailing dot..heic', 'jpg', 'trailing dot.jpg'],
     ['a:b*c?.heic', 'jpg', 'a_b_c_.jpg'],
     ['', 'jpg', 'image.jpg'],
+    ['Война и мир.fb2.zip', 'epub', 'Война и мир.epub'],
+    ['book.FB2.ZIP', 'txt', 'book.txt'],
+    ['archive.zip', 'txt', 'archive.txt'],
   ])('%s → %s', (input, ext, expected) => {
     expect(outputName(input, ext)).toBe(expected);
   });

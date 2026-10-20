@@ -5,13 +5,13 @@
 // (иероглифы, эмодзи), заменяются на «?» — warning missing-glyphs.
 
 import fontkit from '@pdf-lib/fontkit';
-import { PDFDocument, type PDFFont, type PDFPage, StandardFonts, rgb } from 'pdf-lib';
+import { PDFDocument, type PDFFont, type PDFImage, type PDFPage, StandardFonts, rgb } from 'pdf-lib';
 import boldUrl from 'pdfjs-dist/standard_fonts/LiberationSans-Bold.ttf?url';
 import boldItalicUrl from 'pdfjs-dist/standard_fonts/LiberationSans-BoldItalic.ttf?url';
 import italicUrl from 'pdfjs-dist/standard_fonts/LiberationSans-Italic.ttf?url';
 import regularUrl from 'pdfjs-dist/standard_fonts/LiberationSans-Regular.ttf?url';
 import type { WarningCode } from '../pipeline/types';
-import type { Block, DocumentModel, Run } from './blocks';
+import type { Asset, Block, DocumentModel, Run } from './blocks';
 
 const PAGE_WIDTH = 595.28;
 const PAGE_HEIGHT = 841.89;
@@ -61,8 +61,11 @@ class Layout {
   pages = 0;
   readonly warnings = new Set<WarningCode>();
 
+  private readonly embedded = new Map<string, PDFImage | null>();
+
   constructor(
     private readonly doc: PDFDocument,
+    private readonly assets: Map<string, Asset>,
     private readonly fonts: { regular: PDFFont; bold: PDFFont; italic: PDFFont; boldItalic: PDFFont; mono: PDFFont; monoBold: PDFFont },
     private readonly hasGlyph: (codePoint: number) => boolean,
   ) {
@@ -189,8 +192,38 @@ class Layout {
     }
   }
 
+  /** Картинка книги: JPEG и PNG, вписанная в ширину текста и высоту страницы (обложка — в 60 %), по центру. */
+  async image(id: string, cover = false): Promise<void> {
+    if (!this.embedded.has(id)) {
+      const asset = this.assets.get(id);
+      let image: PDFImage | null = null;
+      try {
+        if (asset?.mime === 'image/jpeg') image = await this.doc.embedJpg(asset.data);
+        else if (asset?.mime === 'image/png') image = await this.doc.embedPng(asset.data);
+      } catch {
+        image = null;
+      }
+      if (!image) this.warnings.add('images-dropped');
+      this.embedded.set(id, image);
+    }
+    const image = this.embedded.get(id);
+    if (!image) return;
+    const scale = Math.min(1, CONTENT / image.width, ((PAGE_HEIGHT - 2 * MARGIN) * (cover ? 0.6 : 1)) / image.height);
+    const width = image.width * scale;
+    const height = image.height * scale;
+    this.gap(SIZE * 0.6);
+    this.ensure(height);
+    this.page.drawImage(image, { x: MARGIN + (CONTENT - width) / 2, y: this.y - height, width, height });
+    this.y -= height + SIZE * 0.6;
+  }
+
   block(block: Block, previous: Block | undefined): void {
     switch (block.type) {
+      case 'pagebreak':
+        if (this.y < PAGE_HEIGHT - MARGIN) this.newPage();
+        break;
+      case 'image':
+        break;
       case 'heading': {
         const size = HEADING_SIZES[Math.min(block.level, 6) - 1]!;
         this.gap(size * 0.8);
@@ -303,8 +336,11 @@ export async function modelToPdf(model: DocumentModel): Promise<{ bytes: Uint8Ar
     monoBold: await doc.embedFont(StandardFonts.CourierBold),
   };
   const glyphs = fontkit.create(regularBytes!);
-  const layout = new Layout(doc, fonts, (code) => glyphs.hasGlyphForCodePoint(code));
-  model.blocks.forEach((block, index) => layout.block(block, model.blocks[index - 1]));
+  const layout = new Layout(doc, model.assets ?? new Map(), fonts, (code) => glyphs.hasGlyphForCodePoint(code));
+  for (const [index, block] of model.blocks.entries()) {
+    if (block.type === 'image') await layout.image(block.id, block.cover);
+    else layout.block(block, model.blocks[index - 1]);
+  }
   const warnings = [...layout.warnings];
   if (model.images) warnings.push('images-dropped');
   return { bytes: await doc.save(), pages: layout.pages, warnings };

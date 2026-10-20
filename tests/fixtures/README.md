@@ -74,6 +74,7 @@
 | `docs/cp1251.txt`, `docs/semicolon.csv` | текст и CSV в Windows-1251 (CSV — «;», кавычки, коды с ведущими нулями) |
 | `docs/people.json` | массив объектов с разными ключами и вложенным массивом |
 | `docs/book.xlsx` | два листа, общие строки (с форматированием), числа, формула, даты (формат 14 и свой), логические — `python3 tests/fixtures/generate/xlsx.py` |
+| `docs/book.fb2`, `docs/book.fb2.zip`, `docs/book.epub` | книги: FB2 в windows-1251 (обложка, секции, эпиграф, стихи, иллюстрация, примечания), он же в ZIP, EPUB 2 (обложка через meta, две главы, путь с пробелом, пропавшая картинка) — `python3 tests/fixtures/generate/books.py` |
 | `exif/big-endian.tiff`, `exif/little-endian.tiff` | сырые EXIF-блоки (TIFF) с датами, GPS, Make/Model, Orientation = 6 — для unit-тестов |
 
 Реальные снимки владельца — только в `private/` (исключена из git).

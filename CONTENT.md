@@ -3868,6 +3868,358 @@
 - **How many files can I convert at once?** Up to 100 files per batch. Download them one by one or all together in a single ZIP file.
 - **Is it safe?** Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server.
 
+### fb2-to-epub
+
+#### Русский — `/fb2-v-epub`
+
+Файл: `src/content/tools/ru/fb2-to-epub.yaml`
+
+- **title:** FB2 в EPUB онлайн — бесплатно, без загрузки на сервер _(53 симв.)_
+- **description:** Конвертируйте книги FB2 в EPUB прямо в браузере: обложка, главы, оглавление и иллюстрации. Подходят и .fb2.zip. Бесплатно и без загрузки на сервер. _(147 симв.)_
+- **H1:** Конвертер FB2 в EPUB
+- **Подзаголовок:** Книги FB2 — для Apple Books, Google Play Книг, Kindle и других читалок. Бесплатно, без регистрации.
+- **Хлебные крошки:** FB2 в EPUB
+- **Карточка:** FB2 → EPUB — Книги FB2 — в EPUB для iPhone, Android и Kindle.
+- **JSON-LD:** Конвертер FB2 в EPUB — Онлайн-конвертер электронных книг FB2 в EPUB, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать FB2 в EPUB**
+
+1. Нажмите на область выше или перетащите на неё книги FB2 — можно сразу несколько.
+2. Подождите немного: книга конвертируется прямо в браузере и никуда не отправляется.
+3. Скачайте EPUB по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Книги остаются у вас.** Конвертация выполняется на вашем устройстве. Файлы не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Главы и оглавление.** Название, авторы, аннотация, обложка, главы и иллюстрации переносятся, а оглавление собирается по главам.
+- **EPUB 3 для любых читалок.** Книга собирается в EPUB 3 с оглавлением и для новых, и для старых читалок.
+- **Сразу много книг.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Зачем переводить FB2 в EPUB?** FB2 популярен в русскоязычных библиотеках, но Apple Books, Google Play Книги, Kobo и Kindle его не открывают. EPUB — общий стандарт электронных книг, его читают почти все устройства и программы.
+- **Подойдёт ли EPUB для Kindle?** Да. Новые Kindle принимают EPUB через «Отправить на Kindle» (Send to Kindle) — Amazon сам переведёт книгу в свой формат.
+- **Подойдут ли файлы .fb2.zip?** Да. Книги FB2 часто раздают в ZIP-архиве — конвертер сам найдёт файл внутри. Кодировка тоже определяется сама, в том числе windows-1251 у старых книг.
+- **Что будет с картинками?** Обложка и иллюстрации в JPEG и PNG переносятся. Картинки в других форматах читалки поддерживают плохо, поэтому они пропускаются, а в строке файла появляется предупреждение.
+- **Сохранится ли оформление?** Сохраняются структура и начертание: главы и их заголовки, жирный и курсив, эпиграфы, стихи, цитаты, таблицы. Оформление текста задаёт сама читалка — шрифт и его размер можно настроить в ней.
+- **Можно ли конвертировать несколько книг?** Да, до 100 файлов за раз. Готовые книги можно скачать по одной или все сразу одним ZIP-архивом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а книга обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/fb2-to-epub`
+
+Файл: `src/content/tools/en/fb2-to-epub.yaml`
+
+- **title:** FB2 to EPUB Converter — Free, Private, No Upload _(48 симв.)_
+- **description:** Convert FB2 ebooks to EPUB right in your browser: cover, chapters, table of contents and illustrations. .fb2.zip works too. Free and no uploads. _(144 симв.)_
+- **H1:** FB2 to EPUB Converter
+- **Подзаголовок:** FB2 books for Apple Books, Google Play Books, Kindle and other readers. Free, no sign-up.
+- **Хлебные крошки:** FB2 to EPUB
+- **Карточка:** FB2 → EPUB — FB2 books, as EPUB for iPhone, Android and Kindle.
+- **JSON-LD:** FB2 to EPUB Converter — An online FB2 to EPUB ebook converter that runs in your browser without uploading your files.
+
+**How to convert FB2 to EPUB**
+
+1. Click the box above or drag your FB2 books onto it — you can add many at once.
+2. Wait a moment while your browser converts the book. Nothing gets uploaded.
+3. Download each EPUB separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your books stay with you.** Conversion runs on your device. Files are never uploaded, so nobody but you can see them.
+- **Chapters and contents.** Title, authors, description, cover, chapters and illustrations come through, and the table of contents is built from the chapters.
+- **EPUB 3 for any reader.** The book is built as EPUB 3 with a table of contents for both new and older readers.
+- **Many books at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **Why convert FB2 to EPUB?** FB2 is popular in Russian-language libraries, but Apple Books, Google Play Books, Kobo and Kindle don't open it. EPUB is the common ebook standard that almost every device and app reads.
+- **Will the EPUB work on a Kindle?** Yes. Newer Kindles accept EPUB through Send to Kindle — Amazon converts the book to its own format.
+- **Do .fb2.zip files work?** Yes. FB2 books are often shared as ZIP archives — the converter finds the file inside. The encoding is detected automatically too, including windows-1251 used by older books.
+- **What happens to images?** The cover and illustrations in JPEG and PNG come through. Images in other formats are poorly supported by readers, so they are skipped and the file's row shows a warning.
+- **Is the formatting kept?** The structure and styling are kept: chapters and their headings, bold and italic, epigraphs, poems, quotes and tables. The text's look is set by your reader app — you can adjust the font and size there.
+- **Can I convert several books?** Yes, up to 100 files at once. Download them one by one or all together in a single ZIP file.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your book is processed in your browser and never sent to a server.
+
+### epub-to-fb2
+
+#### Русский — `/epub-v-fb2`
+
+Файл: `src/content/tools/ru/epub-to-fb2.yaml`
+
+- **title:** EPUB в FB2 онлайн — бесплатно, без загрузки на сервер _(53 симв.)_
+- **description:** Конвертируйте книги EPUB в FB2 прямо в браузере: обложка, главы и иллюстрации сохраняются. Бесплатно, без регистрации и загрузки на сервер. _(139 симв.)_
+- **H1:** Конвертер EPUB в FB2
+- **Подзаголовок:** Книги EPUB — для читалок и программ, которые понимают FB2. Бесплатно, без регистрации.
+- **Хлебные крошки:** EPUB в FB2
+- **Карточка:** EPUB → FB2 — Книги EPUB — в FB2 для PocketBook, ONYX и программ-читалок.
+- **JSON-LD:** Конвертер EPUB в FB2 — Онлайн-конвертер электронных книг EPUB в FB2, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать EPUB в FB2**
+
+1. Нажмите на область выше или перетащите на неё книги EPUB — можно сразу несколько.
+2. Подождите немного: книга конвертируется прямо в браузере и никуда не отправляется.
+3. Скачайте FB2 по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Книги остаются у вас.** Конвертация выполняется на вашем устройстве. Файлы не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Главы и оглавление.** Название, авторы, аннотация, обложка, главы и иллюстрации переносятся, а оглавление собирается по главам.
+- **Один файл.** FB2 — один XML-файл: картинки хранятся внутри, его удобно отправлять и складывать в библиотеку.
+- **Сразу много книг.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Зачем переводить EPUB в FB2?** Многие читалки и программы, популярные в России, — PocketBook, ONYX, FBReader, «Литрес: Читай» — лучше всего работают с FB2: в нём удобные примечания и оглавление.
+- **Что сохранится?** Название, авторы, язык, обложка, главы с заголовками, абзацы с жирным и курсивом, цитаты, списки, таблицы и иллюстрации в JPEG и PNG.
+- **Что будет с картинками?** Обложка и иллюстрации в JPEG и PNG переносятся. Картинки в других форматах читалки поддерживают плохо, поэтому они пропускаются, а в строке файла появляется предупреждение.
+- **Подойдут ли купленные книги?** Книги с защитой от копирования (DRM) прочитать нельзя. Книги без защиты — из библиотек, личные и большинство бесплатных — конвертируются как обычно.
+- **Почему у меня жанр «unrecognised»?** В EPUB нет жанров FB2, поэтому в книге указывается «unrecognised» — так делают и другие конвертеры. Жанр можно поправить в библиотеке-каталогизаторе.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а книга обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/epub-to-fb2`
+
+Файл: `src/content/tools/en/epub-to-fb2.yaml`
+
+- **title:** EPUB to FB2 Converter — Free, Private, No Upload _(48 симв.)_
+- **description:** Convert EPUB ebooks to FB2 right in your browser: cover, chapters and illustrations are kept. Free, no sign-up, and your files never leave your device. _(151 симв.)_
+- **H1:** EPUB to FB2 Converter
+- **Подзаголовок:** EPUB books for readers and apps that use FB2. Free, no sign-up.
+- **Хлебные крошки:** EPUB to FB2
+- **Карточка:** EPUB → FB2 — EPUB books, as FB2 for PocketBook, ONYX and reader apps.
+- **JSON-LD:** EPUB to FB2 Converter — An online EPUB to FB2 ebook converter that runs in your browser without uploading your files.
+
+**How to convert EPUB to FB2**
+
+1. Click the box above or drag your EPUB books onto it — you can add many at once.
+2. Wait a moment while your browser converts the book. Nothing gets uploaded.
+3. Download each FB2 separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your books stay with you.** Conversion runs on your device. Files are never uploaded, so nobody but you can see them.
+- **Chapters and contents.** Title, authors, description, cover, chapters and illustrations come through, and the table of contents is built from the chapters.
+- **A single file.** FB2 is one XML file with images inside — easy to share and to add to your library.
+- **Many books at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **Why convert EPUB to FB2?** Many readers and apps popular in Eastern Europe — PocketBook, ONYX, FBReader — work best with FB2, which has handy footnotes and contents.
+- **What is kept?** Title, authors, language, cover, chapters with headings, paragraphs with bold and italic, quotes, lists, tables and JPEG and PNG illustrations.
+- **What happens to images?** The cover and illustrations in JPEG and PNG come through. Images in other formats are poorly supported by readers, so they are skipped and the file's row shows a warning.
+- **Do purchased books work?** Books with copy protection (DRM) can't be read. DRM-free books — from libraries, your own and most free ones — convert as usual.
+- **Why is the genre “unrecognised”?** EPUB has no FB2 genres, so the book gets “unrecognised”, as other converters do. You can fix the genre in your library manager.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your book is processed in your browser and never sent to a server.
+
+### fb2-to-pdf
+
+#### Русский — `/fb2-v-pdf`
+
+Файл: `src/content/tools/ru/fb2-to-pdf.yaml`
+
+- **title:** FB2 в PDF онлайн — бесплатно, без загрузки на сервер _(52 симв.)_
+- **description:** Конвертируйте книги FB2 в PDF прямо в браузере: обложка, главы с новой страницы, иллюстрации. Подходят и .fb2.zip. Бесплатно и без загрузки на сервер. _(150 симв.)_
+- **H1:** Конвертер FB2 в PDF
+- **Подзаголовок:** Книги FB2 — в PDF для печати, компьютера и планшета. Бесплатно, без регистрации.
+- **Хлебные крошки:** FB2 в PDF
+- **Карточка:** FB2 → PDF — Книги FB2 — в PDF для печати и чтения на компьютере.
+- **JSON-LD:** Конвертер FB2 в PDF — Онлайн-конвертер электронных книг FB2 в PDF, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать FB2 в PDF**
+
+1. Нажмите на область выше или перетащите на неё книги FB2 — можно сразу несколько.
+2. Подождите немного: книга конвертируется прямо в браузере и никуда не отправляется.
+3. Скачайте PDF по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Книги остаются у вас.** Конвертация выполняется на вашем устройстве. Файлы не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Главы с новой страницы.** Титул с обложкой, названием и авторами, затем главы — каждая с новой страницы, с заголовками и иллюстрациями.
+- **Кириллица и выделение текста.** Текст набран шрифтом с кириллицей и остаётся текстом: его можно выделять, искать и копировать.
+- **Сразу много книг.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Зачем переводить FB2 в PDF?** PDF открывается на любом компьютере, планшете и телефоне без отдельной читалки и одинаково выглядит при печати.
+- **Как выглядит PDF?** Страницы A4: титул с обложкой, названием и авторами, затем главы — каждая с новой страницы. Текст набран шрифтом с кириллицей, его можно выделять и искать, иллюстрации — на своих местах.
+- **Подойдут ли файлы .fb2.zip?** Да. Книги FB2 часто раздают в ZIP-архиве — конвертер сам найдёт файл внутри. Кодировка тоже определяется сама, в том числе windows-1251 у старых книг.
+- **Где примечания?** Примечания из FB2 собираются в отдельную главу в конце книги.
+- **Что будет с картинками?** Обложка и иллюстрации в JPEG и PNG переносятся. Картинки в других форматах читалки поддерживают плохо, поэтому они пропускаются, а в строке файла появляется предупреждение.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а книга обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/fb2-to-pdf`
+
+Файл: `src/content/tools/en/fb2-to-pdf.yaml`
+
+- **title:** FB2 to PDF Converter — Free, Private, No Upload _(47 симв.)_
+- **description:** Convert FB2 ebooks to PDF right in your browser: cover, each chapter on a new page, illustrations. .fb2.zip works too. Free and no uploads. _(139 симв.)_
+- **H1:** FB2 to PDF Converter
+- **Подзаголовок:** FB2 books as PDF for printing, computers and tablets. Free, no sign-up.
+- **Хлебные крошки:** FB2 to PDF
+- **Карточка:** FB2 → PDF — FB2 books, as PDF for printing and reading on a computer.
+- **JSON-LD:** FB2 to PDF Converter — An online FB2 to PDF ebook converter that runs in your browser without uploading your files.
+
+**How to convert FB2 to PDF**
+
+1. Click the box above or drag your FB2 books onto it — you can add many at once.
+2. Wait a moment while your browser converts the book. Nothing gets uploaded.
+3. Download each PDF separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your books stay with you.** Conversion runs on your device. Files are never uploaded, so nobody but you can see them.
+- **Chapters on new pages.** A title page with the cover, title and authors, then the chapters — each on a new page, with headings and illustrations.
+- **Selectable text.** The text stays text: you can select, search and copy it, Cyrillic included.
+- **Many books at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **Why convert FB2 to PDF?** A PDF opens on any computer, tablet or phone without a reader app and prints the same everywhere.
+- **What does the PDF look like?** A4 pages: a title page with the cover, title and authors, then the chapters — each starting on a new page. The text is selectable and searchable, and illustrations stay in place.
+- **Do .fb2.zip files work?** Yes. FB2 books are often shared as ZIP archives — the converter finds the file inside. The encoding is detected automatically too, including windows-1251 used by older books.
+- **Where are the footnotes?** Footnotes from the FB2 are collected into a separate chapter at the end of the book.
+- **What happens to images?** The cover and illustrations in JPEG and PNG come through. Images in other formats are poorly supported by readers, so they are skipped and the file's row shows a warning.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your book is processed in your browser and never sent to a server.
+
+### epub-to-pdf
+
+#### Русский — `/epub-v-pdf`
+
+Файл: `src/content/tools/ru/epub-to-pdf.yaml`
+
+- **title:** EPUB в PDF онлайн — бесплатно, без загрузки на сервер _(53 симв.)_
+- **description:** Конвертируйте книги EPUB в PDF прямо в браузере: обложка, главы с новой страницы, иллюстрации. Бесплатно, без регистрации и загрузки на сервер. _(143 симв.)_
+- **H1:** Конвертер EPUB в PDF
+- **Подзаголовок:** Книги EPUB — в PDF для печати, компьютера и планшета. Бесплатно, без регистрации.
+- **Хлебные крошки:** EPUB в PDF
+- **Карточка:** EPUB → PDF — Книги EPUB — в PDF для печати и чтения на компьютере.
+- **JSON-LD:** Конвертер EPUB в PDF — Онлайн-конвертер электронных книг EPUB в PDF, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать EPUB в PDF**
+
+1. Нажмите на область выше или перетащите на неё книги EPUB — можно сразу несколько.
+2. Подождите немного: книга конвертируется прямо в браузере и никуда не отправляется.
+3. Скачайте PDF по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Книги остаются у вас.** Конвертация выполняется на вашем устройстве. Файлы не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Главы с новой страницы.** Титул с обложкой, названием и авторами, затем главы — каждая с новой страницы, с заголовками и иллюстрациями.
+- **Кириллица и выделение текста.** Текст набран шрифтом с кириллицей и остаётся текстом: его можно выделять, искать и копировать.
+- **Сразу много книг.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Зачем переводить EPUB в PDF?** PDF открывается на любом компьютере и телефоне без читалки, его удобно печатать и отправлять.
+- **Как выглядит PDF?** Страницы A4: титул с обложкой, названием и авторами, затем главы — каждая с новой страницы. Текст набран шрифтом с кириллицей, его можно выделять и искать, иллюстрации — на своих местах.
+- **Сохранится ли вёрстка книги?** Сохраняются текст и структура: главы, заголовки, абзацы, начертание, списки, цитаты, таблицы и иллюстрации. Оформление из CSS книги — шрифты, отступы, колонки — не переносится: PDF набирается единообразно.
+- **Что будет с картинками?** Обложка и иллюстрации в JPEG и PNG переносятся. Картинки в других форматах читалки поддерживают плохо, поэтому они пропускаются, а в строке файла появляется предупреждение.
+- **Подойдут ли купленные книги?** Книги с защитой от копирования (DRM) прочитать нельзя. Книги без защиты — из библиотек, личные и большинство бесплатных — конвертируются как обычно.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а книга обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/epub-to-pdf`
+
+Файл: `src/content/tools/en/epub-to-pdf.yaml`
+
+- **title:** EPUB to PDF Converter — Free, Private, No Upload _(48 симв.)_
+- **description:** Convert EPUB ebooks to PDF right in your browser: cover, each chapter on a new page, illustrations. Free, no sign-up, and your files never leave your device. _(157 симв.)_
+- **H1:** EPUB to PDF Converter
+- **Подзаголовок:** EPUB books as PDF for printing, computers and tablets. Free, no sign-up.
+- **Хлебные крошки:** EPUB to PDF
+- **Карточка:** EPUB → PDF — EPUB books, as PDF for printing and reading on a computer.
+- **JSON-LD:** EPUB to PDF Converter — An online EPUB to PDF ebook converter that runs in your browser without uploading your files.
+
+**How to convert EPUB to PDF**
+
+1. Click the box above or drag your EPUB books onto it — you can add many at once.
+2. Wait a moment while your browser converts the book. Nothing gets uploaded.
+3. Download each PDF separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your books stay with you.** Conversion runs on your device. Files are never uploaded, so nobody but you can see them.
+- **Chapters on new pages.** A title page with the cover, title and authors, then the chapters — each on a new page, with headings and illustrations.
+- **Selectable text.** The text stays text: you can select, search and copy it.
+- **Many books at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **Why convert EPUB to PDF?** A PDF opens on any computer or phone without a reader app and is easy to print and share.
+- **What does the PDF look like?** A4 pages: a title page with the cover, title and authors, then the chapters — each starting on a new page. The text is selectable and searchable, and illustrations stay in place.
+- **Is the book's layout kept?** The text and structure are kept: chapters, headings, paragraphs, styling, lists, quotes, tables and illustrations. The book's CSS design — fonts, margins, columns — is not: the PDF is typeset uniformly.
+- **What happens to images?** The cover and illustrations in JPEG and PNG come through. Images in other formats are poorly supported by readers, so they are skipped and the file's row shows a warning.
+- **Do purchased books work?** Books with copy protection (DRM) can't be read. DRM-free books — from libraries, your own and most free ones — convert as usual.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your book is processed in your browser and never sent to a server.
+
+### fb2-to-txt
+
+#### Русский — `/fb2-v-txt`
+
+Файл: `src/content/tools/ru/fb2-to-txt.yaml`
+
+- **title:** FB2 в TXT онлайн — книга в текстовый файл бесплатно _(51 симв.)_
+- **description:** Конвертируйте книги FB2 в обычный текст TXT прямо в браузере: подходят и .fb2.zip. Бесплатно, без регистрации и загрузки на сервер. _(131 симв.)_
+- **H1:** Конвертер FB2 в TXT
+- **Подзаголовок:** Книга FB2 — в простой текст, который откроется везде. Бесплатно, без регистрации.
+- **Хлебные крошки:** FB2 в TXT
+- **Карточка:** FB2 → TXT — Книги FB2 — в обычный текстовый файл.
+- **JSON-LD:** Конвертер FB2 в TXT — Онлайн-конвертер электронных книг FB2 в TXT, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать FB2 в TXT**
+
+1. Нажмите на область выше или перетащите на неё книги FB2 — можно сразу несколько.
+2. Подождите немного: книга конвертируется прямо в браузере и никуда не отправляется.
+3. Скачайте TXT по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Книги остаются у вас.** Конвертация выполняется на вашем устройстве. Файлы не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Чистый текст.** Без разметки и картинок: название, авторы, аннотация и главы, разделённые пустыми строками.
+- **UTF-8.** Текстовый файл сохраняется в UTF-8 — кириллица читается в любом редакторе.
+- **Сразу много книг.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Зачем переводить FB2 в TXT?** Обычный текст открывается в любом редакторе и на любом устройстве, его удобно искать, анализировать и загружать в программы, которые не понимают FB2.
+- **Что попадёт в TXT?** Название, авторы, аннотация, заголовки глав, абзацы, эпиграфы, стихи и примечания. Картинки и оформление в обычный текст не переносятся.
+- **В какой кодировке файл?** В UTF-8. Исходная книга может быть в любой кодировке — она определяется сама.
+- **Подойдут ли файлы .fb2.zip?** Да. Книги FB2 часто раздают в ZIP-архиве — конвертер сам найдёт файл внутри. Кодировка тоже определяется сама, в том числе windows-1251 у старых книг.
+- **Можно ли конвертировать несколько книг?** Да, до 100 файлов за раз. Готовые книги можно скачать по одной или все сразу одним ZIP-архивом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а книга обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/fb2-to-txt`
+
+Файл: `src/content/tools/en/fb2-to-txt.yaml`
+
+- **title:** FB2 to TXT Converter — Ebook to Plain Text, Free _(48 симв.)_
+- **description:** Convert FB2 ebooks to plain TXT text right in your browser; .fb2.zip works too. Free, no sign-up, and your files never leave your device. _(137 симв.)_
+- **H1:** FB2 to TXT Converter
+- **Подзаголовок:** An FB2 book as plain text that opens anywhere. Free, no sign-up.
+- **Хлебные крошки:** FB2 to TXT
+- **Карточка:** FB2 → TXT — FB2 books, as a plain text file.
+- **JSON-LD:** FB2 to TXT Converter — An online FB2 to TXT ebook converter that runs in your browser without uploading your files.
+
+**How to convert FB2 to TXT**
+
+1. Click the box above or drag your FB2 books onto it — you can add many at once.
+2. Wait a moment while your browser converts the book. Nothing gets uploaded.
+3. Download each TXT separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your books stay with you.** Conversion runs on your device. Files are never uploaded, so nobody but you can see them.
+- **Clean text.** No markup or images: title, authors, description and chapters separated by blank lines.
+- **UTF-8.** The text file is saved as UTF-8, so Cyrillic reads correctly in any editor.
+- **Many books at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **Why convert FB2 to TXT?** Plain text opens in any editor on any device and is easy to search, analyze or load into apps that don't understand FB2.
+- **What goes into the TXT?** Title, authors, description, chapter headings, paragraphs, epigraphs, poems and footnotes. Images and formatting don't carry over to plain text.
+- **Which encoding is the file in?** UTF-8. The original book can use any encoding — it's detected automatically.
+- **Do .fb2.zip files work?** Yes. FB2 books are often shared as ZIP archives — the converter finds the file inside. The encoding is detected automatically too, including windows-1251 used by older books.
+- **Can I convert several books?** Yes, up to 100 files at once. Download them one by one or all together in a single ZIP file.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your book is processed in your browser and never sent to a server.
+
 ## Другие страницы
 
 ### Главная
@@ -3880,12 +4232,12 @@
 - **description:** Бесплатный онлайн-конвертер файлов: изображения HEIC, JPG, PNG, WebP, PDF, аудио MP3, WAV, M4A, видео MP4, MOV и GIF. Без регистрации и загрузки на сервер. _(155 симв.)_
 - **h1:** Конвертер файлов онлайн
 - **subtitle:** Выберите файлы, затем формат — конвертация идёт прямо в браузере. Бесплатно, без регистрации и без загрузки на сервер.
-- **intro:** Здесь собраны конвертеры для разных типов файлов: изображения переводятся между HEIC, AVIF, JPG, PNG, WebP и другими форматами, PDF — в картинки и обратно, аудио — между MP3, WAV, M4A, OGG и FLAC, видео — в MP4, WebM и GIF, а из видео можно извлечь звук. Тексты TXT, Markdown и HTML превращаются в PDF, таблицы CSV, Excel и JSON — друг в друга. Для фото есть сжатие до нужного размера, изменение размера, просмотр и удаление метаданных. Всё работает на вашем устройстве: файлы не загружаются на сервер.
-- **sections:** [object Object] · [object Object] · [object Object] · [object Object] · [object Object] · [object Object]
+- **intro:** Здесь собраны конвертеры для разных типов файлов: изображения переводятся между HEIC, AVIF, JPG, PNG, WebP и другими форматами, PDF — в картинки и обратно, аудио — между MP3, WAV, M4A, OGG и FLAC, видео — в MP4, WebM и GIF, а из видео можно извлечь звук. Тексты TXT, Markdown и HTML превращаются в PDF, таблицы CSV, Excel и JSON — друг в друга, электронные книги FB2 и EPUB — друг в друга и в PDF. Для фото есть сжатие до нужного размера, изменение размера, просмотр и удаление метаданных. Всё работает на вашем устройстве: файлы не загружаются на сервер.
+- **sections:** [object Object] · [object Object] · [object Object] · [object Object] · [object Object] · [object Object] · [object Object]
 - **featuresTitle:** Почему здесь
 - **features:**
   - **Без загрузки на сервер.** Файлы обрабатываются прямо в браузере и не покидают ваше устройство.
-  - **Все популярные форматы.** Изображения, PDF, документы и таблицы, аудио MP3, WAV, M4A, OGG, FLAC и видео MP4, MOV, WebM.
+  - **Все популярные форматы.** Изображения, PDF, документы, таблицы и книги FB2 и EPUB, аудио MP3, WAV, M4A, FLAC и видео MP4, MOV, WebM.
   - **Много файлов сразу.** До 100 файлов за раз, скачать можно одним ZIP-архивом.
   - **Метаданные под контролем.** По умолчанию дата съёмки сохраняется, а геолокация удаляется.
   - **Без регистрации.** Откройте сайт и сразу выберите файлы.
@@ -3899,12 +4251,12 @@
 - **description:** Free online file converter: HEIC, JPG, PNG, WebP images, PDF, MP3, WAV, M4A audio, MP4, MOV and GIF video. No sign-up, no uploads — it all runs in your browser. _(160 симв.)_
 - **h1:** Online file converter
 - **subtitle:** Pick your files, then a format — conversion runs right in your browser. Free, no sign-up, no uploads.
-- **intro:** Converters for different kinds of files in one place: images between HEIC, AVIF, JPG, PNG, WebP and other formats, PDFs to images and back, audio between MP3, WAV, M4A, OGG and FLAC, video to MP4, WebM and GIF, plus audio extracted from video. TXT, Markdown and HTML become PDFs, and CSV, Excel and JSON tables convert into each other. For photos there is compression to a target size, resizing, and viewing or removing metadata. Everything happens on your device: files are never uploaded.
-- **sections:** [object Object] · [object Object] · [object Object] · [object Object] · [object Object] · [object Object]
+- **intro:** Converters for different kinds of files in one place: images between HEIC, AVIF, JPG, PNG, WebP and other formats, PDFs to images and back, audio between MP3, WAV, M4A, OGG and FLAC, video to MP4, WebM and GIF, plus audio extracted from video. TXT, Markdown and HTML become PDFs, CSV, Excel and JSON tables convert into each other, and FB2 and EPUB ebooks convert into each other and to PDF. For photos there is compression to a target size, resizing, and viewing or removing metadata. Everything happens on your device: files are never uploaded.
+- **sections:** [object Object] · [object Object] · [object Object] · [object Object] · [object Object] · [object Object] · [object Object]
 - **featuresTitle:** Why use it
 - **features:**
   - **No uploads.** Files are processed right in your browser and never leave your device.
-  - **All the popular formats.** Images, PDFs, documents and spreadsheets, MP3, WAV, M4A, OGG and FLAC audio, and MP4, MOV and WebM video.
+  - **All the popular formats.** Images, PDFs, documents, spreadsheets and FB2 and EPUB ebooks, MP3, WAV, M4A and FLAC audio, and MP4, MOV and WebM video.
   - **Many files at once.** Up to 100 files per batch, downloaded as a single ZIP if you like.
   - **Metadata under control.** By default the capture date is kept and the location is removed.
   - **No sign-up.** Open the site and pick your files — that's it.
@@ -4008,6 +4360,7 @@
 | `widget.targetGroups.image` | Изображение | Image |
 | `widget.targetGroups.document` | Документ | Document |
 | `widget.targetGroups.table` | Таблица | Spreadsheet |
+| `widget.targetGroups.book` | Книга | eBook |
 | `widget.targetGroups.video` | Видео | Video |
 | `widget.targetGroups.audio` | Аудио | Audio |
 | `widget.pdfCombineHint` | Каждая картинка станет отдельным PDF. Один документ из нескольких картинок — | Each image becomes its own PDF. For one document from several images, use |

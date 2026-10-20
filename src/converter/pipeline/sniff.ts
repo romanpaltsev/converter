@@ -22,8 +22,8 @@ export type SniffResult =
 export const MEDIA_KINDS = ['mp3', 'wav', 'flac', 'ogg', 'opus', 'aac', 'm4a', 'mp4', 'mov', 'webm', 'mkv'] as const;
 export type MediaKind = (typeof MEDIA_KINDS)[number];
 
-/** Текст (TXT, Markdown, HTML), таблицы (CSV, JSON, XLSX). */
-export const TEXT_KINDS = ['txt', 'md', 'html', 'csv', 'json', 'xlsx'] as const;
+/** Текст (TXT, Markdown, HTML), таблицы (CSV, JSON, XLSX), книги (FB2, EPUB) — их обрабатывает documents/. */
+export const TEXT_KINDS = ['txt', 'md', 'html', 'csv', 'json', 'xlsx', 'fb2', 'epub'] as const;
 export type TextKind = (typeof TEXT_KINDS)[number];
 
 export type SniffKind = SniffResult['kind'];
@@ -57,7 +57,7 @@ export const MEDIA_LABELS: Record<MediaKind, string> = {
   mkv: 'MKV',
 };
 
-const TEXT_LABELS: Record<TextKind, string> = { txt: 'TXT', md: 'MD', html: 'HTML', csv: 'CSV', json: 'JSON', xlsx: 'XLSX' };
+const TEXT_LABELS: Record<TextKind, string> = { txt: 'TXT', md: 'MD', html: 'HTML', csv: 'CSV', json: 'JSON', xlsx: 'XLSX', fb2: 'FB2', epub: 'EPUB' };
 
 /** Подпись любого распознанного формата (картинка, PDF, аудио, видео, документ). */
 export function kindLabel(kind: Exclude<SniffKind, 'unknown'>): string {
@@ -189,6 +189,7 @@ const TEXT_EXTENSIONS: Record<string, TextKind> = {
   csv: 'csv',
   tsv: 'csv',
   json: 'json',
+  fb2: 'fb2',
 };
 
 /** Похоже на текст: нет нулевых байтов (UTF-16 с BOM — тоже текст). */
@@ -206,7 +207,14 @@ export function sniffFile(name: string, bytes: Uint8Array): SniffKind {
   if (kind !== 'unknown') return kind;
   const dot = name.lastIndexOf('.');
   const extension = dot >= 0 ? name.slice(dot + 1).toLowerCase() : '';
-  if (extension === 'xlsx') return ascii(bytes, 0, 4) === 'PK\x03\x04' ? 'xlsx' : 'unknown';
+  const zip = ascii(bytes, 0, 4) === 'PK\x03\x04';
+  // EPUB: первый файл архива — mimetype без сжатия со значением application/epub+zip
+  if (zip && ascii(bytes, 30, 8) === 'mimetype' && ascii(bytes, 38, 20) === 'application/epub+zip') return 'epub';
+  if (extension === 'xlsx') return zip ? 'xlsx' : 'unknown';
+  if (extension === 'epub') return zip ? 'epub' : 'unknown';
+  // книга FB2 в ZIP (так их раздают библиотеки): «книга.fb2.zip»
+  if (zip && /\.fb2\.zip$/i.test(name)) return 'fb2';
+  if (looksLikeText(bytes) && ascii(bytes, 0, Math.min(bytes.length, 1024)).includes('<FictionBook')) return 'fb2';
   const text = TEXT_EXTENSIONS[extension];
   return text && looksLikeText(bytes) ? text : 'unknown';
 }

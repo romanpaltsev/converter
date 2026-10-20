@@ -3,7 +3,7 @@
 // Пробелы схлопываются, как в браузере; script, style, head и т. п. пропускаются; картинки не переносятся.
 
 import { Parser } from 'htmlparser2';
-import { type Block, type DocumentModel, type Run, mergeRuns } from './blocks';
+import { type Block, type DocumentModel, type Run, mergeRuns, trimRuns } from './blocks';
 
 const SKIP = new Set(['script', 'style', 'head', 'title', 'template', 'noscript', 'svg', 'iframe', 'object', 'select', 'button']);
 const BLOCK = new Set(['p', 'div', 'section', 'article', 'header', 'footer', 'main', 'nav', 'aside', 'figure', 'figcaption', 'address', 'dd', 'dt', 'form', 'fieldset', 'center', 'body', 'html']);
@@ -13,7 +13,11 @@ interface ListState {
   next: number;
 }
 
-export function htmlToModel(source: string): DocumentModel {
+/**
+ * image — для глав книги (EPUB): по адресу картинки возвращает её id в книге (блок image) или null — картинка
+ * не переносится. Без него картинки не переносятся вовсе (HTML в PDF), отмечается только флаг images.
+ */
+export function htmlToModel(source: string, image?: (src: string) => string | null): DocumentModel {
   const blocks: Block[] = [];
   let images = false;
   let skip = 0;
@@ -58,7 +62,13 @@ export function htmlToModel(source: string): DocumentModel {
           skip++;
           return;
         }
-        if (name === 'img') images = true;
+        if (name === 'img') {
+          const id = image && attrs.src ? image(attrs.src) : null;
+          if (id && pre === 0 && !cell) {
+            flush();
+            blocks.push({ type: 'image', id });
+          } else images = true;
+        }
         if (pre > 0) return;
         if (/^h[1-6]$/.test(name)) start('heading', { level: Number(name[1]) });
         else if (name === 'ul' || name === 'ol') {
@@ -141,7 +151,8 @@ export function htmlToModel(source: string): DocumentModel {
         else if (name === 'a') links.pop();
       },
     },
-    { decodeEntities: true, lowerCaseTags: true },
+    // самозакрывающиеся теги — для XHTML глав EPUB (<p/>, <span/>)
+    { decodeEntities: true, lowerCaseTags: true, recognizeSelfClosing: true },
   );
 
   function styled(text: string): Run {
@@ -153,13 +164,4 @@ export function htmlToModel(source: string): DocumentModel {
   parser.end();
   flush();
   return { blocks, images };
-}
-
-/** Пробелы в начале первого и в конце последнего фрагмента (и вокруг переводов строк) — как в браузере. */
-function trimRuns(runs: Run[]): Run[] {
-  const out = runs.map((run) => ({ ...run, text: run.text.replace(/ *\n */g, '\n') }));
-  if (out[0]) out[0].text = out[0].text.replace(/^ +/, '');
-  const last = out.at(-1);
-  if (last) last.text = last.text.replace(/ +$/, '');
-  return out.filter((run) => run.text !== '');
 }

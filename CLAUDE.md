@@ -5,7 +5,7 @@
 (23 страницы-конвертера), «Сжать фото», «Изменить размер», «Удалить метаданные», «Посмотреть EXIF» и «Изображения в PDF»
 (JPG, PNG, HEIC → PDF), «PDF в JPG/PNG» и «Объединить PDF»; аудио — MP3, WAV, FLAC, OGG/Opus, AAC, M4A и звук из видео
 (MP4, MOV, WebM, MKV) → MP3, WAV, M4A, OGG, FLAC (8 страниц); видео — MP4, MOV, WebM, MKV → MP4, WebM и GIF (5 страниц); документы — TXT, Markdown, HTML → PDF, Markdown → HTML,
-CSV ↔ XLSX ↔ JSON (8 страниц).
+CSV ↔ XLSX ↔ JSON (8 страниц); электронные книги — FB2 ↔ EPUB, FB2 и EPUB → PDF, FB2 → TXT (5 страниц).
 Обзор и команды — README.md, деплой — DEPLOY.md, тесты и замеры — TESTING.md, тексты — CONTENT.md.
 
 ## Правила работы
@@ -67,9 +67,9 @@ src/converter/color/          ICC-профили (CC0) и выбор по nclx
 src/converter/media/          аудио и видео: formats.ts (настройки и параметры задания; таблицы форматов — AUDIO_FORMATS
                               и VIDEO_FORMATS в реестре), convert.ts (открыть файл, память, выбор пути, сторож),
                               audio.ts, video.ts, gif.ts, encoders.ts (WASM-кодировщики звука), run.ts (запуск, ошибки)
-src/converter/documents/      документы и таблицы: convert.ts (что во что), text.ts (кодировка, XML), blocks.ts (модель
-                              документа, TXT), markdown.ts, html.ts (разбор), pdf.ts (вёрстка pdf-lib), table.ts (CSV,
-                              JSON, XLSX), zip.ts (ZIP для XLSX)
+src/converter/documents/      документы, таблицы и книги: convert.ts (что во что), text.ts (кодировка, XML), blocks.ts
+                              (модель документа, TXT), markdown.ts, html.ts (разбор), pdf.ts (вёрстка pdf-lib), table.ts
+                              (CSV, JSON, XLSX), zip.ts (ZIP для XLSX и EPUB), book.ts (модель книги), fb2.ts, epub.ts
 src/converter/pdf/            writer.ts — свой писатель PDF («Изображения в PDF»); render.ts — pdf.js в worker'е
                               («PDF в JPG/PNG»), limits.ts — пределы для интерфейса
 src/converter/worker/         convert.worker.ts (конвертация), zip.worker.ts (ZIP), protocol.ts
@@ -389,6 +389,23 @@ scripts/                      serve-dist (тестовый сервер как n
     (первый лист по связи, sharedStrings, inlineStr, числа, логические, даты по формату ячейки — встроенные 14–22,
     45–47 и свои с d/m/y/h → ISO), листов больше одного — `sheets-first-only`; запись — один лист, inlineStr, store-ZIP
     с CRC32 (детерминированно). Фикстура XLSX — `tests/fixtures/generate/xlsx.py`.
+- **Электронные книги** (решение владельца 20.10.2026, раздел «Электронные книги»; задание `text`, `documents/`):
+  вход — FB2 (в том числе `.fb2.zip`; вид — по расширению или `<FictionBook` в начале) и EPUB (сигнатура: ZIP, первый
+  файл `mimetype` = `application/epub+zip`); выход — EPUB, FB2, PDF, TXT (меню «Книга» и «Документ»).
+  - Общая модель книги (`book.ts`): название, авторы, язык, аннотация, обложка, главы (`Block[]`, те же блоки, что
+    у документов, плюс `image` и `pagebreak`), картинки по id. В книгу на выходе и в PDF идут только JPEG и PNG
+    (тип — по сигнатуре); остальное и отсутствующие файлы — `images-dropped`.
+  - FB2 (`fb2.ts`): кодировка — из объявления XML (windows-1251 у старых книг), htmlparser2 в режиме XML; секции
+    верхнего уровня — главы, вложенные — заголовки глубже, эпиграф и cite — цитаты, стихи — абзацы, тело notes —
+    глава «Примечания»; заголовок основного тела (повтор названия) пропускается. Запись — FictionBook 2.0 с жанром
+    `unrecognised`, автор — «имя … фамилия» (одно слово — nickname), картинки в `<binary>` base64, id — имена XML.
+  - EPUB (`epub.ts`): container.xml → OPF (DC-метаданные, manifest, spine, обложка — `properties="cover-image"` или
+    `<meta name="cover">`) → главы XHTML разбором `html.ts` с картинками из архива (пути относительно главы,
+    `%20`); nav пропускается, страница-обложка и титул (первая глава с заголовком-названием) не становятся главами.
+    Запись — EPUB 3 без сжатия (`mimetype` первым): nav.xhtml и toc.ncx, титул, главы с заголовком, свой CSS.
+  - PDF — вёрстка документов: титул (обложка не выше 60 % страницы, название, авторы, аннотация), главы с новой
+    страницы, картинки вписаны в страницу. Имя результата `роман.fb2.zip` → `роман.epub` (`outputName`).
+  - Фикстуры — `tests/fixtures/generate/books.py`.
 - **GIF на входе** — свой декодер на TypeScript (`decoders/gif.ts`, без WASM): LZW, палитра, чересстрочность. Первый
   кадр — как в браузере: на прозрачном холсте логического экрана (фон GIF не рисуется), прозрачный индекс — прозрачный
   пиксель, обрезанный файл — декодированная часть, остальное прозрачно; у анимации — предупреждение. Цвет — sRGB.

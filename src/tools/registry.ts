@@ -110,8 +110,14 @@ export const TEXT_FORMATS = {
   xlsx: { label: 'XLSX', accept: '.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
 } as const satisfies Record<string, { label: string; accept: string }>;
 
-/** Документы и таблицы на выходе (PDF — общий пункт с «картинка в PDF», TargetId 'pdf'). */
-export const DOC_TARGETS = ['html', 'txt', 'xlsx', 'csv', 'json'] as const;
+/** Электронные книги на входе: FB2 (и .fb2.zip) и EPUB. */
+export const BOOK_FORMATS = {
+  fb2: { label: 'FB2', accept: '.fb2,.zip,application/x-fictionbook+xml' },
+  epub: { label: 'EPUB', accept: '.epub,application/epub+zip' },
+} as const satisfies Record<string, { label: string; accept: string }>;
+
+/** Документы, таблицы и книги на выходе (PDF — общий пункт с «картинка в PDF», TargetId 'pdf'). */
+export const DOC_TARGETS = ['html', 'txt', 'xlsx', 'csv', 'json', 'epub', 'fb2'] as const;
 export type DocTargetId = (typeof DOC_TARGETS)[number];
 
 export const DOC_FORMATS: Record<DocTargetId | 'pdf', { label: string; extension: string; mime: string }> = {
@@ -121,6 +127,8 @@ export const DOC_FORMATS: Record<DocTargetId | 'pdf', { label: string; extension
   xlsx: { label: 'XLSX', extension: 'xlsx', mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
   csv: { label: 'CSV', extension: 'csv', mime: 'text/csv' },
   json: { label: 'JSON', extension: 'json', mime: 'application/json' },
+  epub: { label: 'EPUB', extension: 'epub', mime: 'application/epub+zip' },
+  fb2: { label: 'FB2', extension: 'fb2', mime: 'application/x-fictionbook+xml' },
 };
 
 export function isDocTarget(target: string): target is DocTargetId {
@@ -131,9 +139,10 @@ export type InputFormatId = keyof typeof INPUT_FORMATS;
 export type DocumentFormatId = keyof typeof DOCUMENT_FORMATS;
 export type MediaFormatId = keyof typeof MEDIA_FORMATS;
 export type TextFormatId = keyof typeof TEXT_FORMATS;
-export type SourceFormatId = InputFormatId | DocumentFormatId | MediaFormatId | TextFormatId;
+export type BookFormatId = keyof typeof BOOK_FORMATS;
+export type SourceFormatId = InputFormatId | DocumentFormatId | MediaFormatId | TextFormatId | BookFormatId;
 /** Всё, что инструмент называет своим входом (accept, заголовок зоны). */
-export const SOURCE_FORMATS: Record<SourceFormatId, { label: string; accept: string }> = { ...INPUT_FORMATS, ...DOCUMENT_FORMATS, ...MEDIA_FORMATS, ...TEXT_FORMATS };
+export const SOURCE_FORMATS: Record<SourceFormatId, { label: string; accept: string }> = { ...INPUT_FORMATS, ...DOCUMENT_FORMATS, ...MEDIA_FORMATS, ...TEXT_FORMATS, ...BOOK_FORMATS };
 export type OutputFormatId = keyof typeof OUTPUT_FORMATS;
 /** Выбор в переключателе формата: конкретный формат, аудио или «Исходный» (формат входа; HEIC и AVIF — в JPG). */
 export type OutputChoiceId = OutputFormatId | AudioTargetId | VideoTargetId | DocTargetId | 'pdf' | 'original';
@@ -692,6 +701,52 @@ export const TOOLS: ToolConfig[] = [
     defaultQuality: 90,
     content: 'csv-to-json',
   },
+  // электронные книги (раздел «Электронные книги»): FB2 и EPUB друг в друга, в PDF и TXT
+  {
+    id: 'fb2-to-epub',
+    mode: 'convert',
+    slugs: { ru: 'fb2-v-epub', en: 'fb2-to-epub' },
+    inputFormats: ['fb2'],
+    defaultOutput: 'epub',
+    defaultQuality: 90,
+    content: 'fb2-to-epub',
+  },
+  {
+    id: 'epub-to-fb2',
+    mode: 'convert',
+    slugs: { ru: 'epub-v-fb2', en: 'epub-to-fb2' },
+    inputFormats: ['epub'],
+    defaultOutput: 'fb2',
+    defaultQuality: 90,
+    content: 'epub-to-fb2',
+  },
+  {
+    id: 'fb2-to-pdf',
+    mode: 'convert',
+    slugs: { ru: 'fb2-v-pdf', en: 'fb2-to-pdf' },
+    inputFormats: ['fb2'],
+    defaultOutput: 'pdf',
+    defaultQuality: 90,
+    content: 'fb2-to-pdf',
+  },
+  {
+    id: 'epub-to-pdf',
+    mode: 'convert',
+    slugs: { ru: 'epub-v-pdf', en: 'epub-to-pdf' },
+    inputFormats: ['epub'],
+    defaultOutput: 'pdf',
+    defaultQuality: 90,
+    content: 'epub-to-pdf',
+  },
+  {
+    id: 'fb2-to-txt',
+    mode: 'convert',
+    slugs: { ru: 'fb2-v-txt', en: 'fb2-to-txt' },
+    inputFormats: ['fb2'],
+    defaultOutput: 'txt',
+    defaultQuality: 90,
+    content: 'fb2-to-txt',
+  },
 ];
 
 export function getTool(id: string): ToolConfig {
@@ -711,7 +766,8 @@ export type ToolCategory = (typeof TOOL_CATEGORIES)[number];
 /** Раздел инструмента: пары форматов изображений, обработка фото (сжатие, размер, метаданные, EXIF), PDF, документы, аудио и видео. */
 export function toolCategory(tool: ToolConfig): ToolCategory {
   if (PDF_MODES.includes(tool.mode)) return 'pdf';
-  // текст и таблицы (в том числе TXT в PDF) — раздел «Документы»
+  // книги — «Электронные книги», текст и таблицы (в том числе TXT в PDF) — «Документы»
+  if (tool.inputFormats.some((format) => format in BOOK_FORMATS)) return 'ebooks';
   if (tool.inputFormats.some((format) => format in TEXT_FORMATS)) return 'documents';
   // звук в аудиоформат — раздел «Аудио», в том числе из видео («MP4 в MP3»); видео в видео и в GIF — «Видео»
   if (isAudioTarget(tool.defaultOutput)) return 'audio';
@@ -741,7 +797,8 @@ export function relatedTools(tool: ToolConfig, limit = 4): ToolConfig[] {
   const ordered = [
     ...others.filter((t) => t.inputFormats[0] === output && t.defaultOutput === input),
     ...others.filter((t) => t.inputFormats[0] === input),
-    ...others.filter((t) => t.defaultOutput === output),
+    // тот же выход — только в своём разделе: «FB2 в PDF» ведёт на книги, а не на «TXT в PDF»
+    ...others.filter((t) => t.defaultOutput === output && toolCategory(t) === toolCategory(tool)),
     ...others.filter((t) => toolCategory(t) === toolCategory(tool)),
   ];
   return [...new Set(ordered)].slice(0, limit);

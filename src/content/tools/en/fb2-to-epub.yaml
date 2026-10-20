@@ -1,0 +1,46 @@
+# Texts for /en/fb2-to-epub. Draft for the owner's review (see CONTENT.md).
+title: "FB2 to EPUB Converter — Free, Private, No Upload"
+description: "Convert FB2 ebooks to EPUB right in your browser: cover, chapters, table of contents and illustrations. .fb2.zip works too. Free and no uploads."
+h1: "FB2 to EPUB Converter"
+subtitle: "FB2 books for Apple Books, Google Play Books, Kindle and other readers. Free, no sign-up."
+breadcrumb: "FB2 to EPUB"
+card:
+  title: "FB2 → EPUB"
+  text: "FB2 books, as EPUB for iPhone, Android and Kindle."
+app:
+  name: "FB2 to EPUB Converter"
+  description: "An online FB2 to EPUB ebook converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert FB2 to EPUB"
+  steps:
+    - "Click the box above or drag your FB2 books onto it — you can add many at once."
+    - "Wait a moment while your browser converts the book. Nothing gets uploaded."
+    - "Download each EPUB separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your books stay with you"
+      text: "Conversion runs on your device. Files are never uploaded, so nobody but you can see them."
+    - title: "Chapters and contents"
+      text: "Title, authors, description, cover, chapters and illustrations come through, and the table of contents is built from the chapters."
+    - title: "EPUB 3 for any reader"
+      text: "The book is built as EPUB 3 with a table of contents for both new and older readers."
+    - title: "Many books at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Why convert FB2 to EPUB?"
+      a: "FB2 is popular in Russian-language libraries, but Apple Books, Google Play Books, Kobo and Kindle don't open it. EPUB is the common ebook standard that almost every device and app reads."
+    - q: "Will the EPUB work on a Kindle?"
+      a: "Yes. Newer Kindles accept EPUB through Send to Kindle — Amazon converts the book to its own format."
+    - q: "Do .fb2.zip files work?"
+      a: "Yes. FB2 books are often shared as ZIP archives — the converter finds the file inside. The encoding is detected automatically too, including windows-1251 used by older books."
+    - q: "What happens to images?"
+      a: "The cover and illustrations in JPEG and PNG come through. Images in other formats are poorly supported by readers, so they are skipped and the file's row shows a warning."
+    - q: "Is the formatting kept?"
+      a: "The structure and styling are kept: chapters and their headings, bold and italic, epigraphs, poems, quotes and tables. The text's look is set by your reader app — you can adjust the font and size there."
+    - q: "Can I convert several books?"
+      a: "Yes, up to 100 files at once. Download them one by one or all together in a single ZIP file."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your book is processed in your browser and never sent to a server."

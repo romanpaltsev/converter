@@ -10,13 +10,15 @@ import type { EncoderId } from '../pipeline/types';
 /** Формат результата: кодировщик изображения, PDF (картинка или текст — свой документ), документ, таблица, видео или аудио. */
 export type TargetId = EncoderId | 'pdf' | DocTargetId | VideoTargetId | AudioTargetId;
 
-/** Пункты меню «Изображение», «Документ», «Таблица», «Видео» и «Аудио» — в этом порядке (у видеофайла видео — первым). */
+/** Пункты меню «Изображение», «Документ», «Таблица», «Книга», «Видео» и «Аудио» — в этом порядке (у видеофайла видео — первым). */
 export const IMAGE_TARGETS: readonly TargetId[] = ['jpeg', 'png', 'webp', 'avif', 'ico'];
 export const DOCUMENT_TARGETS: readonly TargetId[] = ['pdf', 'html', 'txt'];
 export const TABLE_TARGETS: readonly TargetId[] = ['xlsx', 'csv', 'json'];
+export const BOOK_TARGETS: readonly TargetId[] = ['epub', 'fb2'];
 export { AUDIO_TARGETS, VIDEO_TARGETS };
-export const ALL_TARGETS: readonly TargetId[] = [...IMAGE_TARGETS, ...DOCUMENT_TARGETS, ...TABLE_TARGETS, ...VIDEO_TARGETS, ...AUDIO_TARGETS];
-/** Документы и таблицы: текст — в PDF (Markdown — и в HTML, HTML — и в TXT), таблицы — друг в друга. */
+export const ALL_TARGETS: readonly TargetId[] = [...IMAGE_TARGETS, ...DOCUMENT_TARGETS, ...TABLE_TARGETS, ...BOOK_TARGETS, ...VIDEO_TARGETS, ...AUDIO_TARGETS];
+/** Документы, таблицы и книги: текст — в PDF (Markdown — и в HTML, HTML — и в TXT), таблицы — друг в друга, книги —
+ *  друг в друга, в PDF и TXT. */
 const TEXT_TARGETS: Record<TextKind, readonly TargetId[]> = {
   txt: ['pdf'],
   md: ['pdf', 'html'],
@@ -24,6 +26,8 @@ const TEXT_TARGETS: Record<TextKind, readonly TargetId[]> = {
   csv: ['xlsx', 'json'],
   json: ['xlsx', 'csv'],
   xlsx: ['csv', 'json'],
+  fb2: ['epub', 'pdf', 'txt'],
+  epub: ['fb2', 'pdf', 'txt'],
 };
 /** Контейнеры видео: из них — и видео, и звук; из остальных медиа (MP3, WAV…) — только звук. */
 const VIDEO_KINDS: readonly SniffKind[] = ['mp4', 'mov', 'webm', 'mkv'];

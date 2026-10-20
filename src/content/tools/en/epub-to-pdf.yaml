@@ -1,0 +1,44 @@
+# Texts for /en/epub-to-pdf. Draft for the owner's review (see CONTENT.md).
+title: "EPUB to PDF Converter — Free, Private, No Upload"
+description: "Convert EPUB ebooks to PDF right in your browser: cover, each chapter on a new page, illustrations. Free, no sign-up, and your files never leave your device."
+h1: "EPUB to PDF Converter"
+subtitle: "EPUB books as PDF for printing, computers and tablets. Free, no sign-up."
+breadcrumb: "EPUB to PDF"
+card:
+  title: "EPUB → PDF"
+  text: "EPUB books, as PDF for printing and reading on a computer."
+app:
+  name: "EPUB to PDF Converter"
+  description: "An online EPUB to PDF ebook converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert EPUB to PDF"
+  steps:
+    - "Click the box above or drag your EPUB books onto it — you can add many at once."
+    - "Wait a moment while your browser converts the book. Nothing gets uploaded."
+    - "Download each PDF separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your books stay with you"
+      text: "Conversion runs on your device. Files are never uploaded, so nobody but you can see them."
+    - title: "Chapters on new pages"
+      text: "A title page with the cover, title and authors, then the chapters — each on a new page, with headings and illustrations."
+    - title: "Selectable text"
+      text: "The text stays text: you can select, search and copy it."
+    - title: "Many books at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Why convert EPUB to PDF?"
+      a: "A PDF opens on any computer or phone without a reader app and is easy to print and share."
+    - q: "What does the PDF look like?"
+      a: "A4 pages: a title page with the cover, title and authors, then the chapters — each starting on a new page. The text is selectable and searchable, and illustrations stay in place."
+    - q: "Is the book's layout kept?"
+      a: "The text and structure are kept: chapters, headings, paragraphs, styling, lists, quotes, tables and illustrations. The book's CSS design — fonts, margins, columns — is not: the PDF is typeset uniformly."
+    - q: "What happens to images?"
+      a: "The cover and illustrations in JPEG and PNG come through. Images in other formats are poorly supported by readers, so they are skipped and the file's row shows a warning."
+    - q: "Do purchased books work?"
+      a: "Books with copy protection (DRM) can't be read. DRM-free books — from libraries, your own and most free ones — convert as usual."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your book is processed in your browser and never sent to a server."

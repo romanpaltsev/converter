@@ -1,0 +1,44 @@
+# Texts for /en/epub-to-fb2. Draft for the owner's review (see CONTENT.md).
+title: "EPUB to FB2 Converter — Free, Private, No Upload"
+description: "Convert EPUB ebooks to FB2 right in your browser: cover, chapters and illustrations are kept. Free, no sign-up, and your files never leave your device."
+h1: "EPUB to FB2 Converter"
+subtitle: "EPUB books for readers and apps that use FB2. Free, no sign-up."
+breadcrumb: "EPUB to FB2"
+card:
+  title: "EPUB → FB2"
+  text: "EPUB books, as FB2 for PocketBook, ONYX and reader apps."
+app:
+  name: "EPUB to FB2 Converter"
+  description: "An online EPUB to FB2 ebook converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert EPUB to FB2"
+  steps:
+    - "Click the box above or drag your EPUB books onto it — you can add many at once."
+    - "Wait a moment while your browser converts the book. Nothing gets uploaded."
+    - "Download each FB2 separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your books stay with you"
+      text: "Conversion runs on your device. Files are never uploaded, so nobody but you can see them."
+    - title: "Chapters and contents"
+      text: "Title, authors, description, cover, chapters and illustrations come through, and the table of contents is built from the chapters."
+    - title: "A single file"
+      text: "FB2 is one XML file with images inside — easy to share and to add to your library."
+    - title: "Many books at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Why convert EPUB to FB2?"
+      a: "Many readers and apps popular in Eastern Europe — PocketBook, ONYX, FBReader — work best with FB2, which has handy footnotes and contents."
+    - q: "What is kept?"
+      a: "Title, authors, language, cover, chapters with headings, paragraphs with bold and italic, quotes, lists, tables and JPEG and PNG illustrations."
+    - q: "What happens to images?"
+      a: "The cover and illustrations in JPEG and PNG come through. Images in other formats are poorly supported by readers, so they are skipped and the file's row shows a warning."
+    - q: "Do purchased books work?"
+      a: "Books with copy protection (DRM) can't be read. DRM-free books — from libraries, your own and most free ones — convert as usual."
+    - q: "Why is the genre “unrecognised”?"
+      a: "EPUB has no FB2 genres, so the book gets “unrecognised”, as other converters do. You can fix the genre in your library manager."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your book is processed in your browser and never sent to a server."

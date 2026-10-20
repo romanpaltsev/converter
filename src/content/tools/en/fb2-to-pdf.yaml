@@ -1,0 +1,44 @@
+# Texts for /en/fb2-to-pdf. Draft for the owner's review (see CONTENT.md).
+title: "FB2 to PDF Converter — Free, Private, No Upload"
+description: "Convert FB2 ebooks to PDF right in your browser: cover, each chapter on a new page, illustrations. .fb2.zip works too. Free and no uploads."
+h1: "FB2 to PDF Converter"
+subtitle: "FB2 books as PDF for printing, computers and tablets. Free, no sign-up."
+breadcrumb: "FB2 to PDF"
+card:
+  title: "FB2 → PDF"
+  text: "FB2 books, as PDF for printing and reading on a computer."
+app:
+  name: "FB2 to PDF Converter"
+  description: "An online FB2 to PDF ebook converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert FB2 to PDF"
+  steps:
+    - "Click the box above or drag your FB2 books onto it — you can add many at once."
+    - "Wait a moment while your browser converts the book. Nothing gets uploaded."
+    - "Download each PDF separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your books stay with you"
+      text: "Conversion runs on your device. Files are never uploaded, so nobody but you can see them."
+    - title: "Chapters on new pages"
+      text: "A title page with the cover, title and authors, then the chapters — each on a new page, with headings and illustrations."
+    - title: "Selectable text"
+      text: "The text stays text: you can select, search and copy it, Cyrillic included."
+    - title: "Many books at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Why convert FB2 to PDF?"
+      a: "A PDF opens on any computer, tablet or phone without a reader app and prints the same everywhere."
+    - q: "What does the PDF look like?"
+      a: "A4 pages: a title page with the cover, title and authors, then the chapters — each starting on a new page. The text is selectable and searchable, and illustrations stay in place."
+    - q: "Do .fb2.zip files work?"
+      a: "Yes. FB2 books are often shared as ZIP archives — the converter finds the file inside. The encoding is detected automatically too, including windows-1251 used by older books."
+    - q: "Where are the footnotes?"
+      a: "Footnotes from the FB2 are collected into a separate chapter at the end of the book."
+    - q: "What happens to images?"
+      a: "The cover and illustrations in JPEG and PNG come through. Images in other formats are poorly supported by readers, so they are skipped and the file's row shows a warning."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your book is processed in your browser and never sent to a server."
