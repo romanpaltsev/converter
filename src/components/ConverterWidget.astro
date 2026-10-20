@@ -22,6 +22,8 @@ const converts = tool.mode === 'convert';
 const strips = tool.mode === 'strip';
 // «Посмотреть EXIF»: только чтение — ни настроек, ни архива с результатами
 const inspects = tool.mode === 'inspect';
+// «Объединить PDF»: настроек нет, порядок задают стрелки у файлов, кнопка — «Объединить PDF»
+const merges = tool.mode === 'merge-pdf';
 // «Изображения в PDF»: размер страницы и поля вместо формата и качества; вместо ZIP — один PDF
 const pdfs = tool.mode === 'to-pdf';
 const PAGE_SIZES = ['a4', 'letter', 'image'] as const;
@@ -35,7 +37,7 @@ const supported = list(Object.values(INPUT_FORMATS).map((f) => f.label));
 const base = UI[locale].widget;
 const t = {
   ...base,
-  dropTitle: converts || pdfs || fromPdf ? format(base.dropTitle, { format: list(inputs.map((f) => f.label)) }) : base.dropTitleAny,
+  dropTitle: converts || pdfs || fromPdf || merges ? format(base.dropTitle, { format: list(inputs.map((f) => f.label)) }) : base.dropTitleAny,
   // сжатие, размер и метаданные — не «конвертация»; PDF в картинки и обратно — она
   progress: converts || pdfs || fromPdf ? base.progress : base.progressProcess,
   converting: converts || pdfs || fromPdf ? base.converting : base.processing,
@@ -88,9 +90,9 @@ const DEFAULT_LONG_SIDE = 1920;
   </button>
   <input type="file" class="visually-hidden" data-input multiple accept={accept} tabindex="-1" aria-hidden="true" />
 
-  <form class="settings" data-settings aria-label={t.settings} hidden={inspects}>
+  <form class="settings" data-settings aria-label={t.settings} hidden={inspects || merges}>
     {
-      !inspects && (
+      !inspects && !merges && (
         <Fragment>
           {
             strips ? (
@@ -310,8 +312,9 @@ const DEFAULT_LONG_SIDE = 1920;
   <div class="converter__results" data-results hidden>
     <ul class="files" data-files></ul>
     <p class="settings__hint" data-settings-hint hidden>{t.settingsChanged}</p>
+    {merges && <p class="settings__hint">{t.mergeHint}</p>}
     <div class="converter__actions">
-      <button type="button" class="button button--primary" data-zip disabled hidden={inspects}>{pdfs ? t.downloadPdf : t.downloadAll}</button>
+      <button type="button" class="button button--primary" data-zip disabled hidden={inspects}>{merges ? t.mergePdf : pdfs ? t.downloadPdf : t.downloadAll}</button>
       <button type="button" class="button" data-reconvert hidden>{t.reconvert}</button>
       <button type="button" class="button button--ghost" data-clear>{t.clear}</button>
     </div>

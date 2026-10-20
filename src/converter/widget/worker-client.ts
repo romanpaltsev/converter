@@ -200,6 +200,23 @@ export class WorkerClient implements PoolClient {
     return failure(reply);
   }
 
+  /** «Объединить PDF»: число страниц и превью первой. */
+  async pdfInfo(file: Blob, memoryLimit: number, onStarted: OnStarted): Promise<{ status: 'done'; pages: number; preview: ArrayBuffer } | ConvertFailure | NeedsMemory> {
+    const reply = await this.request((id) => ({ type: 'pdf-info', id, file, memoryLimit }), onStarted);
+    if (reply.type === 'pdf-info') {
+      this.files++;
+      return { status: 'done', pages: reply.pages, preview: reply.preview };
+    }
+    return failure(reply);
+  }
+
+  /** «Объединить PDF»: документы по порядку → один PDF. */
+  async pdfMerge(files: Blob[]): Promise<{ status: 'done'; buffer: ArrayBuffer; pages: number } | ConvertFailure | NeedsMemory> {
+    const reply = await this.request((id) => ({ type: 'pdf-merge', id, files }), () => {});
+    if (reply.type === 'pdf-merged') return { status: 'done', buffer: reply.buffer, pages: reply.pages };
+    return failure(reply);
+  }
+
   /** «PDF в JPG»: страницы приходят по одной в onPage, результат — когда готовы все. */
   async pdfRender(file: Blob, options: PdfRenderOptions, memoryLimit: number, onStarted: OnStarted, onPage: (page: RenderedPdfPage) => void): Promise<PdfRenderOutcome> {
     this.onPage = onPage;

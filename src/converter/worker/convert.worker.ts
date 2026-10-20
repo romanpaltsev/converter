@@ -204,21 +204,14 @@ async function handlePdfRender(message: Extract<ToWorker, { type: 'pdf-render' }
   let doc: PDFDocumentProxy | null = null;
   try {
     render = await import('../pdf/render');
-    const { openPdf, renderPage, pageSize, pdfErrorKind } = render;
+    const { renderPage, pageSize } = render;
     const bytes = new Uint8Array(await message.file.arrayBuffer());
     if (sniff(bytes).kind !== 'pdf') throw new ConvertError('not-pdf');
     const fileBytes = bytes.length;
     const encoder = await loadEncoder(options.encoder);
     modules.set(encoder.module, encoder);
-    try {
-      // pdf.js забирает буфер себе (передаёт его своей «рабочей» части)
-      doc = await openPdf(bytes);
-    } catch (error) {
-      const kind = pdfErrorKind(error);
-      if (kind === 'encrypted') throw new ConvertError('pdf-encrypted', String(error));
-      if (kind === 'broken') throw new ConvertError('decode-failed', String(error));
-      throw error;
-    }
+    // pdf.js забирает буфер себе (передаёт его своей «рабочей» части)
+    doc = await openOrFail(render, bytes);
     // память — по первой странице (у документов они обычно одного размера)
     const first = await doc.getPage(1);
     const view = first.getViewport({ scale: 1 });
@@ -273,6 +266,72 @@ async function handlePdfRender(message: Extract<ToWorker, { type: 'pdf-render' }
   }
 }
 
+/** Открыть PDF; пароль и битый файл — коды для пользователя. */
+async function openOrFail(render: typeof import('../pdf/render'), bytes: Uint8Array): Promise<PDFDocumentProxy> {
+  try {
+    return await render.openPdf(bytes);
+  } catch (error) {
+    const kind = render.pdfErrorKind(error);
+    if (kind === 'encrypted') throw new ConvertError('pdf-encrypted', String(error));
+    if (kind === 'broken') throw new ConvertError('decode-failed', String(error));
+    throw error;
+  }
+}
+
+/** «Объединить PDF»: число страниц и превью первой (длинная сторона — 160 точек). */
+async function handlePdfInfo(message: Extract<ToWorker, { type: 'pdf-info' }>): Promise<void> {
+  const { id } = message;
+  let doc: PDFDocumentProxy | null = null;
+  try {
+    const render = await import('../pdf/render');
+    const bytes = new Uint8Array(await message.file.arrayBuffer());
+    if (sniff(bytes).kind !== 'pdf') throw new ConvertError('not-pdf');
+    const footprint = 8 * bytes.length;
+    if (footprint > message.memoryLimit) {
+      post({ type: 'needs-memory', id, footprint, fresh: footprint });
+      return;
+    }
+    post({ type: 'started', id, footprint, fresh: footprint });
+    const encoder = await loadEncoder('jpeg');
+    modules.set(encoder.module, encoder);
+    doc = await openOrFail(render, bytes);
+    const first = await doc.getPage(1);
+    const view = first.getViewport({ scale: 1 });
+    first.cleanup();
+    const page = await render.renderPage(doc, 1, (72 * 160) / Math.max(view.width, view.height));
+    const options: ConvertOptions = { encoder: 'jpeg', quality: 75, lossless: false, metadata: 'dates', targetBytes: null, allowSameFormat: true, resize: null };
+    const preview = (await encoder.encode({ rgba: page.rgba, width: page.width, height: page.height, hasAlpha: false }, options)).buffer as ArrayBuffer;
+    post({ type: 'pdf-info', id, pages: doc.numPages, preview }, [preview]);
+  } catch (error) {
+    postError(id, error);
+  } finally {
+    await doc?.loadingTask.destroy();
+  }
+}
+
+/** «Объединить PDF»: pdf.js копирует страницы всех документов по порядку в новый PDF (extractPages). */
+async function handlePdfMerge(message: Extract<ToWorker, { type: 'pdf-merge' }>): Promise<void> {
+  const { id } = message;
+  let doc: PDFDocumentProxy | null = null;
+  try {
+    const render = await import('../pdf/render');
+    const [first, ...rest] = await Promise.all(message.files.map(async (file) => new Uint8Array(await file.arrayBuffer())));
+    if (!first) throw new ConvertError('internal', 'нет документов');
+    doc = await openOrFail(render, first);
+    const merged = await doc.extractPages([{ document: null }, ...rest.map((document) => ({ document }))]);
+    render.fixProducer(merged);
+    const result = await render.openPdf(merged.slice());
+    const pages = result.numPages;
+    await result.loadingTask.destroy();
+    const buffer = merged.buffer as ArrayBuffer;
+    post({ type: 'pdf-merged', id, buffer, pages }, [buffer]);
+  } catch (error) {
+    postError(id, error);
+  } finally {
+    await doc?.loadingTask.destroy();
+  }
+}
+
 /** «Посмотреть EXIF»: модуль грузится только на этой странице; миниатюра передаётся без копирования. */
 async function handleInspect(message: Extract<ToWorker, { type: 'inspect' }>): Promise<void> {
   const { id } = message;
@@ -316,5 +375,9 @@ scope.onmessage = (event) => {
     void handlePdfPage(message);
   } else if (message.type === 'pdf-render') {
     void handlePdfRender(message);
+  } else if (message.type === 'pdf-info') {
+    void handlePdfInfo(message);
+  } else if (message.type === 'pdf-merge') {
+    void handlePdfMerge(message);
   }
 };

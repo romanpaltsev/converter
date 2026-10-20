@@ -245,7 +245,11 @@ export class ConverterWidget {
         this.syncSettings();
       });
     }
-    this.zipButton.addEventListener('click', () => void (this.config.mode === 'to-pdf' ? this.downloadPdf() : this.downloadAll()));
+    this.zipButton.addEventListener('click', () => {
+      if (this.config.mode === 'to-pdf') void this.downloadPdf();
+      else if (this.config.mode === 'merge-pdf') void this.mergePdf();
+      else void this.downloadAll();
+    });
     this.reconvertButton.addEventListener('click', () => this.reconvert());
     this.clearButton.addEventListener('click', () => this.clear());
   }
@@ -395,6 +399,7 @@ export class ConverterWidget {
     if (settings.strip) return this.strip(item, head, settings.strip, lease, generation);
     if (this.config.mode === 'inspect') return this.inspect(item, head, lease, generation);
     if (this.config.mode === 'to-pdf') return this.pdfPage(item, head, lease, generation);
+    if (this.config.mode === 'merge-pdf') return this.pdfInfo(item, head, lease, generation);
     if (settings.dpi !== null) return this.renderPdf(item, head, settings, lease, generation);
     const input = checkInput(head, settings.output.encoder, this.config.mode !== 'convert');
     if (!input.ok) {
@@ -678,6 +683,67 @@ export class ConverterWidget {
     return false;
   }
 
+  /** «Объединить PDF»: число страниц и превью первой — документ в списке узнаётся с первого взгляда. */
+  private async pdfInfo(item: Item, head: Uint8Array, lease: Lease, generation: number): Promise<boolean> {
+    if (sniff(head).kind !== 'pdf') {
+      this.fail(item, 'not-pdf');
+      return false;
+    }
+    this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
+    const outcome = await lease.client.pdfInfo(item.file, lease.memoryLimit, (footprint, fresh) => {
+      if (generation !== this.generation) return;
+      lease.started(footprint, fresh);
+      this.pump();
+    });
+    if (generation !== this.generation) return false;
+    if (outcome.status === 'needs-memory') {
+      item.estimate = outcome.fresh;
+      this.requeue(item);
+      return true;
+    }
+    if (outcome.status === 'error') {
+      this.fail(item, outcome.code);
+      return outcome.fatal || outcome.recycle;
+    }
+    item.pages = { done: outcome.pages, total: outcome.pages };
+    item.format = 'PDF';
+    item.previewUrl = URL.createObjectURL(new Blob([outcome.preview], { type: 'image/jpeg' }));
+    item.status = 'done';
+    this.run.done++;
+    this.renderRow(item);
+    this.updateActions();
+    return false;
+  }
+
+  /** Документы по порядку → один PDF; собирает отдельный worker, который потом завершается. */
+  private async mergePdf(): Promise<void> {
+    const documents = this.items.filter((item) => item.status === 'done' && item.pages);
+    if (documents.length === 0 || this.zipping) return;
+    this.zipping = true;
+    const label = this.zipButton.textContent;
+    this.zipButton.textContent = this.t.pdfPreparing;
+    this.zipButton.setAttribute('aria-busy', 'true');
+    this.updateActions();
+    // память простаивающих worker'ов отдаём под объединение: все документы нужны сразу
+    this.pool.recycleAll();
+    const client = new WorkerClient();
+    try {
+      const result = await client.pdfMerge(documents.map((item) => item.file));
+      if (result.status !== 'done') throw new Error(result.status === 'error' ? result.message : 'needs memory');
+      const { saveBlob } = await import('./zip');
+      saveBlob(new Blob([result.buffer], { type: 'application/pdf' }), withTimestamp(`${this.config.zipName}.pdf`, new Date()));
+      this.setStatus(fill(this.t.pdfPages, { count: result.pages }));
+    } catch {
+      this.showNotice(this.t.mergeFailed, 'error');
+    } finally {
+      client.recycle();
+      this.zipping = false;
+      this.zipButton.textContent = label;
+      this.zipButton.removeAttribute('aria-busy');
+      this.updateActions();
+    }
+  }
+
   /** Убрать строки страниц этого PDF (перед повторной обработкой или после ошибки). */
   private removePages(pdf: Item): void {
     for (const page of this.items.filter((other) => other.parent === pdf)) {
@@ -915,7 +981,7 @@ export class ConverterWidget {
     }
     row.append(thumb, body);
     if (item.status === 'done' && item.report) row.append(this.reports.render(item.report, item.file.name, () => void this.downloadStripped(item)));
-    if (this.config.mode === 'to-pdf') row.append(this.orderControls(item));
+    if (this.config.mode === 'to-pdf' || this.config.mode === 'merge-pdf') row.append(this.orderControls(item));
 
     if (item.status === 'done' && item.url && item.name) {
       const name = item.name;
@@ -968,7 +1034,8 @@ export class ConverterWidget {
   private updateActions(): void {
     const done = this.items.filter((item) => item.status === 'done');
     // PDF собирается, когда обработаны все файлы: иначе страницы потеряются
-    const pending = this.config.mode === 'to-pdf' && this.items.some((item) => item.status === 'queued' || item.status === 'converting');
+    const ordered = this.config.mode === 'to-pdf' || this.config.mode === 'merge-pdf';
+    const pending = ordered && this.items.some((item) => item.status === 'queued' || item.status === 'converting');
     this.zipButton.disabled = this.zipping || done.length === 0 || pending;
     const current = this.currentSettings();
     const outdated = this.items.some((item) => isOutdated(item, current));

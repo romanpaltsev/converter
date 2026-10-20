@@ -524,6 +524,78 @@
 - **What about the location and the date taken?** Only the images go into the PDF: location, phone model and the date taken aren't carried over.
 - **Is it safe?** Yes. Only the tool itself is loaded from the site; the PDF is created in your browser and your files are never sent to a server.
 
+### merge-pdf
+
+#### Русский — `/obedinit-pdf`
+
+Файл: `src/content/tools/ru/merge-pdf.yaml`
+
+- **title:** Объединить PDF онлайн — несколько файлов в один PDF _(51 симв.)_
+- **description:** Объедините несколько PDF в один документ прямо в браузере: в нужном порядке, без потери качества, без регистрации и загрузки файлов на сервер. _(142 симв.)_
+- **H1:** Объединить PDF
+- **Подзаголовок:** Несколько документов — в один PDF, в нужном порядке. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** Объединить PDF
+- **Карточка:** Объединить PDF — Склеить несколько PDF в один документ.
+- **JSON-LD:** Объединение PDF онлайн — Онлайн-сервис, который объединяет PDF-файлы в один документ прямо в браузере, без загрузки файлов на сервер.
+
+**Как объединить PDF**
+
+1. Нажмите на область выше или перетащите на неё PDF-файлы — у каждого появятся превью и число страниц.
+2. Расставьте документы в нужном порядке стрелками, лишние уберите крестиком.
+3. Нажмите «Объединить PDF» — готовый документ сразу скачается.
+
+**Почему здесь**
+
+- **Документы остаются у вас.** PDF объединяются прямо в браузере — договоры, выписки и сканы не загружаются на сервер.
+- **Без потери качества.** Страницы копируются как есть: текст остаётся текстом, а картинки не пересжимаются.
+- **Порядок под контролем.** Превью первой страницы и число страниц помогают расставить документы, не открывая их.
+- **Бесплатно и без регистрации.** До 100 документов за раз, без водяных знаков.
+
+**Частые вопросы**
+
+- **Как объединить несколько PDF в один?** Добавьте файлы, расставьте их стрелками в нужном порядке и нажмите «Объединить PDF». Страницы попадут в документ в том же порядке.
+- **Ухудшится ли качество?** Нет. Страницы переносятся без перерисовки: текст остаётся текстом — его можно выделять и искать, — а картинки остаются прежними.
+- **Можно ли объединить PDF с паролем?** Нет: защищённый паролем PDF нужно сначала открыть и сохранить копию без пароля. Такой файл будет отмечен в списке и в документ не попадёт.
+- **Можно ли добавить картинки?** Для этого есть «JPG в PDF»: соберите картинки в PDF, а затем объедините его с другими документами здесь.
+- **Сохранятся ли оглавление и формы?** Страницы, их текст, картинки и пометки переносятся. Оглавление (закладки) исходных документов и интерактивные поля форм могут не сохраниться.
+- **Сколько файлов можно объединить?** До 100 документов за раз. Большие PDF объединяются дольше и требуют больше памяти — на телефоне их лучше объединять частями.
+- **Безопасно ли это?** Да. С сайта загружается только сам инструмент, а PDF объединяются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/merge-pdf`
+
+Файл: `src/content/tools/en/merge-pdf.yaml`
+
+- **title:** Merge PDF Online — Combine PDF Files into One _(45 симв.)_
+- **description:** Combine several PDFs into one document right in your browser: in the order you want, without quality loss, no sign-up and no uploads. _(133 симв.)_
+- **H1:** Merge PDF
+- **Подзаголовок:** Combine documents into one PDF in the order you want. Your files never leave your device.
+- **Хлебные крошки:** Merge PDF
+- **Карточка:** Merge PDF — Combine several PDFs into one document.
+- **JSON-LD:** PDF Merger — An online tool that merges PDF files into one document right in your browser, without uploading files.
+
+**How to merge PDF files**
+
+1. Click the box above or drop your PDFs onto it — each file gets a preview and a page count.
+2. Put the documents in order with the arrows and remove extras with the cross.
+3. Click “Merge PDFs” — the combined document downloads right away.
+
+**Why use this tool**
+
+- **Documents stay on your device.** PDFs are merged right in your browser — contracts, statements and scans are never uploaded.
+- **No quality loss.** Pages are copied as they are: text stays text and images aren't recompressed.
+- **Easy ordering.** A first-page preview and the page count help you order documents without opening them.
+- **Free, no sign-up.** Merge up to 100 documents at a time, with no watermarks.
+
+**FAQ**
+
+- **How do I combine several PDFs into one?** Add the files, put them in order with the arrows and click “Merge PDFs”. The pages go into the document in the same order.
+- **Will the quality get worse?** No. Pages are carried over without re-rendering: text stays text — you can still select and search it — and images stay the same.
+- **Can I merge password-protected PDFs?** No — open such a PDF and save a copy without the password first. A protected file is marked in the list and left out of the result.
+- **Can I add images?** Use “JPG to PDF” for that: turn the images into a PDF, then merge it with your other documents here.
+- **Are bookmarks and forms kept?** Pages with their text, images and annotations are carried over. The outline (bookmarks) of the original documents and interactive form fields may not be kept.
+- **How many files can I merge?** Up to 100 documents at a time. Large PDFs take longer and need more memory — on a phone, merge them in parts.
+- **Is it safe?** Yes. Only the tool itself is loaded from the site; the PDFs are merged in your browser and never sent to a server.
+
 ### pdf-to-jpg
 
 #### Русский — `/pdf-v-jpg`
@@ -2478,6 +2550,9 @@
 | `widget.margins.small` | Узкие | Small |
 | `widget.pdfHint` | JPG попадают в PDF без перекодирования, остальные форматы — в высоком качестве. Метаданные фото (геолокация, камера) в документ не попадают. | JPGs go into the PDF without re-encoding, other formats in high quality. Photo metadata (location, camera) is left out. |
 | `widget.downloadPdf` | Скачать PDF | Download PDF |
+| `widget.mergePdf` | Объединить PDF | Merge PDFs |
+| `widget.mergeHint` | Документы объединятся в том порядке, в котором стоят в списке. Порядок меняют стрелки у файлов. | Documents are merged in the order of the list. Use the arrows on the files to change it. |
+| `widget.mergeFailed` | Не удалось объединить PDF. Попробуйте ещё раз или уберите файл, на котором возникает ошибка. | Couldn't merge the PDFs. Try again or remove the file that causes the error. |
 | `widget.pdfPreparing` | Собираем PDF… | Creating PDF… |
 | `widget.pdfFailed` | Не удалось собрать PDF. Попробуйте ещё раз. | Couldn't create the PDF. Please try again. |
 | `widget.pageNumber` | Стр. {number} | Page {number} |

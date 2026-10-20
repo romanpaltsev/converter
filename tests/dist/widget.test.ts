@@ -36,6 +36,11 @@ describe('сборка: разметка виджета', () => {
       expect(root.querySelector('[data-meta-row]')).toBeNull();
       expect(root.querySelector('[data-png-warning]')).toBeNull();
       expect(root.querySelector('[data-zip]')?.hasAttribute('hidden')).toBe(false);
+    } else if (tool.mode === 'merge-pdf') {
+      // «Объединить PDF»: настроек нет, кнопка — «Объединить PDF»
+      expect(root.querySelector('form[data-settings]')?.hasAttribute('hidden')).toBe(true);
+      expect(root.querySelectorAll('form[data-settings] input')).toHaveLength(0);
+      expect(root.querySelector('[data-zip]')?.text).toBe(UI[file.startsWith('en/') ? 'en' : 'ru'].widget.mergePdf);
     } else if (tool.mode === 'inspect') {
       // «Посмотреть EXIF»: настроек и архива нет — форма пустая и скрыта, кнопка ZIP скрыта
       expect(root.querySelector('form[data-settings]')?.hasAttribute('hidden')).toBe(true);

@@ -33,3 +33,18 @@ describe('PDF по сигнатуре', () => {
     expect(checkInput(fixture('text.pdf'), 'jpeg')).toEqual({ ok: false, code: 'pdf-input' });
   });
 });
+
+describe('объединённый PDF: Producer', () => {
+  test('«Firefox» заменяется на «PDF.js» той же длиной, остальное не трогается', async () => {
+    const { fixProducer } = await import('../../src/converter/pdf/render');
+    const source = '%PDF-1.7\n5 0 obj\n<< /Creator (PDF.js) /Producer (Firefox) >>\nendobj\n';
+    const bytes = new TextEncoder().encode(source);
+    fixProducer(bytes);
+    const fixed = new TextDecoder().decode(bytes);
+    expect(fixed).toBe(source.replace('/Producer (Firefox)', '/Producer (PDF.js) '));
+    expect(fixed).toHaveLength(source.length);
+    const untouched = new TextEncoder().encode('%PDF-1.7\n<< /Producer (Other) >>');
+    fixProducer(untouched);
+    expect(new TextDecoder().decode(untouched)).toBe('%PDF-1.7\n<< /Producer (Other) >>');
+  });
+});

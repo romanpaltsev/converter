@@ -1,0 +1,46 @@
+# Texts for /en/merge-pdf. Draft for the owner's review (see CONTENT.md).
+title: "Merge PDF Online — Combine PDF Files into One"
+description: "Combine several PDFs into one document right in your browser: in the order you want, without quality loss, no sign-up and no uploads."
+h1: "Merge PDF"
+subtitle: "Combine documents into one PDF in the order you want. Your files never leave your device."
+breadcrumb: "Merge PDF"
+card:
+  title: "Merge PDF"
+  text: "Combine several PDFs into one document."
+app:
+  name: "PDF Merger"
+  description: "An online tool that merges PDF files into one document right in your browser, without uploading files."
+howTo:
+  title: "How to merge PDF files"
+  steps:
+    - "Click the box above or drop your PDFs onto it — each file gets a preview and a page count."
+    - "Put the documents in order with the arrows and remove extras with the cross."
+    - "Click “Merge PDFs” — the combined document downloads right away."
+why:
+  title: "Why use this tool"
+  items:
+    - title: "Documents stay on your device"
+      text: "PDFs are merged right in your browser — contracts, statements and scans are never uploaded."
+    - title: "No quality loss"
+      text: "Pages are copied as they are: text stays text and images aren't recompressed."
+    - title: "Easy ordering"
+      text: "A first-page preview and the page count help you order documents without opening them."
+    - title: "Free, no sign-up"
+      text: "Merge up to 100 documents at a time, with no watermarks."
+faq:
+  title: "FAQ"
+  items:
+    - q: "How do I combine several PDFs into one?"
+      a: "Add the files, put them in order with the arrows and click “Merge PDFs”. The pages go into the document in the same order."
+    - q: "Will the quality get worse?"
+      a: "No. Pages are carried over without re-rendering: text stays text — you can still select and search it — and images stay the same."
+    - q: "Can I merge password-protected PDFs?"
+      a: "No — open such a PDF and save a copy without the password first. A protected file is marked in the list and left out of the result."
+    - q: "Can I add images?"
+      a: "Use “JPG to PDF” for that: turn the images into a PDF, then merge it with your other documents here."
+    - q: "Are bookmarks and forms kept?"
+      a: "Pages with their text, images and annotations are carried over. The outline (bookmarks) of the original documents and interactive form fields may not be kept."
+    - q: "How many files can I merge?"
+      a: "Up to 100 documents at a time. Large PDFs take longer and need more memory — on a phone, merge them in parts."
+    - q: "Is it safe?"
+      a: "Yes. Only the tool itself is loaded from the site; the PDFs are merged in your browser and never sent to a server."

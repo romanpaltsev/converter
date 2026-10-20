@@ -26,7 +26,11 @@ export type ToWorker =
   /** «Изображения в PDF»: картинка страницы и превью. */
   | { type: 'pdf-page'; id: number; file: Blob; memoryLimit: number }
   /** «PDF в JPG»: страницы по одной — сообщениями pdf-rendered, в конце pdf-done. */
-  | { type: 'pdf-render'; id: number; file: Blob; options: PdfRenderOptions; memoryLimit: number };
+  | { type: 'pdf-render'; id: number; file: Blob; options: PdfRenderOptions; memoryLimit: number }
+  /** «Объединить PDF»: сколько страниц и превью первой. */
+  | { type: 'pdf-info'; id: number; file: Blob; memoryLimit: number }
+  /** «Объединить PDF»: документы по порядку → один PDF. */
+  | { type: 'pdf-merge'; id: number; files: Blob[] };
 
 export interface PdfRenderOptions {
   encoder: EncoderId;
@@ -87,6 +91,8 @@ export type FromWorker =
       height: number;
       warnings: WarningCode[];
     }
+  | { type: 'pdf-info'; id: number; pages: number; preview: ArrayBuffer }
+  | { type: 'pdf-merged'; id: number; buffer: ArrayBuffer; pages: number }
   /** Все страницы готовы; limited — страниц больше предела, сохранены первые. */
   | { type: 'pdf-done'; id: number; total: number; limited: boolean; heap: number }
   | {

@@ -53,12 +53,15 @@ export type OutputChoiceId = OutputFormatId | 'original';
  * strip — «Удалить метаданные» (без перекодирования: формат и пиксели те же, выбора формата нет);
  * inspect — «Посмотреть EXIF» (только чтение: настроек и файлов-результатов нет);
  * to-pdf — «Изображения в PDF» (все файлы — страницы одного документа, порядок задаёт пользователь);
- * from-pdf — «PDF в JPG/PNG» (каждая страница PDF — отдельная картинка).
+ * from-pdf — «PDF в JPG/PNG» (каждая страница PDF — отдельная картинка);
+ * merge-pdf — «Объединить PDF» (документы по порядку → один PDF).
  */
-export type ToolMode = 'convert' | 'compress' | 'resize' | 'strip' | 'inspect' | 'to-pdf' | 'from-pdf';
+export type ToolMode = 'convert' | 'compress' | 'resize' | 'strip' | 'inspect' | 'to-pdf' | 'from-pdf' | 'merge-pdf';
 
 /** Режимы, у которых формат результата не выбирается. */
-export const FIXED_OUTPUT_MODES: ToolMode[] = ['strip', 'inspect', 'to-pdf'];
+export const FIXED_OUTPUT_MODES: ToolMode[] = ['strip', 'inspect', 'to-pdf', 'merge-pdf'];
+/** Инструменты раздела «PDF» на главной. */
+export const PDF_MODES: ToolMode[] = ['to-pdf', 'from-pdf', 'merge-pdf'];
 
 export interface ToolConfig {
   id: string;
@@ -143,7 +146,7 @@ export const TOOLS: ToolConfig[] = [
     outputs: ['original'],
     defaultQuality: 90,
     content: 'jpg-to-pdf',
-    related: ['png-to-pdf', 'heic-to-pdf', 'compress-image', 'jpg-to-png'],
+    related: ['png-to-pdf', 'heic-to-pdf', 'merge-pdf', 'pdf-to-jpg'],
   },
   {
     id: 'png-to-pdf',
@@ -168,6 +171,17 @@ export const TOOLS: ToolConfig[] = [
     related: ['jpg-to-pdf', 'png-to-pdf', 'heic-to-jpg', 'heic-to-png'],
   },
   {
+    id: 'merge-pdf',
+    mode: 'merge-pdf',
+    slugs: { ru: 'obedinit-pdf', en: 'merge-pdf' },
+    inputFormats: ['pdf'],
+    defaultOutput: 'original',
+    outputs: ['original'],
+    defaultQuality: 90,
+    content: 'merge-pdf',
+    related: ['jpg-to-pdf', 'pdf-to-jpg', 'png-to-pdf', 'heic-to-pdf'],
+  },
+  {
     id: 'pdf-to-jpg',
     mode: 'from-pdf',
     slugs: { ru: 'pdf-v-jpg', en: 'pdf-to-jpg' },
@@ -176,7 +190,7 @@ export const TOOLS: ToolConfig[] = [
     outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'pdf-to-jpg',
-    related: ['pdf-to-png', 'jpg-to-pdf', 'png-to-pdf', 'compress-image'],
+    related: ['pdf-to-png', 'jpg-to-pdf', 'merge-pdf', 'compress-image'],
   },
   {
     id: 'pdf-to-png',

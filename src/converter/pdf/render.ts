@@ -88,6 +88,22 @@ class FilterFactory {
   destroy(): void {}
 }
 
+const FIREFOX_PRODUCER = new TextEncoder().encode('/Producer (Firefox)');
+const OUR_PRODUCER = new TextEncoder().encode('/Producer (PDF.js) ');
+
+/**
+ * Объединённый PDF: pdf.js (его редактор сделан для Firefox) пишет в Info «Producer: Firefox» — для нашего сайта
+ * это неправда. Заменяем на месте строкой той же длины: смещения в xref не меняются.
+ */
+export function fixProducer(pdf: Uint8Array): void {
+  for (let at = pdf.indexOf(FIREFOX_PRODUCER[0]!); at >= 0; at = pdf.indexOf(FIREFOX_PRODUCER[0]!, at + 1)) {
+    if (FIREFOX_PRODUCER.every((byte, i) => pdf[at + i] === byte)) {
+      pdf.set(OUR_PRODUCER, at);
+      return;
+    }
+  }
+}
+
 /** Ошибки pdf.js по имени класса: пароль и битый файл. */
 export function pdfErrorKind(error: unknown): 'encrypted' | 'broken' | null {
   const name = (error as { name?: string } | null)?.name;
