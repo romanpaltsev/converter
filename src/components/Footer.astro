@@ -1,9 +1,11 @@
 ---
+// Тёмный подвал: колонки ссылок на все инструменты (по группам) и страницы сайта, внизу — название и обещание
+// приватности. Ссылка «Контакты» на странице одна — по ней её находят тесты и пользователи.
 import { SITE_NAME, type Locale } from '../config/site';
-import { pagePath, toolPageId } from '../i18n/routes';
+import { pagePath } from '../i18n/routes';
 import { UI } from '../i18n/ui';
-import { TOOLS } from '../tools/registry';
-import { getEntry } from 'astro:content';
+import { toolLinks } from '../lib/tool-links';
+import { toolGroups } from '../tools/registry';
 
 interface Props {
   locale: Locale;
@@ -11,17 +13,43 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = UI[locale];
-const tools = await Promise.all(
-  TOOLS.map(async (tool) => {
-    const entry = await getEntry('tools', `${locale}/${tool.content}`);
-    return { href: pagePath(toolPageId(tool.id), locale), title: entry?.data.card.title ?? tool.id };
-  }),
-);
+const groups = toolGroups();
+const columns = [
+  { id: 'photo', title: t.footer.groups.photo, links: await toolLinks(groups.photo, locale) },
+  { id: 'pdf', title: t.footer.groups.pdf, links: await toolLinks(groups.pdf, locale) },
+  { id: 'converters', title: t.footer.groups.converters, links: await toolLinks(groups.converters, locale) },
+  {
+    id: 'about',
+    title: t.footer.groups.about,
+    links: [
+      { href: pagePath('licenses', locale), title: t.nav.licenses },
+      { href: pagePath('contacts', locale), title: t.nav.contacts },
+    ],
+  },
+];
 ---
 
 <footer class="footer">
-  <div class="container footer__inner">
-    <div class="footer__brand">
+  <div class="container">
+    <nav class="footer__nav" aria-label={t.nav.siteLinks}>
+      {
+        columns.map((column) => (
+          <div class={`footer__group footer__group--${column.id}`}>
+            <p class="footer__title" id={`footer-${column.id}`}>
+              {column.title}
+            </p>
+            <ul class="footer__links" aria-labelledby={`footer-${column.id}`}>
+              {column.links.map((link) => (
+                <li>
+                  <a href={link.href}>{link.title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </nav>
+    <div class="footer__bottom">
       <p class="footer__name">{SITE_NAME[locale]}</p>
       <p class="footer__privacy">
         <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
@@ -31,42 +59,92 @@ const tools = await Promise.all(
         {t.footer.privacy}
       </p>
     </div>
-    <nav aria-label={t.nav.siteLinks}>
-      <ul class="footer__links">
-        {
-          tools.map((tool) => (
-            <li>
-              <a href={tool.href}>{tool.title}</a>
-            </li>
-          ))
-        }
-      </ul>
-      <ul class="footer__links footer__links--secondary">
-        <li><a href={pagePath('licenses', locale)}>{t.nav.licenses}</a></li>
-        <li><a href={pagePath('contacts', locale)}>{t.nav.contacts}</a></li>
-      </ul>
-    </nav>
   </div>
 </footer>
 
 <style>
   .footer {
     margin-top: clamp(64px, 8vw, 96px);
-    padding: 40px 0 48px;
-    border-top: 1px solid var(--border);
-    background: var(--surface-muted);
-    color: var(--muted);
+    padding: 48px 0 32px;
+    background: var(--footer-bg);
+    color: var(--footer-text);
     font-size: 0.9375rem;
   }
 
-  .footer__inner {
+  .footer :focus-visible {
+    outline-color: var(--footer-focus);
+  }
+
+  /* телефон: две колонки, конвертеры — во всю ширину в две колонки */
+  .footer__nav {
     display: grid;
-    gap: 28px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 24px;
+  }
+
+  .footer__group--converters {
+    grid-column: 1 / -1;
+  }
+
+  .footer__group--converters .footer__links {
+    display: block;
+    columns: 2;
+    column-gap: 24px;
+  }
+
+  .footer__group--converters li {
+    margin-bottom: 8px;
+    break-inside: avoid;
+  }
+
+  @media (min-width: 960px) {
+    .footer__nav {
+      grid-template-columns: 1fr 1fr 2fr 1fr;
+    }
+
+    .footer__group--converters {
+      grid-column: auto;
+    }
+  }
+
+  .footer__title {
+    margin: 0 0 14px;
+    color: var(--footer-heading);
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+
+  .footer__links {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer__links a {
+    color: var(--footer-text);
+    text-decoration: none;
+  }
+
+  .footer__links a:hover {
+    color: var(--footer-heading);
+    text-decoration: underline;
+  }
+
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 24px;
+    margin-top: 40px;
+    padding-top: 24px;
+    border-top: 1px solid var(--footer-border);
   }
 
   .footer__name {
-    margin: 0 0 6px;
-    color: var(--text);
+    margin: 0;
+    color: var(--footer-heading);
     font-weight: 700;
     letter-spacing: -0.02em;
   }
@@ -75,7 +153,6 @@ const tools = await Promise.all(
     display: flex;
     align-items: flex-start;
     gap: 8px;
-    max-width: 30rem;
     margin: 0;
   }
 
@@ -85,30 +162,5 @@ const tools = await Promise.all(
     fill: none;
     stroke: currentColor;
     stroke-width: 1.4;
-  }
-
-  .footer__links {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
-    gap: 8px 20px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .footer__links--secondary {
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border);
-  }
-
-  .footer__links a {
-    color: var(--muted);
-    text-decoration: none;
-  }
-
-  .footer__links a:hover {
-    color: var(--text);
-    text-decoration: underline;
   }
 </style>

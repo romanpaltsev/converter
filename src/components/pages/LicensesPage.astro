@@ -96,51 +96,53 @@ const jsonLd = [
 ---
 
 <BaseLayout locale={locale} pageId="licenses" title={c.title} description={c.description} jsonLd={jsonLd}>
-  <h1 class="title">{c.h1}</h1>
-  <p>{c.intro}</p>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">{c.columns.name}</th>
-          <th scope="col">{c.columns.purpose}</th>
-          <th scope="col">{c.columns.license}</th>
-          <th scope="col">{c.columns.source}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {
-          COMPONENTS.map((component) => (
-            <tr>
-              <td>
-                <strong>{component.name}</strong> {component.version !== '—' && <span class="version">{component.version}</span>}
-              </td>
-              <td>{component.purpose[locale]}</td>
-              <td>{component.license}</td>
-              <td>
-                <a href={component.source} rel="noopener">
-                  GitHub
-                </a>
-              </td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-  </div>
-  <p>{c.lgpl}</p>
-  <p lang="en">{IJG_NOTICE}</p>
-  <p>{c.patents}</p>
+  <div class="container container--narrow">
+    <h1 class="title">{c.h1}</h1>
+    <p>{c.intro}</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">{c.columns.name}</th>
+            <th scope="col">{c.columns.purpose}</th>
+            <th scope="col">{c.columns.license}</th>
+            <th scope="col">{c.columns.source}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            COMPONENTS.map((component) => (
+              <tr>
+                <td>
+                  <strong>{component.name}</strong> {component.version !== '—' && <span class="version">{component.version}</span>}
+                </td>
+                <td>{component.purpose[locale]}</td>
+                <td>{component.license}</td>
+                <td>
+                  <a href={component.source} rel="noopener">
+                    GitHub
+                  </a>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <p>{c.lgpl}</p>
+    <p lang="en">{IJG_NOTICE}</p>
+    <p>{c.patents}</p>
 
-  <h2>{c.fullTexts}</h2>
-  {
-    ORDER.map((id) => (
-      <details class="license" open={id === 'lgpl-3.0'}>
-        <summary lang="en">{LICENSE_TITLES[id]}</summary>
-        <pre lang="en" tabindex="0">{TEXTS[id]}</pre>
-      </details>
-    ))
-  }
+    <h2>{c.fullTexts}</h2>
+    {
+      ORDER.map((id) => (
+        <details class="license" open={id === 'lgpl-3.0'}>
+          <summary lang="en">{LICENSE_TITLES[id]}</summary>
+          <pre lang="en" tabindex="0">{TEXTS[id]}</pre>
+        </details>
+      ))
+    }
+  </div>
 </BaseLayout>
 
 <style>

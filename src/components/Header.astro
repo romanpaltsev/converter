@@ -35,14 +35,10 @@ const { locale, pageId } = Astro.props;
 </header>
 
 <style>
+  /* обычная (не липкая) белая шапка с тонкой границей */
   .header {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
-    background: color-mix(in srgb, var(--bg) 78%, transparent);
-    backdrop-filter: saturate(1.6) blur(14px);
-    -webkit-backdrop-filter: saturate(1.6) blur(14px);
+    border-bottom: 1px solid var(--border);
+    background: var(--header-bg);
   }
 
   .header__inner {
@@ -50,7 +46,7 @@ const { locale, pageId } = Astro.props;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    min-height: 60px;
+    min-height: var(--header-height);
   }
 
   .logo {

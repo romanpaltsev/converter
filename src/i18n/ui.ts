@@ -17,6 +17,12 @@ const ru = {
   },
   footer: {
     privacy: 'Файлы обрабатываются прямо в браузере и никуда не загружаются.',
+    groups: {
+      photo: 'Обработка фото',
+      pdf: 'PDF',
+      converters: 'Конвертеры',
+      about: 'О сайте',
+    },
   },
   tool: {
     relatedTitle: 'Другие конвертеры',
@@ -233,6 +239,12 @@ const en: UiStrings = {
   },
   footer: {
     privacy: 'Files are processed right in your browser and never uploaded anywhere.',
+    groups: {
+      photo: 'Photo tools',
+      pdf: 'PDF',
+      converters: 'Converters',
+      about: 'About',
+    },
   },
   tool: {
     relatedTitle: 'More converters',

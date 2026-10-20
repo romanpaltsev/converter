@@ -1,12 +1,14 @@
 /* Глобальные стили: шрифт, токены темы, типографика, общие примитивы (карточки, кнопки-ссылки).
-   Тема — по prefers-color-scheme. Контраст текста и элементов управления — не ниже WCAG AA (проверяет axe в e2e). */
+   Тема — по prefers-color-scheme. Контраст текста и элементов управления — не ниже WCAG AA (проверяет axe в e2e).
+   Компоновка — в духе convertio (решение владельца 20.10.2026): белая шапка, графитовая зона загрузки, серые полосы,
+   тёмный подвал; акцент — индиго. */
 
 /* Inter Variable (OFL) со своего домена: браузер скачивает только нужные поднаборы (латиница, кириллица) */
 @import '@fontsource-variable/inter/wght.css';
 
 :root {
   color-scheme: light dark;
-  --bg: #fbfbfd;
+  --bg: #ffffff;
   --surface: #ffffff;
   --surface-muted: #f4f5f8;
   --surface-strong: #e9ebf1;
@@ -19,7 +21,6 @@
   --accent-text: #ffffff;
   --accent-soft: #eef0ff;
   --accent-ring: rgb(79 70 229 / 18%);
-  --glow: rgb(99 102 241 / 13%);
   --success: #15793d;
   --success-soft: #e7f6ec;
   --warning-bg: #fff6e0;
@@ -35,7 +36,17 @@
   --shadow-lg: 0 1px 2px rgb(16 20 40 / 4%), 0 12px 32px -8px rgb(16 20 40 / 12%), 0 32px 64px -24px rgb(16 20 40 / 10%);
   --font: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  /* шапка, полосы и подвал — на ширину контейнера, тексты — уже */
+  --container-width: 68rem;
   --content-width: 50rem;
+  --header-bg: #ffffff;
+  --header-height: 64px;
+  /* тёмный подвал */
+  --footer-bg: #1f2228;
+  --footer-text: #c4c8d0;
+  --footer-heading: #ffffff;
+  --footer-border: rgb(255 255 255 / 12%);
+  --footer-focus: #c7d2fe;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
@@ -54,7 +65,6 @@
     --accent-text: #0d0f24;
     --accent-soft: #1d2040;
     --accent-ring: rgb(165 180 252 / 22%);
-    --glow: rgb(99 102 241 / 20%);
     --success: #6fd39d;
     --success-soft: #13291d;
     --warning-bg: #3a2c0c;
@@ -65,6 +75,8 @@
     --shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
     --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 4px 12px -2px rgb(0 0 0 / 30%);
     --shadow-lg: 0 1px 0 rgb(255 255 255 / 4%) inset, 0 16px 40px -12px rgb(0 0 0 / 60%);
+    --header-bg: #14161c;
+    --footer-bg: #07080b;
   }
 }
 
@@ -84,10 +96,7 @@ body {
   flex-direction: column;
   min-height: 100vh;
   margin: 0;
-  /* мягкое свечение акцентного цвета под шапкой */
-  background:
-    radial-gradient(ellipse 72rem 30rem at 50% -8rem, var(--glow), transparent 70%) no-repeat,
-    var(--bg);
+  background: var(--bg);
   color: var(--text);
   font-family: var(--font);
   font-size: 1rem;
@@ -156,9 +165,14 @@ img {
 
 .container {
   width: 100%;
-  max-width: var(--content-width);
+  max-width: var(--container-width);
   margin: 0 auto;
   padding: 0 20px;
+}
+
+/* тексты страниц: строки не длиннее ~80 знаков */
+.container--narrow {
+  max-width: var(--content-width);
 }
 
 /* общий вводный абзац под H1 */

@@ -441,6 +441,23 @@ export function getTool(id: string): ToolConfig {
   return tool;
 }
 
+export interface ToolGroups {
+  /** Сжатие, размер, метаданные, EXIF. */
+  photo: ToolConfig[];
+  pdf: ToolConfig[];
+  /** Пары форматов. */
+  converters: ToolConfig[];
+}
+
+/** Группы инструментов для главной, меню и подвала — в порядке TOOLS. */
+export function toolGroups(): ToolGroups {
+  return {
+    photo: TOOLS.filter((t) => t.mode !== 'convert' && !PDF_MODES.includes(t.mode)),
+    pdf: TOOLS.filter((t) => PDF_MODES.includes(t.mode)),
+    converters: TOOLS.filter((t) => t.mode === 'convert'),
+  };
+}
+
 /**
  * Перелинковка внизу страницы: обратная конвертация, тот же вход в другие форматы,
  * тот же выход из других форматов (в порядке TOOLS). Не больше четырёх.

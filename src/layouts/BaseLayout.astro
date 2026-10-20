@@ -1,5 +1,6 @@
 ---
 // Общий макет всех страниц: <head> с SEO, шапка, основное содержимое, подвал.
+// <main> во всю ширину: страницы сами ставят контейнеры (.container, .container--narrow) — полосы идут от края до края.
 import '../styles/global.css';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
@@ -28,7 +29,7 @@ const { locale, pageId, title, description, noindex, jsonLd } = Astro.props;
   <body>
     <a class="skip-link" href="#main">{UI[locale].nav.skipToContent}</a>
     <Header locale={locale} pageId={pageId} />
-    <main id="main" class="container">
+    <main id="main">
       <slot />
     </main>
     <Footer locale={locale} />

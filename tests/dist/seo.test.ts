@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { CONTACT_EMAIL, LOCALES } from '../../src/config/site';
-import { PAGES, pagePath } from '../../src/i18n/routes';
+import { PAGES, pagePath, toolPageId } from '../../src/i18n/routes';
+import { TOOLS } from '../../src/tools/registry';
 import { INDEXING, SITE, TOOL_PAGES, htmlFiles, readHtml, readText, urlPathFor } from './helpers';
 
 const pages = htmlFiles();
@@ -77,6 +78,17 @@ describe('сборка: контакты', () => {
   test.each(pages)('%s: в подвале ссылка на «Контакты» своего языка', (file) => {
     const hrefs = readHtml(file).doc.querySelectorAll('footer a').map((a) => a.getAttribute('href'));
     expect(hrefs).toContain(pagePath('contacts', file.startsWith('en/') ? 'en' : 'ru'));
+  });
+});
+
+describe('сборка: шапка и подвал', () => {
+  test.each(pages)('%s: один переключатель языка — в шапке; в подвале все инструменты своего языка', (file) => {
+    const { doc } = readHtml(file);
+    expect(doc.querySelectorAll('nav.lang')).toHaveLength(1);
+    expect(doc.querySelector('header nav.lang')).not.toBeNull();
+    const locale = file.startsWith('en/') ? 'en' : 'ru';
+    const hrefs = doc.querySelectorAll('footer a').map((a) => a.getAttribute('href'));
+    expect(hrefs).toEqual([...TOOLS.map((tool) => pagePath(toolPageId(tool.id), locale)), pagePath('licenses', locale), pagePath('contacts', locale)]);
   });
 });
 

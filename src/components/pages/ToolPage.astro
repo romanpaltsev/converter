@@ -35,59 +35,61 @@ const jsonLd = [
 ---
 
 <BaseLayout locale={locale} pageId={pageId} title={c.title} description={c.description} jsonLd={jsonLd}>
-  <div class="hero">
-    <nav class="breadcrumbs" aria-label={UI[locale].nav.breadcrumbs}>
-      <a href={pagePath('home', locale)}>{UI[locale].nav.home}</a>
-      <span aria-hidden="true">/</span>
-      <span aria-current="page">{c.breadcrumb}</span>
-    </nav>
-    <h1>{c.h1}</h1>
-    <p class="lead">{c.subtitle}</p>
-  </div>
-
-  <ConverterWidget tool={tool} locale={locale} />
-
-  <AdSlot locale={locale} placement="tool-after-widget" />
-
-  <section class="section">
-    <h2>{c.howTo.title}</h2>
-    <ol class="steps">
-      {c.howTo.steps.map((step) => <li>{step}</li>)}
-    </ol>
-  </section>
-
-  <section class="section">
-    <h2>{c.why.title}</h2>
-    <ul class="features">
-      {
-        c.why.items.map((item) => (
-          <li>
-            <h3>{item.title}</h3>
-            <p>{item.text}</p>
-          </li>
-        ))
-      }
-    </ul>
-  </section>
-
-  <section class="section">
-    <h2>{c.faq.title}</h2>
-    <div class="faq">
-      {
-        c.faq.items.map((item) => (
-          <details>
-            <summary>{item.q}</summary>
-            <p>{item.a}</p>
-          </details>
-        ))
-      }
+  <div class="container container--narrow">
+    <div class="hero">
+      <nav class="breadcrumbs" aria-label={UI[locale].nav.breadcrumbs}>
+        <a href={pagePath('home', locale)}>{UI[locale].nav.home}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{c.breadcrumb}</span>
+      </nav>
+      <h1>{c.h1}</h1>
+      <p class="lead">{c.subtitle}</p>
     </div>
-  </section>
 
-  <section class="section related">
-    <h2>{UI[locale].tool.relatedTitle}</h2>
-    <ToolCards locale={locale} toolIds={relatedTools(tool).map((t) => t.id)} />
-  </section>
+    <ConverterWidget tool={tool} locale={locale} />
+
+    <AdSlot locale={locale} placement="tool-after-widget" />
+
+    <section class="section">
+      <h2>{c.howTo.title}</h2>
+      <ol class="steps">
+        {c.howTo.steps.map((step) => <li>{step}</li>)}
+      </ol>
+    </section>
+
+    <section class="section">
+      <h2>{c.why.title}</h2>
+      <ul class="features">
+        {
+          c.why.items.map((item) => (
+            <li>
+              <h3>{item.title}</h3>
+              <p>{item.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>{c.faq.title}</h2>
+      <div class="faq">
+        {
+          c.faq.items.map((item) => (
+            <details>
+              <summary>{item.q}</summary>
+              <p>{item.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="section related">
+      <h2>{UI[locale].tool.relatedTitle}</h2>
+      <ToolCards locale={locale} toolIds={relatedTools(tool).map((t) => t.id)} />
+    </section>
+  </div>
 </BaseLayout>
 
 <style>

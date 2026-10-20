@@ -25,13 +25,15 @@ const jsonLd = [
 ---
 
 <BaseLayout locale={locale} pageId="contacts" title={c.title} description={c.description} jsonLd={jsonLd}>
-  <h1 class="title">{c.h1}</h1>
-  <p>{c.intro}</p>
-  <dl class="contacts">
-    <dt>{c.emailLabel}</dt>
-    <dd><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></dd>
-  </dl>
-  <p class="note">{c.note}</p>
+  <div class="container container--narrow">
+    <h1 class="title">{c.h1}</h1>
+    <p>{c.intro}</p>
+    <dl class="contacts">
+      <dt>{c.emailLabel}</dt>
+      <dd><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></dd>
+    </dl>
+    <p class="note">{c.note}</p>
+  </div>
 </BaseLayout>
 
 <style>

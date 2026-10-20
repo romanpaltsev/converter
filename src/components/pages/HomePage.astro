@@ -4,7 +4,7 @@ import { getEntry } from 'astro:content';
 import ToolCards from '../ToolCards.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import type { Locale } from '../../config/site';
-import { PDF_MODES, TOOLS } from '../../tools/registry';
+import { toolGroups } from '../../tools/registry';
 
 interface Props {
   locale: Locale;
@@ -14,35 +14,38 @@ const { locale } = Astro.props;
 const entry = await getEntry('pages', `${locale}/home`);
 if (entry?.data.page !== 'home') throw new Error(`Нет текстов главной (${locale})`);
 const c = entry.data;
+const groups = toolGroups();
 ---
 
 <BaseLayout locale={locale} pageId="home" title={c.title} description={c.description}>
-  <section class="hero">
-    <h1>{c.h1}</h1>
-    <p class="lead">{c.intro}</p>
-  </section>
-  <section>
-    <h2>{c.editToolsTitle}</h2>
-    <ToolCards locale={locale} toolIds={TOOLS.filter((t) => t.mode !== 'convert' && !PDF_MODES.includes(t.mode)).map((t) => t.id)} />
-  </section>
-  <section class="section">
-    <h2>{c.pdfToolsTitle}</h2>
-    <ToolCards locale={locale} toolIds={TOOLS.filter((t) => PDF_MODES.includes(t.mode)).map((t) => t.id)} />
-  </section>
-  <section class="section">
-    <h2>{c.toolsTitle}</h2>
-    <ToolCards locale={locale} toolIds={TOOLS.filter((t) => t.mode === 'convert').map((t) => t.id)} />
-  </section>
-  <ul class="features">
-    {
-      c.features.map((f) => (
-        <li>
-          <h3>{f.title}</h3>
-          <p>{f.text}</p>
-        </li>
-      ))
-    }
-  </ul>
+  <div class="container container--narrow">
+    <section class="hero">
+      <h1>{c.h1}</h1>
+      <p class="lead">{c.intro}</p>
+    </section>
+    <section>
+      <h2>{c.editToolsTitle}</h2>
+      <ToolCards locale={locale} toolIds={groups.photo.map((t) => t.id)} />
+    </section>
+    <section class="section">
+      <h2>{c.pdfToolsTitle}</h2>
+      <ToolCards locale={locale} toolIds={groups.pdf.map((t) => t.id)} />
+    </section>
+    <section class="section">
+      <h2>{c.toolsTitle}</h2>
+      <ToolCards locale={locale} toolIds={groups.converters.map((t) => t.id)} />
+    </section>
+    <ul class="features">
+      {
+        c.features.map((f) => (
+          <li>
+            <h3>{f.title}</h3>
+            <p>{f.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </BaseLayout>
 
 <style>

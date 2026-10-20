@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { FIXED_OUTPUT_MODES, INPUT_FORMATS, OUTPUT_FORMATS, PDF_MODES, TOOLS, relatedTools } from '../../src/tools/registry';
+import { FIXED_OUTPUT_MODES, INPUT_FORMATS, OUTPUT_FORMATS, PDF_MODES, TOOLS, relatedTools, toolGroups } from '../../src/tools/registry';
 
 describe('реестр инструментов', () => {
   test('слаги конвертеров: ru «x-v-y», en «x-to-y»; входной формат не совпадает с целевым', () => {
@@ -24,6 +24,13 @@ describe('реестр инструментов', () => {
       expect(tool.outputs).toEqual(FIXED_OUTPUT_MODES.includes(tool.mode) ? ['original'] : ['original', 'jpeg', 'png', 'webp']);
       for (const id of tool.related ?? []) expect(TOOLS.map((t) => t.id)).toContain(id);
     }
+  });
+
+  test('группы для главной, меню и подвала: обработка фото, PDF, конвертеры — все инструменты по порядку', () => {
+    const groups = toolGroups();
+    expect([groups.photo.length, groups.pdf.length, groups.converters.length]).toEqual([4, 6, 23]);
+    expect([...groups.photo, ...groups.pdf, ...groups.converters]).toEqual(TOOLS);
+    expect(groups.pdf.map((t) => t.mode)).toEqual(['to-pdf', 'to-pdf', 'to-pdf', 'merge-pdf', 'from-pdf', 'from-pdf']);
   });
 
   test('PDF в картинки: вход — PDF, выход — JPG, PNG или WebP', () => {
