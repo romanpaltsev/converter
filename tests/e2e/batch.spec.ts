@@ -1,13 +1,13 @@
 import { copyFileSync, mkdirSync } from 'node:fs';
 import type { Page } from '@playwright/test';
-import { expect, openConverter, test } from './fixtures';
+import { SETTLED_ROWS, expect, fileRow, openConverter, pickTarget, test } from './fixtures';
 import { downloadBytes, expectTimestamped, fixture, jpegInfo, unzip } from './files';
 
 async function waitForRows(page: Page, count: number): Promise<void> {
-  await expect(page.locator('.file:is([data-status="done"], [data-status="error"])')).toHaveCount(count, { timeout: 120_000 });
+  await expect(page.locator(SETTLED_ROWS)).toHaveCount(count, { timeout: 120_000 });
 }
 
-test('ошибки не останавливают очередь, причины понятны; PNG и AVIF на HEIC-странице тоже конвертируются', async ({ page }) => {
+test('ошибки не останавливают очередь, причины понятны; PNG и AVIF на HEIC-странице тоже конвертируются, JPG ждёт выбора формата', async ({ page }) => {
   await openConverter(page, '/heic-v-jpg');
   const names = ['not-heic.heic', 'basic.heic', 'garbage.heic', 'photo.avif', 'photo.jpg', 'rotated.heic'];
   await page.setInputFiles('[data-input]', names.map(fixture));
@@ -18,14 +18,16 @@ test('ошибки не останавливают очередь, причин�
     'done',
     'error',
     'done',
-    'error',
+    'waiting',
     'done',
   ]);
   await expect(rows.nth(0)).toContainText('not-heic.jpg'); // PNG с расширением .heic: формат определяется по сигнатуре
   await expect(rows.nth(2)).toContainText('Не удалось распознать файл как изображение');
   await expect(rows.nth(3)).toContainText('photo.jpg'); // AVIF по сигнатуре — свой декодер
-  await expect(rows.nth(4)).toContainText('iPhone'); // пояснение про автоматическое перекодирование в JPEG
-  await expect(page.locator('[data-status-text]')).toHaveText('Готово: 4 из 6. Не удалось: 2.');
+  // JPG на странице «в JPG»: ждёт выбора формата, с пояснением про автоматическое перекодирование в JPEG на iPhone
+  await expect(rows.nth(4)).toContainText('Выберите формат');
+  await expect(rows.nth(4)).toContainText('Файл уже в формате JPG. Если вы выбирали фото на iPhone');
+  await expect(page.locator('[data-status-text]')).toHaveText('Готово: 4 из 5. Не удалось: 1. Ждут выбора формата: 1.');
 });
 
 test('несколько файлов обрабатываются одновременно, имена и порядок — как в очереди', async ({ page }) => {
@@ -79,24 +81,30 @@ test('больше 100 файлов: берём первые 100 и сообща
   await expect(page.locator('.file').last()).toContainText('file-100.heic');
 });
 
-test('смена формата после конвертации: «Конвертировать заново»', async ({ page }) => {
+test('смена формата у готового файла — сразу конвертируется заново; новые настройки — «Конвертировать заново»', async ({ page }) => {
   await openConverter(page, '/heic-v-jpg');
   await page.setInputFiles('[data-input]', [fixture('basic.heic')]);
   await waitForRows(page, 1);
   await expect(page.getByText('basic.jpg', { exact: true })).toBeVisible();
   const reconvert = page.getByRole('button', { name: 'Конвертировать заново с новыми настройками' });
   await expect(reconvert).toBeHidden();
-  await page.getByRole('radio', { name: 'PNG' }).check();
+  await pickTarget(page, 'basic.jpg', 'PNG');
+  await expect(page.getByText('basic.png', { exact: true })).toBeVisible();
+  await expect(fileRow(page, 'basic.png').locator('[data-target-button]')).toHaveText('PNG');
+  // у PNG нет качества, зато большие файлы
   await expect(page.locator('[data-quality-row]')).toBeHidden();
   await expect(page.locator('[data-png-warning]')).toBeVisible();
-  await expect(reconvert).toBeVisible();
-  await reconvert.click();
-  await expect(page.getByText('basic.png', { exact: true })).toBeVisible();
   await expect(reconvert).toBeHidden();
   const pending = page.waitForEvent('download');
   await page.locator('.file__download').click();
   const png = await downloadBytes(await pending);
   expect([...png.subarray(1, 4)].map((c) => String.fromCharCode(c)).join('')).toBe('PNG');
+  // галочка метаданных важна и для PNG — готовый файл можно сконвертировать заново
+  await page.getByLabel('Сохранить все метаданные (включая геолокацию)').check();
+  await expect(reconvert).toBeVisible();
+  await reconvert.click();
+  await expect(page.locator('.file[data-status="done"]')).toHaveCount(1);
+  await expect(reconvert).toBeHidden();
 });
 
 test('«Очистить» убирает результаты', async ({ page }) => {

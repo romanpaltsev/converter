@@ -2505,6 +2505,17 @@
 | `widget.dropTitleAny` | Выберите изображения | Choose images |
 | `widget.originalFormat` | Исходный | Original |
 | `widget.icoHint` | В иконку войдут размеры от 16 до 256 пикселей (не больше исходника); прямоугольная картинка впишется в квадрат с прозрачными полями. Метаданные в ICO не сохраняются. | The icon gets sizes from 16 to 256 pixels (no larger than the original); a non-square image is fitted into a square with transparent margins. ICO keeps no metadata. |
+| `widget.avifHint` | AVIF кодируется заметно дольше других форматов: большой снимок — десятки секунд. | AVIF takes much longer to encode than other formats: tens of seconds for a large photo. |
+| `widget.targetTo` | в | to |
+| `widget.chooseTarget` | Выбрать | Choose |
+| `widget.targetLabel` | {target} — формат для {name} | {target} — format for {name} |
+| `widget.allTo` | Все файлы в | All files to |
+| `widget.allLabel` | {target} — формат для всех файлов | {target} — format for all files |
+| `widget.targetMenu` | Формат результата | Output format |
+| `widget.targetGroups.image` | Изображение | Image |
+| `widget.waiting` | Выберите формат | Choose a format |
+| `widget.sameFormat` | Файл уже в формате {target}. | The file is already in {target} format. |
+| `widget.waitingStatus` | Ждут выбора формата: {count}. | Waiting for a format: {count}. |
 | `widget.originalHint` | Формат файла сохраняется; HEIC, AVIF, JPEG XL и TIFF сохраняются в JPG, GIF и BMP — в PNG. | The file keeps its format; HEIC, AVIF, JPEG XL and TIFF are saved as JPG, GIF and BMP as PNG. |
 | `widget.compression` | Сжатие | Compression |
 | `widget.byQuality` | По качеству | By quality |
@@ -2658,10 +2669,10 @@
 | `widget.units.mb` | МБ | MB |
 | `widget.units.gb` | ГБ | GB |
 | `widget.errors.not-image` | Не удалось распознать файл как изображение. Поддерживаются {formats}. | This file doesn't look like an image. Supported: {formats}. |
-| `widget.errors.already-jpeg` | Файл уже в формате JPG — выберите другой формат выше. | This file is already a JPG — pick another format above. |
-| `widget.errors.already-png` | Файл уже в формате PNG — выберите другой формат выше. | This file is already a PNG — pick another format above. |
-| `widget.errors.already-webp` | Файл уже в формате WebP — выберите другой формат выше. | This file is already a WebP — pick another format above. |
-| `widget.errors.already-avif` | Файл уже в формате AVIF — выберите другой формат выше. | This file is already an AVIF — pick another format above. |
+| `widget.errors.already-jpeg` | Файл уже в формате JPG — выберите другой формат. | This file is already a JPG — pick another format. |
+| `widget.errors.already-png` | Файл уже в формате PNG — выберите другой формат. | This file is already a PNG — pick another format. |
+| `widget.errors.already-webp` | Файл уже в формате WebP — выберите другой формат. | This file is already a WebP — pick another format. |
+| `widget.errors.already-avif` | Файл уже в формате AVIF — выберите другой формат. | This file is already an AVIF — pick another format. |
 | `widget.errors.too-large-for-webp` | WebP вмещает изображения не больше 16 383 точек по стороне — выберите JPG или PNG. | WebP can't store images larger than 16,383 px per side — choose JPG or PNG. |
 | `widget.errors.unsupported-image` | Этот формат изображений пока не поддерживается. Поддерживаются {formats}. | This image format isn't supported yet. Supported: {formats}. |
 | `widget.errors.cmyk-unsupported` | Изображения в цветовой модели CMYK (для печати) пока не поддерживаются. | CMYK images (used for print) aren't supported yet. |

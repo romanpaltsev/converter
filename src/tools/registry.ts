@@ -62,6 +62,8 @@ export type ToolMode = 'convert' | 'compress' | 'resize' | 'strip' | 'inspect' |
 export const FIXED_OUTPUT_MODES: ToolMode[] = ['strip', 'inspect', 'to-pdf', 'merge-pdf'];
 /** Инструменты раздела «PDF» на главной. */
 export const PDF_MODES: ToolMode[] = ['to-pdf', 'from-pdf', 'merge-pdf'];
+/** Универсальный виджет: формат результата выбирается у каждого файла (решение владельца 20.10.2026). */
+export const UNIVERSAL_MODES: ToolMode[] = ['convert'];
 
 export interface ToolConfig {
   id: string;
@@ -70,9 +72,13 @@ export interface ToolConfig {
   slugs: Record<Locale, string>;
   /** Форматы, которые страница называет своими (accept, заголовок зоны); остальные поддерживаемые тоже принимаются. */
   inputFormats: (InputFormatId | DocumentFormatId)[];
+  /** У пар форматов — предустановка: с этим форматом файлы встают в очередь (его можно сменить у каждого файла). */
   defaultOutput: OutputChoiceId;
-  /** Допустимые выходные форматы (переключатель в виджете), по порядку. */
-  outputs: OutputChoiceId[];
+  /**
+   * Переключатель формата (общий для всех файлов) — только у режимов без выбора у файла: сжатие, размер, PDF.
+   * У пар форматов его нет: формат выбирается у каждого файла (UNIVERSAL_MODES).
+   */
+  outputs?: OutputChoiceId[];
   /** Качество по умолчанию для форматов с потерями. */
   defaultQuality: number;
   /** Имя файла с текстами в src/content/tools/<locale>/. */
@@ -81,12 +87,8 @@ export interface ToolConfig {
   related?: string[];
 }
 
-/** Основные выходные форматы: на любой странице можно выбрать любой (по умолчанию — целевой формат страницы). */
+/** «PDF в JPG/PNG»: страницы — в основные форматы. */
 const ALL_OUTPUTS: OutputFormatId[] = ['jpeg', 'png', 'webp'];
-/** Страницы иконок: ICO плюс основные (на остальных ICO не предлагаем — переключатель и так плотный). */
-const ICON_OUTPUTS: OutputFormatId[] = ['ico', 'png', 'jpeg', 'webp'];
-/** Страницы «в AVIF»: AVIF плюс основные (кодирование медленное — на остальных страницах не предлагаем). */
-const AVIF_OUTPUTS: OutputFormatId[] = ['avif', 'jpeg', 'png', 'webp'];
 /** Сжатие и изменение размера: по умолчанию формат сохраняется. */
 const SAME_OR_ANY: OutputChoiceId[] = ['original', 'jpeg', 'png', 'webp'];
 const ALL_INPUTS: InputFormatId[] = ['heic', 'avif', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'jxl'];
@@ -209,7 +211,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'heic-v-jpg', en: 'heic-to-jpg' },
     inputFormats: ['heic'],
     defaultOutput: 'jpeg',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'heic-to-jpg',
   },
@@ -219,7 +220,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'heic-v-png', en: 'heic-to-png' },
     inputFormats: ['heic'],
     defaultOutput: 'png',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'heic-to-png',
   },
@@ -229,7 +229,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'heic-v-webp', en: 'heic-to-webp' },
     inputFormats: ['heic'],
     defaultOutput: 'webp',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'heic-to-webp',
   },
@@ -239,7 +238,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'avif-v-jpg', en: 'avif-to-jpg' },
     inputFormats: ['avif'],
     defaultOutput: 'jpeg',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'avif-to-jpg',
   },
@@ -249,7 +247,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'avif-v-png', en: 'avif-to-png' },
     inputFormats: ['avif'],
     defaultOutput: 'png',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'avif-to-png',
   },
@@ -259,7 +256,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'jpg-v-png', en: 'jpg-to-png' },
     inputFormats: ['jpeg'],
     defaultOutput: 'png',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'jpg-to-png',
   },
@@ -269,7 +265,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'jpg-v-webp', en: 'jpg-to-webp' },
     inputFormats: ['jpeg'],
     defaultOutput: 'webp',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'jpg-to-webp',
   },
@@ -279,7 +274,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'jpg-v-ico', en: 'jpg-to-ico' },
     inputFormats: ['jpeg'],
     defaultOutput: 'ico',
-    outputs: ICON_OUTPUTS,
     defaultQuality: 90,
     content: 'jpg-to-ico',
   },
@@ -289,7 +283,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'jpg-v-avif', en: 'jpg-to-avif' },
     inputFormats: ['jpeg'],
     defaultOutput: 'avif',
-    outputs: AVIF_OUTPUTS,
     defaultQuality: 75,
     content: 'jpg-to-avif',
   },
@@ -299,7 +292,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'png-v-jpg', en: 'png-to-jpg' },
     inputFormats: ['png'],
     defaultOutput: 'jpeg',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'png-to-jpg',
   },
@@ -309,7 +301,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'png-v-webp', en: 'png-to-webp' },
     inputFormats: ['png'],
     defaultOutput: 'webp',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'png-to-webp',
   },
@@ -319,7 +310,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'png-v-ico', en: 'png-to-ico' },
     inputFormats: ['png'],
     defaultOutput: 'ico',
-    outputs: ICON_OUTPUTS,
     defaultQuality: 90,
     content: 'png-to-ico',
   },
@@ -329,7 +319,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'png-v-avif', en: 'png-to-avif' },
     inputFormats: ['png'],
     defaultOutput: 'avif',
-    outputs: AVIF_OUTPUTS,
     defaultQuality: 75,
     content: 'png-to-avif',
   },
@@ -339,7 +328,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'webp-v-jpg', en: 'webp-to-jpg' },
     inputFormats: ['webp'],
     defaultOutput: 'jpeg',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'webp-to-jpg',
   },
@@ -349,7 +337,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'webp-v-png', en: 'webp-to-png' },
     inputFormats: ['webp'],
     defaultOutput: 'png',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'webp-to-png',
   },
@@ -359,7 +346,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'gif-v-jpg', en: 'gif-to-jpg' },
     inputFormats: ['gif'],
     defaultOutput: 'jpeg',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'gif-to-jpg',
   },
@@ -369,7 +355,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'gif-v-png', en: 'gif-to-png' },
     inputFormats: ['gif'],
     defaultOutput: 'png',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'gif-to-png',
   },
@@ -379,7 +364,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'bmp-v-jpg', en: 'bmp-to-jpg' },
     inputFormats: ['bmp'],
     defaultOutput: 'jpeg',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'bmp-to-jpg',
   },
@@ -389,7 +373,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'bmp-v-png', en: 'bmp-to-png' },
     inputFormats: ['bmp'],
     defaultOutput: 'png',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'bmp-to-png',
   },
@@ -399,7 +382,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'tiff-v-jpg', en: 'tiff-to-jpg' },
     inputFormats: ['tiff'],
     defaultOutput: 'jpeg',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'tiff-to-jpg',
   },
@@ -409,7 +391,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'tiff-v-png', en: 'tiff-to-png' },
     inputFormats: ['tiff'],
     defaultOutput: 'png',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'tiff-to-png',
   },
@@ -419,7 +400,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'jxl-v-jpg', en: 'jxl-to-jpg' },
     inputFormats: ['jxl'],
     defaultOutput: 'jpeg',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'jxl-to-jpg',
   },
@@ -429,7 +409,6 @@ export const TOOLS: ToolConfig[] = [
     slugs: { ru: 'jxl-v-png', en: 'jxl-to-png' },
     inputFormats: ['jxl'],
     defaultOutput: 'png',
-    outputs: ALL_OUTPUTS,
     defaultQuality: 90,
     content: 'jxl-to-png',
   },

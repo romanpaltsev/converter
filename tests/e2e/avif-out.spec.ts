@@ -1,5 +1,5 @@
 // AVIF на выходе (libheif + libaom): файл читается браузером и нашим же декодером, ICC и даты внутри,
-// поворот применён, прозрачность сохраняется; «уже AVIF» — понятная ошибка.
+// поворот применён, прозрачность сохраняется; AVIF на странице «в AVIF» ждёт выбора другого формата.
 import { convertFiles as convert, downloadFile as download, expect, openConverter, test } from './fixtures';
 import { decodeInBrowser, dominant, iccProfile, pngInfo, readExif } from './files';
 
@@ -18,8 +18,8 @@ function brands(bytes: Uint8Array): string[] {
 test.describe('AVIF на выходе', () => {
   test('JPG → AVIF: браузер читает файл, поворот применён; обратно через наш декодер — ICC P3 и даты без GPS', async ({ page }) => {
     await openConverter(page, '/jpg-v-avif');
-    await expect(page.getByRole('radio', { name: 'AVIF' })).toBeChecked();
     await expect(page.getByLabel('Качество')).toHaveValue('75');
+    await expect(page.getByText('AVIF кодируется заметно дольше других форматов')).toBeVisible();
     await convert(page, ['exif-gps.jpg', 'rotated.jpg', 'photo.avif']);
 
     const rotated = await download(page, 'rotated.avif');
@@ -34,7 +34,9 @@ test.describe('AVIF на выходе', () => {
     expect([decoded.width, decoded.height]).toEqual([600, 800]);
     expect(decoded.pixels.map(dominant)).toEqual(['r', 'g', 'b', 'y']);
 
-    await expect(page.locator('.file').filter({ hasText: 'photo.avif' })).toContainText('уже в формате AVIF');
+    const same = page.locator('.file').filter({ hasText: 'photo.avif' });
+    await expect(same).toHaveAttribute('data-status', 'waiting');
+    await expect(same).toContainText('Файл уже в формате AVIF.');
 
     // круг: AVIF → PNG нашим декодером, метаданные должны пережить оба шага
     const photo = await download(page, 'exif-gps.avif');

@@ -1,5 +1,5 @@
 // AVIF на входе (libheif + dav1d): метаданные, irot, nclx и HDR, 10 бит, прозрачность, анимация, все выходы.
-import { convertFiles as convert, downloadFile as download, expect, openConverter, test } from './fixtures';
+import { convertFiles as convert, downloadFile as download, expect, openConverter, pickAll, test } from './fixtures';
 import { decodeInBrowser, dominant, hasXmp, iccProfile, jpegIcc, jpegInfo, pngInfo, readExif, webpInfo } from './files';
 
 const P3 = iccProfile('DisplayP3Compat-v2-magic.icc');
@@ -78,10 +78,13 @@ test.describe('AVIF → PNG и WebP', () => {
     expect(exif?.latitude).toBeCloseTo(55.7539, 4);
   });
 
-  test('WebP: профиль и поворот', async ({ page }) => {
+  test('WebP: профиль и поворот («Все файлы в WebP» после JPG — строки конвертируются заново)', async ({ page }) => {
     await openConverter(page, '/avif-v-jpg');
-    await page.getByRole('radio', { name: 'WebP' }).check();
     await convert(page, ['rotated.avif', 'nclx-p3.avif']);
+    await expect(page.locator('.file__name')).toHaveText(['rotated.jpg', 'nclx-p3.jpg']);
+    await pickAll(page, 'WebP');
+    await expect(page.locator('.file__name')).toHaveText(['rotated.webp', 'nclx-p3.webp'], { timeout: 60_000 });
+    await expect(page.locator('[data-target-all]')).toHaveText('WebP');
     const rotated = await download(page, 'rotated.webp');
     expect(webpInfo(rotated)).toMatchObject({ width: 600, height: 800 });
     expect((await decodeInBrowser(page, rotated, 'image/webp', QUADRANTS)).pixels.map(dominant)).toEqual(['r', 'g', 'b', 'y']);

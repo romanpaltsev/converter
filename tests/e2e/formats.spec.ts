@@ -1,7 +1,7 @@
 // JPG, PNG и WebP на входе и WebP на выходе: метаданные, поворот по EXIF, прозрачность, варианты форматов,
 // «любой вход на любой странице».
 import { readFileSync } from 'node:fs';
-import { convertFiles as convert, downloadFile as download, expect, openConverter, test } from './fixtures';
+import { convertFiles as convert, downloadFile as download, expect, fileRow, openConverter, pickTarget, test } from './fixtures';
 import { decodeInBrowser, dominant, fixture, hasXmp, iccProfile, jpegIcc, jpegInfo, pngInfo, readExif, webpInfo } from './files';
 
 const P3 = iccProfile('DisplayP3Compat-v2-magic.icc');
@@ -216,35 +216,42 @@ test.describe('WebP на выходе', () => {
     expect(await readExif(webpInfo(await download(page, 'exif-gps.webp')).exif)).toMatchObject({ ...DATES, hasGps: false });
   });
 
-  test('WebP при выходе WebP — «уже»; изображение шире 16 383 точек — понятная ошибка', async ({ page }) => {
+  test('WebP при выходе WebP — ждёт выбора формата; изображение шире 16 383 точек — понятная ошибка, JPG помогает', async ({ page }) => {
     await openConverter(page, '/png-v-webp');
     await convert(page, ['basic.webp', 'too-wide.png']);
-    await expect(page.locator('.file').nth(0)).toContainText('Файл уже в формате WebP');
+    await expect(page.locator('.file').nth(0)).toHaveAttribute('data-status', 'waiting');
+    await expect(page.locator('.file').nth(0)).toContainText('Файл уже в формате WebP.');
     await expect(page.locator('.file').nth(1)).toContainText('WebP вмещает изображения не больше 16 383 точек');
+    // у WebP есть предел размера — другой формат его снимает
+    await pickTarget(page, 'too-wide.png', 'JPG');
+    await expect(page.locator('.file').nth(1)).toHaveAttribute('data-status', 'done', { timeout: 60_000 });
+    await expect(page.getByText('too-wide.jpg', { exact: true })).toBeVisible();
   });
 });
 
 test.describe('любой вход на любой странице', () => {
-  test('PNG и WebP на странице HEIC → JPG конвертируются; JPG при выходе JPG — «уже», с пояснением про iPhone', async ({ page }) => {
+  test('PNG и WebP на странице HEIC → JPG конвертируются; JPG при выходе JPG ждёт выбора, с пояснением про iPhone', async ({ page }) => {
     await openConverter(page, '/heic-v-jpg');
     await convert(page, ['alpha.png', 'basic.webp', 'photo.jpg']);
     await expect(page.locator('.file').nth(0)).toHaveAttribute('data-status', 'done');
     await expect(page.locator('.file').nth(1)).toHaveAttribute('data-status', 'done');
+    await expect(page.locator('.file').nth(2)).toHaveAttribute('data-status', 'waiting');
     await expect(page.locator('.file').nth(2)).toContainText('Файл уже в формате JPG');
     await expect(page.locator('.file').nth(2)).toContainText('iPhone');
   });
 
-  test('на страницах без HEIC — без пояснения про iPhone; смена формата конвертирует такие строки заново', async ({ page }) => {
+  test('на страницах без HEIC — без пояснения про iPhone; выбранный формат конвертирует строку сразу', async ({ page }) => {
     await openConverter(page, '/png-v-jpg');
     await convert(page, ['photo.jpg']);
     const row = page.locator('.file');
     await expect(row).toContainText('Файл уже в формате JPG');
     await expect(row).not.toContainText('iPhone');
-
-    const reconvert = page.getByRole('button', { name: 'Конвертировать заново с новыми настройками' });
-    await expect(reconvert).toBeHidden();
-    await page.getByRole('radio', { name: 'PNG' }).check();
-    await reconvert.click();
+    // в меню нет JPG: файл уже в нём
+    await fileRow(page, 'photo.jpg').locator('[data-target-button]').click();
+    await expect(page.locator('[data-picker]').getByRole('menuitemradio')).toHaveText(['PNG', 'WebP', 'AVIF', 'ICO']);
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('button', { name: 'Конвертировать заново с новыми настройками' })).toBeHidden();
+    await pickTarget(page, 'photo.jpg', 'PNG');
     await expect(row).toHaveAttribute('data-status', 'done');
     await expect(page.getByText('photo.png', { exact: true })).toBeVisible();
   });

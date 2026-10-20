@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { FIXED_OUTPUT_MODES, INPUT_FORMATS, OUTPUT_FORMATS, PDF_MODES, TOOLS, relatedTools, toolGroups } from '../../src/tools/registry';
+import { type TargetId, defaultTarget } from '../../src/converter/widget/targets';
+import { FIXED_OUTPUT_MODES, INPUT_FORMATS, OUTPUT_FORMATS, PDF_MODES, TOOLS, UNIVERSAL_MODES, relatedTools, toolGroups } from '../../src/tools/registry';
 
 describe('реестр инструментов', () => {
   test('слаги конвертеров: ru «x-v-y», en «x-to-y»; входной формат не совпадает с целевым', () => {
@@ -8,10 +9,19 @@ describe('реестр инструментов', () => {
       expect(tool.slugs.en).toMatch(/^[a-z]+-to-[a-z]+$/);
       expect(tool.id).toBe(tool.slugs.en);
       expect(tool.inputFormats).not.toContain(tool.defaultOutput);
-      expect(tool.outputs).toContain(tool.defaultOutput);
+      expect(OUTPUT_FORMATS).toHaveProperty(tool.defaultOutput);
       for (const id of tool.inputFormats) expect(INPUT_FORMATS).toHaveProperty(id);
-      for (const id of tool.outputs) expect(OUTPUT_FORMATS).toHaveProperty(id);
     }
+  });
+
+  test('пары форматов — универсальный виджет: общего переключателя нет, предустановка подходит входу страницы', () => {
+    expect(UNIVERSAL_MODES).toEqual(['convert']);
+    for (const tool of TOOLS.filter((t) => UNIVERSAL_MODES.includes(t.mode))) {
+      expect(tool.outputs).toBeUndefined();
+      // файл в формате страницы сразу встаёт в очередь с её форматом
+      expect(defaultTarget(tool.inputFormats[0]!, tool.defaultOutput as TargetId)).toBe(tool.defaultOutput);
+    }
+    for (const tool of TOOLS.filter((t) => !UNIVERSAL_MODES.includes(t.mode))) expect(tool.outputs?.length).toBeGreaterThan(0);
   });
 
   test('сжатие, размер и метаданные: любой вход, по умолчанию «Исходный», перелинковка задана вручную', () => {

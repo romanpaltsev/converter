@@ -1,14 +1,14 @@
 // ICO на выходе: размеры 16–256 (не больше исходника), PNG внутри, квадрат с прозрачными полями.
-import { convertFiles as convert, downloadFile as download, expect, openConverter, test } from './fixtures';
+import { convertFiles as convert, downloadFile as download, expect, fileRow, openConverter, pickTarget, test } from './fixtures';
 import { decodeInBrowser, dominant, icoEntries, pngInfo } from './files';
 
 test.describe('ICO', () => {
   test('PNG → ICO: все размеры, PNG с прозрачностью внутри; прямоугольная картинка — в квадрате с полями', async ({ page }) => {
     await openConverter(page, '/png-v-ico');
-    await expect(page.getByRole('radio', { name: 'ICO' })).toBeChecked();
     await expect(page.getByLabel('Качество')).toBeHidden();
     await expect(page.getByLabel(/Сохранить все метаданные/)).toBeHidden();
     await convert(page, ['alpha.png', 'exif-gps.png']);
+    await expect(fileRow(page, 'alpha.ico').locator('[data-target-button]')).toHaveText('ICO');
 
     const alpha = icoEntries(await download(page, 'alpha.ico'));
     expect(alpha.map((e) => e.width)).toEqual([16, 32, 48, 64, 128, 256]);
@@ -34,7 +34,9 @@ test.describe('ICO', () => {
     await convert(page, ['photo.jpg']);
     expect(icoEntries(await download(page, 'photo.ico')).map((e) => e.width)).toEqual([16, 32, 48, 64, 128, 256]);
 
-    await page.getByRole('radio', { name: 'PNG' }).check();
+    // другой формат у файла: пояснение про ICO скрывается, галочка метаданных возвращается
+    await pickTarget(page, 'photo.ico', 'PNG');
+    await expect(page.getByText('photo.png', { exact: true })).toBeVisible();
     await expect(page.getByText('The icon gets sizes from 16 to 256 pixels')).toBeHidden();
     await expect(page.getByLabel(/Keep all metadata/)).toBeVisible();
   });

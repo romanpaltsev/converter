@@ -244,6 +244,8 @@ export class WorkerClient implements PoolClient {
     if (this.worker) return this.worker;
     const worker = new Worker(new URL('../worker/convert.worker.ts', import.meta.url), { type: 'module', name: 'converter' });
     worker.onmessage = (event: MessageEvent<FromWorker>) => {
+      // запоздалый ответ уже завершённого worker'а (задание отменили) не должен достаться следующему заданию
+      if (this.worker !== worker) return;
       const reply = event.data;
       if (reply.type === 'started') {
         this.onStarted?.(reply.footprint, reply.fresh);
@@ -262,6 +264,7 @@ export class WorkerClient implements PoolClient {
     // падение worker'а (например, нехватка памяти вкладки) — завершаем текущую задачу ошибкой
     worker.onerror = (event) => {
       event.preventDefault();
+      if (this.worker !== worker) return;
       const pending = this.pending;
       this.pending = null;
       worker.terminate();

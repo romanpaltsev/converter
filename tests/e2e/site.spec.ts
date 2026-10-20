@@ -1,6 +1,6 @@
 import AxeBuilder from '@axe-core/playwright';
 import type { Page } from '@playwright/test';
-import { expect, openConverter, test } from './fixtures';
+import { SETTLED_ROWS, expect, fileRow, openConverter, pickTarget, test } from './fixtures';
 import { fixture } from './files';
 
 const PAGES = [
@@ -220,12 +220,17 @@ test.describe('доступность (axe, WCAG 2.1 AA)', () => {
       });
     }
 
-    test(`виджет с результатами и ошибками (${scheme})`, async ({ page }) => {
+    test(`виджет с результатами, ошибками, ждущим файлом и открытым меню форматов (${scheme})`, async ({ page }) => {
       await page.emulateMedia({ colorScheme: scheme });
       await openConverter(page, '/heic-v-jpg');
-      await page.setInputFiles('[data-input]', ['basic.heic', 'garbage.heic', 'hdr-pq.heic'].map(fixture));
-      await expect(page.locator('.file:is([data-status="done"], [data-status="error"])')).toHaveCount(3);
-      await page.getByRole('radio', { name: 'PNG' }).check(); // показывает предупреждение и «Конвертировать заново»
+      await page.setInputFiles('[data-input]', ['basic.heic', 'garbage.heic', 'hdr-pq.heic', 'photo.jpg'].map(fixture));
+      await expect(page.locator(SETTLED_ROWS)).toHaveCount(4);
+      // PNG у одного файла — предупреждение про размер; photo.jpg ждёт выбора формата
+      await pickTarget(page, 'basic.jpg', 'PNG');
+      await expect(page.getByText('basic.png', { exact: true })).toBeVisible();
+      await page.getByLabel('Сохранить все метаданные (включая геолокацию)').check(); // «Конвертировать заново»
+      await fileRow(page, 'basic.png').locator('[data-target-button]').click();
+      await expect(page.locator('[data-picker]')).toBeVisible();
       const result = await new AxeBuilder({ page }).include('[data-converter]').withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
       expect(result.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
     });

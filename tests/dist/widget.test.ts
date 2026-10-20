@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
+import { IMAGE_TARGETS } from '../../src/converter/widget/targets';
 import { UI } from '../../src/i18n/ui';
-import { SOURCE_FORMATS, TOOLS } from '../../src/tools/registry';
+import { SOURCE_FORMATS, TOOLS, UNIVERSAL_MODES } from '../../src/tools/registry';
 import { readHtml } from './helpers';
 
 describe('сборка: разметка виджета', () => {
@@ -46,24 +47,47 @@ describe('сборка: разметка виджета', () => {
       expect(root.querySelector('form[data-settings]')?.hasAttribute('hidden')).toBe(true);
       expect(root.querySelectorAll('form[data-settings] input')).toHaveLength(0);
       expect(root.querySelector('[data-zip]')?.hasAttribute('hidden')).toBe(true);
-    } else {
+    } else if (UNIVERSAL_MODES.includes(tool.mode)) {
+      // пары форматов: общего переключателя нет — формат у каждого файла (меню в строке и «Все файлы в …»)
+      const ui = UI[file.startsWith('en/') ? 'en' : 'ru'].widget;
+      expect(root.querySelector('input[name="format"]')).toBeNull();
+      const menu = root.querySelector('[data-picker][role="menu"]')!;
+      expect(menu.hasAttribute('hidden')).toBe(true);
+      expect(menu.querySelectorAll('[role="menuitemradio"]').map((item) => item.getAttribute('data-target'))).toEqual([...IMAGE_TARGETS]);
+      expect(menu.querySelectorAll('[role="menuitemradio"][tabindex="-1"]')).toHaveLength(IMAGE_TARGETS.length);
+      const all = root.querySelector('[data-target-all]')!;
+      expect(all.getAttribute('aria-haspopup')).toBe('menu');
+      expect(all.getAttribute('aria-controls')).toBe(menu.getAttribute('id'));
+      expect(root.querySelector('[data-target-all-row]')?.hasAttribute('hidden')).toBe(true);
       expect(root.querySelector('[data-zip]')?.hasAttribute('hidden')).toBe(false);
-      expect(root.querySelector('input[name="format"][checked]')?.getAttribute('value')).toBe(tool.defaultOutput);
       expect(root.querySelector('input[name="quality"]')?.getAttribute('value')).toBe(String(tool.defaultQuality));
       expect(root.querySelector('input[name="keepMetadata"]')?.hasAttribute('checked')).toBe(false);
-      // ползунок скрыт для форматов без качества (PNG, ICO), предупреждение о размере — только у PNG
+      // до выбора файлов видны настройки формата страницы: качество — у форматов с потерями, ICO — пояснение
+      // вместо метаданных, AVIF — предупреждение о долгом кодировании, PNG — о размере файлов
       expect(root.querySelector('[data-quality-row]')?.hasAttribute('hidden')).toBe(tool.defaultOutput === 'png' || tool.defaultOutput === 'ico');
-      // ICO: пояснение про размеры видно, метаданные скрыты
-      expect(root.querySelector('[data-ico-hint]')?.hasAttribute('hidden') ?? null).toBe(tool.outputs.includes('ico') ? tool.defaultOutput !== 'ico' : null);
+      expect(root.querySelector('[data-ico-hint]')?.hasAttribute('hidden')).toBe(tool.defaultOutput !== 'ico');
+      expect(root.querySelector('[data-avif-hint]')?.text.trim()).toBe(ui.avifHint);
+      expect(root.querySelector('[data-avif-hint]')?.hasAttribute('hidden')).toBe(tool.defaultOutput !== 'avif');
       expect(root.querySelector('[data-meta-row]')?.hasAttribute('hidden')).toBe(tool.defaultOutput === 'ico');
       expect(root.querySelector('[data-png-warning]')?.hasAttribute('hidden')).toBe(tool.defaultOutput !== 'png');
       // «Без потерь» — только у WebP
       expect(root.querySelector('[data-lossless-row]')?.hasAttribute('hidden')).toBe(tool.defaultOutput !== 'webp');
       expect(root.querySelector('input[name="lossless"]')?.hasAttribute('checked')).toBe(false);
+    } else {
+      // сжатие и размер: общий переключатель формата, по умолчанию «Исходный»
+      expect(root.querySelector('[data-zip]')?.hasAttribute('hidden')).toBe(false);
+      expect(root.querySelector('input[name="format"][checked]')?.getAttribute('value')).toBe(tool.defaultOutput);
+      expect(root.querySelector('input[name="quality"]')?.getAttribute('value')).toBe(String(tool.defaultQuality));
+      expect(root.querySelector('[data-quality-row]')?.hasAttribute('hidden')).toBe(false);
+      expect(root.querySelector('[data-picker]')).toBeNull();
+      expect(root.querySelector('[data-png-warning]')?.hasAttribute('hidden')).toBe(true);
+      expect(root.querySelector('[data-lossless-row]')?.hasAttribute('hidden')).toBe(true);
     }
     const config = JSON.parse(root.querySelector('script[data-converter-config]')!.text);
     expect(config.maxFiles).toBe(100);
-    expect(config.outputs.map((o: { id: string }) => o.id)).toEqual(tool.outputs);
+    expect(config.outputs.map((o: { id: string }) => o.id)).toEqual(tool.outputs ?? []);
+    expect(config.universal).toBe(UNIVERSAL_MODES.includes(tool.mode));
+    expect(config.preset).toBe(UNIVERSAL_MODES.includes(tool.mode) ? tool.defaultOutput : null);
     expect(config.iphoneHint).toBe(tool.mode === 'convert' && tool.inputFormats.includes('heic'));
     expect(config.mode).toBe(tool.mode);
     // сжатие: переключатель «По качеству / До размера» и скрытое до выбора поле целевого размера

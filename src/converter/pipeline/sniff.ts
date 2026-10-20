@@ -31,8 +31,11 @@ export const KIND_FILES: Record<ImageKind, { label: string; extension: string; m
   jxl: { label: 'JXL', extension: 'jxl', mime: 'image/jxl' },
 };
 
-/** Сколько байт начала файла нужно для определения формата (с запасом на длинный список брендов ftyp). */
-export const SNIFF_BYTES = 256;
+/**
+ * Сколько байт начала файла читать для определения формата: с запасом на длинный список брендов ftyp; PDF ищется
+ * в первом килобайте (перед «%PDF-» бывает мусор), там же обычно и заголовок кадра JPEG (CMYK видно без WASM).
+ */
+export const SNIFF_BYTES = 1024;
 
 // Бренды, однозначно указывающие на HEVC (HEIC).
 const HEVC_BRANDS = new Set(['heic', 'heix', 'hevc', 'hevx', 'heim', 'heis', 'hevm', 'hevs']);

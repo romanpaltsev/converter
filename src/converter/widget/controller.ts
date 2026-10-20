@@ -7,21 +7,25 @@ import type { RemovedKind, StripMode } from '../metadata/strip/types';
 import { SMALL_MARGIN } from '../pdf/limits';
 import type { PageSize, PdfImage, PdfLayout } from '../pdf/writer';
 import { checkInput } from '../pipeline/input';
-import { type ImageKind, KIND_FILES, SNIFF_BYTES, sniff } from '../pipeline/sniff';
+import { type ImageKind, KIND_FILES, SNIFF_BYTES, type SniffKind, sniff } from '../pipeline/sniff';
 import type { ResizeSpec } from '../pipeline/resize';
-import { ENCODER_EXTENSIONS, type ErrorCode, type WarningCode } from '../pipeline/types';
+import { ENCODER_EXTENSIONS, type ErrorCode, type OutputTarget, type WarningCode } from '../pipeline/types';
 import { type OutputOption, type WidgetConfig, readConfig } from './config';
 import { NameAllocator, outputName, withTimestamp } from './filenames';
+import { FormatPicker } from './format-picker';
 import { ReportView } from './report-view';
 import { formatBytes } from './sizes';
 import { supportsConverter, supportsPdfRendering } from './support';
+import { type TargetId, type TargetPair, defaultTarget, ownTarget, settingsKey, sharedTargets, targetsFor, visibleSettings } from './targets';
 import { WorkerClient } from './worker-client';
 import { type Lease, WorkerPool, currentDevice, poolPolicy } from './worker-pool';
 
-type Status = 'queued' | 'converting' | 'done' | 'error';
+/** waiting — универсальный виджет: файл ждёт, пока для него выберут формат. */
+type Status = 'waiting' | 'queued' | 'converting' | 'done' | 'error';
 
 interface Settings {
-  output: OutputOption;
+  /** Общий переключатель формата (сжатие, размер, PDF в JPG); у универсального виджета — null, формат у файла. */
+  output: OutputOption | null;
   quality: number;
   /** Галочка «Без потерь» (действует только для форматов с hasLossless). */
   lossless: boolean;
@@ -87,16 +91,34 @@ interface Item {
   estimate: number | null;
   /** Повтор после нехватки памяти или сбоя WASM — в одиночку на свежем worker'е. */
   retry: boolean;
+  /** Универсальный виджет: вид файла по сигнатуре и выбранный формат (null — ждёт выбора). */
+  source: SniffKind | null;
+  target: TargetId | null;
+  /** Номер задания: растёт при смене формата — ответы прежнего задания отбрасываются. */
+  job: number;
+  /** Worker, который сейчас обрабатывает файл (чтобы прервать задание). */
+  lease: Lease | null;
+  /** Настройки, важные для формата файла, на момент старта (settingsKey) — для «Конвертировать заново». */
+  key: string | null;
   row: HTMLLIElement;
 }
 
-const isLossless = (s: Settings) => s.output.hasLossless && s.lossless;
+/** Чьё это задание: «поколение» (растёт при «Очистить») и номер задания файла. */
+interface Ticket {
+  generation: number;
+  job: number;
+}
+
+/** Ошибки, после которых другой формат может помочь: предел WebP, нехватка памяти, сбой. Остальные — про сам файл. */
+const RETRYABLE_ERRORS = new Set<ErrorCode>(['too-large-for-webp', 'out-of-memory', 'internal']);
+
+const isLossless = (s: Settings) => !!s.output?.hasLossless && s.lossless;
 /** Форматы с потерями: только у них есть качество и целевой размер. */
-const isLossy = (s: Settings) => s.output.hasQuality && !isLossless(s);
+const isLossy = (s: Settings) => !!s.output?.hasQuality && !isLossless(s);
 
 /** Совпадают ли настройки по-существу: качество не важно без потерь и при целевом размере, галочка «Без потерь» — у форматов без неё. */
 const sameSettings = (a: Settings, b: Settings) =>
-  a.output.id === b.output.id &&
+  a.output?.id === b.output?.id &&
   a.keepMetadata === b.keepMetadata &&
   isLossless(a) === isLossless(b) &&
   (!isLossy(a) || (a.targetBytes === b.targetBytes && (a.targetBytes !== null || a.quality === b.quality))) &&
@@ -108,12 +130,21 @@ const sameSettings = (a: Settings, b: Settings) =>
 function isOutdated(item: Item, current: Settings): boolean {
   if (!item.settings) return false;
   if (item.status === 'done') return !sameSettings(item.settings, current);
-  return item.status === 'error' && (item.error?.startsWith('already-') ?? false) && item.settings.output.id !== current.output.id;
+  return item.status === 'error' && (item.error?.startsWith('already-') ?? false) && item.settings.output?.id !== current.output?.id;
 }
 
 /** Подстановка {name} в строку из словаря. */
 function fill(template: string, values: Record<string, string | number>): string {
   return template.replace(/\{(\w+)\}/g, (match, key: string) => (key in values ? String(values[key]) : match));
+}
+
+/** По какому селектору найти «ту же» кнопку в перерисованной строке. */
+function focusSelector(focused: HTMLElement): string | null {
+  if (focused.matches('[data-target-button]')) return '[data-target-button]';
+  if (focused.matches('[data-remove]')) return '[data-remove]';
+  if (focused.matches('[data-move]')) return `[data-move="${focused.dataset.move}"]`;
+  if (focused.matches('.file__download')) return '.file__download';
+  return null;
 }
 
 function element<T extends HTMLElement>(root: HTMLElement, selector: string): T {
@@ -136,6 +167,8 @@ export class ConverterWidget {
   private readonly originalHint: HTMLElement | null;
   /** Только на страницах иконок: пояснение про размеры ICO; метаданные для ICO скрываются. */
   private readonly icoHint: HTMLElement | null;
+  /** Универсальный виджет: «AVIF кодируется долго». */
+  private readonly avifHint: HTMLElement | null;
   private readonly metaRow: HTMLElement | null;
   /** Только на странице «Удалить метаданные»: пояснение к выбранному режиму. */
   private readonly stripHint: HTMLElement | null;
@@ -155,6 +188,17 @@ export class ConverterWidget {
   private readonly reconvertButton: HTMLButtonElement;
   private readonly settingsHint: HTMLElement;
   private readonly clearButton: HTMLButtonElement;
+  /** Универсальный виджет: меню форматов и «Все файлы в …». */
+  private readonly picker: FormatPicker | null;
+  private readonly pickerId: string;
+  private readonly allRow: HTMLElement | null;
+  private readonly allButton: HTMLButtonElement | null;
+  /** Владелец меню, открытого кнопкой «Все файлы в …». */
+  private readonly allOwner = {};
+  /** С каким форматом новые файлы встают в очередь: формат страницы, после «Все файлы в …» — выбранный там. */
+  private preset: TargetId | null;
+  /** Файлы добавляются по очереди: сигнатуры читаются асинхронно, а строки должны идти в порядке выбора. */
+  private adding: Promise<void> = Promise.resolve();
 
   private items: Item[] = [];
   private readonly pool = new WorkerPool(poolPolicy(currentDevice()), () => new WorkerClient());
@@ -162,7 +206,8 @@ export class ConverterWidget {
   private loadedOnce = false;
   /** Растёт при очистке: результаты задач из прошлого «поколения» отбрасываются. */
   private generation = 0;
-  private run = { total: 0, done: 0, failed: 0 };
+  /** formats — сколько файлов готово в каждом формате (для аналитики универсального виджета). */
+  private run = { total: 0, done: 0, failed: 0, formats: {} as Record<string, number> };
   private dragDepth = 0;
   private readonly names = new NameAllocator();
   private readonly reports: ReportView;
@@ -179,6 +224,7 @@ export class ConverterWidget {
     this.qualityValue = root.querySelector('[data-quality-value]');
     this.originalHint = root.querySelector('[data-original-hint]');
     this.icoHint = root.querySelector('[data-ico-hint]');
+    this.avifHint = root.querySelector('[data-avif-hint]');
     this.metaRow = root.querySelector('[data-meta-row]');
     this.stripHint = root.querySelector('[data-strip-hint]');
     this.compressionRow = root.querySelector('[data-compression-row]');
@@ -198,6 +244,12 @@ export class ConverterWidget {
     this.reconvertButton = element(root, '[data-reconvert]');
     this.settingsHint = element(root, '[data-settings-hint]');
     this.clearButton = element(root, '[data-clear]');
+    const menu = root.querySelector<HTMLElement>('[data-picker]');
+    this.picker = menu ? new FormatPicker(menu, this.results) : null;
+    this.pickerId = menu?.id ?? '';
+    this.allRow = root.querySelector('[data-target-all-row]');
+    this.allButton = root.querySelector('[data-target-all]');
+    this.preset = this.config.preset;
     this.bind();
     this.syncSettings();
     root.dataset.ready = 'true';
@@ -253,11 +305,22 @@ export class ConverterWidget {
     });
     this.reconvertButton.addEventListener('click', () => this.reconvert());
     this.clearButton.addEventListener('click', () => this.clear());
+    if (this.allButton) this.bindMenuButton(this.allButton, (focus) => this.openAllPicker(focus), this.allOwner);
+  }
+
+  /** Кнопка, открывающая меню форматов: щелчок — открыть/закрыть, стрелки — открыть на первом/последнем пункте. */
+  private bindMenuButton(button: HTMLButtonElement, open: (focus: 'checked' | 'first' | 'last') => void, owner: object): void {
+    button.addEventListener('click', () => (this.picker!.isOpenFor(owner) ? this.picker!.close() : open('checked')));
+    button.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+      event.preventDefault();
+      open(event.key === 'ArrowDown' ? 'first' : 'last');
+    });
   }
 
   private currentSettings(): Settings {
     const data = new FormData(this.form);
-    const output = this.config.outputs.find((o) => o.id === data.get('format')) ?? this.config.outputs[0]!;
+    const output = this.config.outputs.find((o) => o.id === data.get('format')) ?? this.config.outputs[0] ?? null;
     return {
       output,
       quality: Number(data.get('quality') ?? 90),
@@ -299,10 +362,15 @@ export class ConverterWidget {
 
   private syncSettings(): void {
     const settings = this.currentSettings();
+    if (this.config.universal) {
+      this.syncTargetSettings(settings);
+      return;
+    }
+    const output = settings.output!;
     const lossy = isLossy(settings);
-    if (this.originalHint) this.originalHint.hidden = settings.output.id !== 'original';
-    if (this.icoHint) this.icoHint.hidden = settings.output.id !== 'ico';
-    if (this.metaRow) this.metaRow.hidden = settings.output.id === 'ico';
+    if (this.originalHint) this.originalHint.hidden = output.id !== 'original';
+    if (this.icoHint) this.icoHint.hidden = output.id !== 'ico';
+    if (this.metaRow) this.metaRow.hidden = output.id === 'ico';
     if (this.stripHint && settings.strip) this.stripHint.textContent = this.t.stripHints[settings.strip];
     if (this.compressionRow) this.compressionRow.hidden = !lossy;
     if (this.targetRow) this.targetRow.hidden = !lossy || settings.targetBytes === null;
@@ -322,10 +390,36 @@ export class ConverterWidget {
         input.setAttribute('aria-invalid', String(!empty && parseDimension(input.value) === null));
       }
     }
-    if (this.losslessRow) this.losslessRow.hidden = !settings.output.hasLossless;
-    if (this.pngWarning) this.pngWarning.hidden = !settings.output.largeFiles;
+    if (this.losslessRow) this.losslessRow.hidden = !output.hasLossless;
+    if (this.pngWarning) this.pngWarning.hidden = !output.largeFiles;
     if (this.qualityValue) this.qualityValue.value = String(settings.quality);
     this.updateActions();
+  }
+
+  /** Универсальный виджет: видны настройки, которые нужны форматам файлов в списке (без файлов — формату страницы). */
+  private syncTargetSettings(settings: Settings): void {
+    const pairs = this.targetPairs();
+    const show = visibleSettings(pairs, settings.lossless);
+    if (this.qualityRow) this.qualityRow.hidden = !show.quality;
+    if (this.losslessRow) this.losslessRow.hidden = !show.lossless;
+    if (this.metaRow) this.metaRow.hidden = !show.metadata;
+    if (this.pngWarning) this.pngWarning.hidden = !show.pngWarning;
+    if (this.icoHint) this.icoHint.hidden = !show.icoHint;
+    if (this.avifHint) this.avifHint.hidden = !show.avifHint;
+    // настраивать нечего (например, ни у одного файла ещё не выбран формат) — форма не нужна
+    this.form.hidden = !Object.values(show).some(Boolean);
+    if (this.qualityValue) this.qualityValue.value = String(settings.quality);
+    this.updateActions();
+  }
+
+  /** Пары «вход → формат» файлов, которые конвертируются или сконвертированы; без них — формат страницы. */
+  private targetPairs(): TargetPair[] {
+    const pairs = this.items
+      .filter((item) => !item.parent && item.source && item.target && item.status !== 'error' && item.status !== 'waiting')
+      .map((item) => ({ kind: item.source!, target: item.target! }));
+    if (pairs.length > 0) return pairs;
+    const { preset, presetKind } = this.config;
+    return preset && presetKind ? [{ kind: presetKind, target: preset }] : [];
   }
 
   addFiles(files: File[]): void {
@@ -338,6 +432,13 @@ export class ConverterWidget {
     const max = this.config.maxFiles;
     if (files.length > max) this.showNotice(fill(this.t.batchLimit, { max }), 'warning');
     else this.hideNotice();
+    if (this.config.universal) {
+      // формат каждого файла узнаём по сигнатуре до появления строки: от него зависят меню и автозапуск
+      const generation = this.generation;
+      const batch = files.slice(0, max);
+      this.adding = this.adding.then(() => this.addClassified(batch, generation)).catch(() => {});
+      return;
+    }
     for (const file of files.slice(0, max)) {
       const item = this.blankItem(file);
       this.items.push(item);
@@ -348,6 +449,56 @@ export class ConverterWidget {
     this.results.hidden = false;
     this.updateActions();
     this.pump();
+  }
+
+  /** Универсальный виджет: строки — после чтения сигнатур, в порядке выбора файлов. */
+  private async addClassified(files: File[], generation: number): Promise<void> {
+    const heads = await Promise.all(
+      files.map((file) =>
+        file
+          .slice(0, SNIFF_BYTES)
+          .arrayBuffer()
+          .then(
+            (buffer) => new Uint8Array(buffer),
+            () => null,
+          ),
+      ),
+    );
+    if (generation !== this.generation) return;
+    files.forEach((file, index) => {
+      const item = this.blankItem(file);
+      this.items.push(item);
+      this.list.append(item.row);
+      this.classify(item, heads[index]!);
+    });
+    this.results.hidden = false;
+    this.syncSettings();
+    this.pump();
+  }
+
+  /**
+   * Вид файла по сигнатуре и формат, с которым он встаёт в очередь (предустановка страницы, если подходит;
+   * иначе ждёт выбора). Нечитаемый файл, CMYK и неподдерживаемый JPEG — ошибка сразу, без WASM.
+   */
+  private classify(item: Item, head: Uint8Array | null): void {
+    if (!head) {
+      this.run.total++;
+      this.fail(item, 'internal');
+      return;
+    }
+    const { kind } = sniff(head);
+    item.source = kind;
+    const targets = targetsFor(kind);
+    const check = targets.length > 0 ? checkInput(head, targets[0]!, true) : null;
+    if (!check?.ok) {
+      this.run.total++;
+      this.fail(item, check ? check.code : kind === 'pdf' ? 'pdf-input' : 'not-image');
+      return;
+    }
+    item.target = defaultTarget(kind, this.preset);
+    item.status = item.target ? 'queued' : 'waiting';
+    if (item.target) this.run.total++;
+    this.renderRow(item);
   }
 
   /**
@@ -361,7 +512,7 @@ export class ConverterWidget {
       if (!lease) break;
       item.status = 'converting';
       this.renderRow(item);
-      void this.convert(item, lease, generation);
+      void this.convert(item, lease, { generation, job: item.job });
     }
     if (this.pool.running > 0) {
       if (this.loadedOnce) this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
@@ -375,35 +526,60 @@ export class ConverterWidget {
     return this.items.find((item) => item.status === 'queued');
   }
 
-  private async convert(item: Item, lease: Lease, generation: number): Promise<void> {
+  private async convert(item: Item, lease: Lease, ticket: Ticket): Promise<void> {
+    item.lease = lease;
     let recycle = false;
     try {
-      recycle = await this.process(item, lease, generation);
+      recycle = await this.process(item, lease, ticket);
     } catch {
       // например, файл не читается: его удалили с диска после выбора — остальная очередь идёт дальше
-      if (generation === this.generation) this.fail(item, 'internal');
+      if (!this.stale(item, ticket)) this.fail(item, 'internal');
     } finally {
+      if (item.lease === lease) item.lease = null;
       // после «Очистить» пул уже сброшен — этот файл больше никого не интересует
-      if (generation === this.generation) {
+      if (ticket.generation === this.generation) {
         lease.release(recycle);
         this.pump();
       }
     }
   }
 
+  /** Ответ устарел: после «Очистить» или после смены формата у файла (задание отменено). */
+  private stale(item: Item, ticket: Ticket): boolean {
+    return ticket.generation !== this.generation || ticket.job !== item.job;
+  }
+
   /** Обрабатывает файл на выданном worker'е; true — worker нужно пересоздать. */
-  private async process(item: Item, lease: Lease, generation: number): Promise<boolean> {
+  private async process(item: Item, lease: Lease, ticket: Ticket): Promise<boolean> {
     // формат по сигнатуре проверяем сразу, без загрузки WASM
     const head = new Uint8Array(await item.file.slice(0, SNIFF_BYTES).arrayBuffer());
-    if (generation !== this.generation) return false;
+    if (this.stale(item, ticket)) return false;
     const settings = this.currentSettings();
     item.settings = settings;
-    if (settings.strip) return this.strip(item, head, settings.strip, lease, generation);
-    if (this.config.mode === 'inspect') return this.inspect(item, head, lease, generation);
-    if (this.config.mode === 'to-pdf') return this.pdfPage(item, head, lease, generation);
-    if (this.config.mode === 'merge-pdf') return this.pdfInfo(item, head, lease, generation);
-    if (settings.dpi !== null) return this.renderPdf(item, head, settings, lease, generation);
-    const input = checkInput(head, settings.output.encoder, this.config.mode !== 'convert');
+    if (this.config.universal) {
+      const pair = { kind: item.source!, target: item.target! };
+      item.key = settingsKey(pair, settings);
+      return this.convertImage(item, head, pair.target, pair.target === 'webp' && settings.lossless, settings, lease, ticket);
+    }
+    if (settings.strip) return this.strip(item, head, settings.strip, lease, ticket);
+    if (this.config.mode === 'inspect') return this.inspect(item, head, lease, ticket);
+    if (this.config.mode === 'to-pdf') return this.pdfPage(item, head, lease, ticket);
+    if (this.config.mode === 'merge-pdf') return this.pdfInfo(item, head, lease, ticket);
+    if (settings.dpi !== null) return this.renderPdf(item, head, settings, lease, ticket);
+    return this.convertImage(item, head, settings.output!.encoder, isLossless(settings), settings, lease, ticket);
+  }
+
+  /** Картинка → картинка (конвертеры, сжатие, размер): декодер и кодировщик в worker'е. */
+  private async convertImage(
+    item: Item,
+    head: Uint8Array,
+    output: OutputTarget,
+    lossless: boolean,
+    settings: Settings,
+    lease: Lease,
+    ticket: Ticket,
+  ): Promise<boolean> {
+    const input = checkInput(head, output, this.config.mode !== 'convert');
     if (!input.ok) {
       this.fail(item, input.code);
       return false;
@@ -416,29 +592,29 @@ export class ConverterWidget {
       await lease.client.load(input.decoder, input.encoder);
       this.loadedOnce = true;
     } catch {
-      if (generation !== this.generation) return false;
+      if (this.stale(item, ticket)) return false;
       this.showNotice(this.t.loadFailed, 'error');
       this.fail(item, 'internal');
       return true;
     }
-    if (generation !== this.generation) return false;
+    if (this.stale(item, ticket)) return false;
     this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
 
     const options = {
       encoder: input.encoder,
       quality: settings.quality,
-      lossless: isLossless(settings),
+      lossless,
       metadata: settings.keepMetadata ? ('all' as const) : ('dates' as const),
       targetBytes: settings.targetBytes,
       allowSameFormat: this.config.mode !== 'convert',
       resize: settings.resize,
     };
     const outcome = await lease.client.convert(item.file, options, lease.memoryLimit, (footprint, fresh) => {
-      if (generation !== this.generation) return;
+      if (this.stale(item, ticket)) return;
       lease.started(footprint, fresh);
       this.pump(); // файл оценён — можно запускать следующий
     });
-    if (generation !== this.generation) return false;
+    if (this.stale(item, ticket)) return false;
     if (outcome.status === 'needs-memory') {
       // не поместился рядом с другими: ждёт первым в очереди, пока освободится память
       item.estimate = outcome.fresh;
@@ -470,13 +646,14 @@ export class ConverterWidget {
     }
     item.status = 'done';
     this.run.done++;
+    if (item.target) this.run.formats[item.target] = (this.run.formats[item.target] ?? 0) + 1;
     this.renderRow(item);
-    this.updateActions();
+    this.syncSettings(); // у готовых файлов свои форматы — от них зависят видимые настройки
     return false;
   }
 
   /** «Удалить метаданные»: формат и имя файла остаются, WASM не нужен. */
-  private async strip(item: Item, head: Uint8Array, mode: StripMode, lease: Lease, generation: number): Promise<boolean> {
+  private async strip(item: Item, head: Uint8Array, mode: StripMode, lease: Lease, ticket: Ticket): Promise<boolean> {
     const { kind } = sniff(head);
     if (kind === 'unknown' || kind === 'pdf') {
       this.fail(item, kind === 'pdf' ? 'pdf-input' : 'not-image');
@@ -488,11 +665,11 @@ export class ConverterWidget {
     item.name ??= this.names.allocate(outputName(item.file.name, extension));
     this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
     const outcome = await lease.client.strip(item.file, mode, lease.memoryLimit, (footprint, fresh) => {
-      if (generation !== this.generation) return;
+      if (this.stale(item, ticket)) return;
       lease.started(footprint, fresh);
       this.pump();
     });
-    if (generation !== this.generation) return false;
+    if (this.stale(item, ticket)) return false;
     if (outcome.status === 'needs-memory') {
       item.estimate = outcome.fresh;
       this.requeue(item);
@@ -515,7 +692,7 @@ export class ConverterWidget {
   }
 
   /** «Посмотреть EXIF»: только чтение, результата-файла нет. */
-  private async inspect(item: Item, head: Uint8Array, lease: Lease, generation: number): Promise<boolean> {
+  private async inspect(item: Item, head: Uint8Array, lease: Lease, ticket: Ticket): Promise<boolean> {
     const { kind } = sniff(head);
     if (kind === 'unknown' || kind === 'pdf') {
       this.fail(item, kind === 'pdf' ? 'pdf-input' : 'not-image');
@@ -523,11 +700,11 @@ export class ConverterWidget {
     }
     this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
     const outcome = await lease.client.inspect(item.file, lease.memoryLimit, (footprint, fresh) => {
-      if (generation !== this.generation) return;
+      if (this.stale(item, ticket)) return;
       lease.started(footprint, fresh);
       this.pump();
     });
-    if (generation !== this.generation) return false;
+    if (this.stale(item, ticket)) return false;
     if (outcome.status === 'needs-memory') {
       item.estimate = outcome.fresh;
       this.requeue(item);
@@ -549,7 +726,7 @@ export class ConverterWidget {
   }
 
   /** «Изображения в PDF»: картинка страницы и превью; сам PDF собирается по кнопке из готовых страниц. */
-  private async pdfPage(item: Item, head: Uint8Array, lease: Lease, generation: number): Promise<boolean> {
+  private async pdfPage(item: Item, head: Uint8Array, lease: Lease, ticket: Ticket): Promise<boolean> {
     const input = checkInput(head, 'jpeg', true);
     if (!input.ok) {
       this.fail(item, input.code);
@@ -560,19 +737,19 @@ export class ConverterWidget {
       await lease.client.load(input.decoder, 'jpeg');
       this.loadedOnce = true;
     } catch {
-      if (generation !== this.generation) return false;
+      if (this.stale(item, ticket)) return false;
       this.showNotice(this.t.loadFailed, 'error');
       this.fail(item, 'internal');
       return true;
     }
-    if (generation !== this.generation) return false;
+    if (this.stale(item, ticket)) return false;
     this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
     const outcome = await lease.client.pdfPage(item.file, lease.memoryLimit, (footprint, fresh) => {
-      if (generation !== this.generation) return;
+      if (this.stale(item, ticket)) return;
       lease.started(footprint, fresh);
       this.pump();
     });
-    if (generation !== this.generation) return false;
+    if (this.stale(item, ticket)) return false;
     if (outcome.status === 'needs-memory') {
       item.estimate = outcome.fresh;
       this.requeue(item);
@@ -600,23 +777,24 @@ export class ConverterWidget {
   }
 
   /** «PDF в JPG/PNG»: страницы приходят по одной и сразу становятся строками под строкой PDF. */
-  private async renderPdf(item: Item, head: Uint8Array, settings: Settings, lease: Lease, generation: number): Promise<boolean> {
+  private async renderPdf(item: Item, head: Uint8Array, settings: Settings, lease: Lease, ticket: Ticket): Promise<boolean> {
     if (sniff(head).kind !== 'pdf') {
       this.fail(item, 'not-pdf');
       return false;
     }
-    const encoder = settings.output.encoder === 'original' ? 'jpeg' : settings.output.encoder;
+    const output = settings.output!.encoder;
+    const encoder = output === 'original' ? 'jpeg' : output;
     if (!this.loadedOnce) this.setStatus(this.t.loading);
     try {
       await lease.client.load(null, encoder);
       this.loadedOnce = true;
     } catch {
-      if (generation !== this.generation) return false;
+      if (this.stale(item, ticket)) return false;
       this.showNotice(this.t.loadFailed, 'error');
       this.fail(item, 'internal');
       return true;
     }
-    if (generation !== this.generation) return false;
+    if (this.stale(item, ticket)) return false;
     this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
     item.pages = { done: 0, total: null };
     // имена страниц: «отчёт_01.jpg» — номер с ведущими нулями, чтобы файлы шли по порядку
@@ -627,12 +805,12 @@ export class ConverterWidget {
       { encoder, quality: settings.quality, lossless: isLossless(settings), dpi: settings.dpi! },
       lease.memoryLimit,
       (footprint, fresh) => {
-        if (generation !== this.generation) return;
+        if (this.stale(item, ticket)) return;
         lease.started(footprint, fresh);
         this.pump();
       },
       (rendered) => {
-        if (generation !== this.generation) return;
+        if (this.stale(item, ticket)) return;
         const digits = String(rendered.total).length;
         const name = this.names.allocate(`${base}_${String(rendered.page).padStart(digits, '0')}.${rendered.extension}`);
         const blob = new Blob([rendered.buffer], { type: rendered.mime });
@@ -657,7 +835,7 @@ export class ConverterWidget {
         this.updateActions();
       },
     );
-    if (generation !== this.generation) return false;
+    if (this.stale(item, ticket)) return false;
     if (outcome.status === 'needs-memory') {
       this.removePages(item);
       item.estimate = outcome.fresh;
@@ -686,18 +864,18 @@ export class ConverterWidget {
   }
 
   /** «Объединить PDF»: число страниц и превью первой — документ в списке узнаётся с первого взгляда. */
-  private async pdfInfo(item: Item, head: Uint8Array, lease: Lease, generation: number): Promise<boolean> {
+  private async pdfInfo(item: Item, head: Uint8Array, lease: Lease, ticket: Ticket): Promise<boolean> {
     if (sniff(head).kind !== 'pdf') {
       this.fail(item, 'not-pdf');
       return false;
     }
     this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
     const outcome = await lease.client.pdfInfo(item.file, lease.memoryLimit, (footprint, fresh) => {
-      if (generation !== this.generation) return;
+      if (this.stale(item, ticket)) return;
       lease.started(footprint, fresh);
       this.pump();
     });
-    if (generation !== this.generation) return false;
+    if (this.stale(item, ticket)) return false;
     if (outcome.status === 'needs-memory') {
       item.estimate = outcome.fresh;
       this.requeue(item);
@@ -757,7 +935,7 @@ export class ConverterWidget {
   }
 
   /** Пустая строка для файла: всё по нулям, статус «в очереди». */
-  private blankItem(file: File): Item {
+  private blankItem(file: File, row: HTMLLIElement = document.createElement('li')): Item {
     return {
       file,
       status: 'queued',
@@ -781,8 +959,92 @@ export class ConverterWidget {
       dimensions: null,
       estimate: null,
       retry: false,
-      row: document.createElement('li'),
+      source: null,
+      target: null,
+      job: 0,
+      lease: null,
+      key: null,
+      row,
     };
+  }
+
+  /** Убрать результат и ошибку (перед новым форматом или настройками); файл, его вид, формат и строка остаются. */
+  private resetResult(item: Item): void {
+    this.removePages(item);
+    this.revokeUrls(item);
+    if (item.name) this.names.release(item.name);
+    const { source, target, job, lease } = item;
+    Object.assign(item, this.blankItem(item.file, item.row), { source, target, job, lease });
+  }
+
+  /** Отменить работу над файлом: ответы текущего задания станут устаревшими, его worker перезапустится. */
+  private cancel(item: Item): void {
+    item.job++;
+    // так ядро и память освобождаются сразу (AVIF большого снимка кодируется десятки секунд)
+    if (item.status === 'converting') item.lease?.client.recycle();
+  }
+
+  /** Можно ли выбрать формат: файл прочитан, а ошибка (если была) — не про сам файл. */
+  private canChooseTarget(item: Item): boolean {
+    if (item.parent || !item.source || targetsFor(item.source).length === 0) return false;
+    return item.status !== 'error' || RETRYABLE_ERRORS.has(item.error!);
+  }
+
+  /**
+   * Новый формат у файла — сразу в очередь: идущая конвертация отменяется, готовый результат убирается.
+   * update = false — вызывающий сам обновит настройки и очередь (несколько файлов сразу).
+   */
+  private setTarget(item: Item, target: TargetId, update = true): void {
+    if (item.target === target && item.status !== 'waiting' && item.status !== 'error') return;
+    const counted = item.status === 'queued' || item.status === 'converting';
+    this.cancel(item);
+    this.resetResult(item);
+    item.target = target;
+    item.status = 'queued';
+    if (!counted) this.run.total++;
+    this.renderRow(item);
+    if (!update) return;
+    this.syncSettings();
+    this.pump();
+  }
+
+  /** «Все файлы в …»: формат — всем файлам, которым он подходит, и файлам, добавленным после (до «Очистить»). */
+  private applyAll(target: TargetId): void {
+    this.preset = target;
+    for (const item of this.items) {
+      if (this.canChooseTarget(item) && targetsFor(item.source!).includes(target)) this.setTarget(item, target, false);
+    }
+    this.syncSettings();
+    this.pump();
+  }
+
+  private openPicker(item: Item, anchor: HTMLButtonElement, focus: 'checked' | 'first' | 'last'): void {
+    this.picker!.open(item, { anchor, available: targetsFor(item.source!), checked: item.target, onSelect: (target) => this.setTarget(item, target) }, focus);
+  }
+
+  private openAllPicker(focus: 'checked' | 'first' | 'last'): void {
+    const choosable = this.items.filter((item) => this.canChooseTarget(item));
+    this.picker!.open(
+      this.allOwner,
+      { anchor: this.allButton!, available: sharedTargets(choosable.map((item) => item.source!)), checked: this.sharedTarget(choosable), onSelect: (target) => this.applyAll(target) },
+      focus,
+    );
+  }
+
+  /**
+   * Подпись «Все файлы в …»: общий формат файлов. После «Все файлы в X» файлы, которым X не подходит (PNG → PNG),
+   * остаются в своём формате — подпись всё равно X.
+   */
+  private sharedTarget(items: Item[]): TargetId | null {
+    const first = items[0]?.target ?? null;
+    if (first && items.every((item) => item.target === first)) return first;
+    const preset = this.preset;
+    if (!preset || !items.some((item) => item.target === preset)) return null;
+    return items.every((item) => item.target === preset || !targetsFor(item.source!).includes(preset)) ? preset : null;
+  }
+
+  private targetName(target: TargetId): string {
+    return this.config.targets.find((option) => option.id === target)?.label ?? target;
   }
 
   /** Переставить файл (страницу) на одну позицию; фокус остаётся на той же кнопке. */
@@ -798,11 +1060,14 @@ export class ConverterWidget {
     item.row.querySelector<HTMLButtonElement>(`[data-move="${step < 0 ? 'up' : 'down'}"]:not(:disabled)`)?.focus();
   }
 
-  /** Убрать файл из списка (кроме того, что сейчас обрабатывается). */
+  /** Убрать файл из списка; в универсальном виджете — и тот, что сейчас конвертируется (задание прерывается). */
   private remove(item: Item): void {
     const index = this.items.indexOf(item);
-    if (index < 0 || item.status === 'converting') return;
-    if (item.status === 'queued') this.run.total--;
+    if (index < 0 || (item.status === 'converting' && !this.config.universal)) return;
+    if (item.status === 'queued' || item.status === 'converting') this.run.total--;
+    this.cancel(item);
+    if (this.picker?.isOpenFor(item)) this.picker.close(false);
+    this.removePages(item);
     this.revokeUrls(item);
     if (item.name) this.names.release(item.name);
     this.items.splice(index, 1);
@@ -812,7 +1077,8 @@ export class ConverterWidget {
     // фокус — на соседнюю строку, иначе на зону загрузки
     const next = this.items[Math.min(index, this.items.length - 1)];
     (next?.row.querySelector<HTMLButtonElement>('[data-remove]') ?? this.dropzone).focus();
-    this.updateActions();
+    this.syncSettings();
+    this.pump(); // если убрали последний файл в очереди — подвести итог
   }
 
   private renderAll(): void {
@@ -877,13 +1143,24 @@ export class ConverterWidget {
   }
 
   private finishRun(): void {
-    const { total, done, failed } = this.run;
-    if (total === 0) return;
+    const { total, done, failed, formats } = this.run;
+    // универсальный виджет: файлы без формата не конвертируются — об этом и итог
+    const waiting = this.items.filter((item) => item.status === 'waiting').length;
+    const waitingText = waiting > 0 ? fill(this.t.waitingStatus, { count: waiting }) : '';
+    if (total === 0) {
+      if (waitingText) this.setStatus(waitingText);
+      return;
+    }
     let text = fill(this.t.summary, { done, total });
     if (failed > 0) text += ' ' + fill(this.t.summaryErrors, { failed });
+    if (waitingText) text += ' ' + waitingText;
     this.setStatus(text);
-    if (done > 0) track('conversion_complete', { tool: this.config.toolId, format: this.currentSettings().output.id, count: done });
-    this.run = { total: 0, done: 0, failed: 0 };
+    if (this.config.universal) {
+      for (const [format, count] of Object.entries(formats)) track('conversion_complete', { tool: this.config.toolId, format, count });
+    } else if (done > 0) {
+      track('conversion_complete', { tool: this.config.toolId, format: this.currentSettings().output?.id ?? '', count: done });
+    }
+    this.run = { total: 0, done: 0, failed: 0, formats: {} };
     this.updateActions();
   }
 
@@ -899,7 +1176,18 @@ export class ConverterWidget {
       .replace('-', '\u2212');
   }
 
+  /**
+   * Строка перерисовывается целиком; если фокус был на её кнопке (формат, «Скачать», «убрать»), он переходит на такую
+   * же кнопку новой строки — иначе клавиатура «теряется», когда файл, например, досконвертировался.
+   */
   private renderRow(item: Item): void {
+    const focused = document.activeElement;
+    const restore = focused instanceof HTMLElement && item.row.contains(focused) ? focusSelector(focused) : null;
+    this.buildRow(item);
+    if (restore) item.row.querySelector<HTMLElement>(restore)?.focus();
+  }
+
+  private buildRow(item: Item): void {
     const row = item.row;
     // страницы PDF — с отступом под строкой своего документа
     row.className = item.parent ? 'file file--page' : 'file';
@@ -923,6 +1211,10 @@ export class ConverterWidget {
       // изображение не декодируется (метаданные удаляются без WASM) — вместо превью формат файла
       thumb.classList.add('file__thumb--format');
       thumb.textContent = item.format;
+    } else if (this.config.universal && item.source && item.source !== 'unknown' && item.source !== 'pdf') {
+      // универсальный виджет: до результата — формат входа
+      thumb.classList.add('file__thumb--format');
+      thumb.textContent = KIND_FILES[item.source].label;
     }
 
     const body = document.createElement('div');
@@ -933,6 +1225,7 @@ export class ConverterWidget {
     name.textContent = item.status === 'done' && item.name ? item.name : item.file.name;
     const meta = document.createElement('p');
     meta.className = 'file__meta';
+    if (item.status === 'waiting') meta.textContent = this.t.waiting;
     if (item.status === 'queued') meta.textContent = this.t.queued;
     if (item.status === 'converting') {
       // «PDF в JPG»: какая страница рисуется
@@ -975,6 +1268,13 @@ export class ConverterWidget {
 
     const notes = item.status === 'error' && item.error ? [this.errorText(item.error)] : item.warnings.map((w) => this.t.warnings[w]);
     if (item.status === 'done' && item.removed) notes.unshift(this.removedText(item.removed));
+    // формат страницы ему не подходит, потому что файл уже в нём (на HEIC-страницах — пояснение про iPhone)
+    const own = item.source ? ownTarget(item.source) : null;
+    if (item.status === 'waiting' && own && own === this.preset) {
+      let text = fill(this.t.sameFormat, { target: this.targetName(own) });
+      if (own === 'jpeg' && this.config.iphoneHint) text += ` ${this.t.iphoneJpegHint}`;
+      notes.push(text);
+    }
     for (const text of notes) {
       const note = document.createElement('p');
       note.className = item.status === 'error' ? 'file__note file__note--error' : 'file__note';
@@ -984,7 +1284,20 @@ export class ConverterWidget {
     row.append(thumb, body);
     if (item.status === 'done' && item.report) row.append(this.reports.render(item.report, item.file.name, () => void this.downloadStripped(item)));
     if (this.config.mode === 'to-pdf' || this.config.mode === 'merge-pdf') row.append(this.orderControls(item));
+    if (this.config.universal && !item.parent) {
+      row.append(this.targetControls(item));
+      // меню открыто для этой строки, а её перерисовали — привязываем меню к новой кнопке (сразу: после выбора
+      // формата фокус вернётся уже на неё)
+      const button = row.querySelector<HTMLButtonElement>('[data-target-button]');
+      if (button && this.picker?.isOpenFor(item)) this.picker.reanchor(item, button);
+      return;
+    }
+    const download = this.downloadLink(item);
+    if (download) row.append(download);
+  }
 
+  /** Ссылка «Скачать» у готового файла; дата и время в имени — на момент нажатия. */
+  private downloadLink(item: Item): HTMLAnchorElement | null {
     if (item.status === 'done' && item.url && item.name) {
       const name = item.name;
       const link = document.createElement('a');
@@ -995,8 +1308,45 @@ export class ConverterWidget {
       link.addEventListener('click', () => (link.download = withTimestamp(name, new Date())));
       link.textContent = this.t.download;
       link.setAttribute('aria-label', fill(this.t.downloadLabel, { name: item.name }));
-      row.append(link);
+      return link;
     }
+    return null;
+  }
+
+  /** Универсальный виджет: «в [JPG ▾]» (меню форматов), «Скачать» и «убрать» у строки файла. */
+  private targetControls(item: Item): HTMLElement {
+    const group = document.createElement('div');
+    group.className = 'file__actions';
+    if (this.canChooseTarget(item)) {
+      const to = document.createElement('span');
+      to.className = 'file__to';
+      to.textContent = this.t.targetTo;
+      to.setAttribute('aria-hidden', 'true');
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'target-button';
+      button.dataset.targetButton = '';
+      const label = item.target ? this.targetName(item.target) : this.t.chooseTarget;
+      button.textContent = label;
+      // доступное имя начинается с видимого текста (WCAG 2.5.3)
+      button.setAttribute('aria-label', fill(this.t.targetLabel, { target: label, name: item.file.name }));
+      button.setAttribute('aria-haspopup', 'menu');
+      button.setAttribute('aria-controls', this.pickerId);
+      button.setAttribute('aria-expanded', 'false');
+      this.bindMenuButton(button, (focus) => this.openPicker(item, button, focus), item);
+      group.append(to, button);
+    }
+    const download = this.downloadLink(item);
+    if (download) group.append(download);
+    const remove = document.createElement('button');
+    remove.type = 'button';
+    remove.className = 'icon-button icon-button--remove';
+    remove.dataset.remove = '';
+    remove.setAttribute('aria-label', fill(this.t.removeFile, { name: item.file.name }));
+    remove.title = remove.getAttribute('aria-label')!;
+    remove.addEventListener('click', () => this.remove(item));
+    group.append(remove);
+    return group;
   }
 
   /** «Удалено: геолокация, камера и объектив, XMP.» или «Метаданных не найдено…». */
@@ -1040,21 +1390,34 @@ export class ConverterWidget {
     const pending = ordered && this.items.some((item) => item.status === 'queued' || item.status === 'converting');
     this.zipButton.disabled = this.zipping || done.length === 0 || pending;
     const current = this.currentSettings();
-    const outdated = this.items.some((item) => isOutdated(item, current));
+    const outdated = this.items.some((item) => this.outdated(item, current));
     this.reconvertButton.hidden = !outdated;
     this.settingsHint.hidden = !outdated;
     this.clearButton.disabled = this.items.length === 0;
+    if (this.allRow && this.allButton) {
+      // «Все файлы в …» — когда выбирать есть из чего: от двух файлов
+      const choosable = this.items.filter((item) => this.canChooseTarget(item));
+      this.allRow.hidden = choosable.length < 2;
+      const shared = this.sharedTarget(choosable);
+      const label = shared ? this.targetName(shared) : this.t.chooseTarget;
+      this.allButton.textContent = label;
+      this.allButton.setAttribute('aria-label', fill(this.t.allLabel, { target: label }));
+    }
+  }
+
+  /** Готовый файл сконвертирован с другими настройками (у универсального — только важными для его формата). */
+  private outdated(item: Item, current: Settings): boolean {
+    if (!this.config.universal) return isOutdated(item, current);
+    if (item.status !== 'done' || item.parent || !item.source || !item.target || item.key === null) return false;
+    return item.key !== settingsKey({ kind: item.source, target: item.target }, current);
   }
 
   private reconvert(): void {
     const current = this.currentSettings();
-    for (const item of this.items.filter((other) => isOutdated(other, current))) {
+    for (const item of this.items.filter((other) => this.outdated(other, current))) {
       // у PDF старые страницы уходят: появятся новые
-      this.removePages(item);
-      this.revokeUrls(item);
-      if (item.name) this.names.release(item.name);
-      const { row } = item;
-      Object.assign(item, this.blankItem(item.file), { row });
+      this.resetResult(item);
+      item.status = 'queued';
       this.run.total++;
       this.renderRow(item);
     }
@@ -1065,15 +1428,17 @@ export class ConverterWidget {
   private clear(): void {
     this.generation++;
     this.pool.recycleAll(); // прерываем текущие конвертации
+    this.picker?.close(false);
+    this.preset = this.config.preset;
     for (const item of this.items) this.revokeUrls(item);
     this.items = [];
     this.names.clear();
-    this.run = { total: 0, done: 0, failed: 0 };
+    this.run = { total: 0, done: 0, failed: 0, formats: {} };
     this.list.replaceChildren();
     this.results.hidden = true;
     this.setStatus('');
     this.hideNotice();
-    this.updateActions();
+    this.syncSettings();
     this.dropzone.focus();
   }
 
