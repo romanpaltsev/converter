@@ -29,3 +29,8 @@ export function supportsConverter(): boolean {
   cached ??= typeof WebAssembly === 'object' && typeof WebAssembly.instantiate === 'function' && typeof Worker === 'function' && supportsModuleWorkers();
   return cached;
 }
+
+/** «PDF в JPG» и «Объединить PDF»: pdf.js рисует страницы на OffscreenCanvas в worker'е (Safari 16.4+, Firefox 105+). */
+export function supportsPdfRendering(): boolean {
+  return supportsConverter() && typeof OffscreenCanvas === 'function';
+}

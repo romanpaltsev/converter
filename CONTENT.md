@@ -2385,9 +2385,9 @@
 Файл: `src/content/pages/ru/home.yaml`
 
 - **title:** Конвертер изображений онлайн — HEIC, AVIF, JPG, PNG и WebP в браузере _(69 симв.)_
-- **description:** Бесплатные онлайн-конвертеры изображений: HEIC, AVIF, JPG, PNG и WebP. Без регистрации и без загрузки на сервер — всё работает в вашем браузере. _(144 симв.)_
+- **description:** Бесплатные онлайн-инструменты для фото и PDF: конвертеры HEIC, AVIF, JPG, PNG и WebP, сжатие и удаление метаданных. Без регистрации и загрузки на сервер. _(153 симв.)_
 - **h1:** Конвертер изображений прямо в браузере
-- **intro:** Переводите фото и картинки между форматами HEIC, AVIF, JPG, PNG и WebP, сжимайте их до нужного размера и удаляйте метаданные. Всё происходит на вашем устройстве: файлы не загружаются на сервер, а дата съёмки сохраняется.
+- **intro:** Переводите фото между форматами HEIC, AVIF, JPG, PNG и WebP, сжимайте их до нужного размера, удаляйте метаданные, собирайте картинки в PDF и сохраняйте страницы PDF картинками. Всё происходит на вашем устройстве: файлы не загружаются на сервер.
 - **editToolsTitle:** Обработка фото
 - **pdfToolsTitle:** PDF
 - **toolsTitle:** Конвертеры
@@ -2401,9 +2401,9 @@
 Файл: `src/content/pages/en/home.yaml`
 
 - **title:** Free Online Image Converter — HEIC, AVIF, JPG, PNG and WebP _(59 симв.)_
-- **description:** Free online image converters for HEIC, AVIF, JPG, PNG and WebP. No sign-up and no uploads — everything runs in your browser. _(124 симв.)_
+- **description:** Free online photo and PDF tools: HEIC, AVIF, JPG, PNG and WebP converters, compression and EXIF removal. No sign-up and no uploads — it all runs in your browser. _(161 симв.)_
 - **h1:** Convert images right in your browser
-- **intro:** Convert photos and pictures between HEIC, AVIF, JPG, PNG and WebP, compress them to the size you need and strip their metadata. Everything happens on your device: files are never uploaded, and the date taken is kept.
+- **intro:** Convert photos between HEIC, AVIF, JPG, PNG and WebP, compress them to the size you need, strip their metadata, turn images into PDFs and PDF pages into images. Everything happens on your device: files are never uploaded.
 - **editToolsTitle:** Photo tools
 - **pdfToolsTitle:** PDF
 - **toolsTitle:** Converters

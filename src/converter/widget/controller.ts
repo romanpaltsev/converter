@@ -4,7 +4,8 @@
 import { track } from '../../lib/analytics';
 import type { MetadataReport } from '../metadata/inspect/types';
 import type { RemovedKind, StripMode } from '../metadata/strip/types';
-import { type PageSize, type PdfImage, type PdfLayout, SMALL_MARGIN } from '../pdf/writer';
+import { SMALL_MARGIN } from '../pdf/limits';
+import type { PageSize, PdfImage, PdfLayout } from '../pdf/writer';
 import { checkInput } from '../pipeline/input';
 import { type ImageKind, KIND_FILES, SNIFF_BYTES, sniff } from '../pipeline/sniff';
 import type { ResizeSpec } from '../pipeline/resize';
@@ -13,7 +14,7 @@ import { type OutputOption, type WidgetConfig, readConfig } from './config';
 import { NameAllocator, outputName, withTimestamp } from './filenames';
 import { ReportView } from './report-view';
 import { formatBytes } from './sizes';
-import { supportsConverter } from './support';
+import { supportsConverter, supportsPdfRendering } from './support';
 import { WorkerClient } from './worker-client';
 import { type Lease, WorkerPool, currentDevice, poolPolicy } from './worker-pool';
 
@@ -329,7 +330,8 @@ export class ConverterWidget {
 
   addFiles(files: File[]): void {
     if (files.length === 0) return;
-    if (!supportsConverter()) {
+    const rendersPdf = this.config.mode === 'from-pdf' || this.config.mode === 'merge-pdf';
+    if (!(rendersPdf ? supportsPdfRendering() : supportsConverter())) {
       this.showNotice(this.t.unsupportedBrowser, 'error');
       return;
     }

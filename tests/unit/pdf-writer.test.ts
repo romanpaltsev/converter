@@ -1,7 +1,8 @@
 import { deflateSync } from 'node:zlib';
 import { OPS, getDocument } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { describe, expect, test } from 'vitest';
-import { SMALL_MARGIN, buildPdf, orientationMatrix, placeImage, type PdfImage } from '../../src/converter/pdf/writer';
+import { SMALL_MARGIN } from '../../src/converter/pdf/limits';
+import { buildPdf, orientationMatrix, placeImage, type PdfImage } from '../../src/converter/pdf/writer';
 import { applyOrientation } from '../../src/converter/pipeline/orientation';
 import { fixture, iccFixture } from './helpers/fixtures';
 

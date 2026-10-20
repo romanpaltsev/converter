@@ -31,8 +31,6 @@ export interface PdfLayout {
 const PAGE_SIZES: Record<Exclude<PageSize, 'image'>, [number, number]> = { a4: [595.28, 841.89], letter: [612, 792] };
 /** «Как у изображения»: 96 точек на дюйм, как у браузеров, — 1 пиксель = 0,75 пункта. */
 const POINTS_PER_PIXEL = 0.75;
-/** Поля «узкие» — 10 мм. */
-export const SMALL_MARGIN = (10 / 25.4) * 72;
 
 export interface Placement {
   page: [width: number, height: number];
