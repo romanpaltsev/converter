@@ -3,12 +3,26 @@
 // До выбора первого файла WASM не загружается.
 import '../styles/converter.css';
 import { LOCALE_META, MAX_FILES_PER_BATCH, type Locale } from '../config/site';
-import { AUDIO_BITRATES, AUDIO_FORMATS, DEFAULT_AUDIO_BITRATE, isAudioTarget } from '../converter/media/formats';
+import {
+  AUDIO_BITRATES,
+  AUDIO_FORMATS,
+  DEFAULT_AUDIO_BITRATE,
+  DEFAULT_GIF_FPS,
+  DEFAULT_GIF_WIDTH,
+  DEFAULT_VIDEO_QUALITY,
+  GIF_FPS,
+  GIF_WIDTHS,
+  VIDEO_FORMATS,
+  VIDEO_HEIGHTS,
+  VIDEO_QUALITIES,
+  isAudioTarget,
+  isVideoTarget,
+} from '../converter/media/formats';
 import { STRIP_MODES } from '../converter/metadata/strip/types';
 import { PDF_PAGE_LIMIT } from '../converter/pdf/limits';
 import type { SniffKind } from '../converter/pipeline/sniff';
 import type { OutputOption, WidgetConfig } from '../converter/widget/config';
-import { ALL_TARGETS, AUDIO_TARGETS, DOCUMENT_TARGETS, IMAGE_TARGETS, type TargetId, visibleSettings } from '../converter/widget/targets';
+import { ALL_TARGETS, AUDIO_TARGETS, DOCUMENT_TARGETS, IMAGE_TARGETS, type TargetId, VIDEO_TARGETS, visibleSettings } from '../converter/widget/targets';
 import { pagePath, toolPageId } from '../i18n/routes';
 import { UI, format } from '../i18n/ui';
 import { DOCUMENT_FORMATS, INPUT_FORMATS, MEDIA_FORMATS, OUTPUT_FORMATS, SOURCE_FORMATS, type SourceFormatId, type ToolConfig, UNIVERSAL_MODES } from '../tools/registry';
@@ -39,11 +53,13 @@ const converts = spec.mode === 'convert';
 const universal = UNIVERSAL_MODES.includes(spec.mode);
 const preset = universal && spec.defaultOutput !== 'original' ? (spec.defaultOutput as TargetId) : null;
 const presetKind = preset ? (spec.inputFormats[0] as SniffKind) : null;
-const targetLabel = (target: TargetId) => (target === 'pdf' ? DOCUMENT_FORMATS.pdf.label : isAudioTarget(target) ? AUDIO_FORMATS[target].label : OUTPUT_FORMATS[target].label);
+const targetLabel = (target: TargetId) =>
+  target === 'pdf' ? DOCUMENT_FORMATS.pdf.label : isAudioTarget(target) ? AUDIO_FORMATS[target].label : isVideoTarget(target) ? VIDEO_FORMATS[target].label : OUTPUT_FORMATS[target].label;
 const targets = ALL_TARGETS.map((target) => ({ id: target, label: targetLabel(target) }));
 const TARGET_GROUPS = [
   { name: 'image', targets: IMAGE_TARGETS },
   { name: 'document', targets: DOCUMENT_TARGETS },
+  { name: 'video', targets: VIDEO_TARGETS },
   { name: 'audio', targets: AUDIO_TARGETS },
 ] as const;
 // какие настройки видны до выбора файлов — нужные формату страницы
@@ -234,6 +250,64 @@ const DEFAULT_LONG_SIDE = 1920;
                   </div>
                 </fieldset>
                 <p class="settings__hint settings__hint--aligned">{t.audioHint}</p>
+              </div>
+            )
+          }
+          {
+            universal && (
+              <div class="settings__group" data-video-row hidden={!shown.video}>
+                <fieldset class="settings__format">
+                  <legend class="settings__label">{t.videoQuality}</legend>
+                  <div class="segmented">
+                    {VIDEO_QUALITIES.map((quality) => (
+                      <label class="segmented__option">
+                        <input type="radio" name="videoQuality" value={quality} checked={quality === DEFAULT_VIDEO_QUALITY} />
+                        <span>{t.videoQualities[quality]}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+                <fieldset class="settings__format">
+                  <legend class="settings__label">{t.videoHeight}</legend>
+                  <div class="segmented">
+                    {VIDEO_HEIGHTS.map((height) => (
+                      <label class="segmented__option">
+                        <input type="radio" name="videoHeight" value={height} checked={height === 0} />
+                        <span>{height === 0 ? t.videoOriginal : `${height}p`}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+                <p class="settings__hint settings__hint--aligned">{t.videoHint}</p>
+              </div>
+            )
+          }
+          {
+            universal && (
+              <div class="settings__group" data-gif-row hidden={!shown.gif}>
+                <fieldset class="settings__format">
+                  <legend class="settings__label">{t.gifWidth}</legend>
+                  <div class="segmented">
+                    {GIF_WIDTHS.map((width) => (
+                      <label class="segmented__option">
+                        <input type="radio" name="gifWidth" value={width} checked={width === DEFAULT_GIF_WIDTH} />
+                        <span>{width}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+                <fieldset class="settings__format">
+                  <legend class="settings__label">{t.gifFps}</legend>
+                  <div class="segmented">
+                    {GIF_FPS.map((fps) => (
+                      <label class="segmented__option">
+                        <input type="radio" name="gifFps" value={fps} checked={fps === DEFAULT_GIF_FPS} />
+                        <span>{fps}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+                <p class="settings__hint settings__hint--aligned">{t.gifHint}</p>
               </div>
             )
           }

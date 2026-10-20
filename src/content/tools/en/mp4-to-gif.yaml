@@ -1,0 +1,44 @@
+# Texts for /en/mp4-to-gif. Draft for the owner's review (see CONTENT.md).
+title: "MP4 to GIF Converter — Turn Video into a GIF, Free"
+description: "Make a GIF from an MP4 video right in your browser, with the width and frame rate you choose. Free, no sign-up, and your video never leaves your device."
+h1: "MP4 to GIF Converter"
+subtitle: "Video into a GIF animation. Free, no sign-up, your files never leave your device."
+breadcrumb: "MP4 to GIF"
+card:
+  title: "MP4 → GIF"
+  text: "A short video, as a GIF for chats and websites."
+app:
+  name: "MP4 to GIF Converter"
+  description: "An online MP4 to GIF converter that runs in your browser without uploading your videos."
+howTo:
+  title: "How to convert MP4 to GIF"
+  steps:
+    - "Click the box above or drag your MP4 files onto it — you can add many at once."
+    - "Wait while your browser processes the video — nothing gets uploaded. Progress is shown as a percentage."
+    - "Download each GIF separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your video stays with you"
+      text: "Conversion runs on your device. Your video is never uploaded, so nobody but you can see it."
+    - title: "Size that fits"
+      text: "Width of 320, 480 or 640 pixels and 10, 15 or 20 frames per second — the smaller, the lighter the file."
+    - title: "A palette for every frame"
+      text: "Each frame gets its own 256 colors, so colors come out more accurately."
+    - title: "Many files at once"
+      text: "Add several videos at a time and download them one by one or as a single ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "How much of the video goes into the GIF?"
+      a: "The first 20 seconds. GIF doesn't compress frames the way video does, and a minute of animation would weigh tens of megabytes. If the video is longer, the file's row shows a warning."
+    - q: "Will there be sound?"
+      a: "No — GIF is animation without sound."
+    - q: "How do I make a smaller GIF?"
+      a: "Choose a width of 320 pixels and 10 frames per second. GIF size grows with the frame area and the number of frames."
+    - q: "Which videos work?"
+      a: "MP4, MOV, WebM and MKV, as long as your browser can decode their video. The most common codecs (H.264, VP9) work in every modern browser."
+    - q: "Does the GIF loop?"
+      a: "Yes, it loops forever, as people expect in chats and on social media."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your video is processed in your browser and never sent to a server."

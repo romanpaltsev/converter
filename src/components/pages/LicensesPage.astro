@@ -33,6 +33,7 @@ import mpl from '../../content/licenses/MPL-2.0.txt?raw';
 import lgpl20 from '../../content/licenses/LGPL-2.0.txt?raw';
 import lgpl21 from '../../content/licenses/LGPL-2.1.txt?raw';
 import libflacBsd from '../../content/licenses/libFLAC-BSD.txt?raw';
+import gifencMit from '../../content/licenses/gifenc-MIT.txt?raw';
 
 interface Props {
   locale: Locale;
@@ -69,6 +70,7 @@ const TEXTS: Record<LicenseTextId, string> = {
   'lgpl-2.0': lgpl20,
   'lgpl-2.1': lgpl21,
   'libflac-bsd': libflacBsd,
+  'gifenc-mit': gifencMit,
 };
 const ORDER: LicenseTextId[] = [
   'lgpl-3.0',
@@ -96,6 +98,7 @@ const ORDER: LicenseTextId[] = [
   'lgpl-2.0',
   'lgpl-2.1',
   'libflac-bsd',
+  'gifenc-mit',
   'inter-ofl',
 ];
 const site = import.meta.env.SITE;

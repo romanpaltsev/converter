@@ -1,7 +1,7 @@
 // Module Web Worker конвертера: один файл за раз (параллельно работают несколько таких worker'ов — см. widget/worker-pool.ts),
 // WASM-модули грузятся по первому запросу.
 
-import { AUDIO_FORMATS } from '../media/formats';
+import { AUDIO_FORMATS, VIDEO_FORMATS, isAudioTarget } from '../media/formats';
 import { convertImage } from '../pipeline/convert';
 import { loadDecoder } from '../pipeline/decoders';
 import { loadEncoder } from '../pipeline/encoders';
@@ -340,7 +340,7 @@ async function handlePdfMerge(message: Extract<ToWorker, { type: 'pdf-merge' }>)
   }
 }
 
-/** Аудио: mediabunny грузится только для аудио и видео; память — по длительности и формату результата. */
+/** Аудио и видео: mediabunny грузится только для них; память — по длительности и формату результата. */
 async function handleMedia(message: Extract<ToWorker, { type: 'media' }>): Promise<void> {
   const { id, options } = message;
   try {
@@ -354,16 +354,16 @@ async function handleMedia(message: Extract<ToWorker, { type: 'media' }>): Promi
     post({ type: 'started', id, footprint: probe.footprint, fresh: probe.footprint });
     // ход — не чаще, чем на каждый процент: длинный файл даёт тысячи вызовов
     let reported = -1;
-    const result = await media.convertAudio(probe, options, (progress) => {
+    const result = await media.convertMedia(probe, options, (progress) => {
       const percent = Math.floor(progress * 100);
       if (percent <= reported) return;
       reported = percent;
       post({ type: 'media-progress', id, progress });
     });
-    const format = AUDIO_FORMATS[options.target];
+    const format = isAudioTarget(options.target) ? AUDIO_FORMATS[options.target] : VIDEO_FORMATS[options.target];
     const out = result.bytes;
     const buffer = out.byteOffset === 0 && out.byteLength === out.buffer.byteLength ? (out.buffer as ArrayBuffer) : (out.slice().buffer as ArrayBuffer);
-    post({ type: 'media-done', id, buffer, mime: format.mime, extension: format.extension, duration: result.duration, copied: result.copied }, [buffer]);
+    post({ type: 'media-done', id, buffer, mime: format.mime, extension: format.extension, duration: result.duration, copied: result.copied, warnings: result.warnings }, [buffer]);
   } catch (error) {
     postError(id, error);
   }

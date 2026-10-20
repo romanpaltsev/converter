@@ -2948,6 +2948,364 @@
 - **How many files can I convert at once?** Up to 100 files per batch. Download them one by one or all together in a single ZIP file.
 - **Is it safe?** Yes. Only the converter itself is loaded from the site; your recordings are processed in your browser and never sent to a server.
 
+### mov-to-mp4
+
+#### Русский — `/mov-v-mp4`
+
+Файл: `src/content/tools/ru/mov-to-mp4.yaml`
+
+- **title:** MOV в MP4 онлайн — видео с iPhone в MP4 бесплатно _(49 симв.)_
+- **description:** Конвертируйте видео MOV с iPhone и камер в MP4 прямо в браузере: бесплатно, без регистрации, видео не загружается на сервер. _(124 симв.)_
+- **H1:** Конвертер MOV в MP4
+- **Подзаголовок:** Видео с iPhone — в MP4, который открывается везде. Бесплатно, без загрузки на сервер.
+- **Хлебные крошки:** MOV в MP4
+- **Карточка:** MOV → MP4 — Видео с iPhone и камер — в MP4 для любых устройств.
+- **JSON-LD:** Конвертер MOV в MP4 — Онлайн-конвертер видео MOV в MP4, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать MOV в MP4**
+
+1. Нажмите на область выше или перетащите на неё MOV-файлы — можно сразу несколько.
+2. Подождите: видео обрабатывается прямо в браузере и никуда не отправляется. Ход виден в процентах.
+3. Скачайте MP4 по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Видео остаётся у вас.** Конвертация выполняется на вашем устройстве. Видео не загружается на сервер, поэтому его не видит никто, кроме вас.
+- **Без перекодирования, когда можно.** Если в MOV видео H.264 и звук AAC, файл перепаковывается в MP4 за секунды и без потерь качества.
+- **H.264 — для совместимости.** Видео HEVC с iPhone перекодируется в H.264: такой MP4 открывают Windows, Android, телевизоры и любые сайты.
+- **Сразу много файлов.** Добавьте несколько видео за раз и скачайте результат по одному или одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Чем MOV отличается от MP4?** Оба формата — контейнеры, внутри которых обычно одно и то же: видео H.264 или HEVC и звук AAC. MOV — формат Apple, MP4 — общий стандарт, который понимают практически все устройства, программы и сайты.
+- **Что будет с видео с iPhone?** iPhone по умолчанию снимает в HEVC (H.265). Чтобы MP4 открывался везде, такое видео перекодируется в H.264. Если в MOV уже H.264 — он просто перепаковывается, без потерь и быстро.
+- **Почему конвертация идёт долго?** Перекодирование видео — тяжёлая работа, и она идёт прямо на вашем устройстве. Минута видео обрабатывается от десятков секунд до нескольких минут — в зависимости от разрешения и компьютера. Ход виден в процентах.
+- **Как уменьшить размер файла?** Выберите качество «Среднее» или «Низкое» и размер кадра поменьше — 720p или 480p. 720p означает, что короткая сторона кадра — 720 точек: у вертикального видео это ширина.
+- **Сохранится ли звук?** Да. Звук AAC переносится как есть, другой звук перекодируется в AAC. Если браузер не умеет звук файла, видео сохранится без звука, а в строке файла появится предупреждение.
+- **В каком браузере работает?** В свежих Chrome, Edge, Firefox и Safari: видео кодируется встроенными в браузер кодеками (WebCodecs). Если браузер не умеет нужный кодек, в строке файла появится сообщение об этом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а видео обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/mov-to-mp4`
+
+Файл: `src/content/tools/en/mov-to-mp4.yaml`
+
+- **title:** MOV to MP4 Converter — iPhone Videos to MP4, Free _(49 симв.)_
+- **description:** Convert MOV videos from your iPhone or camera to MP4 right in your browser. Free, no sign-up, and your videos never leave your device. _(134 симв.)_
+- **H1:** MOV to MP4 Converter
+- **Подзаголовок:** iPhone videos as MP4 that plays everywhere. Free, no uploads.
+- **Хлебные крошки:** MOV to MP4
+- **Карточка:** MOV → MP4 — iPhone and camera videos, as MP4 for any device.
+- **JSON-LD:** MOV to MP4 Converter — An online MOV to MP4 converter that runs in your browser without uploading your videos.
+
+**How to convert MOV to MP4**
+
+1. Click the box above or drag your MOV files onto it — you can add many at once.
+2. Wait while your browser processes the video — nothing gets uploaded. Progress is shown as a percentage.
+3. Download each MP4 separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your video stays with you.** Conversion runs on your device. Your video is never uploaded, so nobody but you can see it.
+- **No re-encoding when possible.** If the MOV holds H.264 video and AAC audio, it's repackaged into MP4 in seconds with no quality loss.
+- **H.264 for compatibility.** HEVC video from an iPhone is re-encoded to H.264, so the MP4 opens on Windows, Android, TVs and any website.
+- **Many files at once.** Add several videos at a time and download them one by one or as a single ZIP.
+
+**Frequently asked questions**
+
+- **What's the difference between MOV and MP4?** Both are containers that usually hold the same things: H.264 or HEVC video and AAC audio. MOV is Apple's format; MP4 is the common standard that virtually every device, app and website understands.
+- **What happens to iPhone videos?** iPhones record in HEVC (H.265) by default. To make the MP4 open everywhere, such video is re-encoded to H.264. If the MOV already contains H.264, it's simply repackaged — fast and lossless.
+- **Why does it take a while?** Re-encoding video is heavy work, and it happens right on your device. A minute of video takes from tens of seconds to a few minutes, depending on resolution and your computer. Progress is shown as a percentage.
+- **How do I make the file smaller?** Choose “Medium” or “Low” quality and a smaller frame size — 720p or 480p. 720p means the short side of the frame is 720 pixels: for a vertical video that's the width.
+- **Is the sound kept?** Yes. AAC audio is copied as is; other audio is re-encoded to AAC. If your browser can't handle the file's audio, the video is saved without sound and the row shows a warning.
+- **Which browsers does it work in?** Up-to-date Chrome, Edge, Firefox and Safari: video is encoded with the browser's built-in codecs (WebCodecs). If your browser lacks a codec, the file's row will tell you.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your video is processed in your browser and never sent to a server.
+
+### webm-to-mp4
+
+#### Русский — `/webm-v-mp4`
+
+Файл: `src/content/tools/ru/webm-to-mp4.yaml`
+
+- **title:** WebM в MP4 онлайн — бесплатно, без загрузки на сервер _(53 симв.)_
+- **description:** Конвертируйте видео WebM в MP4 прямо в браузере: бесплатно, без регистрации, видео не загружается на сервер. MP4 откроется на любом устройстве. _(143 симв.)_
+- **H1:** Конвертер WebM в MP4
+- **Подзаголовок:** Бесплатно и без регистрации. Видео не покидает ваше устройство.
+- **Хлебные крошки:** WebM в MP4
+- **Карточка:** WebM → MP4 — Видео с сайтов и записи экрана — в MP4 для любых устройств.
+- **JSON-LD:** Конвертер WebM в MP4 — Онлайн-конвертер видео WebM в MP4, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать WebM в MP4**
+
+1. Нажмите на область выше или перетащите на неё WebM-файлы — можно сразу несколько.
+2. Подождите: видео обрабатывается прямо в браузере и никуда не отправляется. Ход виден в процентах.
+3. Скачайте MP4 по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Видео остаётся у вас.** Конвертация выполняется на вашем устройстве. Видео не загружается на сервер, поэтому его не видит никто, кроме вас.
+- **H.264 и AAC.** Видео VP9 или VP8 перекодируется в H.264, звук Opus — в AAC: такой MP4 открывают iPhone, Windows, телевизоры и редакторы.
+- **Качество и размер на выбор.** Выберите качество и размер кадра — от исходного до 480p, чтобы уменьшить файл.
+- **Сразу много файлов.** Добавьте несколько видео за раз и скачайте результат по одному или одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое WebM?** WebM — открытый формат видео от Google: внутри обычно видео VP9 или VP8 и звук Opus. Его используют YouTube, браузерные записи экрана и многие сайты. Но iPhone, старые телевизоры и некоторые редакторы его не открывают — MP4 понимают везде.
+- **Что будет с видео и звуком?** Видео перекодируется в H.264, звук — в AAC. Это стандартная пара для MP4, которую поддерживают практически все устройства.
+- **Почему конвертация идёт долго?** Перекодирование видео — тяжёлая работа, и она идёт прямо на вашем устройстве. Минута видео обрабатывается от десятков секунд до нескольких минут — в зависимости от разрешения и компьютера. Ход виден в процентах.
+- **Как уменьшить размер файла?** Выберите качество «Среднее» или «Низкое» и размер кадра поменьше — 720p или 480p. 720p означает, что короткая сторона кадра — 720 точек: у вертикального видео это ширина.
+- **Подойдут ли записи экрана?** Да. Записи экрана из браузера и некоторых программ сохраняются в WebM — конвертер переводит их в MP4, который можно отправить куда угодно.
+- **В каком браузере работает?** В свежих Chrome, Edge, Firefox и Safari: видео кодируется встроенными в браузер кодеками (WebCodecs). Если браузер не умеет нужный кодек, в строке файла появится сообщение об этом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а видео обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/webm-to-mp4`
+
+Файл: `src/content/tools/en/webm-to-mp4.yaml`
+
+- **title:** WebM to MP4 Converter — Free, Private, No Upload _(48 симв.)_
+- **description:** Convert WebM videos to MP4 right in your browser. Free, no sign-up, and your videos never leave your device. The MP4 plays on any device. _(137 симв.)_
+- **H1:** WebM to MP4 Converter
+- **Подзаголовок:** Free, no sign-up. Your video never leaves your device.
+- **Хлебные крошки:** WebM to MP4
+- **Карточка:** WebM → MP4 — Web videos and screen recordings, as MP4 for any device.
+- **JSON-LD:** WebM to MP4 Converter — An online WebM to MP4 converter that runs in your browser without uploading your videos.
+
+**How to convert WebM to MP4**
+
+1. Click the box above or drag your WebM files onto it — you can add many at once.
+2. Wait while your browser processes the video — nothing gets uploaded. Progress is shown as a percentage.
+3. Download each MP4 separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your video stays with you.** Conversion runs on your device. Your video is never uploaded, so nobody but you can see it.
+- **H.264 and AAC.** VP9 or VP8 video is re-encoded to H.264 and Opus audio to AAC, so iPhones, Windows, TVs and editors can open the MP4.
+- **Pick quality and size.** Choose the quality and frame size — from original down to 480p — to make the file smaller.
+- **Many files at once.** Add several videos at a time and download them one by one or as a single ZIP.
+
+**Frequently asked questions**
+
+- **What is WebM?** WebM is Google's open video format, usually VP9 or VP8 video with Opus audio. YouTube, browser screen recorders and many websites use it. iPhones, older TVs and some editors can't open it, while MP4 works everywhere.
+- **What happens to the video and audio?** The video is re-encoded to H.264 and the audio to AAC — the standard MP4 pairing that virtually every device supports.
+- **Why does it take a while?** Re-encoding video is heavy work, and it happens right on your device. A minute of video takes from tens of seconds to a few minutes, depending on resolution and your computer. Progress is shown as a percentage.
+- **How do I make the file smaller?** Choose “Medium” or “Low” quality and a smaller frame size — 720p or 480p. 720p means the short side of the frame is 720 pixels: for a vertical video that's the width.
+- **Do screen recordings work?** Yes. Screen recordings made in the browser and by some apps are saved as WebM — the converter turns them into MP4 you can share anywhere.
+- **Which browsers does it work in?** Up-to-date Chrome, Edge, Firefox and Safari: video is encoded with the browser's built-in codecs (WebCodecs). If your browser lacks a codec, the file's row will tell you.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your video is processed in your browser and never sent to a server.
+
+### mkv-to-mp4
+
+#### Русский — `/mkv-v-mp4`
+
+Файл: `src/content/tools/ru/mkv-to-mp4.yaml`
+
+- **title:** MKV в MP4 онлайн — бесплатно, без загрузки на сервер _(52 симв.)_
+- **description:** Конвертируйте видео MKV в MP4 прямо в браузере: бесплатно, без регистрации, видео не загружается на сервер. H.264 перепаковывается без потерь. _(142 симв.)_
+- **H1:** Конвертер MKV в MP4
+- **Подзаголовок:** Бесплатно и без регистрации. Видео не покидает ваше устройство.
+- **Хлебные крошки:** MKV в MP4
+- **Карточка:** MKV → MP4 — Видео MKV — в MP4 для телефона, телевизора и редакторов.
+- **JSON-LD:** Конвертер MKV в MP4 — Онлайн-конвертер видео MKV в MP4, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать MKV в MP4**
+
+1. Нажмите на область выше или перетащите на неё MKV-файлы — можно сразу несколько.
+2. Подождите: видео обрабатывается прямо в браузере и никуда не отправляется. Ход виден в процентах.
+3. Скачайте MP4 по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Видео остаётся у вас.** Конвертация выполняется на вашем устройстве. Видео не загружается на сервер, поэтому его не видит никто, кроме вас.
+- **Без перекодирования, когда можно.** Если в MKV видео H.264 и звук AAC или MP3, файл перепаковывается в MP4 за секунды и без потерь качества.
+- **Остальное — в H.264.** Видео в других кодеках перекодируется в H.264, звук — в AAC: такой MP4 открывается везде.
+- **Сразу много файлов.** Добавьте несколько видео за раз и скачайте результат по одному или одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Чем MKV отличается от MP4?** MKV (Matroska) — контейнер, который вмещает несколько дорожек звука и субтитров. MP4 проще, зато его понимают практически все телефоны, телевизоры, редакторы и сайты.
+- **Что будет с дорожками и субтитрами?** В MP4 переносятся основная видеодорожка и основная звуковая. Остальные звуковые дорожки и субтитры не переносятся.
+- **Почему в MP4 нет звука?** В фильмах MKV звук часто в AC-3, E-AC-3 или DTS — браузеры такие кодеки не декодируют. Тогда видео сохраняется без звука, а в строке файла появляется предупреждение.
+- **Почему конвертация идёт долго?** Перекодирование видео — тяжёлая работа, и она идёт прямо на вашем устройстве. Минута видео обрабатывается от десятков секунд до нескольких минут — в зависимости от разрешения и компьютера. Ход виден в процентах.
+- **Как уменьшить размер файла?** Выберите качество «Среднее» или «Низкое» и размер кадра поменьше — 720p или 480p. 720p означает, что короткая сторона кадра — 720 точек: у вертикального видео это ширина.
+- **В каком браузере работает?** В свежих Chrome, Edge, Firefox и Safari: видео кодируется встроенными в браузер кодеками (WebCodecs). Если браузер не умеет нужный кодек, в строке файла появится сообщение об этом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а видео обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/mkv-to-mp4`
+
+Файл: `src/content/tools/en/mkv-to-mp4.yaml`
+
+- **title:** MKV to MP4 Converter — Free, Private, No Upload _(47 симв.)_
+- **description:** Convert MKV videos to MP4 right in your browser. Free, no sign-up, and your videos never leave your device. H.264 is repackaged losslessly. _(139 симв.)_
+- **H1:** MKV to MP4 Converter
+- **Подзаголовок:** Free, no sign-up. Your video never leaves your device.
+- **Хлебные крошки:** MKV to MP4
+- **Карточка:** MKV → MP4 — MKV video, as MP4 for phones, TVs and editors.
+- **JSON-LD:** MKV to MP4 Converter — An online MKV to MP4 converter that runs in your browser without uploading your videos.
+
+**How to convert MKV to MP4**
+
+1. Click the box above or drag your MKV files onto it — you can add many at once.
+2. Wait while your browser processes the video — nothing gets uploaded. Progress is shown as a percentage.
+3. Download each MP4 separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your video stays with you.** Conversion runs on your device. Your video is never uploaded, so nobody but you can see it.
+- **No re-encoding when possible.** If the MKV holds H.264 video and AAC or MP3 audio, it's repackaged into MP4 in seconds with no quality loss.
+- **Everything else to H.264.** Video in other codecs is re-encoded to H.264 and audio to AAC, so the MP4 opens everywhere.
+- **Many files at once.** Add several videos at a time and download them one by one or as a single ZIP.
+
+**Frequently asked questions**
+
+- **What's the difference between MKV and MP4?** MKV (Matroska) is a container that can hold several audio and subtitle tracks. MP4 is simpler, but virtually every phone, TV, editor and website understands it.
+- **What happens to tracks and subtitles?** The main video track and the main audio track go into the MP4. Other audio tracks and subtitles are not carried over.
+- **Why does the MP4 have no sound?** Movies in MKV often have AC-3, E-AC-3 or DTS audio, which browsers can't decode. In that case the video is saved without sound and the file's row shows a warning.
+- **Why does it take a while?** Re-encoding video is heavy work, and it happens right on your device. A minute of video takes from tens of seconds to a few minutes, depending on resolution and your computer. Progress is shown as a percentage.
+- **How do I make the file smaller?** Choose “Medium” or “Low” quality and a smaller frame size — 720p or 480p. 720p means the short side of the frame is 720 pixels: for a vertical video that's the width.
+- **Which browsers does it work in?** Up-to-date Chrome, Edge, Firefox and Safari: video is encoded with the browser's built-in codecs (WebCodecs). If your browser lacks a codec, the file's row will tell you.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your video is processed in your browser and never sent to a server.
+
+### mp4-to-webm
+
+#### Русский — `/mp4-v-webm`
+
+Файл: `src/content/tools/ru/mp4-to-webm.yaml`
+
+- **title:** MP4 в WebM онлайн — бесплатно, без загрузки на сервер _(53 симв.)_
+- **description:** Конвертируйте видео MP4 в WebM (VP9 и Opus) прямо в браузере: для сайтов и веб-приложений. Бесплатно, без регистрации и загрузки на сервер. _(139 симв.)_
+- **H1:** Конвертер MP4 в WebM
+- **Подзаголовок:** Бесплатно и без регистрации. Видео не покидает ваше устройство.
+- **Хлебные крошки:** MP4 в WebM
+- **Карточка:** MP4 → WebM — Видео для сайтов — в открытом формате WebM.
+- **JSON-LD:** Конвертер MP4 в WebM — Онлайн-конвертер видео MP4 в WebM, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать MP4 в WebM**
+
+1. Нажмите на область выше или перетащите на неё MP4-файлы — можно сразу несколько.
+2. Подождите: видео обрабатывается прямо в браузере и никуда не отправляется. Ход виден в процентах.
+3. Скачайте WebM по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Видео остаётся у вас.** Конвертация выполняется на вашем устройстве. Видео не загружается на сервер, поэтому его не видит никто, кроме вас.
+- **VP9 и Opus.** Видео кодируется в VP9, звук — в Opus: открытые кодеки без лицензионных отчислений, которые поддерживают все современные браузеры.
+- **Качество и размер на выбор.** Выберите качество и размер кадра — от исходного до 480p, чтобы видео быстрее грузилось на сайте.
+- **Сразу много файлов.** Добавьте несколько видео за раз и скачайте результат по одному или одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Зачем переводить MP4 в WebM?** WebM — открытый формат видео для интернета. Его используют на сайтах как альтернативу MP4: VP9 при том же качестве обычно даёт файл меньше, чем H.264.
+- **Какие кодеки внутри?** Видео — VP9 (если браузер его не кодирует — VP8 или AV1), звук — Opus.
+- **Откроется ли WebM на iPhone?** Новые версии Safari и iOS воспроизводят WebM, но старые устройства и некоторые программы — нет. Если нужна максимальная совместимость, оставьте MP4.
+- **Почему конвертация идёт долго?** Перекодирование видео — тяжёлая работа, и она идёт прямо на вашем устройстве. Минута видео обрабатывается от десятков секунд до нескольких минут — в зависимости от разрешения и компьютера. Ход виден в процентах.
+- **Как уменьшить размер файла?** Выберите качество «Среднее» или «Низкое» и размер кадра поменьше — 720p или 480p. 720p означает, что короткая сторона кадра — 720 точек: у вертикального видео это ширина.
+- **В каком браузере работает?** В свежих Chrome, Edge, Firefox и Safari: видео кодируется встроенными в браузер кодеками (WebCodecs). Если браузер не умеет нужный кодек, в строке файла появится сообщение об этом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а видео обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/mp4-to-webm`
+
+Файл: `src/content/tools/en/mp4-to-webm.yaml`
+
+- **title:** MP4 to WebM Converter — Free, Private, No Upload _(48 симв.)_
+- **description:** Convert MP4 videos to WebM (VP9 and Opus) right in your browser for websites and web apps. Free, no sign-up, no uploads. _(120 симв.)_
+- **H1:** MP4 to WebM Converter
+- **Подзаголовок:** Free, no sign-up. Your video never leaves your device.
+- **Хлебные крошки:** MP4 to WebM
+- **Карточка:** MP4 → WebM — Videos for the web, in the open WebM format.
+- **JSON-LD:** MP4 to WebM Converter — An online MP4 to WebM converter that runs in your browser without uploading your videos.
+
+**How to convert MP4 to WebM**
+
+1. Click the box above or drag your MP4 files onto it — you can add many at once.
+2. Wait while your browser processes the video — nothing gets uploaded. Progress is shown as a percentage.
+3. Download each WebM separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your video stays with you.** Conversion runs on your device. Your video is never uploaded, so nobody but you can see it.
+- **VP9 and Opus.** Video is encoded to VP9 and audio to Opus — royalty-free codecs every modern browser supports.
+- **Pick quality and size.** Choose the quality and frame size — from original down to 480p — so the video loads faster on your site.
+- **Many files at once.** Add several videos at a time and download them one by one or as a single ZIP.
+
+**Frequently asked questions**
+
+- **Why convert MP4 to WebM?** WebM is an open video format for the web. Websites use it as an alternative to MP4: at the same quality, VP9 usually gives a smaller file than H.264.
+- **Which codecs are used?** VP9 for video (VP8 or AV1 if your browser can't encode VP9) and Opus for audio.
+- **Will WebM play on an iPhone?** Recent Safari and iOS versions play WebM, but older devices and some apps don't. If you need maximum compatibility, stick with MP4.
+- **Why does it take a while?** Re-encoding video is heavy work, and it happens right on your device. A minute of video takes from tens of seconds to a few minutes, depending on resolution and your computer. Progress is shown as a percentage.
+- **How do I make the file smaller?** Choose “Medium” or “Low” quality and a smaller frame size — 720p or 480p. 720p means the short side of the frame is 720 pixels: for a vertical video that's the width.
+- **Which browsers does it work in?** Up-to-date Chrome, Edge, Firefox and Safari: video is encoded with the browser's built-in codecs (WebCodecs). If your browser lacks a codec, the file's row will tell you.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your video is processed in your browser and never sent to a server.
+
+### mp4-to-gif
+
+#### Русский — `/mp4-v-gif`
+
+Файл: `src/content/tools/ru/mp4-to-gif.yaml`
+
+- **title:** MP4 в GIF онлайн — видео в гифку бесплатно _(42 симв.)_
+- **description:** Сделайте GIF из видео MP4 прямо в браузере: ширина и частота кадров на выбор. Бесплатно, без регистрации, видео не загружается на сервер. _(137 симв.)_
+- **H1:** Конвертер MP4 в GIF
+- **Подзаголовок:** Видео — в GIF-анимацию. Бесплатно, без регистрации, файлы не покидают ваше устройство.
+- **Хлебные крошки:** MP4 в GIF
+- **Карточка:** MP4 → GIF — Короткое видео — в GIF-анимацию для чатов и сайтов.
+- **JSON-LD:** Конвертер MP4 в GIF — Онлайн-конвертер видео MP4 в GIF, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать MP4 в GIF**
+
+1. Нажмите на область выше или перетащите на неё MP4-файлы — можно сразу несколько.
+2. Подождите: видео обрабатывается прямо в браузере и никуда не отправляется. Ход виден в процентах.
+3. Скачайте GIF по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Видео остаётся у вас.** Конвертация выполняется на вашем устройстве. Видео не загружается на сервер, поэтому его не видит никто, кроме вас.
+- **Размер под задачу.** Ширина 320, 480 или 640 точек и 10, 15 или 20 кадров в секунду — чем меньше, тем легче файл.
+- **Своя палитра у каждого кадра.** Для каждого кадра подбираются свои 256 цветов, поэтому цвета передаются точнее.
+- **Сразу много файлов.** Добавьте несколько видео за раз и скачайте результат по одному или одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Сколько видео попадёт в GIF?** Первые 20 секунд. GIF не сжимает кадры так, как видео, и минута анимации весила бы десятки мегабайт. Если видео длиннее, в строке файла появится предупреждение.
+- **Будет ли звук?** Нет, GIF — анимация без звука.
+- **Как сделать GIF поменьше?** Выберите ширину 320 точек и 10 кадров в секунду. Размер GIF растёт с площадью кадра и числом кадров.
+- **Какие видео подходят?** MP4, MOV, WebM и MKV — если браузер умеет декодировать их видео. Самые распространённые кодеки (H.264, VP9) поддерживают все современные браузеры.
+- **Будет ли GIF повторяться?** Да, анимация повторяется бесконечно, как привыкли в чатах и соцсетях.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а видео обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/mp4-to-gif`
+
+Файл: `src/content/tools/en/mp4-to-gif.yaml`
+
+- **title:** MP4 to GIF Converter — Turn Video into a GIF, Free _(50 симв.)_
+- **description:** Make a GIF from an MP4 video right in your browser, with the width and frame rate you choose. Free, no sign-up, and your video never leaves your device. _(152 симв.)_
+- **H1:** MP4 to GIF Converter
+- **Подзаголовок:** Video into a GIF animation. Free, no sign-up, your files never leave your device.
+- **Хлебные крошки:** MP4 to GIF
+- **Карточка:** MP4 → GIF — A short video, as a GIF for chats and websites.
+- **JSON-LD:** MP4 to GIF Converter — An online MP4 to GIF converter that runs in your browser without uploading your videos.
+
+**How to convert MP4 to GIF**
+
+1. Click the box above or drag your MP4 files onto it — you can add many at once.
+2. Wait while your browser processes the video — nothing gets uploaded. Progress is shown as a percentage.
+3. Download each GIF separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your video stays with you.** Conversion runs on your device. Your video is never uploaded, so nobody but you can see it.
+- **Size that fits.** Width of 320, 480 or 640 pixels and 10, 15 or 20 frames per second — the smaller, the lighter the file.
+- **A palette for every frame.** Each frame gets its own 256 colors, so colors come out more accurately.
+- **Many files at once.** Add several videos at a time and download them one by one or as a single ZIP.
+
+**Frequently asked questions**
+
+- **How much of the video goes into the GIF?** The first 20 seconds. GIF doesn't compress frames the way video does, and a minute of animation would weigh tens of megabytes. If the video is longer, the file's row shows a warning.
+- **Will there be sound?** No — GIF is animation without sound.
+- **How do I make a smaller GIF?** Choose a width of 320 pixels and 10 frames per second. GIF size grows with the frame area and the number of frames.
+- **Which videos work?** MP4, MOV, WebM and MKV, as long as your browser can decode their video. The most common codecs (H.264, VP9) work in every modern browser.
+- **Does the GIF loop?** Yes, it loops forever, as people expect in chats and on social media.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your video is processed in your browser and never sent to a server.
+
 ## Другие страницы
 
 ### Главная
@@ -2956,12 +3314,12 @@
 
 Файл: `src/content/pages/ru/home.yaml`
 
-- **title:** Конвертер файлов онлайн — фото, PDF и аудио в браузере _(54 симв.)_
-- **description:** Бесплатный онлайн-конвертер файлов: изображения HEIC, JPG, PNG, WebP, PDF, аудио MP3, WAV, M4A и звук из видео. Без регистрации и загрузки на сервер. _(149 симв.)_
+- **title:** Конвертер файлов онлайн — фото, PDF, аудио и видео в браузере _(61 симв.)_
+- **description:** Бесплатный онлайн-конвертер файлов: изображения HEIC, JPG, PNG, WebP, PDF, аудио MP3, WAV, M4A, видео MP4, MOV и GIF. Без регистрации и загрузки на сервер. _(155 симв.)_
 - **h1:** Конвертер файлов онлайн
 - **subtitle:** Выберите файлы, затем формат — конвертация идёт прямо в браузере. Бесплатно, без регистрации и без загрузки на сервер.
-- **intro:** Здесь собраны конвертеры для разных типов файлов: изображения переводятся между HEIC, AVIF, JPG, PNG, WebP и другими форматами, PDF — в картинки и обратно, аудио — между MP3, WAV, M4A, OGG и FLAC, а из видео можно извлечь звук. Для фото есть сжатие до нужного размера, изменение размера, просмотр и удаление метаданных. Всё работает на вашем устройстве: файлы не загружаются на сервер.
-- **sections:** [object Object] · [object Object] · [object Object] · [object Object]
+- **intro:** Здесь собраны конвертеры для разных типов файлов: изображения переводятся между HEIC, AVIF, JPG, PNG, WebP и другими форматами, PDF — в картинки и обратно, аудио — между MP3, WAV, M4A, OGG и FLAC, видео — в MP4, WebM и GIF, а из видео можно извлечь звук. Для фото есть сжатие до нужного размера, изменение размера, просмотр и удаление метаданных. Всё работает на вашем устройстве: файлы не загружаются на сервер.
+- **sections:** [object Object] · [object Object] · [object Object] · [object Object] · [object Object]
 - **featuresTitle:** Почему здесь
 - **features:**
   - **Без загрузки на сервер.** Файлы обрабатываются прямо в браузере и не покидают ваше устройство.
@@ -2975,12 +3333,12 @@
 
 Файл: `src/content/pages/en/home.yaml`
 
-- **title:** Free Online File Converter — Images, PDF and Audio _(50 симв.)_
-- **description:** Free online file converter: HEIC, JPG, PNG, WebP images, PDF, MP3, WAV, M4A audio and audio from video. No sign-up and no uploads — it all runs in your browser. _(160 симв.)_
+- **title:** Free Online File Converter — Images, PDF, Audio and Video _(57 симв.)_
+- **description:** Free online file converter: HEIC, JPG, PNG, WebP images, PDF, MP3, WAV, M4A audio, MP4, MOV and GIF video. No sign-up, no uploads — it all runs in your browser. _(160 симв.)_
 - **h1:** Online file converter
 - **subtitle:** Pick your files, then a format — conversion runs right in your browser. Free, no sign-up, no uploads.
-- **intro:** Converters for different kinds of files in one place: images between HEIC, AVIF, JPG, PNG, WebP and other formats, PDFs to images and back, audio between MP3, WAV, M4A, OGG and FLAC, plus audio extracted from video. For photos there is compression to a target size, resizing, and viewing or removing metadata. Everything happens on your device: files are never uploaded.
-- **sections:** [object Object] · [object Object] · [object Object] · [object Object]
+- **intro:** Converters for different kinds of files in one place: images between HEIC, AVIF, JPG, PNG, WebP and other formats, PDFs to images and back, audio between MP3, WAV, M4A, OGG and FLAC, video to MP4, WebM and GIF, plus audio extracted from video. For photos there is compression to a target size, resizing, and viewing or removing metadata. Everything happens on your device: files are never uploaded.
+- **sections:** [object Object] · [object Object] · [object Object] · [object Object] · [object Object]
 - **featuresTitle:** Why use it
 - **features:**
   - **No uploads.** Files are processed right in your browser and never leave your device.
@@ -3087,6 +3445,7 @@
 | `widget.targetMenu` | Формат результата | Output format |
 | `widget.targetGroups.image` | Изображение | Image |
 | `widget.targetGroups.document` | Документ | Document |
+| `widget.targetGroups.video` | Видео | Video |
 | `widget.targetGroups.audio` | Аудио | Audio |
 | `widget.pdfCombineHint` | Каждая картинка станет отдельным PDF. Один документ из нескольких картинок — | Each image becomes its own PDF. For one document from several images, use |
 | `widget.pdfCombineLink` | «JPG в PDF» | JPG to PDF |
@@ -3168,6 +3527,16 @@
 | `widget.audioBitrate` | Битрейт, кбит/с | Bitrate, kbps |
 | `widget.audioHint` | 192 кбит/с — как у музыкальных сервисов, 320 — максимум для MP3. Теги (название, исполнитель, альбом) сохраняются; из видео берётся только звук. | 192 kbps matches music streaming services, 320 is the maximum for MP3. Tags (title, artist, album) are kept; from a video only the audio is taken. |
 | `widget.audioCopied` | без перекодирования | no re-encoding |
+| `widget.videoQuality` | Качество видео | Video quality |
+| `widget.videoQualities.high` | Высокое | High |
+| `widget.videoQualities.medium` | Среднее | Medium |
+| `widget.videoQualities.low` | Низкое | Low |
+| `widget.videoHeight` | Размер кадра | Frame size |
+| `widget.videoOriginal` | Исходный | Original |
+| `widget.videoHint` | MOV и MKV с H.264 и AAC перепаковываются в MP4 без перекодирования — быстро и без потерь. Остальное перекодируется в браузере: это долго, минута видео — от десятков секунд до нескольких минут. 720p — короткая сторона кадра 720 точек. | MOV and MKV with H.264 and AAC are repackaged into MP4 without re-encoding — fast and lossless. Everything else is re-encoded in your browser, which is slow: a minute of video takes from tens of seconds to a few minutes. 720p means the short side of the frame is 720 pixels. |
+| `widget.gifWidth` | Ширина GIF, пикс. | GIF width, px |
+| `widget.gifFps` | Кадров в секунду | Frames per second |
+| `widget.gifHint` | В GIF попадают первые 20 секунд видео, без звука. Ширина и частота кадров сильно влияют на размер файла. | The GIF gets the first 20 seconds of the video, without sound. Width and frame rate have a big impact on file size. |
 | `widget.pdfRendering` | Страница {page} из {total}… | Page {page} of {total}… |
 | `widget.pageOf` | Стр. {number} из {total} | Page {number} of {total} |
 | `widget.moveUp` | Переместить выше: {name} | Move up: {name} |
@@ -3265,6 +3634,7 @@
 | `widget.errors.pdf-encrypted` | PDF защищён паролем. Снимите пароль (например, сохраните копию без защиты) и попробуйте снова. | This PDF is password-protected. Remove the password (for example, save an unprotected copy) and try again. |
 | `widget.errors.pdf-unsupported` | Этот браузер не умеет рисовать страницы PDF. Обновите браузер или откройте сайт в другом. | This browser can't render PDF pages. Please update it or use another browser. |
 | `widget.errors.no-audio` | В файле нет звуковой дорожки. | The file has no audio track. |
+| `widget.errors.no-video` | В файле нет видео — это аудио. Выберите аудиоформат. | The file has no video — it is audio. Pick an audio format. |
 | `widget.errors.media-decode-unsupported` | Этот браузер не умеет читать звук этого файла (кодек не поддерживается). Попробуйте другой браузер, например свежий Chrome или Edge. | This browser can't read the audio in this file (unsupported codec). Try another browser, such as an up-to-date Chrome or Edge. |
 | `widget.errors.media-stalled` | Браузер перестал отвечать при обработке звука. Попробуйте другой формат или другой браузер. | The browser stopped responding while processing the audio. Try another format or another browser. |
 | `widget.errors.media-encode-unsupported` | Этот браузер не умеет сохранять в этот формат. Выберите другой формат или откройте сайт в другом браузере, например в свежем Chrome или Edge. | This browser can't save to this format. Pick another format or try another browser, such as an up-to-date Chrome or Edge. |
@@ -3284,6 +3654,8 @@
 | `widget.warnings.exif-compressed-removed` | EXIF в этом файле сжат, и выборочно его не поправить — он удалён целиком, вместе с датой. | This file's EXIF is compressed and can't be edited selectively, so it was removed entirely, date included. |
 | `widget.warnings.pdf-page-downscaled` | Страница очень большая — сохранена с меньшим разрешением. | The page is very large, so it was saved at a lower resolution. |
 | `widget.warnings.pdf-page-limit` | Страниц слишком много — сохранены первые {limit}. | Too many pages — the first {limit} were saved. |
+| `widget.warnings.audio-dropped` | Звук не сохранён: браузер не умеет кодировать его для этого формата. Видео — без звука. | The sound wasn't kept: this browser can't encode it for this format. The video has no sound. |
+| `widget.warnings.gif-trimmed` | Видео длиннее 20 секунд — в GIF попало начало. | The video is longer than 20 seconds — the GIF has the beginning. |
 | `notFound.title` | Страница не найдена | Page not found |
 | `notFound.text` | Такой страницы нет. Возможно, адрес изменился или в нём опечатка. | This page does not exist. The address may have changed or contain a typo. |
 | `notFound.toHome` | На главную | Go to the home page |

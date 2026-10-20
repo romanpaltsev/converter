@@ -1,0 +1,46 @@
+# Texts for /en/mp4-to-webm. Draft for the owner's review (see CONTENT.md).
+title: "MP4 to WebM Converter — Free, Private, No Upload"
+description: "Convert MP4 videos to WebM (VP9 and Opus) right in your browser for websites and web apps. Free, no sign-up, no uploads."
+h1: "MP4 to WebM Converter"
+subtitle: "Free, no sign-up. Your video never leaves your device."
+breadcrumb: "MP4 to WebM"
+card:
+  title: "MP4 → WebM"
+  text: "Videos for the web, in the open WebM format."
+app:
+  name: "MP4 to WebM Converter"
+  description: "An online MP4 to WebM converter that runs in your browser without uploading your videos."
+howTo:
+  title: "How to convert MP4 to WebM"
+  steps:
+    - "Click the box above or drag your MP4 files onto it — you can add many at once."
+    - "Wait while your browser processes the video — nothing gets uploaded. Progress is shown as a percentage."
+    - "Download each WebM separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your video stays with you"
+      text: "Conversion runs on your device. Your video is never uploaded, so nobody but you can see it."
+    - title: "VP9 and Opus"
+      text: "Video is encoded to VP9 and audio to Opus — royalty-free codecs every modern browser supports."
+    - title: "Pick quality and size"
+      text: "Choose the quality and frame size — from original down to 480p — so the video loads faster on your site."
+    - title: "Many files at once"
+      text: "Add several videos at a time and download them one by one or as a single ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Why convert MP4 to WebM?"
+      a: "WebM is an open video format for the web. Websites use it as an alternative to MP4: at the same quality, VP9 usually gives a smaller file than H.264."
+    - q: "Which codecs are used?"
+      a: "VP9 for video (VP8 or AV1 if your browser can't encode VP9) and Opus for audio."
+    - q: "Will WebM play on an iPhone?"
+      a: "Recent Safari and iOS versions play WebM, but older devices and some apps don't. If you need maximum compatibility, stick with MP4."
+    - q: "Why does it take a while?"
+      a: "Re-encoding video is heavy work, and it happens right on your device. A minute of video takes from tens of seconds to a few minutes, depending on resolution and your computer. Progress is shown as a percentage."
+    - q: "How do I make the file smaller?"
+      a: "Choose “Medium” or “Low” quality and a smaller frame size — 720p or 480p. 720p means the short side of the frame is 720 pixels: for a vertical video that's the width."
+    - q: "Which browsers does it work in?"
+      a: "Up-to-date Chrome, Edge, Firefox and Safari: video is encoded with the browser's built-in codecs (WebCodecs). If your browser lacks a codec, the file's row will tell you."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your video is processed in your browser and never sent to a server."

@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { type TargetId, defaultTarget } from '../../src/converter/widget/targets';
-import { AUDIO_FORMATS, FIXED_OUTPUT_MODES, INPUT_FORMATS, MEDIA_FORMATS, OUTPUT_FORMATS, PDF_MODES, TOOLS, TOOL_CATEGORIES, UNIVERSAL_MODES, relatedTools, toolCategory, toolGroups } from '../../src/tools/registry';
+import { AUDIO_FORMATS, FIXED_OUTPUT_MODES, VIDEO_FORMATS, INPUT_FORMATS, MEDIA_FORMATS, OUTPUT_FORMATS, PDF_MODES, TOOLS, TOOL_CATEGORIES, UNIVERSAL_MODES, relatedTools, toolCategory, toolGroups } from '../../src/tools/registry';
 
 describe('реестр инструментов', () => {
   test('слаги конвертеров: ru «x-v-y», en «x-to-y»; входной формат не совпадает с целевым', () => {
@@ -9,8 +9,11 @@ describe('реестр инструментов', () => {
       expect(tool.slugs.en).toMatch(/^[a-z0-9]+-to-[a-z0-9]+$/);
       expect(tool.id).toBe(tool.slugs.en);
       expect(tool.inputFormats).not.toContain(tool.defaultOutput);
-      // картинка — в картинку; аудио и видео — в аудио (раздел «Аудио»)
-      if (toolCategory(tool) === 'audio') {
+      // картинка — в картинку; аудио и видео — в аудио (раздел «Аудио») и видео в видео или GIF («Видео»)
+      if (toolCategory(tool) === 'video') {
+        expect(VIDEO_FORMATS).toHaveProperty(tool.defaultOutput);
+        for (const id of tool.inputFormats) expect(MEDIA_FORMATS).toHaveProperty(id);
+      } else if (toolCategory(tool) === 'audio') {
         expect(AUDIO_FORMATS).toHaveProperty(tool.defaultOutput);
         for (const id of tool.inputFormats) expect(MEDIA_FORMATS).toHaveProperty(id);
       } else {
@@ -49,6 +52,7 @@ describe('реестр инструментов', () => {
       ['photo', 4],
       ['pdf', 6],
       ['audio', 8],
+      ['video', 5],
     ]);
     expect(groups.map((g) => g.id)).toEqual(TOOL_CATEGORIES.filter((id) => groups.some((g) => g.id === id)));
     expect(groups.flatMap((g) => g.tools).sort((a, b) => TOOLS.indexOf(a) - TOOLS.indexOf(b))).toEqual(TOOLS);
@@ -113,7 +117,7 @@ describe('реестр инструментов', () => {
       'tiff-to-png': ['tiff-to-jpg', 'heic-to-png', 'avif-to-png', 'jpg-to-png'],
       'jxl-to-jpg': ['jxl-to-png', 'heic-to-jpg', 'avif-to-jpg', 'png-to-jpg'],
       'jxl-to-png': ['jxl-to-jpg', 'heic-to-png', 'avif-to-png', 'jpg-to-png'],
-      'mp4-to-mp3': ['wav-to-mp3', 'm4a-to-mp3', 'flac-to-mp3', 'ogg-to-mp3'],
+      'mp4-to-mp3': ['mp4-to-webm', 'mp4-to-gif', 'wav-to-mp3', 'm4a-to-mp3'],
       'wav-to-mp3': ['mp3-to-wav', 'mp4-to-mp3', 'm4a-to-mp3', 'flac-to-mp3'],
       'm4a-to-mp3': ['mp4-to-mp3', 'wav-to-mp3', 'flac-to-mp3', 'ogg-to-mp3'],
       'flac-to-mp3': ['mp4-to-mp3', 'wav-to-mp3', 'm4a-to-mp3', 'ogg-to-mp3'],
@@ -122,6 +126,11 @@ describe('реестр инструментов', () => {
       'aac-to-mp3': ['mp4-to-mp3', 'wav-to-mp3', 'm4a-to-mp3', 'flac-to-mp3'],
       // у «MP3 в WAV» одна обратная пара — остальное добирается из раздела «Аудио»
       'mp3-to-wav': ['wav-to-mp3', 'mp4-to-mp3', 'm4a-to-mp3', 'flac-to-mp3'],
+      'mov-to-mp4': ['webm-to-mp4', 'mkv-to-mp4', 'mp4-to-webm', 'mp4-to-gif'],
+      'webm-to-mp4': ['mp4-to-webm', 'mov-to-mp4', 'mkv-to-mp4', 'mp4-to-gif'],
+      'mkv-to-mp4': ['mov-to-mp4', 'webm-to-mp4', 'mp4-to-webm', 'mp4-to-gif'],
+      'mp4-to-webm': ['webm-to-mp4', 'mp4-to-mp3', 'mp4-to-gif', 'mov-to-mp4'],
+      'mp4-to-gif': ['mp4-to-mp3', 'mp4-to-webm', 'mov-to-mp4', 'webm-to-mp4'],
     });
   });
 

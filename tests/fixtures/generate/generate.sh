@@ -482,10 +482,13 @@ VIDEO=(-f lavfi -i "testsrc=size=320x240:rate=25:duration=2" -f lavfi -i "sine=f
 "${FF[@]}" "${VIDEO[@]}" "${BITEXACT[@]}" -c:v libvpx-vp9 -b:v 300k -deadline realtime -cpu-used 8 -c:a libopus -b:a 64k -shortest "$OUT/clip.webm"
 "${FF[@]}" "${VIDEO[@]}" "${BITEXACT[@]}" -c:v libx264 -preset veryfast -pix_fmt yuv420p -c:a aac -b:a 96k -shortest -f mov "$OUT/clip.mov"
 "${FF[@]}" -f lavfi -i "testsrc=size=320x240:rate=25:duration=2" "${BITEXACT[@]}" -c:v libx264 -preset veryfast -pix_fmt yuv420p "$OUT/silent.mp4"
+echo "== hd.mp4: 1 с 1280×720 (H.264 + AAC) — уменьшение кадра до 720p/480p"
+"${FF[@]}" -f lavfi -i "testsrc=size=1280x720:rate=25:duration=1" -f lavfi -i "sine=frequency=440:sample_rate=48000:duration=1" "${BITEXACT[@]}" \
+  -c:v libx264 -preset veryfast -pix_fmt yuv420p -c:a aac -b:a 96k -shortest -movflags +faststart "$OUT/hd.mp4"
 echo "== garbage.mp3: ID3-заголовок и мусор вместо кадров"
 { printf 'ID3\x03\x00\x00\x00\x00\x00\x00'; for i in $(seq 1 300); do printf 'not an mp3 frame %03d\n' "$i"; done; } > "$OUT/garbage.mp3"
 echo "== самопроверка медиа"
-for f in tone.wav tone.mp3 tone.flac tone.ogg tone.opus tone.m4a tone.aac clip.mp4 clip.webm clip.mov silent.mp4; do
+for f in tone.wav tone.mp3 tone.flac tone.ogg tone.opus tone.m4a tone.aac clip.mp4 clip.webm clip.mov silent.mp4 hd.mp4; do
   printf '%s: %s\n' "$f" "$(ffprobe -v error -show_entries stream=codec_name -of csv=p=0 "$OUT/$f" | tr '\n' ' ')"
 done
 fi

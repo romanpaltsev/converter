@@ -1,10 +1,10 @@
 # Texts for the home page (/en/). Draft for the owner's review (see CONTENT.md).
 page: home
-title: "Free Online File Converter — Images, PDF and Audio"
-description: "Free online file converter: HEIC, JPG, PNG, WebP images, PDF, MP3, WAV, M4A audio and audio from video. No sign-up and no uploads — it all runs in your browser."
+title: "Free Online File Converter — Images, PDF, Audio and Video"
+description: "Free online file converter: HEIC, JPG, PNG, WebP images, PDF, MP3, WAV, M4A audio, MP4, MOV and GIF video. No sign-up, no uploads — it all runs in your browser."
 h1: "Online file converter"
 subtitle: "Pick your files, then a format — conversion runs right in your browser. Free, no sign-up, no uploads."
-intro: "Converters for different kinds of files in one place: images between HEIC, AVIF, JPG, PNG, WebP and other formats, PDFs to images and back, audio between MP3, WAV, M4A, OGG and FLAC, plus audio extracted from video. For photos there is compression to a target size, resizing, and viewing or removing metadata. Everything happens on your device: files are never uploaded."
+intro: "Converters for different kinds of files in one place: images between HEIC, AVIF, JPG, PNG, WebP and other formats, PDFs to images and back, audio between MP3, WAV, M4A, OGG and FLAC, video to MP4, WebM and GIF, plus audio extracted from video. For photos there is compression to a target size, resizing, and viewing or removing metadata. Everything happens on your device: files are never uploaded."
 sections:
   images:
     title: "Images"
@@ -18,6 +18,9 @@ sections:
   audio:
     title: "Audio"
     text: "MP3, WAV, M4A, OGG and FLAC — including audio from video."
+  video:
+    title: "Video"
+    text: "MOV, WebM and MKV to MP4, MP4 to WebM, and video to GIF."
 featuresTitle: "Why use it"
 features:
   - icon: lock

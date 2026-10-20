@@ -73,7 +73,7 @@ export type RenderedPdfPage = Omit<Extract<FromWorker, { type: 'pdf-rendered' }>
 export type PdfRenderOutcome = { status: 'done'; total: number; limited: boolean } | ConvertFailure | NeedsMemory;
 
 export type MediaOutcome =
-  | { status: 'done'; buffer: ArrayBuffer; mime: string; extension: string; duration: number; copied: boolean }
+  | { status: 'done'; buffer: ArrayBuffer; mime: string; extension: string; duration: number; copied: boolean; warnings: WarningCode[] }
   | ConvertFailure
   | NeedsMemory;
 
@@ -238,14 +238,14 @@ export class WorkerClient implements PoolClient {
     return failure(reply);
   }
 
-  /** Аудио: ход (доля 0…1) приходит в onProgress, результат — когда файл готов. */
+  /** Аудио и видео: ход (доля 0…1) приходит в onProgress, результат — когда файл готов. */
   async media(file: Blob, options: MediaOptions, memoryLimit: number, onStarted: OnStarted, onProgress: (progress: number) => void): Promise<MediaOutcome> {
     this.onProgress = onProgress;
     const reply = await this.request((id) => ({ type: 'media', id, file, options, memoryLimit }), onStarted);
     this.onProgress = null;
     if (reply.type === 'media-done') {
       this.files++;
-      return { status: 'done', buffer: reply.buffer, mime: reply.mime, extension: reply.extension, duration: reply.duration, copied: reply.copied };
+      return { status: 'done', buffer: reply.buffer, mime: reply.mime, extension: reply.extension, duration: reply.duration, copied: reply.copied, warnings: reply.warnings };
     }
     return failure(reply);
   }

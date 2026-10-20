@@ -1,0 +1,46 @@
+# Texts for /en/mov-to-mp4. Draft for the owner's review (see CONTENT.md).
+title: "MOV to MP4 Converter — iPhone Videos to MP4, Free"
+description: "Convert MOV videos from your iPhone or camera to MP4 right in your browser. Free, no sign-up, and your videos never leave your device."
+h1: "MOV to MP4 Converter"
+subtitle: "iPhone videos as MP4 that plays everywhere. Free, no uploads."
+breadcrumb: "MOV to MP4"
+card:
+  title: "MOV → MP4"
+  text: "iPhone and camera videos, as MP4 for any device."
+app:
+  name: "MOV to MP4 Converter"
+  description: "An online MOV to MP4 converter that runs in your browser without uploading your videos."
+howTo:
+  title: "How to convert MOV to MP4"
+  steps:
+    - "Click the box above or drag your MOV files onto it — you can add many at once."
+    - "Wait while your browser processes the video — nothing gets uploaded. Progress is shown as a percentage."
+    - "Download each MP4 separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your video stays with you"
+      text: "Conversion runs on your device. Your video is never uploaded, so nobody but you can see it."
+    - title: "No re-encoding when possible"
+      text: "If the MOV holds H.264 video and AAC audio, it's repackaged into MP4 in seconds with no quality loss."
+    - title: "H.264 for compatibility"
+      text: "HEVC video from an iPhone is re-encoded to H.264, so the MP4 opens on Windows, Android, TVs and any website."
+    - title: "Many files at once"
+      text: "Add several videos at a time and download them one by one or as a single ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What's the difference between MOV and MP4?"
+      a: "Both are containers that usually hold the same things: H.264 or HEVC video and AAC audio. MOV is Apple's format; MP4 is the common standard that virtually every device, app and website understands."
+    - q: "What happens to iPhone videos?"
+      a: "iPhones record in HEVC (H.265) by default. To make the MP4 open everywhere, such video is re-encoded to H.264. If the MOV already contains H.264, it's simply repackaged — fast and lossless."
+    - q: "Why does it take a while?"
+      a: "Re-encoding video is heavy work, and it happens right on your device. A minute of video takes from tens of seconds to a few minutes, depending on resolution and your computer. Progress is shown as a percentage."
+    - q: "How do I make the file smaller?"
+      a: "Choose “Medium” or “Low” quality and a smaller frame size — 720p or 480p. 720p means the short side of the frame is 720 pixels: for a vertical video that's the width."
+    - q: "Is the sound kept?"
+      a: "Yes. AAC audio is copied as is; other audio is re-encoded to AAC. If your browser can't handle the file's audio, the video is saved without sound and the row shows a warning."
+    - q: "Which browsers does it work in?"
+      a: "Up-to-date Chrome, Edge, Firefox and Safari: video is encoded with the browser's built-in codecs (WebCodecs). If your browser lacks a codec, the file's row will tell you."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your video is processed in your browser and never sent to a server."

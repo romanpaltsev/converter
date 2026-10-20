@@ -1,0 +1,46 @@
+# Texts for /en/mkv-to-mp4. Draft for the owner's review (see CONTENT.md).
+title: "MKV to MP4 Converter — Free, Private, No Upload"
+description: "Convert MKV videos to MP4 right in your browser. Free, no sign-up, and your videos never leave your device. H.264 is repackaged losslessly."
+h1: "MKV to MP4 Converter"
+subtitle: "Free, no sign-up. Your video never leaves your device."
+breadcrumb: "MKV to MP4"
+card:
+  title: "MKV → MP4"
+  text: "MKV video, as MP4 for phones, TVs and editors."
+app:
+  name: "MKV to MP4 Converter"
+  description: "An online MKV to MP4 converter that runs in your browser without uploading your videos."
+howTo:
+  title: "How to convert MKV to MP4"
+  steps:
+    - "Click the box above or drag your MKV files onto it — you can add many at once."
+    - "Wait while your browser processes the video — nothing gets uploaded. Progress is shown as a percentage."
+    - "Download each MP4 separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your video stays with you"
+      text: "Conversion runs on your device. Your video is never uploaded, so nobody but you can see it."
+    - title: "No re-encoding when possible"
+      text: "If the MKV holds H.264 video and AAC or MP3 audio, it's repackaged into MP4 in seconds with no quality loss."
+    - title: "Everything else to H.264"
+      text: "Video in other codecs is re-encoded to H.264 and audio to AAC, so the MP4 opens everywhere."
+    - title: "Many files at once"
+      text: "Add several videos at a time and download them one by one or as a single ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What's the difference between MKV and MP4?"
+      a: "MKV (Matroska) is a container that can hold several audio and subtitle tracks. MP4 is simpler, but virtually every phone, TV, editor and website understands it."
+    - q: "What happens to tracks and subtitles?"
+      a: "The main video track and the main audio track go into the MP4. Other audio tracks and subtitles are not carried over."
+    - q: "Why does the MP4 have no sound?"
+      a: "Movies in MKV often have AC-3, E-AC-3 or DTS audio, which browsers can't decode. In that case the video is saved without sound and the file's row shows a warning."
+    - q: "Why does it take a while?"
+      a: "Re-encoding video is heavy work, and it happens right on your device. A minute of video takes from tens of seconds to a few minutes, depending on resolution and your computer. Progress is shown as a percentage."
+    - q: "How do I make the file smaller?"
+      a: "Choose “Medium” or “Low” quality and a smaller frame size — 720p or 480p. 720p means the short side of the frame is 720 pixels: for a vertical video that's the width."
+    - q: "Which browsers does it work in?"
+      a: "Up-to-date Chrome, Edge, Firefox and Safari: video is encoded with the browser's built-in codecs (WebCodecs). If your browser lacks a codec, the file's row will tell you."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your video is processed in your browser and never sent to a server."

@@ -68,6 +68,7 @@
 | `tone.wav`, `tone.mp3`, `tone.flac`, `tone.ogg`, `tone.opus`, `tone.m4a`, `tone.aac` | 3 с стерео 44,1 кГц (слева 440 Гц, справа 660 Гц): PCM 16 бит, MP3 128 кбит/с, FLAC, Vorbis, Opus 96 кбит/с, AAC 128 кбит/с в M4A и ADTS; теги title «Test tone», artist «Synthetic», album «Fixtures» (у ADTS тегов нет) |
 | `clip.mp4`, `clip.webm`, `clip.mov` | 2 с 320×240 25 к/с (testsrc) со звуком 440 Гц 48 кГц: H.264 + AAC, VP9 + Opus, H.264 + AAC в MOV |
 | `silent.mp4` | то же видео без звуковой дорожки — ошибка «нет звука» |
+| `hd.mp4` | 1 с 1280×720 (H.264 + AAC) — уменьшение кадра (480p → 854×480) |
 | `garbage.mp3` | заголовок ID3 и мусор вместо кадров |
 | `exif/big-endian.tiff`, `exif/little-endian.tiff` | сырые EXIF-блоки (TIFF) с датами, GPS, Make/Model, Orientation = 6 — для unit-тестов |
 

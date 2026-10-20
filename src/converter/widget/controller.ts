@@ -2,7 +2,7 @@
 // Разметку отдаёт сервер (ConverterWidget.astro), здесь — только поведение. Строки — из конфигурации.
 
 import { track } from '../../lib/analytics';
-import { AUDIO_FORMATS, type AudioTargetId, DEFAULT_AUDIO_BITRATE } from '../media/formats';
+import { AUDIO_FORMATS, type AudioTargetId, DEFAULT_AUDIO_BITRATE, DEFAULT_GIF_FPS, DEFAULT_GIF_WIDTH, DEFAULT_VIDEO_QUALITY, type MediaOptions, VIDEO_FORMATS, type VideoQuality, type VideoTargetId, isAudioTarget } from '../media/formats';
 import type { MetadataReport } from '../metadata/inspect/types';
 import type { RemovedKind, StripMode } from '../metadata/strip/types';
 import { SMALL_MARGIN } from '../pdf/limits';
@@ -44,6 +44,9 @@ interface Settings {
   dpi: number | null;
   /** Универсальный виджет: битрейт аудио с потерями (кбит/с); иначе null. */
   audioBitrate: number | null;
+  /** Универсальный виджет: видео — качество и наибольшая короткая сторона кадра (0 — исходная), GIF — ширина и частота;
+   *  иначе null. */
+  video: { quality: VideoQuality; height: number; gifWidth: number; gifFps: number } | null;
 }
 
 /** Целевой размер — в десятичных килобайтах и мегабайтах: файл «до 1 МБ» пройдёт и лимит 1 000 000, и 1 048 576 байт. */
@@ -133,7 +136,8 @@ const sameSettings = (a: Settings, b: Settings) =>
   JSON.stringify(a.resize) === JSON.stringify(b.resize) &&
   a.strip === b.strip &&
   a.dpi === b.dpi &&
-  a.audioBitrate === b.audioBitrate;
+  a.audioBitrate === b.audioBitrate &&
+  JSON.stringify(a.video) === JSON.stringify(b.video);
 
 /** Сконвертированный файл или «уже в этом формате» — после смены настроек их можно сконвертировать заново. */
 function isOutdated(item: Item, current: Settings): boolean {
@@ -149,7 +153,8 @@ function fill(template: string, values: Record<string, string | number>): string
 
 /** Общие настройки, важные формату файла (у универсального виджета dpi есть всегда). */
 function targetSettings(settings: Settings): TargetSettings {
-  return { quality: settings.quality, lossless: settings.lossless, keepMetadata: settings.keepMetadata, dpi: settings.dpi ?? 0, audioBitrate: settings.audioBitrate ?? 0 };
+  return { quality: settings.quality, lossless: settings.lossless, keepMetadata: settings.keepMetadata, dpi: settings.dpi ?? 0, audioBitrate: settings.audioBitrate ?? 0,
+    videoQuality: settings.video?.quality ?? '', videoHeight: settings.video?.height ?? 0, gifWidth: settings.video?.gifWidth ?? 0, gifFps: settings.video?.gifFps ?? 0 };
 }
 
 /** По какому селектору найти «ту же» кнопку в перерисованной строке. */
@@ -186,6 +191,8 @@ export class ConverterWidget {
   private readonly pdfLayoutRow: HTMLElement | null;
   private readonly dpiRow: HTMLElement | null;
   private readonly audioBitrateRow: HTMLElement | null;
+  private readonly videoRow: HTMLElement | null;
+  private readonly gifRow: HTMLElement | null;
   /** Размер страницы и поля, с которыми собраны готовые PDF: сменились — документы пересобираются. */
   private layoutKey = '';
   private readonly metaRow: HTMLElement | null;
@@ -247,6 +254,8 @@ export class ConverterWidget {
     this.pdfLayoutRow = root.querySelector('[data-pdf-layout-row]');
     this.dpiRow = root.querySelector('[data-dpi-row]');
     this.audioBitrateRow = root.querySelector('[data-audio-bitrate-row]');
+    this.videoRow = root.querySelector('[data-video-row]');
+    this.gifRow = root.querySelector('[data-gif-row]');
     this.metaRow = root.querySelector('[data-meta-row]');
     this.stripHint = root.querySelector('[data-strip-hint]');
     this.compressionRow = root.querySelector('[data-compression-row]');
@@ -357,6 +366,14 @@ export class ConverterWidget {
           : null,
       dpi: this.config.universal ? Number(data.get('dpi') ?? 150) : null,
       audioBitrate: this.config.universal ? Number(data.get('audioBitrate') ?? DEFAULT_AUDIO_BITRATE) : null,
+      video: this.config.universal
+        ? {
+            quality: (data.get('videoQuality') ?? DEFAULT_VIDEO_QUALITY) as VideoQuality,
+            height: Number(data.get('videoHeight') ?? 0),
+            gifWidth: Number(data.get('gifWidth') ?? DEFAULT_GIF_WIDTH),
+            gifFps: Number(data.get('gifFps') ?? DEFAULT_GIF_FPS),
+          }
+        : null,
     };
   }
 
@@ -432,6 +449,8 @@ export class ConverterWidget {
     if (this.pdfLayoutRow) this.pdfLayoutRow.hidden = !show.pdfLayout;
     if (this.dpiRow) this.dpiRow.hidden = !show.dpi;
     if (this.audioBitrateRow) this.audioBitrateRow.hidden = !show.audioBitrate;
+    if (this.videoRow) this.videoRow.hidden = !show.video;
+    if (this.gifRow) this.gifRow.hidden = !show.gif;
     // размер страницы и поля применяются к готовым PDF сразу, без повторной обработки
     const layout = JSON.stringify(settings.pdf);
     if (layout !== this.layoutKey) {
@@ -600,7 +619,7 @@ export class ConverterWidget {
       const job = jobFor(pair.kind, pair.target);
       if (job === 'pages') return this.renderPdf(item, head, pair.target as EncoderId, settings, lease, ticket);
       if (job === 'document') return this.pdfPage(item, head, lease, ticket, settings.pdf);
-      if (job === 'media') return this.convertMedia(item, pair.target as AudioTargetId, settings, lease, ticket);
+      if (job === 'media') return this.convertMedia(item, pair.target as AudioTargetId | VideoTargetId, settings, lease, ticket);
       return this.convertImage(item, head, pair.target as EncoderId, pair.target === 'webp' && settings.lossless, settings, lease, ticket);
     }
     if (settings.strip) return this.strip(item, head, settings.strip, lease, ticket);
@@ -693,12 +712,20 @@ export class ConverterWidget {
     return false;
   }
 
-  /** Аудио (и звук из видео): mediabunny в worker'е; ход — в процентах в строке файла. */
-  private async convertMedia(item: Item, target: AudioTargetId, settings: Settings, lease: Lease, ticket: Ticket): Promise<boolean> {
-    const format = AUDIO_FORMATS[target];
+  /** Аудио и видео: mediabunny в worker'е; ход — в процентах в строке файла. */
+  private async convertMedia(item: Item, target: AudioTargetId | VideoTargetId, settings: Settings, lease: Lease, ticket: Ticket): Promise<boolean> {
+    const format = isAudioTarget(target) ? AUDIO_FORMATS[target] : VIDEO_FORMATS[target];
     item.name ??= this.names.allocate(outputName(item.file.name, format.extension));
     this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
-    const options = { target, bitrate: settings.audioBitrate ?? DEFAULT_AUDIO_BITRATE };
+    const video = settings.video!;
+    const options: MediaOptions = {
+      target,
+      bitrate: settings.audioBitrate ?? DEFAULT_AUDIO_BITRATE,
+      videoQuality: video.quality,
+      maxHeight: video.height,
+      gifWidth: video.gifWidth,
+      gifFps: video.gifFps,
+    };
     const outcome = await lease.client.media(
       item.file,
       options,
@@ -735,6 +762,7 @@ export class ConverterWidget {
     item.format = format.label;
     item.duration = outcome.duration;
     item.copied = outcome.copied;
+    item.warnings = outcome.warnings;
     item.status = 'done';
     this.run.done++;
     this.run.formats[target] = (this.run.formats[target] ?? 0) + 1;

@@ -258,36 +258,77 @@ export function entropyData(jpeg: Buffer): Buffer {
 }
 
 export interface MediaInfo {
-  /** MIME-тип контейнера по mediabunny: audio/mpeg, audio/wav, audio/mp4, audio/ogg, audio/flac… */
+  /** MIME-тип контейнера по mediabunny: audio/mpeg, audio/wav, audio/mp4, video/mp4, video/webm… */
   mime: string;
+  /** Кодек звука (null — звука нет). */
   codec: string | null;
   channels: number;
   sampleRate: number;
   duration: number;
   hasVideo: boolean;
+  /** Кодек видео и размер кадра на экране (null — видео нет). */
+  videoCodec: string | null;
+  width: number | null;
+  height: number | null;
   title: string | null;
   artist: string | null;
 }
 
-/** Разбор аудио mediabunny в Node (без декодирования): контейнер, кодек, длительность, теги. */
+/** Разбор аудио и видео mediabunny в Node (без декодирования): контейнер, кодеки, размер, длительность, теги. */
 export async function mediaInfo(bytes: Uint8Array): Promise<MediaInfo> {
   const { ALL_FORMATS, BufferSource, Input } = await import('mediabunny');
   const input = new Input({ source: new BufferSource(bytes), formats: ALL_FORMATS });
   try {
-    const track = await input.getPrimaryAudioTrack();
-    if (!track) throw new Error('нет звуковой дорожки');
+    const audio = await input.getPrimaryAudioTrack();
+    const video = await input.getPrimaryVideoTrack();
     const tags = await input.getMetadataTags();
     return {
       mime: (await input.getMimeType()).split(';')[0]!,
-      codec: await track.getCodec(),
-      channels: await track.getNumberOfChannels(),
-      sampleRate: await track.getSampleRate(),
+      codec: audio ? await audio.getCodec() : null,
+      channels: audio ? await audio.getNumberOfChannels() : 0,
+      sampleRate: audio ? await audio.getSampleRate() : 0,
       duration: await input.computeDuration(),
-      hasVideo: (await input.getPrimaryVideoTrack()) !== null,
+      hasVideo: video !== null,
+      videoCodec: video ? await video.getCodec() : null,
+      width: video ? await video.getDisplayWidth() : null,
+      height: video ? await video.getDisplayHeight() : null,
       title: tags.title ?? null,
       artist: tags.artist ?? null,
     };
   } finally {
     input.dispose();
   }
+}
+
+/** GIF: размер логического экрана, число кадров и задержка первого кадра (мс), повтор (NETSCAPE2.0). */
+export function gifInfo(bytes: Uint8Array): { width: number; height: number; frames: number; delay: number; loops: boolean } {
+  if (String.fromCharCode(...bytes.subarray(0, 6)) !== 'GIF89a') throw new Error('не GIF89a');
+  const width = bytes[6]! | (bytes[7]! << 8);
+  const height = bytes[8]! | (bytes[9]! << 8);
+  let pos = 13 + (bytes[10]! & 0x80 ? 3 << ((bytes[10]! & 7) + 1) : 0);
+  let frames = 0;
+  let delay = -1;
+  let loops = false;
+  const skipBlocks = () => {
+    while (bytes[pos] !== 0) pos += bytes[pos]! + 1;
+    pos++;
+  };
+  while (pos < bytes.length) {
+    const block = bytes[pos++];
+    if (block === 0x3b) break;
+    if (block === 0x21) {
+      const label = bytes[pos++];
+      if (label === 0xf9 && delay < 0) delay = (bytes[pos + 2]! | (bytes[pos + 3]! << 8)) * 10;
+      if (label === 0xff && String.fromCharCode(...bytes.subarray(pos + 1, pos + 12)) === 'NETSCAPE2.0') loops = true;
+      skipBlocks();
+    } else if (block === 0x2c) {
+      frames++;
+      const packed = bytes[pos + 8]!;
+      pos += 9 + (packed & 0x80 ? 3 << ((packed & 7) + 1) : 0) + 1; // дескриптор, локальная палитра, размер кода LZW
+      skipBlocks();
+    } else {
+      throw new Error(`неизвестный блок ${block}`);
+    }
+  }
+  return { width, height, frames, delay, loops };
 }

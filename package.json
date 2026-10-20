@@ -34,6 +34,7 @@
     "@mediabunny/mp3-encoder": "1.61.6",
     "astro": "7.4.0",
     "client-zip": "2.5.1",
+    "gifenc": "1.0.3",
     "jxl-oxide-wasm": "0.12.6",
     "libheif-js": "1.23.5",
     "mediabunny": "1.61.6",

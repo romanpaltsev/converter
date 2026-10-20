@@ -83,6 +83,20 @@ export function isAudioTarget(target: string): target is AudioTargetId {
   return (AUDIO_TARGETS as readonly string[]).includes(target);
 }
 
+/** Видео на выходе (меню «Видео»): MP4 — H.264 и AAC, WebM — VP9 и Opus (запасные кодеки — в media/video.ts); GIF — без звука. */
+export const VIDEO_TARGETS = ['mp4', 'webm', 'gif'] as const;
+export type VideoTargetId = (typeof VIDEO_TARGETS)[number];
+
+export const VIDEO_FORMATS: Record<VideoTargetId, { label: string; extension: string; mime: string }> = {
+  mp4: { label: 'MP4', extension: 'mp4', mime: 'video/mp4' },
+  webm: { label: 'WebM', extension: 'webm', mime: 'video/webm' },
+  gif: { label: 'GIF', extension: 'gif', mime: 'image/gif' },
+};
+
+export function isVideoTarget(target: string): target is VideoTargetId {
+  return (VIDEO_TARGETS as readonly string[]).includes(target);
+}
+
 export type InputFormatId = keyof typeof INPUT_FORMATS;
 export type DocumentFormatId = keyof typeof DOCUMENT_FORMATS;
 export type MediaFormatId = keyof typeof MEDIA_FORMATS;
@@ -91,7 +105,7 @@ export type SourceFormatId = InputFormatId | DocumentFormatId | MediaFormatId;
 export const SOURCE_FORMATS: Record<SourceFormatId, { label: string; accept: string }> = { ...INPUT_FORMATS, ...DOCUMENT_FORMATS, ...MEDIA_FORMATS };
 export type OutputFormatId = keyof typeof OUTPUT_FORMATS;
 /** Выбор в переключателе формата: конкретный формат, аудио или «Исходный» (формат входа; HEIC и AVIF — в JPG). */
-export type OutputChoiceId = OutputFormatId | AudioTargetId | 'original';
+export type OutputChoiceId = OutputFormatId | AudioTargetId | VideoTargetId | 'original';
 
 /**
  * convert — конвертер из одного формата в другой (вход в формате выхода — ошибка «уже в формате …»);
@@ -528,6 +542,52 @@ export const TOOLS: ToolConfig[] = [
     defaultQuality: 90,
     content: 'mp3-to-wav',
   },
+  // видео (раздел «Видео»): перепаковка и перекодирование в MP4 и WebM, видео в GIF
+  {
+    id: 'mov-to-mp4',
+    mode: 'convert',
+    slugs: { ru: 'mov-v-mp4', en: 'mov-to-mp4' },
+    inputFormats: ['mov'],
+    defaultOutput: 'mp4',
+    defaultQuality: 90,
+    content: 'mov-to-mp4',
+  },
+  {
+    id: 'webm-to-mp4',
+    mode: 'convert',
+    slugs: { ru: 'webm-v-mp4', en: 'webm-to-mp4' },
+    inputFormats: ['webm'],
+    defaultOutput: 'mp4',
+    defaultQuality: 90,
+    content: 'webm-to-mp4',
+  },
+  {
+    id: 'mkv-to-mp4',
+    mode: 'convert',
+    slugs: { ru: 'mkv-v-mp4', en: 'mkv-to-mp4' },
+    inputFormats: ['mkv'],
+    defaultOutput: 'mp4',
+    defaultQuality: 90,
+    content: 'mkv-to-mp4',
+  },
+  {
+    id: 'mp4-to-webm',
+    mode: 'convert',
+    slugs: { ru: 'mp4-v-webm', en: 'mp4-to-webm' },
+    inputFormats: ['mp4'],
+    defaultOutput: 'webm',
+    defaultQuality: 90,
+    content: 'mp4-to-webm',
+  },
+  {
+    id: 'mp4-to-gif',
+    mode: 'convert',
+    slugs: { ru: 'mp4-v-gif', en: 'mp4-to-gif' },
+    inputFormats: ['mp4'],
+    defaultOutput: 'gif',
+    defaultQuality: 90,
+    content: 'mp4-to-gif',
+  },
 ];
 
 export function getTool(id: string): ToolConfig {
@@ -544,11 +604,12 @@ export function getTool(id: string): ToolConfig {
 export const TOOL_CATEGORIES = ['images', 'photo', 'pdf', 'audio', 'video', 'documents', 'ebooks'] as const;
 export type ToolCategory = (typeof TOOL_CATEGORIES)[number];
 
-/** Раздел инструмента: пары форматов изображений, обработка фото (сжатие, размер, метаданные, EXIF), PDF и аудио. */
+/** Раздел инструмента: пары форматов изображений, обработка фото (сжатие, размер, метаданные, EXIF), PDF, аудио и видео. */
 export function toolCategory(tool: ToolConfig): ToolCategory {
   if (PDF_MODES.includes(tool.mode)) return 'pdf';
-  // звук в аудиоформат — раздел «Аудио», в том числе из видео («MP4 в MP3»)
+  // звук в аудиоформат — раздел «Аудио», в том числе из видео («MP4 в MP3»); видео в видео и в GIF — «Видео»
   if (isAudioTarget(tool.defaultOutput)) return 'audio';
+  if (isVideoTarget(tool.defaultOutput)) return 'video';
   return tool.mode === 'convert' ? 'images' : 'photo';
 }
 

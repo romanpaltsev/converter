@@ -29,7 +29,8 @@ export type LicenseTextId =
   | 'mpl-2.0'
   | 'lgpl-2.0'
   | 'lgpl-2.1'
-  | 'libflac-bsd';
+  | 'libflac-bsd'
+  | 'gifenc-mit';
 
 export interface ThirdPartyComponent {
   name: string;
@@ -254,7 +255,7 @@ export const COMPONENTS: ThirdPartyComponent[] = [
   {
     name: 'Mediabunny',
     version: '1.61.6',
-    purpose: { ru: 'чтение и запись аудио и видео (MP3, WAV, FLAC, OGG, MP4, WebM…)', en: 'reading and writing audio and video (MP3, WAV, FLAC, OGG, MP4, WebM…)' },
+    purpose: { ru: 'чтение и запись аудио и видео (MP3, WAV, FLAC, OGG, MP4, WebM…), кадры для GIF', en: 'reading and writing audio and video (MP3, WAV, FLAC, OGG, MP4, WebM…), frames for GIF' },
     license: 'Mozilla Public License 2.0',
     texts: ['mpl-2.0'],
     source: 'https://github.com/Vanilagy/mediabunny/tree/v1.61.6',
@@ -282,6 +283,14 @@ export const COMPONENTS: ThirdPartyComponent[] = [
     license: 'GNU LGPL 2.1 (FFmpeg) + MPL 2.0',
     texts: ['lgpl-2.1', 'mpl-2.0'],
     source: 'https://github.com/Vanilagy/mediabunny/tree/v1.61.6/packages/aac-encoder',
+  },
+  {
+    name: 'gifenc',
+    version: '1.0.3',
+    purpose: { ru: 'видео в GIF: палитра и кодирование', en: 'video to GIF: palette and encoding' },
+    license: 'MIT',
+    texts: ['gifenc-mit'],
+    source: 'https://github.com/mattdesl/gifenc/tree/v1.0.3',
   },
   {
     name: 'Compact ICC Profiles',
@@ -320,6 +329,7 @@ export const LICENSE_TITLES: Record<LicenseTextId, string> = {
   'lgpl-2.0': 'GNU Library General Public License, version 2',
   'lgpl-2.1': 'GNU Lesser General Public License, version 2.1',
   'libflac-bsd': 'libFLAC (BSD-3-Clause, Xiph.Org Foundation)',
+  'gifenc-mit': 'gifenc (MIT, Matt DesLauriers)',
 };
 
 /** Обязательная фраза лицензии IJG для бинарных дистрибутивов libjpeg. */

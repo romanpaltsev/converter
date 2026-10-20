@@ -4,7 +4,7 @@
 (module Web Worker + WASM), файлы на сервер не загружаются. Сейчас: HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF и JPEG XL → JPG, PNG, WebP, ICO или AVIF
 (23 страницы-конвертера), «Сжать фото», «Изменить размер», «Удалить метаданные», «Посмотреть EXIF» и «Изображения в PDF»
 (JPG, PNG, HEIC → PDF), «PDF в JPG/PNG» и «Объединить PDF»; аудио — MP3, WAV, FLAC, OGG/Opus, AAC, M4A и звук из видео
-(MP4, MOV, WebM, MKV) → MP3, WAV, M4A, OGG, FLAC (8 страниц).
+(MP4, MOV, WebM, MKV) → MP3, WAV, M4A, OGG, FLAC (8 страниц); видео — MP4, MOV, WebM, MKV → MP4, WebM и GIF (5 страниц).
 Обзор и команды — README.md, деплой — DEPLOY.md, тесты и замеры — TESTING.md, тексты — CONTENT.md.
 
 ## Правила работы
@@ -36,7 +36,7 @@
 
 Astro 7.4 (Vite 8 + Rolldown, Zod 4), TypeScript 6.0 strict (не 7.x: `@astrojs/check` поддерживает только ^5/^6),
 libheif-js 1.23.5 (libheif 1.23.5 + libde265 1.0.15), @jsquash/jpeg 1.6.0 (MozJPEG 3.3.1), @jsquash/png 3.1.1,
-client-zip 2.5.1, mediabunny 1.61.6 (+ @mediabunny/mp3-encoder, flac-encoder, aac-encoder 1.61.6; MPL-2.0),
+client-zip 2.5.1, mediabunny 1.61.6 (+ @mediabunny/mp3-encoder, flac-encoder, aac-encoder 1.61.6; MPL-2.0), gifenc 1.0.3,
 utif2 4.1.0 (UTIF.js, с ним pako 1.0.11), jxl-oxide-wasm 0.12.6, pdfjs-dist 6.4.299 (legacy-сборка:
 «PDF в JPG/PNG»; в тестах — разбор PDF), шрифт Inter Variable (@fontsource-variable/inter 5.3.0, OFL), Vitest 5, Playwright 1.64, Node 24 LTS, nginx 1.30. Версии закреплены точно (`.npmrc`: `save-exact`).
 
@@ -63,8 +63,9 @@ src/converter/metadata/       TIFF/EXIF, фильтр EXIF, APP1/APP2 в JPEG, e
                               на месте, exif-tags.ts — словарь тегов; strip/ — «Удалить метаданные» по форматам;
                               inspect/ — «Посмотреть EXIF» (сводка, таблица тегов, профиль, размер по заголовкам)
 src/converter/color/          ICC-профили (CC0) и выбор по nclx
-src/converter/media/          аудио: formats.ts (битрейт, параметры задания; таблица форматов — AUDIO_FORMATS в реестре),
-                              convert.ts — mediabunny в worker'е (чтение кусками, копирование или перекодирование, сторож)
+src/converter/media/          аудио и видео: formats.ts (настройки и параметры задания; таблицы форматов — AUDIO_FORMATS
+                              и VIDEO_FORMATS в реестре), convert.ts (открыть файл, память, выбор пути, сторож),
+                              audio.ts, video.ts, gif.ts, encoders.ts (WASM-кодировщики звука), run.ts (запуск, ошибки)
 src/converter/pdf/            writer.ts — свой писатель PDF («Изображения в PDF»); render.ts — pdf.js в worker'е
                               («PDF в JPG/PNG»), limits.ts — пределы для интерфейса
 src/converter/worker/         convert.worker.ts (конвертация), zip.worker.ts (ZIP), protocol.ts
@@ -319,8 +320,8 @@ scripts/                      serve-dist (тестовый сервер как n
   - Вход — по сигнатуре (`sniff.ts`, `MEDIA_KINDS`): ID3/кадр MPEG → MP3, слой 00 → ADTS (AAC), `fLaC`, RIFF WAVE,
     `OggS` (+ `OpusHead` → Opus), EBML (`webm`/`matroska`), ftyp с брендами M4A/MP4/«qt  » (основной бренд важнее
     совместимых; неизвестные бренды — CR3, JPEG 2000 — не поддерживаются), старый QuickTime без ftyp (moov/mdat/wide).
-    Есть ли звук, узнаёт mediabunny (`getPrimaryAudioTrack`); нет — `no-audio`. Видео — только источник звука
-    (дорожка видео отбрасывается без декодирования; видео на выходе — следующий шаг).
+    Есть ли звук, узнаёт mediabunny (`getPrimaryAudioTrack`); нет — `no-audio`. При извлечении звука дорожка видео
+    отбрасывается без декодирования.
   - Выход (`AUDIO_FORMATS` в реестре): MP3 (LAME), WAV (PCM 16 бит), M4A (AAC), OGG (Opus в Ogg — Vorbis браузеры не
     кодируют), FLAC. MP3 и FLAC кодируют всегда наши WASM-расширения (@mediabunny/mp3-encoder, flac-encoder): WebKit
     заявляет свои MP3/FLAC, но они то зависают, то дописывают тишину. AAC — кодировщик браузера, без него —
@@ -339,6 +340,27 @@ scripts/                      serve-dist (тестовый сервер как n
     и по форме (`isConvertError`).
   - Ограничения окружений (TESTING.md): Firefox на Linux без системного ffmpeg не декодирует AAC; WebKit GTK
     (Playwright в Docker) заявляет декодеры Vorbis/Opus/FLAC, но не всегда их выполняет.
+- **Видео** (решение владельца 20.10.2026, раздел «Видео»; задание `media`, `media/video.ts`, `media/gif.ts`): вход —
+  MP4, MOV, WebM, MKV (`VIDEO_KINDS` в `targets.ts`: из них — и видео, и звук), выход — MP4, WebM, GIF (`VIDEO_FORMATS`
+  в реестре; в меню группа «Видео» перед «Аудио»).
+  - MP4/WebM: сначала перепаковка (`copy: forced`) — только если кодеки совместимы с контейнером «как принято»:
+    в MP4 — H.264 + AAC/MP3 (HEVC с iPhone и VP9 в MP4 открываются не везде — их перекодируем в H.264), в WebM —
+    VP8/VP9/AV1 + Opus/Vorbis; и только без уменьшения кадра. Иначе — перекодирование WebCodecs: MP4 — первый
+    кодируемый браузером из H.264, HEVC, VP9, AV1 (`getFirstEncodableVideoCodec`), звук AAC (наш `ensureAudioEncoder`);
+    WebM — VP9, VP8, AV1 и Opus. Звук, который не кодируется/не декодируется, отбрасывается — видео без звука
+    с предупреждением `audio-dropped` (MKV с AC-3/DTS).
+  - Настройки: качество — уровни mediabunny (`new Quality('high' | 'medium' | 'low')`, по умолчанию высокое), размер
+    кадра 1080p/720p/480p — короткая сторона (у вертикального — ширина), только уменьшение, стороны чётные
+    (`scaledSize()`); ключ настроек — `mp4:q…:h…`.
+  - GIF: кадры с шагом 1/fps (10/15/20) через `CanvasSink.canvasesAtTimestamps` (OffscreenCanvas нужного размера —
+    ширина 320/480/640, не больше исходной), у каждого кадра своя палитра 256 цветов (gifenc: quantize RGB565 +
+    applyPalette), задержка округляется до сотых секунды, повтор бесконечный. Не дольше 20 с (`GIF_MAX_SECONDS`) —
+    иначе `gif-trimmed`. Звука в GIF нет.
+  - Память: результат в `BufferTarget` — оценка max(размер файла, длительность × 12 Мбит/с) × 2 + 64 МБ (GIF — по
+    числу кадров и площади). Очень большие видео (гигабайты) упрутся в память вкладки — запись кусками (StreamTarget)
+    не сделана.
+  - Ограничения окружений: Firefox на Linux без ffmpeg не декодирует H.264/AAC (MOV → MP4 перепаковкой работает);
+    WebKit GTK в Docker — непостоянно; e2e строги только в Chromium.
 - **GIF на входе** — свой декодер на TypeScript (`decoders/gif.ts`, без WASM): LZW, палитра, чересстрочность. Первый
   кадр — как в браузере: на прозрачном холсте логического экрана (фон GIF не рисуется), прозрачный индекс — прозрачный
   пиксель, обрезанный файл — декодированная часть, остальное прозрачно; у анимации — предупреждение. Цвет — sRGB.
