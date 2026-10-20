@@ -1,0 +1,46 @@
+# Texts for /en/mp4-to-mp3. Draft for the owner's review (see CONTENT.md).
+title: "MP4 to MP3 Converter — Extract Audio from Video, Free"
+description: "Extract the audio from MP4 videos to MP3 right in your browser. Free, no sign-up, and your videos never leave your device. MOV, WebM and MKV work too."
+h1: "MP4 to MP3 Converter"
+subtitle: "Audio from video, as MP3. Free, no sign-up, your files never leave your device."
+breadcrumb: "MP4 to MP3"
+card:
+  title: "MP4 → MP3"
+  text: "The soundtrack of a video, as an MP3 for any player."
+app:
+  name: "MP4 to MP3 Converter"
+  description: "An online MP4 to MP3 converter that extracts audio in your browser without uploading your videos."
+howTo:
+  title: "How to convert MP4 to MP3"
+  steps:
+    - "Click the box above or drag your MP4 files onto it — you can add many at once."
+    - "Wait while your browser re-encodes the audio — nothing gets uploaded. Progress is shown as a percentage."
+    - "Download each MP3 separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Conversion runs on your device. Recordings are never uploaded, so nobody but you can hear them."
+    - title: "Just the audio, no wasted work"
+      text: "The picture is never decoded — only the audio track is taken from the file, so even long videos are quick."
+    - title: "MP3 at the bitrate you choose"
+      text: "MP3 is encoded with LAME, the encoder most audio apps use. Choose 128, 192, 256 or 320 kbps."
+    - title: "Many files at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What do I get from a video?"
+      a: "Only the audio track. The picture is not decoded and does not end up in the MP3. If the video has several audio tracks, such as dubs in different languages, the main one is used."
+    - q: "Which videos work?"
+      a: "MP4, MOV, WebM and MKV with audio in common codecs — AAC, MP3, Opus, Vorbis, FLAC. If your browser can't read a file's audio, you'll see a message in that file's row."
+    - q: "Which bitrate should I pick?"
+      a: "192 kbps is a good choice for music and matches what streaming services use. 320 kbps is the maximum for MP3: slightly better quality, bigger file. For speech, podcasts and lectures, 128 kbps is plenty."
+    - q: "Can I extract the audio without re-encoding?"
+      a: "MP3 is always encoded anew. If you want no extra quality loss, pick M4A instead: AAC audio from an MP4 is copied into the M4A as is."
+    - q: "What if the video has no sound?"
+      a: "Then there's nothing to convert — the file's row will say “The file has no audio track”."
+    - q: "Is there a size limit?"
+      a: "No hard limit: the video is read in chunks and only the finished MP3 is kept in memory. A long film just takes longer, and progress is shown as a percentage."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your recordings are processed in your browser and never sent to a server."

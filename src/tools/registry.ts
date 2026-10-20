@@ -39,13 +39,59 @@ export const OUTPUT_FORMATS = {
   { label: string; extension: string; encoder: EncoderId; hasQuality: boolean; hasLossless: boolean; largeFiles: boolean }
 >;
 
+/**
+ * Аудио и видео на входе (ключ — вид из pipeline/sniff.ts): читает mediabunny, в аудио — любой из них
+ * (из видео — звуковая дорожка). MIME в accept — и стандартные, и встречающиеся у Windows/Android.
+ */
+export const MEDIA_FORMATS = {
+  mp3: { label: 'MP3', accept: '.mp3,audio/mpeg,audio/mp3' },
+  wav: { label: 'WAV', accept: '.wav,audio/wav,audio/x-wav,audio/wave' },
+  flac: { label: 'FLAC', accept: '.flac,audio/flac,audio/x-flac' },
+  ogg: { label: 'OGG', accept: '.ogg,.oga,audio/ogg' },
+  opus: { label: 'Opus', accept: '.opus,audio/opus' },
+  aac: { label: 'AAC', accept: '.aac,audio/aac,audio/x-aac' },
+  m4a: { label: 'M4A', accept: '.m4a,.m4b,audio/mp4,audio/x-m4a' },
+  mp4: { label: 'MP4', accept: '.mp4,.m4v,video/mp4' },
+  mov: { label: 'MOV', accept: '.mov,video/quicktime' },
+  webm: { label: 'WebM', accept: '.webm,.weba,video/webm,audio/webm' },
+  mkv: { label: 'MKV', accept: '.mkv,video/x-matroska' },
+} as const satisfies Record<string, { label: string; accept: string }>;
+
+export const AUDIO_TARGETS = ['mp3', 'wav', 'm4a', 'ogg', 'flac'] as const;
+export type AudioTargetId = (typeof AUDIO_TARGETS)[number];
+
+export interface AudioFormat {
+  label: string;
+  extension: string;
+  mime: string;
+  /** Кодек mediabunny: OGG — это Opus в Ogg (Vorbis браузеры не кодируют), WAV — PCM 16 бит. */
+  codec: 'mp3' | 'pcm-s16' | 'aac' | 'opus' | 'flac';
+  /** С потерями: битрейт выбирается в настройках. */
+  lossy: boolean;
+}
+
+/** Аудио на выходе (меню форматов «Аудио»); кодек — имя кодека mediabunny. */
+export const AUDIO_FORMATS: Record<AudioTargetId, AudioFormat> = {
+  mp3: { label: 'MP3', extension: 'mp3', mime: 'audio/mpeg', codec: 'mp3', lossy: true },
+  wav: { label: 'WAV', extension: 'wav', mime: 'audio/wav', codec: 'pcm-s16', lossy: false },
+  m4a: { label: 'M4A', extension: 'm4a', mime: 'audio/mp4', codec: 'aac', lossy: true },
+  ogg: { label: 'OGG', extension: 'ogg', mime: 'audio/ogg', codec: 'opus', lossy: true },
+  flac: { label: 'FLAC', extension: 'flac', mime: 'audio/flac', codec: 'flac', lossy: false },
+};
+
+export function isAudioTarget(target: string): target is AudioTargetId {
+  return (AUDIO_TARGETS as readonly string[]).includes(target);
+}
+
 export type InputFormatId = keyof typeof INPUT_FORMATS;
 export type DocumentFormatId = keyof typeof DOCUMENT_FORMATS;
+export type MediaFormatId = keyof typeof MEDIA_FORMATS;
+export type SourceFormatId = InputFormatId | DocumentFormatId | MediaFormatId;
 /** Всё, что инструмент называет своим входом (accept, заголовок зоны). */
-export const SOURCE_FORMATS: Record<InputFormatId | DocumentFormatId, { label: string; accept: string }> = { ...INPUT_FORMATS, ...DOCUMENT_FORMATS };
+export const SOURCE_FORMATS: Record<SourceFormatId, { label: string; accept: string }> = { ...INPUT_FORMATS, ...DOCUMENT_FORMATS, ...MEDIA_FORMATS };
 export type OutputFormatId = keyof typeof OUTPUT_FORMATS;
-/** Выбор в переключателе формата: конкретный формат или «Исходный» (формат входа; HEIC и AVIF — в JPG). */
-export type OutputChoiceId = OutputFormatId | 'original';
+/** Выбор в переключателе формата: конкретный формат, аудио или «Исходный» (формат входа; HEIC и AVIF — в JPG). */
+export type OutputChoiceId = OutputFormatId | AudioTargetId | 'original';
 
 /**
  * convert — конвертер из одного формата в другой (вход в формате выхода — ошибка «уже в формате …»);
@@ -71,7 +117,7 @@ export interface ToolConfig {
   /** Слаг страницы на каждом языке (без префикса /en/). */
   slugs: Record<Locale, string>;
   /** Форматы, которые страница называет своими (accept, заголовок зоны); остальные поддерживаемые тоже принимаются. */
-  inputFormats: (InputFormatId | DocumentFormatId)[];
+  inputFormats: SourceFormatId[];
   /** У пар форматов — предустановка: с этим форматом файлы встают в очередь (его можно сменить у каждого файла). */
   defaultOutput: OutputChoiceId;
   /**
@@ -79,7 +125,7 @@ export interface ToolConfig {
    * («Исходный» и основные форматы); у метаданных, EXIF, «Изображения в PDF» и «Объединить PDF» — ['original'].
    * У пар форматов его нет: формат выбирается у каждого файла (UNIVERSAL_MODES).
    */
-  outputs?: OutputChoiceId[];
+  outputs?: (OutputFormatId | 'original')[];
   /** Качество по умолчанию для форматов с потерями. */
   defaultQuality: number;
   /** Имя файла с текстами в src/content/tools/<locale>/. */
@@ -89,7 +135,7 @@ export interface ToolConfig {
 }
 
 /** Сжатие и изменение размера: по умолчанию формат сохраняется. */
-const SAME_OR_ANY: OutputChoiceId[] = ['original', 'jpeg', 'png', 'webp'];
+const SAME_OR_ANY: (OutputFormatId | 'original')[] = ['original', 'jpeg', 'png', 'webp'];
 const ALL_INPUTS: InputFormatId[] = ['heic', 'avif', 'jpeg', 'png', 'webp', 'gif', 'bmp', 'tiff', 'jxl'];
 
 /** Сначала обработка (сжатие, размер, метаданные), затем PDF и конвертеры по входному формату; на сайте — по разделам (TOOL_CATEGORIES), внутри раздела — в этом порядке. */
@@ -409,6 +455,79 @@ export const TOOLS: ToolConfig[] = [
     defaultQuality: 90,
     content: 'jxl-to-png',
   },
+  // аудио (раздел «Аудио»): в MP3 из популярных форматов и из видео, MP3 в WAV
+  {
+    id: 'mp4-to-mp3',
+    mode: 'convert',
+    slugs: { ru: 'mp4-v-mp3', en: 'mp4-to-mp3' },
+    inputFormats: ['mp4'],
+    defaultOutput: 'mp3',
+    defaultQuality: 90,
+    content: 'mp4-to-mp3',
+  },
+  {
+    id: 'wav-to-mp3',
+    mode: 'convert',
+    slugs: { ru: 'wav-v-mp3', en: 'wav-to-mp3' },
+    inputFormats: ['wav'],
+    defaultOutput: 'mp3',
+    defaultQuality: 90,
+    content: 'wav-to-mp3',
+  },
+  {
+    id: 'm4a-to-mp3',
+    mode: 'convert',
+    slugs: { ru: 'm4a-v-mp3', en: 'm4a-to-mp3' },
+    inputFormats: ['m4a'],
+    defaultOutput: 'mp3',
+    defaultQuality: 90,
+    content: 'm4a-to-mp3',
+  },
+  {
+    id: 'flac-to-mp3',
+    mode: 'convert',
+    slugs: { ru: 'flac-v-mp3', en: 'flac-to-mp3' },
+    inputFormats: ['flac'],
+    defaultOutput: 'mp3',
+    defaultQuality: 90,
+    content: 'flac-to-mp3',
+  },
+  {
+    id: 'ogg-to-mp3',
+    mode: 'convert',
+    slugs: { ru: 'ogg-v-mp3', en: 'ogg-to-mp3' },
+    inputFormats: ['ogg'],
+    defaultOutput: 'mp3',
+    defaultQuality: 90,
+    content: 'ogg-to-mp3',
+  },
+  {
+    id: 'opus-to-mp3',
+    mode: 'convert',
+    slugs: { ru: 'opus-v-mp3', en: 'opus-to-mp3' },
+    inputFormats: ['opus'],
+    defaultOutput: 'mp3',
+    defaultQuality: 90,
+    content: 'opus-to-mp3',
+  },
+  {
+    id: 'aac-to-mp3',
+    mode: 'convert',
+    slugs: { ru: 'aac-v-mp3', en: 'aac-to-mp3' },
+    inputFormats: ['aac'],
+    defaultOutput: 'mp3',
+    defaultQuality: 90,
+    content: 'aac-to-mp3',
+  },
+  {
+    id: 'mp3-to-wav',
+    mode: 'convert',
+    slugs: { ru: 'mp3-v-wav', en: 'mp3-to-wav' },
+    inputFormats: ['mp3'],
+    defaultOutput: 'wav',
+    defaultQuality: 90,
+    content: 'mp3-to-wav',
+  },
 ];
 
 export function getTool(id: string): ToolConfig {
@@ -425,9 +544,11 @@ export function getTool(id: string): ToolConfig {
 export const TOOL_CATEGORIES = ['images', 'photo', 'pdf', 'audio', 'video', 'documents', 'ebooks'] as const;
 export type ToolCategory = (typeof TOOL_CATEGORIES)[number];
 
-/** Раздел инструмента: пары форматов изображений, обработка фото (сжатие, размер, метаданные, EXIF) и PDF. */
+/** Раздел инструмента: пары форматов изображений, обработка фото (сжатие, размер, метаданные, EXIF), PDF и аудио. */
 export function toolCategory(tool: ToolConfig): ToolCategory {
   if (PDF_MODES.includes(tool.mode)) return 'pdf';
+  // звук в аудиоформат — раздел «Аудио», в том числе из видео («MP4 в MP3»)
+  if (isAudioTarget(tool.defaultOutput)) return 'audio';
   return tool.mode === 'convert' ? 'images' : 'photo';
 }
 
@@ -443,7 +564,7 @@ export function toolGroups(): ToolGroup[] {
 
 /**
  * Перелинковка внизу страницы: обратная конвертация, тот же вход в другие форматы,
- * тот же выход из других форматов (в порядке TOOLS). Не больше четырёх.
+ * тот же выход из других форматов, затем другие пары того же раздела (в порядке TOOLS). Не больше четырёх.
  */
 export function relatedTools(tool: ToolConfig, limit = 4): ToolConfig[] {
   if (tool.related) return tool.related.map(getTool).slice(0, limit);
@@ -454,6 +575,7 @@ export function relatedTools(tool: ToolConfig, limit = 4): ToolConfig[] {
     ...others.filter((t) => t.inputFormats[0] === output && t.defaultOutput === input),
     ...others.filter((t) => t.inputFormats[0] === input),
     ...others.filter((t) => t.defaultOutput === output),
+    ...others.filter((t) => toolCategory(t) === toolCategory(tool)),
   ];
   return [...new Set(ordered)].slice(0, limit);
 }

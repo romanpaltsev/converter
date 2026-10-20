@@ -1,9 +1,9 @@
 # Фикстуры для тестов
 
 Все файлы здесь синтетические (без личных данных), генерируются командой `npm run fixtures`
-(Docker-образ `tests/fixtures/generate`: Debian forky, heif-enc 1.23.6, exiftool, ImageMagick, cjpeg, apngasm, qpdf).
+(Docker-образ `tests/fixtures/generate`: Debian forky, heif-enc 1.23.6, exiftool, ImageMagick, cjpeg, apngasm, qpdf, ffmpeg).
 Результат закоммичен, перегенерировать нужно только при изменении `generate/generate.sh`. Генератор разбит на секции:
-Секции: `heic`, `jpeg-png`, `webp`, `avif`, `gif`, `bmp`, `tiff`, `jxl`, `pdf`. `npm run fixtures -- jpeg-png` пересоздаёт только JPEG/PNG, не трогая HEIC (heif-enc другой версии изменил бы их побайтно).
+Секции: `heic`, `jpeg-png`, `webp`, `avif`, `gif`, `bmp`, `tiff`, `jxl`, `pdf`, `media`. `npm run fixtures -- jpeg-png` пересоздаёт только JPEG/PNG, не трогая HEIC (heif-enc другой версии изменил бы их побайтно).
 
 | Файл | Что проверяем |
 |---|---|
@@ -65,6 +65,10 @@
 | `text.pdf` | A4: синий прямоугольник и «Hello PDF» шрифтом Helvetica без встраивания — нужны стандартные шрифты pdf.js |
 | `two-pages.pdf` | квадранты (страница повёрнута `/Rotate 90`) + текст |
 | `encrypted.pdf`, `garbage.pdf` | под паролем (AES-256; при каждой генерации файл другой — случайная соль шифрования); заголовок PDF и мусор — понятные ошибки |
+| `tone.wav`, `tone.mp3`, `tone.flac`, `tone.ogg`, `tone.opus`, `tone.m4a`, `tone.aac` | 3 с стерео 44,1 кГц (слева 440 Гц, справа 660 Гц): PCM 16 бит, MP3 128 кбит/с, FLAC, Vorbis, Opus 96 кбит/с, AAC 128 кбит/с в M4A и ADTS; теги title «Test tone», artist «Synthetic», album «Fixtures» (у ADTS тегов нет) |
+| `clip.mp4`, `clip.webm`, `clip.mov` | 2 с 320×240 25 к/с (testsrc) со звуком 440 Гц 48 кГц: H.264 + AAC, VP9 + Opus, H.264 + AAC в MOV |
+| `silent.mp4` | то же видео без звуковой дорожки — ошибка «нет звука» |
+| `garbage.mp3` | заголовок ID3 и мусор вместо кадров |
 | `exif/big-endian.tiff`, `exif/little-endian.tiff` | сырые EXIF-блоки (TIFF) с датами, GPS, Make/Model, Orientation = 6 — для unit-тестов |
 
 Реальные снимки владельца — только в `private/` (исключена из git).

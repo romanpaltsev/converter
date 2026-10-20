@@ -2,6 +2,7 @@
 // Сколько worker'ов работает одновременно, когда файл ждёт памяти и когда worker пересоздаётся, решает пул
 // (worker-pool.ts): память WASM после роста не уменьшается.
 
+import type { MediaOptions } from '../media/formats';
 import type { MetadataReport } from '../metadata/inspect/types';
 import type { RemovedKind, StripMode } from '../metadata/strip/types';
 import type { PdfImage } from '../pdf/writer';
@@ -71,6 +72,11 @@ export type RenderedPdfPage = Omit<Extract<FromWorker, { type: 'pdf-rendered' }>
 
 export type PdfRenderOutcome = { status: 'done'; total: number; limited: boolean } | ConvertFailure | NeedsMemory;
 
+export type MediaOutcome =
+  | { status: 'done'; buffer: ArrayBuffer; mime: string; extension: string; duration: number; copied: boolean }
+  | ConvertFailure
+  | NeedsMemory;
+
 type OnStarted = (footprint: number, fresh: number) => void;
 
 /** То, что нужно пулу от worker'а (в unit-тестах пула — подделка). */
@@ -91,6 +97,7 @@ export class WorkerClient implements PoolClient {
   private pending: ((reply: FromWorker) => void) | null = null;
   private onStarted: OnStarted | null = null;
   private onPage: ((page: RenderedPdfPage) => void) | null = null;
+  private onProgress: ((progress: number) => void) | null = null;
   /** Модули, уже загруженные (или загружаемые) в текущем worker'е; после пересоздания — пусто. */
   private readonly decoders = new Set<DecoderId>();
   private readonly encoders = new Set<EncoderId>();
@@ -173,6 +180,7 @@ export class WorkerClient implements PoolClient {
     this.loading = null;
     this.onStarted = null;
     this.onPage = null;
+    this.onProgress = null;
     this.files = 0;
     this.heapBytes = 0;
     this.decoders.clear();
@@ -230,6 +238,18 @@ export class WorkerClient implements PoolClient {
     return failure(reply);
   }
 
+  /** Аудио: ход (доля 0…1) приходит в onProgress, результат — когда файл готов. */
+  async media(file: Blob, options: MediaOptions, memoryLimit: number, onStarted: OnStarted, onProgress: (progress: number) => void): Promise<MediaOutcome> {
+    this.onProgress = onProgress;
+    const reply = await this.request((id) => ({ type: 'media', id, file, options, memoryLimit }), onStarted);
+    this.onProgress = null;
+    if (reply.type === 'media-done') {
+      this.files++;
+      return { status: 'done', buffer: reply.buffer, mime: reply.mime, extension: reply.extension, duration: reply.duration, copied: reply.copied };
+    }
+    return failure(reply);
+  }
+
   private request(build: (id: number) => ToWorker, onStarted: OnStarted): Promise<FromWorker> {
     const worker = this.ensureWorker();
     const message = build(this.nextId++);
@@ -249,6 +269,10 @@ export class WorkerClient implements PoolClient {
       const reply = event.data;
       if (reply.type === 'started') {
         this.onStarted?.(reply.footprint, reply.fresh);
+        return;
+      }
+      if (reply.type === 'media-progress') {
+        this.onProgress?.(reply.progress);
         return;
       }
       if (reply.type === 'pdf-rendered') {

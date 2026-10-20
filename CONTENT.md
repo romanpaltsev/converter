@@ -2376,6 +2376,578 @@
 - **Are the colors preserved?** Yes. The image's color profile is copied into the PNG, so colors don't look washed out.
 - **Is it safe to convert my images here?** Yes. The site only downloads the converter itself; your images are processed in your browser and are never sent to a server.
 
+### mp4-to-mp3
+
+#### Русский — `/mp4-v-mp3`
+
+Файл: `src/content/tools/ru/mp4-to-mp3.yaml`
+
+- **title:** MP4 в MP3 онлайн — извлечь звук из видео бесплатно _(50 симв.)_
+- **description:** Извлеките звук из видео MP4 в MP3 прямо в браузере: бесплатно, без регистрации, видео не загружается на сервер. Подходят и MOV, WebM, MKV. _(138 симв.)_
+- **H1:** Конвертер MP4 в MP3
+- **Подзаголовок:** Звук из видео — в MP3. Бесплатно, без регистрации, файлы не покидают ваше устройство.
+- **Хлебные крошки:** MP4 в MP3
+- **Карточка:** MP4 → MP3 — Звук из видео — в MP3 для плеера и телефона.
+- **JSON-LD:** Конвертер MP4 в MP3 — Онлайн-конвертер видео MP4 в MP3, который извлекает звук прямо в браузере без загрузки файлов на сервер.
+
+**Как конвертировать MP4 в MP3**
+
+1. Нажмите на область выше или перетащите на неё MP4-файлы — можно сразу несколько.
+2. Подождите: звук перекодируется прямо в браузере, файлы никуда не отправляются. Ход виден в процентах.
+3. Скачайте MP3 по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Записи не загружаются на сервер, поэтому их не слышит никто, кроме вас.
+- **Только звук, без лишней работы.** Картинка видео не декодируется — из файла берётся звуковая дорожка, поэтому даже длинный ролик обрабатывается быстро.
+- **MP3 с битрейтом на выбор.** MP3 кодируется LAME — кодировщиком, который используют большинство программ. Битрейт — 128, 192, 256 или 320 кбит/с.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что получится из видео?** Из видео берётся только звуковая дорожка: картинка не декодируется и в MP3 не попадает. Если в ролике несколько дорожек, например озвучки на разных языках, берётся основная.
+- **Какие видео подходят?** MP4, MOV, WebM и MKV со звуком в распространённых кодеках — AAC, MP3, Opus, Vorbis, FLAC. Если браузер не умеет читать звук файла, в строке появится сообщение об этом.
+- **Какой битрейт выбрать?** 192 кбит/с — хороший выбор для музыки, его используют музыкальные сервисы. 320 кбит/с — максимум для MP3: качество чуть выше, файл больше. Для речи, подкастов и лекций хватит 128 кбит/с.
+- **Можно ли извлечь звук без перекодирования?** MP3 всегда кодируется заново. Если нужен звук без дополнительных потерь, выберите M4A: звук AAC из MP4 переносится в M4A как есть.
+- **Что, если в видео нет звука?** Тогда конвертировать нечего — в строке файла появится сообщение «В файле нет звуковой дорожки».
+- **Есть ли ограничение по размеру видео?** Жёсткого ограничения нет: видео читается по частям, а в памяти держится только готовый MP3. Длинный фильм обрабатывается дольше — ход виден в процентах.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а записи обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/mp4-to-mp3`
+
+Файл: `src/content/tools/en/mp4-to-mp3.yaml`
+
+- **title:** MP4 to MP3 Converter — Extract Audio from Video, Free _(53 симв.)_
+- **description:** Extract the audio from MP4 videos to MP3 right in your browser. Free, no sign-up, and your videos never leave your device. MOV, WebM and MKV work too. _(150 симв.)_
+- **H1:** MP4 to MP3 Converter
+- **Подзаголовок:** Audio from video, as MP3. Free, no sign-up, your files never leave your device.
+- **Хлебные крошки:** MP4 to MP3
+- **Карточка:** MP4 → MP3 — The soundtrack of a video, as an MP3 for any player.
+- **JSON-LD:** MP4 to MP3 Converter — An online MP4 to MP3 converter that extracts audio in your browser without uploading your videos.
+
+**How to convert MP4 to MP3**
+
+1. Click the box above or drag your MP4 files onto it — you can add many at once.
+2. Wait while your browser re-encodes the audio — nothing gets uploaded. Progress is shown as a percentage.
+3. Download each MP3 separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Recordings are never uploaded, so nobody but you can hear them.
+- **Just the audio, no wasted work.** The picture is never decoded — only the audio track is taken from the file, so even long videos are quick.
+- **MP3 at the bitrate you choose.** MP3 is encoded with LAME, the encoder most audio apps use. Choose 128, 192, 256 or 320 kbps.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **What do I get from a video?** Only the audio track. The picture is not decoded and does not end up in the MP3. If the video has several audio tracks, such as dubs in different languages, the main one is used.
+- **Which videos work?** MP4, MOV, WebM and MKV with audio in common codecs — AAC, MP3, Opus, Vorbis, FLAC. If your browser can't read a file's audio, you'll see a message in that file's row.
+- **Which bitrate should I pick?** 192 kbps is a good choice for music and matches what streaming services use. 320 kbps is the maximum for MP3: slightly better quality, bigger file. For speech, podcasts and lectures, 128 kbps is plenty.
+- **Can I extract the audio without re-encoding?** MP3 is always encoded anew. If you want no extra quality loss, pick M4A instead: AAC audio from an MP4 is copied into the M4A as is.
+- **What if the video has no sound?** Then there's nothing to convert — the file's row will say “The file has no audio track”.
+- **Is there a size limit?** No hard limit: the video is read in chunks and only the finished MP3 is kept in memory. A long film just takes longer, and progress is shown as a percentage.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your recordings are processed in your browser and never sent to a server.
+
+### wav-to-mp3
+
+#### Русский — `/wav-v-mp3`
+
+Файл: `src/content/tools/ru/wav-to-mp3.yaml`
+
+- **title:** WAV в MP3 онлайн — бесплатно, без загрузки на сервер _(52 симв.)_
+- **description:** Конвертируйте WAV в MP3 прямо в браузере: бесплатно, без регистрации, записи не загружаются на сервер. Битрейт от 128 до 320 кбит/с. _(132 симв.)_
+- **H1:** Конвертер WAV в MP3
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** WAV в MP3
+- **Карточка:** WAV → MP3 — Записи без сжатия — в компактный MP3.
+- **JSON-LD:** Конвертер WAV в MP3 — Онлайн-конвертер аудио WAV в MP3, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать WAV в MP3**
+
+1. Нажмите на область выше или перетащите на неё WAV-файлы — можно сразу несколько.
+2. Подождите: звук перекодируется прямо в браузере, файлы никуда не отправляются. Ход виден в процентах.
+3. Скачайте MP3 по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Записи не загружаются на сервер, поэтому их не слышит никто, кроме вас.
+- **MP3 с битрейтом на выбор.** MP3 кодируется LAME — кодировщиком, который используют большинство программ. Битрейт — 128, 192, 256 или 320 кбит/с.
+- **Теги сохраняются.** Название, исполнитель, альбом и другие теги переносятся в новый файл.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Зачем переводить WAV в MP3?** WAV хранит звук без сжатия: минута стерео при 44,1 кГц занимает около 10 МБ. Та же минута в MP3 при 192 кбит/с — около 1,4 МБ, а на слух разница для большинства записей незаметна.
+- **Какой битрейт выбрать?** 192 кбит/с — хороший выбор для музыки, его используют музыкальные сервисы. 320 кбит/с — максимум для MP3: качество чуть выше, файл больше. Для речи, подкастов и лекций хватит 128 кбит/с.
+- **Теряется ли качество?** MP3 сжимает с потерями: убираются детали, которые плохо слышны. При 192–320 кбит/с разница обычно не слышна. Для архива и монтажа лучше оставить WAV или выбрать FLAC — он сжимает без потерь.
+- **Что будет с многоканальной записью?** MP3 бывает только моно или стерео, поэтому запись с большим числом каналов сводится в стерео.
+- **Сохранятся ли название и исполнитель?** Да. Теги исходного файла — название, исполнитель, альбом и другие — переносятся в новый файл.
+- **Сколько файлов можно конвертировать за раз?** До 100 файлов за раз. Готовые файлы можно скачать по одному или все сразу одним ZIP-архивом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а записи обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/wav-to-mp3`
+
+Файл: `src/content/tools/en/wav-to-mp3.yaml`
+
+- **title:** WAV to MP3 Converter — Free, Private, No Upload _(47 симв.)_
+- **description:** Convert WAV to MP3 right in your browser. Free, no sign-up, and your recordings never leave your device. Bitrate from 128 to 320 kbps. _(134 симв.)_
+- **H1:** WAV to MP3 Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** WAV to MP3
+- **Карточка:** WAV → MP3 — Uncompressed recordings, as compact MP3s.
+- **JSON-LD:** WAV to MP3 Converter — An online WAV to MP3 converter that runs in your browser without uploading your files.
+
+**How to convert WAV to MP3**
+
+1. Click the box above or drag your WAV files onto it — you can add many at once.
+2. Wait while your browser re-encodes the audio — nothing gets uploaded. Progress is shown as a percentage.
+3. Download each MP3 separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Recordings are never uploaded, so nobody but you can hear them.
+- **MP3 at the bitrate you choose.** MP3 is encoded with LAME, the encoder most audio apps use. Choose 128, 192, 256 or 320 kbps.
+- **Tags are kept.** Title, artist, album and other tags are carried over to the new file.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **Why convert WAV to MP3?** WAV stores audio uncompressed: a minute of 44.1 kHz stereo takes about 10 MB. The same minute as a 192 kbps MP3 is about 1.4 MB, and for most recordings you won't hear the difference.
+- **Which bitrate should I pick?** 192 kbps is a good choice for music and matches what streaming services use. 320 kbps is the maximum for MP3: slightly better quality, bigger file. For speech, podcasts and lectures, 128 kbps is plenty.
+- **Will I lose quality?** MP3 is lossy: it drops details that are hard to hear. At 192–320 kbps the difference is usually inaudible. For archiving and editing, keep the WAV or choose FLAC, which compresses without loss.
+- **What happens to multichannel audio?** MP3 is mono or stereo only, so recordings with more channels are mixed down to stereo.
+- **Are the title and artist kept?** Yes. The tags of the original file — title, artist, album and others — are copied to the new file.
+- **How many files can I convert at once?** Up to 100 files per batch. Download them one by one or all together in a single ZIP file.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your recordings are processed in your browser and never sent to a server.
+
+### m4a-to-mp3
+
+#### Русский — `/m4a-v-mp3`
+
+Файл: `src/content/tools/ru/m4a-to-mp3.yaml`
+
+- **title:** M4A в MP3 онлайн — бесплатно, без загрузки на сервер _(52 симв.)_
+- **description:** Конвертируйте M4A в MP3 прямо в браузере: записи диктофона iPhone, музыку и аудиокниги. Бесплатно, без регистрации, файлы не загружаются на сервер. _(147 симв.)_
+- **H1:** Конвертер M4A в MP3
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** M4A в MP3
+- **Карточка:** M4A → MP3 — Записи iPhone и iTunes — в MP3 для любого плеера.
+- **JSON-LD:** Конвертер M4A в MP3 — Онлайн-конвертер аудио M4A в MP3, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать M4A в MP3**
+
+1. Нажмите на область выше или перетащите на неё M4A-файлы — можно сразу несколько.
+2. Подождите: звук перекодируется прямо в браузере, файлы никуда не отправляются. Ход виден в процентах.
+3. Скачайте MP3 по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Записи не загружаются на сервер, поэтому их не слышит никто, кроме вас.
+- **MP3 с битрейтом на выбор.** MP3 кодируется LAME — кодировщиком, который используют большинство программ. Битрейт — 128, 192, 256 или 320 кбит/с.
+- **Теги сохраняются.** Название, исполнитель, альбом и другие теги переносятся в новый файл.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое M4A?** M4A — это звук AAC в контейнере MP4. В нём сохраняют записи «Диктофона» на iPhone, музыку из iTunes и многие программы. MP3 же открывается в любом плеере, автомагнитоле и на старых устройствах.
+- **Подойдут ли записи с диктофона iPhone?** Да, записи «Диктофона» — это файлы M4A, они конвертируются как обычно. Для речи хватит битрейта 128 кбит/с.
+- **Какой битрейт выбрать?** 192 кбит/с — хороший выбор для музыки, его используют музыкальные сервисы. 320 кбит/с — максимум для MP3: качество чуть выше, файл больше. Для речи, подкастов и лекций хватит 128 кбит/с.
+- **Теряется ли качество?** И AAC, и MP3 сжимают с потерями, поэтому при конвертации качество немного снижается. Чтобы потери не были заметны, выберите битрейт не ниже исходного.
+- **Конвертируются ли покупки из iTunes?** Старые покупки iTunes с защитой от копирования (DRM) браузер прочитать не может. Песни без защиты конвертируются как обычные файлы.
+- **Сохранятся ли название и исполнитель?** Да. Теги исходного файла — название, исполнитель, альбом и другие — переносятся в новый файл.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а записи обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/m4a-to-mp3`
+
+Файл: `src/content/tools/en/m4a-to-mp3.yaml`
+
+- **title:** M4A to MP3 Converter — Free, Private, No Upload _(47 симв.)_
+- **description:** Convert M4A to MP3 right in your browser: iPhone voice memos, music and audiobooks. Free, no sign-up, and your files never leave your device. _(141 симв.)_
+- **H1:** M4A to MP3 Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** M4A to MP3
+- **Карточка:** M4A → MP3 — iPhone and iTunes audio, as MP3 for any player.
+- **JSON-LD:** M4A to MP3 Converter — An online M4A to MP3 converter that runs in your browser without uploading your files.
+
+**How to convert M4A to MP3**
+
+1. Click the box above or drag your M4A files onto it — you can add many at once.
+2. Wait while your browser re-encodes the audio — nothing gets uploaded. Progress is shown as a percentage.
+3. Download each MP3 separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Recordings are never uploaded, so nobody but you can hear them.
+- **MP3 at the bitrate you choose.** MP3 is encoded with LAME, the encoder most audio apps use. Choose 128, 192, 256 or 320 kbps.
+- **Tags are kept.** Title, artist, album and other tags are carried over to the new file.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **What is M4A?** M4A is AAC audio in an MP4 container. iPhone Voice Memos, iTunes music and many apps save in it. MP3, on the other hand, plays in any player, car stereo or older device.
+- **Do iPhone voice memos work?** Yes, Voice Memos recordings are M4A files and convert like any other. For speech, 128 kbps is plenty.
+- **Which bitrate should I pick?** 192 kbps is a good choice for music and matches what streaming services use. 320 kbps is the maximum for MP3: slightly better quality, bigger file. For speech, podcasts and lectures, 128 kbps is plenty.
+- **Will I lose quality?** Both AAC and MP3 are lossy, so converting costs a little quality. To keep the loss unnoticeable, choose a bitrate no lower than the original's.
+- **Can I convert iTunes purchases?** Older iTunes purchases with copy protection (DRM) can't be read by the browser. Songs without DRM convert like any other file.
+- **Are the title and artist kept?** Yes. The tags of the original file — title, artist, album and others — are copied to the new file.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your recordings are processed in your browser and never sent to a server.
+
+### flac-to-mp3
+
+#### Русский — `/flac-v-mp3`
+
+Файл: `src/content/tools/ru/flac-to-mp3.yaml`
+
+- **title:** FLAC в MP3 онлайн — бесплатно, без загрузки на сервер _(53 симв.)_
+- **description:** Конвертируйте FLAC в MP3 прямо в браузере: бесплатно, без регистрации, музыка не загружается на сервер. Битрейт до 320 кбит/с, теги сохраняются. _(144 симв.)_
+- **H1:** Конвертер FLAC в MP3
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** FLAC в MP3
+- **Карточка:** FLAC → MP3 — Музыка без потерь — в MP3 для телефона и плеера.
+- **JSON-LD:** Конвертер FLAC в MP3 — Онлайн-конвертер аудио FLAC в MP3, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать FLAC в MP3**
+
+1. Нажмите на область выше или перетащите на неё FLAC-файлы — можно сразу несколько.
+2. Подождите: звук перекодируется прямо в браузере, файлы никуда не отправляются. Ход виден в процентах.
+3. Скачайте MP3 по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Записи не загружаются на сервер, поэтому их не слышит никто, кроме вас.
+- **MP3 с битрейтом на выбор.** MP3 кодируется LAME — кодировщиком, который используют большинство программ. Битрейт — 128, 192, 256 или 320 кбит/с.
+- **Теги сохраняются.** Название, исполнитель, альбом и другие теги переносятся в новый файл.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Зачем переводить FLAC в MP3?** FLAC сжимает без потерь, поэтому файлы большие. MP3 в несколько раз меньше и открывается на любом устройстве — удобно для телефона, автомагнитолы и старых плееров.
+- **Какой битрейт выбрать для музыки?** Для музыки из FLAC лучше 256 или 320 кбит/с: 320 — максимум для MP3. 192 кбит/с — разумный компромисс, если важен размер.
+- **Теряется ли качество?** MP3 сжимает с потерями, поэтому файл уже не будет точной копией. При 256–320 кбит/с разница обычно не слышна. Исходные FLAC стоит сохранить — из них всегда можно сделать новый MP3.
+- **Что будет с многоканальной записью?** MP3 бывает только моно или стерео, поэтому запись с большим числом каналов сводится в стерео.
+- **Сохранятся ли название и исполнитель?** Да. Теги исходного файла — название, исполнитель, альбом и другие — переносятся в новый файл.
+- **Сколько файлов можно конвертировать за раз?** До 100 файлов за раз. Готовые файлы можно скачать по одному или все сразу одним ZIP-архивом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а записи обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/flac-to-mp3`
+
+Файл: `src/content/tools/en/flac-to-mp3.yaml`
+
+- **title:** FLAC to MP3 Converter — Free, Private, No Upload _(48 симв.)_
+- **description:** Convert FLAC to MP3 right in your browser. Free, no sign-up, and your music never leaves your device. Up to 320 kbps, tags are kept. _(132 симв.)_
+- **H1:** FLAC to MP3 Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** FLAC to MP3
+- **Карточка:** FLAC → MP3 — Lossless music, as MP3 for your phone and player.
+- **JSON-LD:** FLAC to MP3 Converter — An online FLAC to MP3 converter that runs in your browser without uploading your files.
+
+**How to convert FLAC to MP3**
+
+1. Click the box above or drag your FLAC files onto it — you can add many at once.
+2. Wait while your browser re-encodes the audio — nothing gets uploaded. Progress is shown as a percentage.
+3. Download each MP3 separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Recordings are never uploaded, so nobody but you can hear them.
+- **MP3 at the bitrate you choose.** MP3 is encoded with LAME, the encoder most audio apps use. Choose 128, 192, 256 or 320 kbps.
+- **Tags are kept.** Title, artist, album and other tags are carried over to the new file.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **Why convert FLAC to MP3?** FLAC is lossless, so the files are big. An MP3 is several times smaller and plays on any device — handy for phones, car stereos and older players.
+- **Which bitrate is best for music?** For music from FLAC, 256 or 320 kbps is best; 320 is the MP3 maximum. 192 kbps is a sensible compromise when size matters.
+- **Will I lose quality?** MP3 is lossy, so the file won't be an exact copy anymore. At 256–320 kbps the difference is usually inaudible. Keep your FLAC originals — you can always make a new MP3 from them.
+- **What happens to multichannel audio?** MP3 is mono or stereo only, so recordings with more channels are mixed down to stereo.
+- **Are the title and artist kept?** Yes. The tags of the original file — title, artist, album and others — are copied to the new file.
+- **How many files can I convert at once?** Up to 100 files per batch. Download them one by one or all together in a single ZIP file.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your recordings are processed in your browser and never sent to a server.
+
+### ogg-to-mp3
+
+#### Русский — `/ogg-v-mp3`
+
+Файл: `src/content/tools/ru/ogg-to-mp3.yaml`
+
+- **title:** OGG в MP3 онлайн — бесплатно, без загрузки на сервер _(52 симв.)_
+- **description:** Конвертируйте OGG в MP3 прямо в браузере: музыку и голосовые сообщения Telegram. Бесплатно, без регистрации, файлы не загружаются на сервер. _(140 симв.)_
+- **H1:** Конвертер OGG в MP3
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** OGG в MP3
+- **Карточка:** OGG → MP3 — Голосовые и музыка OGG — в MP3, который откроется везде.
+- **JSON-LD:** Конвертер OGG в MP3 — Онлайн-конвертер аудио OGG в MP3, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать OGG в MP3**
+
+1. Нажмите на область выше или перетащите на неё OGG-файлы — можно сразу несколько.
+2. Подождите: звук перекодируется прямо в браузере, файлы никуда не отправляются. Ход виден в процентах.
+3. Скачайте MP3 по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Записи не загружаются на сервер, поэтому их не слышит никто, кроме вас.
+- **MP3 с битрейтом на выбор.** MP3 кодируется LAME — кодировщиком, который используют большинство программ. Битрейт — 128, 192, 256 или 320 кбит/с.
+- **Теги сохраняются.** Название, исполнитель, альбом и другие теги переносятся в новый файл.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое OGG?** OGG — контейнер, в котором обычно хранят звук Vorbis или Opus. Его используют игры, некоторые сайты и Telegram для голосовых сообщений. Но не все плееры и программы его открывают, а MP3 понимают везде.
+- **Подойдут ли голосовые сообщения из Telegram?** Да. Сохранённые голосовые сообщения Telegram — это Opus в OGG, конвертер их читает. Для речи хватит битрейта 128 кбит/с.
+- **Какой битрейт выбрать?** 192 кбит/с — хороший выбор для музыки, его используют музыкальные сервисы. 320 кбит/с — максимум для MP3: качество чуть выше, файл больше. Для речи, подкастов и лекций хватит 128 кбит/с.
+- **Теряется ли качество?** И Vorbis, и Opus, и MP3 сжимают с потерями, поэтому при конвертации качество немного снижается. Чтобы потери не были заметны, выберите битрейт 192 кбит/с или выше.
+- **Сохранятся ли название и исполнитель?** Да. Теги исходного файла — название, исполнитель, альбом и другие — переносятся в новый файл.
+- **Сколько файлов можно конвертировать за раз?** До 100 файлов за раз. Готовые файлы можно скачать по одному или все сразу одним ZIP-архивом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а записи обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/ogg-to-mp3`
+
+Файл: `src/content/tools/en/ogg-to-mp3.yaml`
+
+- **title:** OGG to MP3 Converter — Free, Private, No Upload _(47 симв.)_
+- **description:** Convert OGG to MP3 right in your browser: music and Telegram voice messages. Free, no sign-up, and your files never leave your device. _(134 симв.)_
+- **H1:** OGG to MP3 Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** OGG to MP3
+- **Карточка:** OGG → MP3 — OGG music and voice messages, as MP3 that plays everywhere.
+- **JSON-LD:** OGG to MP3 Converter — An online OGG to MP3 converter that runs in your browser without uploading your files.
+
+**How to convert OGG to MP3**
+
+1. Click the box above or drag your OGG files onto it — you can add many at once.
+2. Wait while your browser re-encodes the audio — nothing gets uploaded. Progress is shown as a percentage.
+3. Download each MP3 separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Recordings are never uploaded, so nobody but you can hear them.
+- **MP3 at the bitrate you choose.** MP3 is encoded with LAME, the encoder most audio apps use. Choose 128, 192, 256 or 320 kbps.
+- **Tags are kept.** Title, artist, album and other tags are carried over to the new file.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **What is OGG?** OGG is a container that usually holds Vorbis or Opus audio. Games, some websites and Telegram voice messages use it. Not every player or app opens it, while MP3 works everywhere.
+- **Do Telegram voice messages work?** Yes. Saved Telegram voice messages are Opus in OGG, and the converter reads them. For speech, 128 kbps is plenty.
+- **Which bitrate should I pick?** 192 kbps is a good choice for music and matches what streaming services use. 320 kbps is the maximum for MP3: slightly better quality, bigger file. For speech, podcasts and lectures, 128 kbps is plenty.
+- **Will I lose quality?** Vorbis, Opus and MP3 are all lossy, so converting costs a little quality. To keep the loss unnoticeable, choose 192 kbps or higher.
+- **Are the title and artist kept?** Yes. The tags of the original file — title, artist, album and others — are copied to the new file.
+- **How many files can I convert at once?** Up to 100 files per batch. Download them one by one or all together in a single ZIP file.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your recordings are processed in your browser and never sent to a server.
+
+### opus-to-mp3
+
+#### Русский — `/opus-v-mp3`
+
+Файл: `src/content/tools/ru/opus-to-mp3.yaml`
+
+- **title:** OPUS в MP3 онлайн — голосовые сообщения в MP3 бесплатно _(55 симв.)_
+- **description:** Конвертируйте OPUS в MP3 прямо в браузере: голосовые сообщения WhatsApp и Telegram. Бесплатно, без регистрации, файлы не загружаются на сервер. _(143 симв.)_
+- **H1:** Конвертер OPUS в MP3
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** OPUS в MP3
+- **Карточка:** OPUS → MP3 — Голосовые WhatsApp и Telegram — в MP3.
+- **JSON-LD:** Конвертер OPUS в MP3 — Онлайн-конвертер аудио OPUS в MP3, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать OPUS в MP3**
+
+1. Нажмите на область выше или перетащите на неё OPUS-файлы — можно сразу несколько.
+2. Подождите: звук перекодируется прямо в браузере, файлы никуда не отправляются. Ход виден в процентах.
+3. Скачайте MP3 по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Записи не загружаются на сервер, поэтому их не слышит никто, кроме вас.
+- **MP3 с битрейтом на выбор.** MP3 кодируется LAME — кодировщиком, который используют большинство программ. Битрейт — 128, 192, 256 или 320 кбит/с.
+- **Теги сохраняются.** Название, исполнитель, альбом и другие теги переносятся в новый файл.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое Opus?** Opus — современный кодек для речи и музыки. Им сжимают голосовые сообщения WhatsApp и Telegram, звонки и звук многих видео в интернете. Файлы .opus открывают не все плееры и программы, а MP3 понимают везде.
+- **Подойдут ли голосовые сообщения WhatsApp?** Да. Голосовые сообщения, сохранённые или пересланные из WhatsApp, — это файлы Opus, конвертер их читает. Для речи хватит битрейта 128 кбит/с.
+- **Почему MP3 больше исходного файла?** Opus сжимает речь гораздо эффективнее MP3, поэтому голосовое сообщение в MP3 займёт больше места при сопоставимом качестве. Это нормально.
+- **Какой битрейт выбрать?** 192 кбит/с — хороший выбор для музыки, его используют музыкальные сервисы. 320 кбит/с — максимум для MP3: качество чуть выше, файл больше. Для речи, подкастов и лекций хватит 128 кбит/с.
+- **Сохранятся ли название и исполнитель?** Да. Теги исходного файла — название, исполнитель, альбом и другие — переносятся в новый файл.
+- **Сколько файлов можно конвертировать за раз?** До 100 файлов за раз. Готовые файлы можно скачать по одному или все сразу одним ZIP-архивом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а записи обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/opus-to-mp3`
+
+Файл: `src/content/tools/en/opus-to-mp3.yaml`
+
+- **title:** OPUS to MP3 Converter — Voice Messages to MP3, Free _(51 симв.)_
+- **description:** Convert OPUS to MP3 right in your browser: WhatsApp and Telegram voice messages. Free, no sign-up, and your files never leave your device. _(138 симв.)_
+- **H1:** OPUS to MP3 Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** OPUS to MP3
+- **Карточка:** OPUS → MP3 — WhatsApp and Telegram voice messages, as MP3.
+- **JSON-LD:** OPUS to MP3 Converter — An online OPUS to MP3 converter that runs in your browser without uploading your files.
+
+**How to convert OPUS to MP3**
+
+1. Click the box above or drag your OPUS files onto it — you can add many at once.
+2. Wait while your browser re-encodes the audio — nothing gets uploaded. Progress is shown as a percentage.
+3. Download each MP3 separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Recordings are never uploaded, so nobody but you can hear them.
+- **MP3 at the bitrate you choose.** MP3 is encoded with LAME, the encoder most audio apps use. Choose 128, 192, 256 or 320 kbps.
+- **Tags are kept.** Title, artist, album and other tags are carried over to the new file.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **What is Opus?** Opus is a modern codec for speech and music. WhatsApp and Telegram voice messages, calls and the audio of many online videos use it. Not every player or app opens .opus files, while MP3 works everywhere.
+- **Do WhatsApp voice messages work?** Yes. Voice messages saved or shared from WhatsApp are Opus files, and the converter reads them. For speech, 128 kbps is plenty.
+- **Why is the MP3 bigger than the original?** Opus compresses speech far more efficiently than MP3, so a voice message takes more space as an MP3 at comparable quality. That's expected.
+- **Which bitrate should I pick?** 192 kbps is a good choice for music and matches what streaming services use. 320 kbps is the maximum for MP3: slightly better quality, bigger file. For speech, podcasts and lectures, 128 kbps is plenty.
+- **Are the title and artist kept?** Yes. The tags of the original file — title, artist, album and others — are copied to the new file.
+- **How many files can I convert at once?** Up to 100 files per batch. Download them one by one or all together in a single ZIP file.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your recordings are processed in your browser and never sent to a server.
+
+### aac-to-mp3
+
+#### Русский — `/aac-v-mp3`
+
+Файл: `src/content/tools/ru/aac-to-mp3.yaml`
+
+- **title:** AAC в MP3 онлайн — бесплатно, без загрузки на сервер _(52 симв.)_
+- **description:** Конвертируйте AAC в MP3 прямо в браузере: бесплатно, без регистрации, файлы не загружаются на сервер. Битрейт от 128 до 320 кбит/с. _(131 симв.)_
+- **H1:** Конвертер AAC в MP3
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** AAC в MP3
+- **Карточка:** AAC → MP3 — Звук AAC — в MP3 для старых плееров и автомагнитол.
+- **JSON-LD:** Конвертер AAC в MP3 — Онлайн-конвертер аудио AAC в MP3, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать AAC в MP3**
+
+1. Нажмите на область выше или перетащите на неё AAC-файлы — можно сразу несколько.
+2. Подождите: звук перекодируется прямо в браузере, файлы никуда не отправляются. Ход виден в процентах.
+3. Скачайте MP3 по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Записи не загружаются на сервер, поэтому их не слышит никто, кроме вас.
+- **MP3 с битрейтом на выбор.** MP3 кодируется LAME — кодировщиком, который используют большинство программ. Битрейт — 128, 192, 256 или 320 кбит/с.
+- **Теги сохраняются.** Название, исполнитель, альбом и другие теги переносятся в новый файл.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что такое AAC?** AAC — кодек, которым сжат звук в большинстве видео MP4, в записях iPhone и в музыке Apple. Файлы .aac — это поток AAC без контейнера; их открывают не все плееры и автомагнитолы, а MP3 понимают везде.
+- **Можно ли обойтись без перекодирования?** Да, если подходит M4A: выберите его в меню формата, и поток AAC переложится в контейнер M4A как есть, без потерь. Такой файл понимают iPhone, Android и большинство плееров.
+- **Какой битрейт выбрать?** 192 кбит/с — хороший выбор для музыки, его используют музыкальные сервисы. 320 кбит/с — максимум для MP3: качество чуть выше, файл больше. Для речи, подкастов и лекций хватит 128 кбит/с.
+- **Теряется ли качество?** И AAC, и MP3 сжимают с потерями, поэтому при конвертации качество немного снижается. Чтобы потери не были заметны, выберите битрейт не ниже исходного.
+- **Сколько файлов можно конвертировать за раз?** До 100 файлов за раз. Готовые файлы можно скачать по одному или все сразу одним ZIP-архивом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а записи обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/aac-to-mp3`
+
+Файл: `src/content/tools/en/aac-to-mp3.yaml`
+
+- **title:** AAC to MP3 Converter — Free, Private, No Upload _(47 симв.)_
+- **description:** Convert AAC to MP3 right in your browser. Free, no sign-up, and your files never leave your device. Bitrate from 128 to 320 kbps. _(129 симв.)_
+- **H1:** AAC to MP3 Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** AAC to MP3
+- **Карточка:** AAC → MP3 — AAC audio, as MP3 for older players and car stereos.
+- **JSON-LD:** AAC to MP3 Converter — An online AAC to MP3 converter that runs in your browser without uploading your files.
+
+**How to convert AAC to MP3**
+
+1. Click the box above or drag your AAC files onto it — you can add many at once.
+2. Wait while your browser re-encodes the audio — nothing gets uploaded. Progress is shown as a percentage.
+3. Download each MP3 separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Recordings are never uploaded, so nobody but you can hear them.
+- **MP3 at the bitrate you choose.** MP3 is encoded with LAME, the encoder most audio apps use. Choose 128, 192, 256 or 320 kbps.
+- **Tags are kept.** Title, artist, album and other tags are carried over to the new file.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **What is AAC?** AAC is the codec behind the audio of most MP4 videos, iPhone recordings and Apple Music. A .aac file is a bare AAC stream with no container; not every player or car stereo opens it, while MP3 works everywhere.
+- **Can I avoid re-encoding?** Yes, if M4A works for you: pick it in the format menu and the AAC stream is moved into an M4A container as is, with no loss. iPhones, Android and most players understand it.
+- **Which bitrate should I pick?** 192 kbps is a good choice for music and matches what streaming services use. 320 kbps is the maximum for MP3: slightly better quality, bigger file. For speech, podcasts and lectures, 128 kbps is plenty.
+- **Will I lose quality?** Both AAC and MP3 are lossy, so converting costs a little quality. To keep the loss unnoticeable, choose a bitrate no lower than the original's.
+- **How many files can I convert at once?** Up to 100 files per batch. Download them one by one or all together in a single ZIP file.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your recordings are processed in your browser and never sent to a server.
+
+### mp3-to-wav
+
+#### Русский — `/mp3-v-wav`
+
+Файл: `src/content/tools/ru/mp3-to-wav.yaml`
+
+- **title:** MP3 в WAV онлайн — бесплатно, без загрузки на сервер _(52 симв.)_
+- **description:** Конвертируйте MP3 в WAV прямо в браузере: для монтажа, звуковых редакторов и устройств без поддержки MP3. Бесплатно, без регистрации и загрузки на сервер. _(154 симв.)_
+- **H1:** Конвертер MP3 в WAV
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** MP3 в WAV
+- **Карточка:** MP3 → WAV — MP3 — в WAV для монтажа и звуковых редакторов.
+- **JSON-LD:** Конвертер MP3 в WAV — Онлайн-конвертер аудио MP3 в WAV, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать MP3 в WAV**
+
+1. Нажмите на область выше или перетащите на неё MP3-файлы — можно сразу несколько.
+2. Подождите: звук перекодируется прямо в браузере, файлы никуда не отправляются. Ход виден в процентах.
+3. Скачайте WAV по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Записи не загружаются на сервер, поэтому их не слышит никто, кроме вас.
+- **Совместимый WAV.** Звук сохраняется в PCM 16 бит с частотой и числом каналов исходного MP3 — такой WAV открывает любая программа.
+- **Дальше без потерь.** MP3 раскодируется один раз, а WAV хранит звук без сжатия: при монтаже и повторных сохранениях качество больше не теряется.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Зачем переводить MP3 в WAV?** WAV нужен программам монтажа, звуковым редакторам, семплерам и устройствам, которые не понимают MP3. Звук в WAV хранится без сжатия, поэтому его удобно редактировать.
+- **Станет ли качество лучше?** Нет. WAV точно передаёт то, что было в MP3, но детали, утраченные при сжатии в MP3, не вернутся. Зато при дальнейшей обработке качество больше не теряется.
+- **Почему WAV намного больше MP3?** WAV хранит звук без сжатия: минута стерео при 44,1 кГц — около 10 МБ. Поэтому WAV обычно в 4–11 раз больше исходного MP3, в зависимости от его битрейта.
+- **Какой получится WAV?** PCM 16 бит с той же частотой и тем же числом каналов, что у MP3, — обычно 44,1 кГц, стерео. Такой формат поддерживают все программы и устройства.
+- **Сколько файлов можно конвертировать за раз?** До 100 файлов за раз. Готовые файлы можно скачать по одному или все сразу одним ZIP-архивом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а записи обрабатываются в вашем браузере и не отправляются на сервер.
+
+#### English — `/en/mp3-to-wav`
+
+Файл: `src/content/tools/en/mp3-to-wav.yaml`
+
+- **title:** MP3 to WAV Converter — Free, Private, No Upload _(47 симв.)_
+- **description:** Convert MP3 to WAV right in your browser for video editors, audio editors and devices that don't play MP3. Free, no sign-up, no uploads. _(136 симв.)_
+- **H1:** MP3 to WAV Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** MP3 to WAV
+- **Карточка:** MP3 → WAV — MP3, as WAV for editing and audio software.
+- **JSON-LD:** MP3 to WAV Converter — An online MP3 to WAV converter that runs in your browser without uploading your files.
+
+**How to convert MP3 to WAV**
+
+1. Click the box above or drag your MP3 files onto it — you can add many at once.
+2. Wait while your browser re-encodes the audio — nothing gets uploaded. Progress is shown as a percentage.
+3. Download each WAV separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Recordings are never uploaded, so nobody but you can hear them.
+- **A WAV that opens everywhere.** Audio is saved as 16-bit PCM at the sample rate and channel count of the original MP3 — any app can open it.
+- **No further loss.** The MP3 is decoded once and WAV stores it uncompressed, so editing and re-saving no longer cost quality.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **Why convert MP3 to WAV?** Video editors, audio editors, samplers and some devices need WAV or don't understand MP3. WAV stores audio uncompressed, which makes it easy to edit.
+- **Will the quality improve?** No. The WAV reproduces the MP3 exactly, but details lost when the MP3 was made won't come back. From here on, though, editing costs no further quality.
+- **Why is the WAV so much bigger?** WAV is uncompressed: a minute of 44.1 kHz stereo is about 10 MB. So the WAV is usually 4–11 times larger than the MP3, depending on its bitrate.
+- **What kind of WAV do I get?** 16-bit PCM with the same sample rate and channel count as the MP3 — usually 44.1 kHz stereo. Every app and device supports it.
+- **How many files can I convert at once?** Up to 100 files per batch. Download them one by one or all together in a single ZIP file.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your recordings are processed in your browser and never sent to a server.
+
 ## Другие страницы
 
 ### Главная
@@ -2384,16 +2956,16 @@
 
 Файл: `src/content/pages/ru/home.yaml`
 
-- **title:** Конвертер файлов онлайн — изображения, фото и PDF в браузере _(60 симв.)_
-- **description:** Бесплатный онлайн-конвертер файлов: HEIC, JPG, PNG, WebP, AVIF и другие изображения, PDF, сжатие и обработка фото. Без регистрации и загрузки на сервер. _(152 симв.)_
+- **title:** Конвертер файлов онлайн — фото, PDF и аудио в браузере _(54 симв.)_
+- **description:** Бесплатный онлайн-конвертер файлов: изображения HEIC, JPG, PNG, WebP, PDF, аудио MP3, WAV, M4A и звук из видео. Без регистрации и загрузки на сервер. _(149 симв.)_
 - **h1:** Конвертер файлов онлайн
 - **subtitle:** Выберите файлы, затем формат — конвертация идёт прямо в браузере. Бесплатно, без регистрации и без загрузки на сервер.
-- **intro:** Здесь собраны конвертеры для разных типов файлов: изображения переводятся между HEIC, AVIF, JPG, PNG, WebP и другими форматами, PDF — в картинки и обратно. Для фото есть сжатие до нужного размера, изменение размера, просмотр и удаление метаданных. Всё работает на вашем устройстве: файлы не загружаются на сервер.
-- **sections:** [object Object] · [object Object] · [object Object]
+- **intro:** Здесь собраны конвертеры для разных типов файлов: изображения переводятся между HEIC, AVIF, JPG, PNG, WebP и другими форматами, PDF — в картинки и обратно, аудио — между MP3, WAV, M4A, OGG и FLAC, а из видео можно извлечь звук. Для фото есть сжатие до нужного размера, изменение размера, просмотр и удаление метаданных. Всё работает на вашем устройстве: файлы не загружаются на сервер.
+- **sections:** [object Object] · [object Object] · [object Object] · [object Object]
 - **featuresTitle:** Почему здесь
 - **features:**
   - **Без загрузки на сервер.** Файлы обрабатываются прямо в браузере и не покидают ваше устройство.
-  - **Все популярные форматы.** Изображения HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF, JPEG XL и документы PDF.
+  - **Все популярные форматы.** Изображения HEIC, JPG, PNG, WebP, AVIF и другие, PDF, аудио MP3, WAV, M4A, OGG, FLAC и видео.
   - **Много файлов сразу.** До 100 файлов за раз, скачать можно одним ZIP-архивом.
   - **Метаданные под контролем.** По умолчанию дата съёмки сохраняется, а геолокация удаляется.
   - **Без регистрации.** Откройте сайт и сразу выберите файлы.
@@ -2403,16 +2975,16 @@
 
 Файл: `src/content/pages/en/home.yaml`
 
-- **title:** Free Online File Converter — Images, Photos and PDF _(51 симв.)_
-- **description:** Free online file converter: HEIC, JPG, PNG, WebP, AVIF and other images, PDF, photo compression and editing. No sign-up and no uploads — it all runs in your browser. _(165 симв.)_
+- **title:** Free Online File Converter — Images, PDF and Audio _(50 симв.)_
+- **description:** Free online file converter: HEIC, JPG, PNG, WebP images, PDF, MP3, WAV, M4A audio and audio from video. No sign-up and no uploads — it all runs in your browser. _(160 симв.)_
 - **h1:** Online file converter
 - **subtitle:** Pick your files, then a format — conversion runs right in your browser. Free, no sign-up, no uploads.
-- **intro:** Converters for different kinds of files in one place: images between HEIC, AVIF, JPG, PNG, WebP and other formats, PDFs to images and back. For photos there is compression to a target size, resizing, and viewing or removing metadata. Everything happens on your device: files are never uploaded.
-- **sections:** [object Object] · [object Object] · [object Object]
+- **intro:** Converters for different kinds of files in one place: images between HEIC, AVIF, JPG, PNG, WebP and other formats, PDFs to images and back, audio between MP3, WAV, M4A, OGG and FLAC, plus audio extracted from video. For photos there is compression to a target size, resizing, and viewing or removing metadata. Everything happens on your device: files are never uploaded.
+- **sections:** [object Object] · [object Object] · [object Object] · [object Object]
 - **featuresTitle:** Why use it
 - **features:**
   - **No uploads.** Files are processed right in your browser and never leave your device.
-  - **All the popular formats.** HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF and JPEG XL images, plus PDF documents.
+  - **All the popular formats.** HEIC, JPG, PNG, WebP, AVIF and other images, PDF, MP3, WAV, M4A, OGG and FLAC audio, and video.
   - **Many files at once.** Up to 100 files per batch, downloaded as a single ZIP if you like.
   - **Metadata under control.** By default the capture date is kept and the location is removed.
   - **No sign-up.** Open the site and pick your files — that's it.
@@ -2430,7 +3002,7 @@
 - **breadcrumb:** Лицензии
 - **intro:** Конвертер работает на открытых библиотеках. Ниже — список компонентов, которые загружаются в браузер, их лицензии и ссылки на исходный код.
 - **columns:** Компонент · Для чего · Лицензия · Исходный код
-- **lgpl:** libheif и libde265 распространяются по лицензии GNU LGPL версии 3. Они загружаются в браузер отдельным модулем WebAssembly без изменений; исходный код этих версий доступен по ссылкам в таблице, полные тексты GNU LGPL и GNU GPL (на которую LGPL ссылается) приведены ниже.
+- **lgpl:** libheif и libde265 распространяются по лицензии GNU LGPL версии 3. Они загружаются в браузер отдельным модулем WebAssembly без изменений; исходный код этих версий доступен по ссылкам в таблице, полные тексты GNU LGPL и GNU GPL (на которую LGPL ссылается) приведены ниже. Так же, отдельными неизменёнными модулями, загружаются кодировщики MP3 (LAME, GNU LGPL 2.0) и AAC (FFmpeg, GNU LGPL 2.1) — только при выборе этих форматов; их обёртки и библиотека Mediabunny распространяются по Mozilla Public License 2.0, исходный код — по ссылкам в таблице.
 - **patents:** Формат HEVC (H.265), на котором основан HEIC, может быть защищён патентами. Для WebP и AV1 (AVIF) авторы кодеков дают бесплатную патентную лицензию — её тексты приведены ниже.
 - **fullTexts:** Полные тексты лицензий
 
@@ -2444,7 +3016,7 @@
 - **breadcrumb:** Licenses
 - **intro:** This converter is built on open-source libraries. Below are the components that run in your browser, their licenses and links to their source code.
 - **columns:** Component · Used for · License · Source code
-- **lgpl:** libheif and libde265 are distributed under the GNU LGPL version 3. They are loaded into your browser unmodified as a separate WebAssembly module; the source code of these exact versions is linked in the table, and the full texts of the GNU LGPL and the GNU GPL (which the LGPL refers to) are included below.
+- **lgpl:** libheif and libde265 are distributed under the GNU LGPL version 3. They are loaded into your browser unmodified as a separate WebAssembly module; the source code of these exact versions is linked in the table, and the full texts of the GNU LGPL and the GNU GPL (which the LGPL refers to) are included below. In the same way, as separate unmodified modules, the MP3 (LAME, GNU LGPL 2.0) and AAC (FFmpeg, GNU LGPL 2.1) encoders are loaded — only when you pick those formats; their wrappers and the Mediabunny library are distributed under the Mozilla Public License 2.0, with source code linked in the table.
 - **patents:** The HEVC (H.265) format that HEIC is based on may be covered by patents. For WebP and AV1 (AVIF), the codec authors grant a royalty-free patent license — its texts are included below.
 - **fullTexts:** Full license texts
 
@@ -2515,6 +3087,7 @@
 | `widget.targetMenu` | Формат результата | Output format |
 | `widget.targetGroups.image` | Изображение | Image |
 | `widget.targetGroups.document` | Документ | Document |
+| `widget.targetGroups.audio` | Аудио | Audio |
 | `widget.pdfCombineHint` | Каждая картинка станет отдельным PDF. Один документ из нескольких картинок — | Each image becomes its own PDF. For one document from several images, use |
 | `widget.pdfCombineLink` | «JPG в PDF» | JPG to PDF |
 | `widget.waiting` | Выберите формат | Choose a format |
@@ -2592,6 +3165,9 @@
 | `widget.dpi` | {value} dpi | {value} dpi |
 | `widget.pdfRenderHint` | Страницы сохраняются картинками на белом фоне: 150 dpi — для экрана и почты, 300 dpi — для печати. | Pages are saved as images on a white background: 150 dpi for screens and email, 300 dpi for printing. |
 | `widget.pdfPages` | PDF · страниц: {count} | PDF · pages: {count} |
+| `widget.audioBitrate` | Битрейт, кбит/с | Bitrate, kbps |
+| `widget.audioHint` | 192 кбит/с — как у музыкальных сервисов, 320 — максимум для MP3. Теги (название, исполнитель, альбом) сохраняются; из видео берётся только звук. | 192 kbps matches music streaming services, 320 is the maximum for MP3. Tags (title, artist, album) are kept; from a video only the audio is taken. |
+| `widget.audioCopied` | без перекодирования | no re-encoding |
 | `widget.pdfRendering` | Страница {page} из {total}… | Page {page} of {total}… |
 | `widget.pageOf` | Стр. {number} из {total} | Page {number} of {total} |
 | `widget.moveUp` | Переместить выше: {name} | Move up: {name} |
@@ -2656,6 +3232,7 @@
 | `widget.loadFailed` | Не удалось загрузить конвертер. Проверьте соединение и обновите страницу. | Could not load the converter. Check your connection and reload the page. |
 | `widget.queued` | В очереди | Queued |
 | `widget.converting` | Конвертируется… | Converting… |
+| `widget.convertingPercent` | Конвертируется… {percent} | Converting… {percent} |
 | `widget.done` | Готово | Done |
 | `widget.failed` | Ошибка | Error |
 | `widget.sizes` | {before} → {after} | {before} → {after} |
@@ -2687,6 +3264,10 @@
 | `widget.errors.not-pdf` | Это не PDF-файл. | This isn't a PDF file. |
 | `widget.errors.pdf-encrypted` | PDF защищён паролем. Снимите пароль (например, сохраните копию без защиты) и попробуйте снова. | This PDF is password-protected. Remove the password (for example, save an unprotected copy) and try again. |
 | `widget.errors.pdf-unsupported` | Этот браузер не умеет рисовать страницы PDF. Обновите браузер или откройте сайт в другом. | This browser can't render PDF pages. Please update it or use another browser. |
+| `widget.errors.no-audio` | В файле нет звуковой дорожки. | The file has no audio track. |
+| `widget.errors.media-decode-unsupported` | Этот браузер не умеет читать звук этого файла (кодек не поддерживается). Попробуйте другой браузер, например свежий Chrome или Edge. | This browser can't read the audio in this file (unsupported codec). Try another browser, such as an up-to-date Chrome or Edge. |
+| `widget.errors.media-stalled` | Браузер перестал отвечать при обработке звука. Попробуйте другой формат или другой браузер. | The browser stopped responding while processing the audio. Try another format or another browser. |
+| `widget.errors.media-encode-unsupported` | Этот браузер не умеет сохранять в этот формат. Выберите другой формат или откройте сайт в другом браузере, например в свежем Chrome или Edge. | This browser can't save to this format. Pick another format or try another browser, such as an up-to-date Chrome or Edge. |
 | `widget.errors.internal` | Что-то пошло не так. Попробуйте ещё раз. | Something went wrong. Please try again. |
 | `widget.warnings.hdr-tone` | HDR-снимок: цвета могут немного отличаться от оригинала. | HDR photo: colors may differ slightly from the original. |
 | `widget.warnings.exif-unreadable` | Метаданные исходного файла повреждены и не сохранены. | The original metadata is damaged and was not kept. |

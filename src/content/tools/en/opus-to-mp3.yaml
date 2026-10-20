@@ -1,0 +1,46 @@
+# Texts for /en/opus-to-mp3. Draft for the owner's review (see CONTENT.md).
+title: "OPUS to MP3 Converter — Voice Messages to MP3, Free"
+description: "Convert OPUS to MP3 right in your browser: WhatsApp and Telegram voice messages. Free, no sign-up, and your files never leave your device."
+h1: "OPUS to MP3 Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "OPUS to MP3"
+card:
+  title: "OPUS → MP3"
+  text: "WhatsApp and Telegram voice messages, as MP3."
+app:
+  name: "OPUS to MP3 Converter"
+  description: "An online OPUS to MP3 converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert OPUS to MP3"
+  steps:
+    - "Click the box above or drag your OPUS files onto it — you can add many at once."
+    - "Wait while your browser re-encodes the audio — nothing gets uploaded. Progress is shown as a percentage."
+    - "Download each MP3 separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Conversion runs on your device. Recordings are never uploaded, so nobody but you can hear them."
+    - title: "MP3 at the bitrate you choose"
+      text: "MP3 is encoded with LAME, the encoder most audio apps use. Choose 128, 192, 256 or 320 kbps."
+    - title: "Tags are kept"
+      text: "Title, artist, album and other tags are carried over to the new file."
+    - title: "Many files at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is Opus?"
+      a: "Opus is a modern codec for speech and music. WhatsApp and Telegram voice messages, calls and the audio of many online videos use it. Not every player or app opens .opus files, while MP3 works everywhere."
+    - q: "Do WhatsApp voice messages work?"
+      a: "Yes. Voice messages saved or shared from WhatsApp are Opus files, and the converter reads them. For speech, 128 kbps is plenty."
+    - q: "Why is the MP3 bigger than the original?"
+      a: "Opus compresses speech far more efficiently than MP3, so a voice message takes more space as an MP3 at comparable quality. That's expected."
+    - q: "Which bitrate should I pick?"
+      a: "192 kbps is a good choice for music and matches what streaming services use. 320 kbps is the maximum for MP3: slightly better quality, bigger file. For speech, podcasts and lectures, 128 kbps is plenty."
+    - q: "Are the title and artist kept?"
+      a: "Yes. The tags of the original file — title, artist, album and others — are copied to the new file."
+    - q: "How many files can I convert at once?"
+      a: "Up to 100 files per batch. Download them one by one or all together in a single ZIP file."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your recordings are processed in your browser and never sent to a server."

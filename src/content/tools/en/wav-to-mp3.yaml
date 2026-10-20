@@ -1,0 +1,46 @@
+# Texts for /en/wav-to-mp3. Draft for the owner's review (see CONTENT.md).
+title: "WAV to MP3 Converter — Free, Private, No Upload"
+description: "Convert WAV to MP3 right in your browser. Free, no sign-up, and your recordings never leave your device. Bitrate from 128 to 320 kbps."
+h1: "WAV to MP3 Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "WAV to MP3"
+card:
+  title: "WAV → MP3"
+  text: "Uncompressed recordings, as compact MP3s."
+app:
+  name: "WAV to MP3 Converter"
+  description: "An online WAV to MP3 converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert WAV to MP3"
+  steps:
+    - "Click the box above or drag your WAV files onto it — you can add many at once."
+    - "Wait while your browser re-encodes the audio — nothing gets uploaded. Progress is shown as a percentage."
+    - "Download each MP3 separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Conversion runs on your device. Recordings are never uploaded, so nobody but you can hear them."
+    - title: "MP3 at the bitrate you choose"
+      text: "MP3 is encoded with LAME, the encoder most audio apps use. Choose 128, 192, 256 or 320 kbps."
+    - title: "Tags are kept"
+      text: "Title, artist, album and other tags are carried over to the new file."
+    - title: "Many files at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Why convert WAV to MP3?"
+      a: "WAV stores audio uncompressed: a minute of 44.1 kHz stereo takes about 10 MB. The same minute as a 192 kbps MP3 is about 1.4 MB, and for most recordings you won't hear the difference."
+    - q: "Which bitrate should I pick?"
+      a: "192 kbps is a good choice for music and matches what streaming services use. 320 kbps is the maximum for MP3: slightly better quality, bigger file. For speech, podcasts and lectures, 128 kbps is plenty."
+    - q: "Will I lose quality?"
+      a: "MP3 is lossy: it drops details that are hard to hear. At 192–320 kbps the difference is usually inaudible. For archiving and editing, keep the WAV or choose FLAC, which compresses without loss."
+    - q: "What happens to multichannel audio?"
+      a: "MP3 is mono or stereo only, so recordings with more channels are mixed down to stereo."
+    - q: "Are the title and artist kept?"
+      a: "Yes. The tags of the original file — title, artist, album and others — are copied to the new file."
+    - q: "How many files can I convert at once?"
+      a: "Up to 100 files per batch. Download them one by one or all together in a single ZIP file."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your recordings are processed in your browser and never sent to a server."

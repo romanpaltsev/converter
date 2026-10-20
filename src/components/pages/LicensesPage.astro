@@ -29,6 +29,10 @@ import openjpegBsd from '../../content/licenses/openjpeg-BSD.txt?raw';
 import qcmsMit from '../../content/licenses/qcms-MIT.txt?raw';
 import liberationFonts from '../../content/licenses/liberation-fonts.txt?raw';
 import adobeCmapsBsd from '../../content/licenses/adobe-cmaps-BSD.txt?raw';
+import mpl from '../../content/licenses/MPL-2.0.txt?raw';
+import lgpl20 from '../../content/licenses/LGPL-2.0.txt?raw';
+import lgpl21 from '../../content/licenses/LGPL-2.1.txt?raw';
+import libflacBsd from '../../content/licenses/libFLAC-BSD.txt?raw';
 
 interface Props {
   locale: Locale;
@@ -61,6 +65,10 @@ const TEXTS: Record<LicenseTextId, string> = {
   'qcms-mit': qcmsMit,
   'liberation-fonts': liberationFonts,
   'adobe-cmaps-bsd': adobeCmapsBsd,
+  'mpl-2.0': mpl,
+  'lgpl-2.0': lgpl20,
+  'lgpl-2.1': lgpl21,
+  'libflac-bsd': libflacBsd,
 };
 const ORDER: LicenseTextId[] = [
   'lgpl-3.0',
@@ -84,6 +92,10 @@ const ORDER: LicenseTextId[] = [
   'qcms-mit',
   'liberation-fonts',
   'adobe-cmaps-bsd',
+  'mpl-2.0',
+  'lgpl-2.0',
+  'lgpl-2.1',
+  'libflac-bsd',
   'inter-ofl',
 ];
 const site = import.meta.env.SITE;

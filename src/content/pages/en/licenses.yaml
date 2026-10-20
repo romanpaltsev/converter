@@ -10,6 +10,6 @@ columns:
   purpose: "Used for"
   license: "License"
   source: "Source code"
-lgpl: "libheif and libde265 are distributed under the GNU LGPL version 3. They are loaded into your browser unmodified as a separate WebAssembly module; the source code of these exact versions is linked in the table, and the full texts of the GNU LGPL and the GNU GPL (which the LGPL refers to) are included below."
+lgpl: "libheif and libde265 are distributed under the GNU LGPL version 3. They are loaded into your browser unmodified as a separate WebAssembly module; the source code of these exact versions is linked in the table, and the full texts of the GNU LGPL and the GNU GPL (which the LGPL refers to) are included below. In the same way, as separate unmodified modules, the MP3 (LAME, GNU LGPL 2.0) and AAC (FFmpeg, GNU LGPL 2.1) encoders are loaded — only when you pick those formats; their wrappers and the Mediabunny library are distributed under the Mozilla Public License 2.0, with source code linked in the table."
 patents: "The HEVC (H.265) format that HEIC is based on may be covered by patents. For WebP and AV1 (AVIF), the codec authors grant a royalty-free patent license — its texts are included below."
 fullTexts: "Full license texts"

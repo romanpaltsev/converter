@@ -1,16 +1,22 @@
 import { describe, expect, test } from 'vitest';
 import { type TargetId, defaultTarget } from '../../src/converter/widget/targets';
-import { FIXED_OUTPUT_MODES, INPUT_FORMATS, OUTPUT_FORMATS, PDF_MODES, TOOLS, TOOL_CATEGORIES, UNIVERSAL_MODES, relatedTools, toolGroups } from '../../src/tools/registry';
+import { AUDIO_FORMATS, FIXED_OUTPUT_MODES, INPUT_FORMATS, MEDIA_FORMATS, OUTPUT_FORMATS, PDF_MODES, TOOLS, TOOL_CATEGORIES, UNIVERSAL_MODES, relatedTools, toolCategory, toolGroups } from '../../src/tools/registry';
 
 describe('реестр инструментов', () => {
   test('слаги конвертеров: ru «x-v-y», en «x-to-y»; входной формат не совпадает с целевым', () => {
     for (const tool of TOOLS.filter((t) => t.mode === 'convert')) {
-      expect(tool.slugs.ru).toMatch(/^[a-z]+-v-[a-z]+$/);
-      expect(tool.slugs.en).toMatch(/^[a-z]+-to-[a-z]+$/);
+      expect(tool.slugs.ru).toMatch(/^[a-z0-9]+-v-[a-z0-9]+$/);
+      expect(tool.slugs.en).toMatch(/^[a-z0-9]+-to-[a-z0-9]+$/);
       expect(tool.id).toBe(tool.slugs.en);
       expect(tool.inputFormats).not.toContain(tool.defaultOutput);
-      expect(OUTPUT_FORMATS).toHaveProperty(tool.defaultOutput);
-      for (const id of tool.inputFormats) expect(INPUT_FORMATS).toHaveProperty(id);
+      // картинка — в картинку; аудио и видео — в аудио (раздел «Аудио»)
+      if (toolCategory(tool) === 'audio') {
+        expect(AUDIO_FORMATS).toHaveProperty(tool.defaultOutput);
+        for (const id of tool.inputFormats) expect(MEDIA_FORMATS).toHaveProperty(id);
+      } else {
+        expect(OUTPUT_FORMATS).toHaveProperty(tool.defaultOutput);
+        for (const id of tool.inputFormats) expect(INPUT_FORMATS).toHaveProperty(id);
+      }
     }
   });
 
@@ -42,6 +48,7 @@ describe('реестр инструментов', () => {
       ['images', 23],
       ['photo', 4],
       ['pdf', 6],
+      ['audio', 8],
     ]);
     expect(groups.map((g) => g.id)).toEqual(TOOL_CATEGORIES.filter((id) => groups.some((g) => g.id === id)));
     expect(groups.flatMap((g) => g.tools).sort((a, b) => TOOLS.indexOf(a) - TOOLS.indexOf(b))).toEqual(TOOLS);
@@ -70,7 +77,7 @@ describe('реестр инструментов', () => {
     }
   });
 
-  test('перелинковка: обратная пара, тот же вход, тот же выход', () => {
+  test('перелинковка: обратная пара, тот же вход, тот же выход, затем раздел', () => {
     const table = Object.fromEntries(TOOLS.map((tool) => [tool.id, relatedTools(tool).map((t) => t.id)]));
     expect(table).toEqual({
       'compress-image': ['resize-image', 'remove-metadata', 'heic-to-jpg', 'jpg-to-webp'],
@@ -106,6 +113,15 @@ describe('реестр инструментов', () => {
       'tiff-to-png': ['tiff-to-jpg', 'heic-to-png', 'avif-to-png', 'jpg-to-png'],
       'jxl-to-jpg': ['jxl-to-png', 'heic-to-jpg', 'avif-to-jpg', 'png-to-jpg'],
       'jxl-to-png': ['jxl-to-jpg', 'heic-to-png', 'avif-to-png', 'jpg-to-png'],
+      'mp4-to-mp3': ['wav-to-mp3', 'm4a-to-mp3', 'flac-to-mp3', 'ogg-to-mp3'],
+      'wav-to-mp3': ['mp3-to-wav', 'mp4-to-mp3', 'm4a-to-mp3', 'flac-to-mp3'],
+      'm4a-to-mp3': ['mp4-to-mp3', 'wav-to-mp3', 'flac-to-mp3', 'ogg-to-mp3'],
+      'flac-to-mp3': ['mp4-to-mp3', 'wav-to-mp3', 'm4a-to-mp3', 'ogg-to-mp3'],
+      'ogg-to-mp3': ['mp4-to-mp3', 'wav-to-mp3', 'm4a-to-mp3', 'flac-to-mp3'],
+      'opus-to-mp3': ['mp4-to-mp3', 'wav-to-mp3', 'm4a-to-mp3', 'flac-to-mp3'],
+      'aac-to-mp3': ['mp4-to-mp3', 'wav-to-mp3', 'm4a-to-mp3', 'flac-to-mp3'],
+      // у «MP3 в WAV» одна обратная пара — остальное добирается из раздела «Аудио»
+      'mp3-to-wav': ['wav-to-mp3', 'mp4-to-mp3', 'm4a-to-mp3', 'flac-to-mp3'],
     });
   });
 

@@ -25,7 +25,11 @@ export type LicenseTextId =
   | 'openjpeg-bsd'
   | 'qcms-mit'
   | 'liberation-fonts'
-  | 'adobe-cmaps-bsd';
+  | 'adobe-cmaps-bsd'
+  | 'mpl-2.0'
+  | 'lgpl-2.0'
+  | 'lgpl-2.1'
+  | 'libflac-bsd';
 
 export interface ThirdPartyComponent {
   name: string;
@@ -248,6 +252,38 @@ export const COMPONENTS: ThirdPartyComponent[] = [
     source: 'https://github.com/rsms/inter',
   },
   {
+    name: 'Mediabunny',
+    version: '1.61.6',
+    purpose: { ru: 'чтение и запись аудио и видео (MP3, WAV, FLAC, OGG, MP4, WebM…)', en: 'reading and writing audio and video (MP3, WAV, FLAC, OGG, MP4, WebM…)' },
+    license: 'Mozilla Public License 2.0',
+    texts: ['mpl-2.0'],
+    source: 'https://github.com/Vanilagy/mediabunny/tree/v1.61.6',
+  },
+  {
+    name: 'LAME (@mediabunny/mp3-encoder)',
+    version: '1.61.6',
+    purpose: { ru: 'кодирование MP3', en: 'MP3 encoding' },
+    license: 'GNU LGPL 2.0 (LAME) + MPL 2.0',
+    texts: ['lgpl-2.0', 'mpl-2.0'],
+    source: 'https://github.com/Vanilagy/mediabunny/tree/v1.61.6/packages/mp3-encoder',
+  },
+  {
+    name: 'libFLAC (@mediabunny/flac-encoder)',
+    version: '1.61.6',
+    purpose: { ru: 'кодирование FLAC', en: 'FLAC encoding' },
+    license: 'BSD-3-Clause (libFLAC) + MPL 2.0',
+    texts: ['libflac-bsd', 'mpl-2.0'],
+    source: 'https://github.com/Vanilagy/mediabunny/tree/v1.61.6/packages/flac-encoder',
+  },
+  {
+    name: 'FFmpeg AAC (@mediabunny/aac-encoder)',
+    version: '1.61.6',
+    purpose: { ru: 'кодирование AAC (M4A), если браузер не умеет сам', en: "AAC (M4A) encoding when the browser can't" },
+    license: 'GNU LGPL 2.1 (FFmpeg) + MPL 2.0',
+    texts: ['lgpl-2.1', 'mpl-2.0'],
+    source: 'https://github.com/Vanilagy/mediabunny/tree/v1.61.6/packages/aac-encoder',
+  },
+  {
     name: 'Compact ICC Profiles',
     version: '—',
     purpose: { ru: 'цветовые профили sRGB, Display P3, Rec. 2020', en: 'sRGB, Display P3 and Rec. 2020 color profiles' },
@@ -280,6 +316,10 @@ export const LICENSE_TITLES: Record<LicenseTextId, string> = {
   'qcms-mit': 'qcms (MIT, Mozilla)',
   'liberation-fonts': 'Liberation Fonts (GNU GPL 2 with font exception, Red Hat)',
   'adobe-cmaps-bsd': 'Adobe CMap resources (BSD-3-Clause)',
+  'mpl-2.0': 'Mozilla Public License, version 2.0',
+  'lgpl-2.0': 'GNU Library General Public License, version 2',
+  'lgpl-2.1': 'GNU Lesser General Public License, version 2.1',
+  'libflac-bsd': 'libFLAC (BSD-3-Clause, Xiph.Org Foundation)',
 };
 
 /** Обязательная фраза лицензии IJG для бинарных дистрибутивов libjpeg. */

@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import type { SniffKind } from '../../src/converter/pipeline/sniff';
-import { ALL_TARGETS, defaultTarget, jobFor, ownTarget, settingsKey, sharedTargets, targetsFor, visibleSettings } from '../../src/converter/widget/targets';
+import { ALL_TARGETS, AUDIO_TARGETS, DOCUMENT_TARGETS, IMAGE_TARGETS, defaultTarget, jobFor, ownTarget, settingsKey, sharedTargets, targetsFor, visibleSettings } from '../../src/converter/widget/targets';
 
-const settings = { quality: 90, lossless: false, keepMetadata: false, dpi: 150 };
+const settings = { quality: 90, lossless: false, keepMetadata: false, dpi: 150, audioBitrate: 192 };
 
 describe('форматы результата у файла', () => {
   test('картинка — во все форматы и в PDF, кроме своего формата; HEIC, GIF, BMP, TIFF, JPEG XL — во все', () => {
@@ -11,7 +11,7 @@ describe('форматы результата у файла', () => {
     expect(targetsFor('webp')).toEqual(['jpeg', 'png', 'avif', 'ico', 'pdf']);
     expect(targetsFor('avif')).toEqual(['jpeg', 'png', 'webp', 'ico', 'pdf']);
     for (const kind of ['heic', 'gif', 'bmp', 'tiff', 'jxl'] as SniffKind[]) {
-      expect(targetsFor(kind)).toEqual([...ALL_TARGETS]);
+      expect(targetsFor(kind)).toEqual([...IMAGE_TARGETS, ...DOCUMENT_TARGETS]);
       expect(ownTarget(kind)).toBeNull();
     }
   });
@@ -43,9 +43,47 @@ describe('форматы результата у файла', () => {
 
   test('«Все файлы в …»: форматы, подходящие хотя бы одному файлу, в порядке меню', () => {
     expect(sharedTargets(['jpeg'])).toEqual(['png', 'webp', 'avif', 'ico', 'pdf']);
-    expect(sharedTargets(['jpeg', 'png'])).toEqual([...ALL_TARGETS]);
+    expect(sharedTargets(['jpeg', 'png'])).toEqual([...IMAGE_TARGETS, ...DOCUMENT_TARGETS]);
+    // картинка и аудио вместе — все пункты меню
+    expect(sharedTargets(['jpeg', 'png', 'mp3', 'wav'])).toEqual([...ALL_TARGETS]);
     expect(sharedTargets(['pdf'])).toEqual(['jpeg', 'png', 'webp']);
     expect(sharedTargets([])).toEqual([]);
+  });
+});
+
+describe('аудио и видео', () => {
+  test('аудио — в аудиоформаты, кроме своего; видео — в аудио (звуковая дорожка); Opus в Ogg — это уже OGG', () => {
+    expect(targetsFor('mp3')).toEqual(['wav', 'm4a', 'ogg', 'flac']);
+    expect(targetsFor('wav')).toEqual(['mp3', 'm4a', 'ogg', 'flac']);
+    expect(targetsFor('m4a')).toEqual(['mp3', 'wav', 'ogg', 'flac']);
+    expect(targetsFor('ogg')).toEqual(['mp3', 'wav', 'm4a', 'flac']);
+    expect(targetsFor('opus')).toEqual(['mp3', 'wav', 'm4a', 'flac']);
+    expect(targetsFor('flac')).toEqual(['mp3', 'wav', 'm4a', 'ogg']);
+    for (const kind of ['aac', 'mp4', 'mov', 'webm', 'mkv'] as SniffKind[]) expect(targetsFor(kind)).toEqual([...AUDIO_TARGETS]);
+    expect(jobFor('mp4', 'mp3')).toBe('media');
+    expect(jobFor('wav', 'flac')).toBe('media');
+    expect(defaultTarget('mp3', 'mp3')).toBeNull();
+    expect(defaultTarget('mp4', 'mp3')).toBe('mp3');
+    // картинка на странице «WAV в MP3» ждёт выбора, аудио на странице картинок — тоже
+    expect(defaultTarget('jpeg', 'mp3')).toBeNull();
+    expect(defaultTarget('wav', 'jpeg')).toBeNull();
+  });
+
+  test('битрейт — у MP3, M4A и OGG; у WAV и FLAC (без потерь) его нет; метаданные фото у аудио не показываются', () => {
+    for (const target of ['mp3', 'm4a', 'ogg'] as const) {
+      expect(visibleSettings([{ kind: 'wav', target }], false)).toMatchObject({ audioBitrate: true, quality: false, metadata: false });
+    }
+    for (const target of ['wav', 'flac'] as const) {
+      expect(Object.values(visibleSettings([{ kind: 'mp3', target }], false)).some(Boolean)).toBe(false);
+    }
+  });
+
+  test('ключ настроек аудио — формат и битрейт (у форматов без потерь — только формат)', () => {
+    const mp3 = { kind: 'wav' as const, target: 'mp3' as const };
+    expect(settingsKey(mp3, settings)).toBe('mp3:b192');
+    expect(settingsKey(mp3, { ...settings, quality: 10, keepMetadata: true })).toBe('mp3:b192');
+    expect(settingsKey(mp3, { ...settings, audioBitrate: 320 })).toBe('mp3:b320');
+    expect(settingsKey({ kind: 'mp3', target: 'flac' }, { ...settings, audioBitrate: 320 })).toBe('flac');
   });
 });
 
@@ -60,6 +98,7 @@ describe('видимые настройки', () => {
       avifHint: false,
       dpi: false,
       pdfLayout: false,
+      audioBitrate: false,
     });
     expect(visibleSettings([{ kind: 'heic', target: 'webp' }], true)).toMatchObject({ quality: false, lossless: true });
     expect(visibleSettings([{ kind: 'heic', target: 'webp' }], false)).toMatchObject({ quality: true, lossless: true });
@@ -93,6 +132,7 @@ describe('видимые настройки', () => {
       avifHint: false,
       dpi: false,
       pdfLayout: true,
+      audioBitrate: false,
     });
   });
 });
@@ -103,7 +143,7 @@ describe('ключ настроек готового файла', () => {
     expect(settingsKey(png, settings)).toBe(settingsKey(png, { ...settings, quality: 50, lossless: true }));
     expect(settingsKey(png, settings)).not.toBe(settingsKey(png, { ...settings, keepMetadata: true }));
     const ico = { kind: 'png', target: 'ico' } as const;
-    expect(settingsKey(ico, settings)).toBe(settingsKey(ico, { quality: 10, lossless: true, keepMetadata: true, dpi: 150 }));
+    expect(settingsKey(ico, settings)).toBe(settingsKey(ico, { quality: 10, lossless: true, keepMetadata: true, dpi: 150, audioBitrate: 192 }));
     const jpeg = { kind: 'heic', target: 'jpeg' } as const;
     expect(settingsKey(jpeg, settings)).not.toBe(settingsKey(jpeg, { ...settings, quality: 80 }));
     expect(settingsKey(jpeg, settings)).toBe(settingsKey(jpeg, { ...settings, lossless: true }));
@@ -118,6 +158,6 @@ describe('ключ настроек готового файла', () => {
     expect(settingsKey(jpeg, settings)).toBe(settingsKey(jpeg, { ...settings, dpi: 300 }));
     // картинка в PDF: ничего из общих настроек (размер страницы — при сборке)
     const document = { kind: 'heic', target: 'pdf' } as const;
-    expect(settingsKey(document, settings)).toBe(settingsKey(document, { quality: 10, lossless: true, keepMetadata: true, dpi: 300 }));
+    expect(settingsKey(document, settings)).toBe(settingsKey(document, { quality: 10, lossless: true, keepMetadata: true, dpi: 300, audioBitrate: 192 }));
   });
 });

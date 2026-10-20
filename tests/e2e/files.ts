@@ -256,3 +256,38 @@ export function entropyData(jpeg: Buffer): Buffer {
   while (jpeg[pos + 1] !== 0xda) pos += 2 + jpeg.readUInt16BE(pos + 2);
   return jpeg.subarray(pos);
 }
+
+export interface MediaInfo {
+  /** MIME-тип контейнера по mediabunny: audio/mpeg, audio/wav, audio/mp4, audio/ogg, audio/flac… */
+  mime: string;
+  codec: string | null;
+  channels: number;
+  sampleRate: number;
+  duration: number;
+  hasVideo: boolean;
+  title: string | null;
+  artist: string | null;
+}
+
+/** Разбор аудио mediabunny в Node (без декодирования): контейнер, кодек, длительность, теги. */
+export async function mediaInfo(bytes: Uint8Array): Promise<MediaInfo> {
+  const { ALL_FORMATS, BufferSource, Input } = await import('mediabunny');
+  const input = new Input({ source: new BufferSource(bytes), formats: ALL_FORMATS });
+  try {
+    const track = await input.getPrimaryAudioTrack();
+    if (!track) throw new Error('нет звуковой дорожки');
+    const tags = await input.getMetadataTags();
+    return {
+      mime: (await input.getMimeType()).split(';')[0]!,
+      codec: await track.getCodec(),
+      channels: await track.getNumberOfChannels(),
+      sampleRate: await track.getSampleRate(),
+      duration: await input.computeDuration(),
+      hasVideo: (await input.getPrimaryVideoTrack()) !== null,
+      title: tags.title ?? null,
+      artist: tags.artist ?? null,
+    };
+  } finally {
+    input.dispose();
+  }
+}

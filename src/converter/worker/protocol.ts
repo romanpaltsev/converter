@@ -1,5 +1,6 @@
 // Сообщения между основным потоком и worker'ом конвертера.
 
+import type { MediaOptions } from '../media/formats';
 import type { MetadataReport } from '../metadata/inspect/types';
 import type { RemovedKind, StripMode } from '../metadata/strip/types';
 import type { PdfImage } from '../pdf/writer';
@@ -30,7 +31,9 @@ export type ToWorker =
   /** «Объединить PDF»: сколько страниц и превью первой. */
   | { type: 'pdf-info'; id: number; file: Blob; memoryLimit: number }
   /** «Объединить PDF»: документы по порядку → один PDF. */
-  | { type: 'pdf-merge'; id: number; files: Blob[] };
+  | { type: 'pdf-merge'; id: number; files: Blob[] }
+  /** Аудио (и звук из видео): mediabunny; ход — сообщениями media-progress. */
+  | { type: 'media'; id: number; file: Blob; options: MediaOptions; memoryLimit: number };
 
 export interface PdfRenderOptions {
   encoder: EncoderId;
@@ -109,5 +112,9 @@ export type FromWorker =
       /** Кучи WASM-модулей worker'а после файла (байты). */
       heap: number;
     }
+  /** Аудио: доля готового 0…1 (промежуточное сообщение). */
+  | { type: 'media-progress'; id: number; progress: number }
+  /** Аудио готово; duration — секунды; copied — звук скопирован без перекодирования. */
+  | { type: 'media-done'; id: number; buffer: ArrayBuffer; mime: string; extension: string; duration: number; copied: boolean }
   /** fatal — нужен новый worker и повторная попытка; recycle — новый worker без повторной попытки. */
   | { type: 'error'; id: number; code: ErrorCode; fatal: boolean; recycle: boolean; message: string };

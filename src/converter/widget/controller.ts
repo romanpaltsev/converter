@@ -2,12 +2,13 @@
 // Разметку отдаёт сервер (ConverterWidget.astro), здесь — только поведение. Строки — из конфигурации.
 
 import { track } from '../../lib/analytics';
+import { AUDIO_FORMATS, type AudioTargetId, DEFAULT_AUDIO_BITRATE } from '../media/formats';
 import type { MetadataReport } from '../metadata/inspect/types';
 import type { RemovedKind, StripMode } from '../metadata/strip/types';
 import { SMALL_MARGIN } from '../pdf/limits';
 import type { PageSize, PdfImage, PdfLayout } from '../pdf/writer';
 import { checkInput } from '../pipeline/input';
-import { type ImageKind, KIND_FILES, SNIFF_BYTES, type SniffKind, sniff } from '../pipeline/sniff';
+import { type ImageKind, KIND_FILES, SNIFF_BYTES, type SniffKind, isImageKind, isMediaKind, kindLabel, sniff } from '../pipeline/sniff';
 import type { ResizeSpec } from '../pipeline/resize';
 import { ENCODER_EXTENSIONS, type EncoderId, type ErrorCode, type OutputTarget, type WarningCode } from '../pipeline/types';
 import { type OutputOption, type WidgetConfig, readConfig } from './config';
@@ -41,6 +42,8 @@ interface Settings {
   pdf: PdfLayout | null;
   /** Универсальный виджет: разрешение страниц PDF; иначе null. */
   dpi: number | null;
+  /** Универсальный виджет: битрейт аудио с потерями (кбит/с); иначе null. */
+  audioBitrate: number | null;
 }
 
 /** Целевой размер — в десятичных килобайтах и мегабайтах: файл «до 1 МБ» пройдёт и лимит 1 000 000, и 1 048 576 байт. */
@@ -86,6 +89,10 @@ interface Item {
   pages: { done: number; total: number | null } | null;
   parent: Item | null;
   page: { number: number; total: number } | null;
+  /** Аудио: доля готового (0…1) во время конвертации, длительность и «скопировано без перекодирования». */
+  progress: number | null;
+  duration: number | null;
+  copied: boolean;
   /** Размеры до и после уменьшения (страница «Изменить размер»). */
   dimensions: { before: [number, number]; after: [number, number] } | null;
   /** Оценка памяти, если файл не поместился рядом с другими (ждёт в очереди первым). */
@@ -125,7 +132,8 @@ const sameSettings = (a: Settings, b: Settings) =>
   (!isLossy(a) || (a.targetBytes === b.targetBytes && (a.targetBytes !== null || a.quality === b.quality))) &&
   JSON.stringify(a.resize) === JSON.stringify(b.resize) &&
   a.strip === b.strip &&
-  a.dpi === b.dpi;
+  a.dpi === b.dpi &&
+  a.audioBitrate === b.audioBitrate;
 
 /** Сконвертированный файл или «уже в этом формате» — после смены настроек их можно сконвертировать заново. */
 function isOutdated(item: Item, current: Settings): boolean {
@@ -141,7 +149,7 @@ function fill(template: string, values: Record<string, string | number>): string
 
 /** Общие настройки, важные формату файла (у универсального виджета dpi есть всегда). */
 function targetSettings(settings: Settings): TargetSettings {
-  return { quality: settings.quality, lossless: settings.lossless, keepMetadata: settings.keepMetadata, dpi: settings.dpi ?? 0 };
+  return { quality: settings.quality, lossless: settings.lossless, keepMetadata: settings.keepMetadata, dpi: settings.dpi ?? 0, audioBitrate: settings.audioBitrate ?? 0 };
 }
 
 /** По какому селектору найти «ту же» кнопку в перерисованной строке. */
@@ -177,6 +185,7 @@ export class ConverterWidget {
   private readonly avifHint: HTMLElement | null;
   private readonly pdfLayoutRow: HTMLElement | null;
   private readonly dpiRow: HTMLElement | null;
+  private readonly audioBitrateRow: HTMLElement | null;
   /** Размер страницы и поля, с которыми собраны готовые PDF: сменились — документы пересобираются. */
   private layoutKey = '';
   private readonly metaRow: HTMLElement | null;
@@ -237,6 +246,7 @@ export class ConverterWidget {
     this.avifHint = root.querySelector('[data-avif-hint]');
     this.pdfLayoutRow = root.querySelector('[data-pdf-layout-row]');
     this.dpiRow = root.querySelector('[data-dpi-row]');
+    this.audioBitrateRow = root.querySelector('[data-audio-bitrate-row]');
     this.metaRow = root.querySelector('[data-meta-row]');
     this.stripHint = root.querySelector('[data-strip-hint]');
     this.compressionRow = root.querySelector('[data-compression-row]');
@@ -346,6 +356,7 @@ export class ConverterWidget {
           ? { size: (data.get('pageSize') ?? 'a4') as PageSize, margin: data.get('margin') === 'small' ? SMALL_MARGIN : 0 }
           : null,
       dpi: this.config.universal ? Number(data.get('dpi') ?? 150) : null,
+      audioBitrate: this.config.universal ? Number(data.get('audioBitrate') ?? DEFAULT_AUDIO_BITRATE) : null,
     };
   }
 
@@ -420,6 +431,7 @@ export class ConverterWidget {
     if (this.avifHint) this.avifHint.hidden = !show.avifHint;
     if (this.pdfLayoutRow) this.pdfLayoutRow.hidden = !show.pdfLayout;
     if (this.dpiRow) this.dpiRow.hidden = !show.dpi;
+    if (this.audioBitrateRow) this.audioBitrateRow.hidden = !show.audioBitrate;
     // размер страницы и поля применяются к готовым PDF сразу, без повторной обработки
     const layout = JSON.stringify(settings.pdf);
     if (layout !== this.layoutKey) {
@@ -514,8 +526,8 @@ export class ConverterWidget {
       this.fail(item, 'pdf-unsupported');
       return;
     }
-    // картинка: CMYK и неподдерживаемый JPEG видны по заголовку (PDF проверит pdf.js в worker'е)
-    const check = kind === 'pdf' ? null : checkInput(head, 'png', true);
+    // картинка: CMYK и неподдерживаемый JPEG видны по заголовку (PDF проверит pdf.js, аудио и видео — mediabunny в worker'е)
+    const check = kind === 'pdf' || isMediaKind(kind) ? null : checkInput(head, 'png', true);
     if (kind === 'unknown' || (check && !check.ok)) {
       this.run.total++;
       this.fail(item, check && !check.ok ? check.code : 'not-image');
@@ -588,6 +600,7 @@ export class ConverterWidget {
       const job = jobFor(pair.kind, pair.target);
       if (job === 'pages') return this.renderPdf(item, head, pair.target as EncoderId, settings, lease, ticket);
       if (job === 'document') return this.pdfPage(item, head, lease, ticket, settings.pdf);
+      if (job === 'media') return this.convertMedia(item, pair.target as AudioTargetId, settings, lease, ticket);
       return this.convertImage(item, head, pair.target as EncoderId, pair.target === 'webp' && settings.lossless, settings, lease, ticket);
     }
     if (settings.strip) return this.strip(item, head, settings.strip, lease, ticket);
@@ -680,10 +693,60 @@ export class ConverterWidget {
     return false;
   }
 
+  /** Аудио (и звук из видео): mediabunny в worker'е; ход — в процентах в строке файла. */
+  private async convertMedia(item: Item, target: AudioTargetId, settings: Settings, lease: Lease, ticket: Ticket): Promise<boolean> {
+    const format = AUDIO_FORMATS[target];
+    item.name ??= this.names.allocate(outputName(item.file.name, format.extension));
+    this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
+    const options = { target, bitrate: settings.audioBitrate ?? DEFAULT_AUDIO_BITRATE };
+    const outcome = await lease.client.media(
+      item.file,
+      options,
+      lease.memoryLimit,
+      (footprint, fresh) => {
+        if (this.stale(item, ticket)) return;
+        lease.started(footprint, fresh);
+        this.pump();
+      },
+      (progress) => {
+        if (this.stale(item, ticket)) return;
+        item.progress = progress;
+        this.renderRow(item);
+      },
+    );
+    if (this.stale(item, ticket)) return false;
+    item.progress = null;
+    if (outcome.status === 'needs-memory') {
+      item.estimate = outcome.fresh;
+      this.requeue(item);
+      return true;
+    }
+    if (outcome.status === 'error') {
+      if (outcome.fatal && !item.retry) {
+        item.retry = true;
+        this.requeue(item);
+        return true;
+      }
+      this.fail(item, outcome.code);
+      return outcome.fatal || outcome.recycle;
+    }
+    item.blob = new Blob([outcome.buffer], { type: outcome.mime });
+    item.url = URL.createObjectURL(item.blob);
+    item.format = format.label;
+    item.duration = outcome.duration;
+    item.copied = outcome.copied;
+    item.status = 'done';
+    this.run.done++;
+    this.run.formats[target] = (this.run.formats[target] ?? 0) + 1;
+    this.renderRow(item);
+    this.syncSettings();
+    return false;
+  }
+
   /** «Удалить метаданные»: формат и имя файла остаются, WASM не нужен. */
   private async strip(item: Item, head: Uint8Array, mode: StripMode, lease: Lease, ticket: Ticket): Promise<boolean> {
     const { kind } = sniff(head);
-    if (kind === 'unknown' || kind === 'pdf') {
+    if (!isImageKind(kind)) {
       this.fail(item, kind === 'pdf' ? 'pdf-input' : 'not-image');
       return false;
     }
@@ -722,7 +785,7 @@ export class ConverterWidget {
   /** «Посмотреть EXIF»: только чтение, результата-файла нет. */
   private async inspect(item: Item, head: Uint8Array, lease: Lease, ticket: Ticket): Promise<boolean> {
     const { kind } = sniff(head);
-    if (kind === 'unknown' || kind === 'pdf') {
+    if (!isImageKind(kind)) {
       this.fail(item, kind === 'pdf' ? 'pdf-input' : 'not-image');
       return false;
     }
@@ -1010,6 +1073,9 @@ export class ConverterWidget {
       pages: null,
       parent: null,
       page: null,
+      progress: null,
+      duration: null,
+      copied: false,
       dimensions: null,
       estimate: null,
       retry: false,
@@ -1067,6 +1133,8 @@ export class ConverterWidget {
     this.preset = target;
     for (const item of this.items) {
       if (this.canChooseTarget(item) && targetsFor(item.source!).includes(target)) this.setTarget(item, target, false);
+      // файл, который уже в этом формате, ждёт выбора — пояснение «Файл уже в формате …» зависит от предустановки
+      else if (item.status === 'waiting') this.renderRow(item);
     }
     this.syncSettings();
     this.pump();
@@ -1222,6 +1290,19 @@ export class ConverterWidget {
     return formatBytes(bytes, this.config.locale, this.t.units);
   }
 
+  /** Доля готового: «42 %». */
+  private percent(progress: number): string {
+    return new Intl.NumberFormat(this.config.locale, { style: 'percent', maximumFractionDigits: 0 }).format(Math.min(1, Math.max(0, progress)));
+  }
+
+  /** Длительность: «0:03», «4:05», «1:02:03». */
+  private duration(seconds: number): string {
+    const total = Math.round(seconds);
+    const [h, m, sec] = [Math.floor(total / 3600), Math.floor((total % 3600) / 60), total % 60];
+    const two = (n: number) => String(n).padStart(2, '0');
+    return h > 0 ? `${h}:${two(m)}:${two(sec)}` : `${m}:${two(sec)}`;
+  }
+
   /** Изменение размера файла в процентах со знаком: «−85 %», «+12 %». */
   private change(before: number, after: number): string {
     const ratio = before > 0 ? (after - before) / before : 0;
@@ -1268,7 +1349,7 @@ export class ConverterWidget {
     } else if (this.config.universal && !item.parent && item.source && item.source !== 'unknown') {
       // универсальный виджет: до результата — формат входа
       thumb.classList.add('file__thumb--format');
-      thumb.textContent = item.source === 'pdf' ? 'PDF' : KIND_FILES[item.source].label;
+      thumb.textContent = kindLabel(item.source);
     }
 
     const body = document.createElement('div');
@@ -1284,7 +1365,10 @@ export class ConverterWidget {
     if (item.status === 'converting') {
       // «PDF в JPG»: какая страница рисуется
       const pages = item.pages;
-      meta.textContent = pages?.total ? fill(this.t.pdfRendering, { page: Math.min(pages.done + 1, pages.total), total: pages.total }) : this.t.converting;
+      if (pages?.total) meta.textContent = fill(this.t.pdfRendering, { page: Math.min(pages.done + 1, pages.total), total: pages.total });
+      // аудио: сколько готово
+      else if (item.progress !== null) meta.textContent = fill(this.t.convertingPercent, { percent: this.percent(item.progress) });
+      else meta.textContent = this.t.converting;
     }
     if (item.status === 'done' && item.pages?.total) meta.textContent = fill(this.t.pdfPages, { count: item.pages.total });
     if (item.status === 'error') meta.textContent = this.t.failed;
@@ -1316,6 +1400,9 @@ export class ConverterWidget {
         parts.splice(1, 0, before === after ? before! : fill(this.t.sizes, { before: before!, after: after! }));
       }
       if (item.quality !== null) parts.push(fill(this.t.qualityUsed, { quality: item.quality }));
+      // аудио: длительность; звук того же кодека скопирован без перекодирования
+      if (item.duration !== null) parts.splice(1, 0, this.duration(item.duration));
+      if (item.copied) parts.push(this.t.audioCopied);
       // картинка → PDF: JPEG вставлен как есть
       if (item.passthrough) parts.push(this.t.passthrough);
       meta.textContent = parts.join(' · ');

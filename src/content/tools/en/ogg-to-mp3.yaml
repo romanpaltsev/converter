@@ -1,0 +1,46 @@
+# Texts for /en/ogg-to-mp3. Draft for the owner's review (see CONTENT.md).
+title: "OGG to MP3 Converter — Free, Private, No Upload"
+description: "Convert OGG to MP3 right in your browser: music and Telegram voice messages. Free, no sign-up, and your files never leave your device."
+h1: "OGG to MP3 Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "OGG to MP3"
+card:
+  title: "OGG → MP3"
+  text: "OGG music and voice messages, as MP3 that plays everywhere."
+app:
+  name: "OGG to MP3 Converter"
+  description: "An online OGG to MP3 converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert OGG to MP3"
+  steps:
+    - "Click the box above or drag your OGG files onto it — you can add many at once."
+    - "Wait while your browser re-encodes the audio — nothing gets uploaded. Progress is shown as a percentage."
+    - "Download each MP3 separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Conversion runs on your device. Recordings are never uploaded, so nobody but you can hear them."
+    - title: "MP3 at the bitrate you choose"
+      text: "MP3 is encoded with LAME, the encoder most audio apps use. Choose 128, 192, 256 or 320 kbps."
+    - title: "Tags are kept"
+      text: "Title, artist, album and other tags are carried over to the new file."
+    - title: "Many files at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is OGG?"
+      a: "OGG is a container that usually holds Vorbis or Opus audio. Games, some websites and Telegram voice messages use it. Not every player or app opens it, while MP3 works everywhere."
+    - q: "Do Telegram voice messages work?"
+      a: "Yes. Saved Telegram voice messages are Opus in OGG, and the converter reads them. For speech, 128 kbps is plenty."
+    - q: "Which bitrate should I pick?"
+      a: "192 kbps is a good choice for music and matches what streaming services use. 320 kbps is the maximum for MP3: slightly better quality, bigger file. For speech, podcasts and lectures, 128 kbps is plenty."
+    - q: "Will I lose quality?"
+      a: "Vorbis, Opus and MP3 are all lossy, so converting costs a little quality. To keep the loss unnoticeable, choose 192 kbps or higher."
+    - q: "Are the title and artist kept?"
+      a: "Yes. The tags of the original file — title, artist, album and others — are copied to the new file."
+    - q: "How many files can I convert at once?"
+      a: "Up to 100 files per batch. Download them one by one or all together in a single ZIP file."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your recordings are processed in your browser and never sent to a server."

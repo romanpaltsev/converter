@@ -1,0 +1,44 @@
+# Texts for /en/mp3-to-wav. Draft for the owner's review (see CONTENT.md).
+title: "MP3 to WAV Converter — Free, Private, No Upload"
+description: "Convert MP3 to WAV right in your browser for video editors, audio editors and devices that don't play MP3. Free, no sign-up, no uploads."
+h1: "MP3 to WAV Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "MP3 to WAV"
+card:
+  title: "MP3 → WAV"
+  text: "MP3, as WAV for editing and audio software."
+app:
+  name: "MP3 to WAV Converter"
+  description: "An online MP3 to WAV converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert MP3 to WAV"
+  steps:
+    - "Click the box above or drag your MP3 files onto it — you can add many at once."
+    - "Wait while your browser re-encodes the audio — nothing gets uploaded. Progress is shown as a percentage."
+    - "Download each WAV separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Conversion runs on your device. Recordings are never uploaded, so nobody but you can hear them."
+    - title: "A WAV that opens everywhere"
+      text: "Audio is saved as 16-bit PCM at the sample rate and channel count of the original MP3 — any app can open it."
+    - title: "No further loss"
+      text: "The MP3 is decoded once and WAV stores it uncompressed, so editing and re-saving no longer cost quality."
+    - title: "Many files at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Why convert MP3 to WAV?"
+      a: "Video editors, audio editors, samplers and some devices need WAV or don't understand MP3. WAV stores audio uncompressed, which makes it easy to edit."
+    - q: "Will the quality improve?"
+      a: "No. The WAV reproduces the MP3 exactly, but details lost when the MP3 was made won't come back. From here on, though, editing costs no further quality."
+    - q: "Why is the WAV so much bigger?"
+      a: "WAV is uncompressed: a minute of 44.1 kHz stereo is about 10 MB. So the WAV is usually 4–11 times larger than the MP3, depending on its bitrate."
+    - q: "What kind of WAV do I get?"
+      a: "16-bit PCM with the same sample rate and channel count as the MP3 — usually 44.1 kHz stereo. Every app and device supports it."
+    - q: "How many files can I convert at once?"
+      a: "Up to 100 files per batch. Download them one by one or all together in a single ZIP file."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your recordings are processed in your browser and never sent to a server."

@@ -31,8 +31,8 @@ describe('sniff: HEIF-бренды', () => {
     expect(sniff(ftyp(brand, ['avif', 'mif1', 'miaf', 'MA1B']))).toEqual({ kind: 'avif' });
   });
 
-  test('видео MP4 (isom) — не изображение', () => {
-    expect(sniff(ftyp('isom', ['isom', 'iso2', 'mp41']))).toEqual({ kind: 'unknown' });
+  test('видео MP4 (isom) — не изображение, а видео (из него — звук)', () => {
+    expect(sniff(ftyp('isom', ['isom', 'iso2', 'mp41']))).toEqual({ kind: 'mp4' });
   });
 
   test('список брендов читается целиком', () => {
@@ -68,4 +68,41 @@ describe('sniff: фикстуры', () => {
   test('photo.jpg → jpeg', () => expect(sniff(head('photo.jpg'))).toEqual({ kind: 'jpeg' }));
   test('not-heic.heic (PNG) → png', () => expect(sniff(head('not-heic.heic'))).toEqual({ kind: 'png' }));
   test('garbage.heic → unknown', () => expect(sniff(head('garbage.heic'))).toEqual({ kind: 'unknown' }));
+});
+
+describe('sniff: аудио и видео', () => {
+  test.each([
+    ['tone.mp3', 'mp3'],
+    ['tone.wav', 'wav'],
+    ['tone.flac', 'flac'],
+    ['tone.ogg', 'ogg'],
+    ['tone.opus', 'opus'],
+    ['tone.aac', 'aac'],
+    ['tone.m4a', 'm4a'],
+    ['clip.mp4', 'mp4'],
+    ['clip.mov', 'mov'],
+    ['clip.webm', 'webm'],
+    ['garbage.mp3', 'mp3'],
+  ])('%s → %s', (name, kind) => {
+    expect(sniff(fixture(name).subarray(0, SNIFF_BYTES))).toEqual({ kind });
+  });
+
+  test('ISO BMFF: бренд M4A важнее совместимого isom, «qt  » — MOV, неизвестный (CR3) — не поддерживается', () => {
+    expect(sniff(ftyp('M4A ', ['M4A ', 'mp42', 'isom']))).toEqual({ kind: 'm4a' });
+    expect(sniff(ftyp('isom', ['isom', 'M4A ']))).toEqual({ kind: 'm4a' });
+    expect(sniff(ftyp('mp42', ['mp42', 'isom', 'avc1']))).toEqual({ kind: 'mp4' });
+    expect(sniff(ftyp('3gp4', ['3gp4']))).toEqual({ kind: 'mp4' });
+    expect(sniff(ftyp('qt  ', ['qt  ']))).toEqual({ kind: 'mov' });
+    expect(sniff(ftyp('crx ', ['crx ', 'isom']))).toEqual({ kind: 'mp4' });
+    expect(sniff(ftyp('crx ', ['crx ']))).toEqual({ kind: 'unknown' });
+  });
+
+  test('кадр MPEG без ID3: Layer III — MP3, слой 00 — ADTS (AAC); JPEG и JPEG XL с FF не путаются', () => {
+    expect(sniff(new Uint8Array([0xff, 0xfb, 0x90, 0x64, 0, 0, 0, 0]))).toEqual({ kind: 'mp3' });
+    expect(sniff(new Uint8Array([0xff, 0xf1, 0x50, 0x80, 0, 0, 0, 0]))).toEqual({ kind: 'aac' });
+    expect(sniff(new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0, 0, 0, 0]))).toEqual({ kind: 'jpeg' });
+    expect(sniff(new Uint8Array([0xff, 0x0a, 0, 0, 0, 0, 0, 0]))).toEqual({ kind: 'jxl' });
+    // битрейт 1111 недопустим — это не кадр MP3
+    expect(sniff(new Uint8Array([0xff, 0xfb, 0xf0, 0x64, 0, 0, 0, 0]))).toEqual({ kind: 'unknown' });
+  });
 });

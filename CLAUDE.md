@@ -3,7 +3,8 @@
 Онлайн-конвертер файлов (разделы по типам файлов, как у convertio): статический сайт на Astro (ru/en), конвертация полностью в браузере
 (module Web Worker + WASM), файлы на сервер не загружаются. Сейчас: HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF и JPEG XL → JPG, PNG, WebP, ICO или AVIF
 (23 страницы-конвертера), «Сжать фото», «Изменить размер», «Удалить метаданные», «Посмотреть EXIF» и «Изображения в PDF»
-(JPG, PNG, HEIC → PDF), «PDF в JPG/PNG» и «Объединить PDF».
+(JPG, PNG, HEIC → PDF), «PDF в JPG/PNG» и «Объединить PDF»; аудио — MP3, WAV, FLAC, OGG/Opus, AAC, M4A и звук из видео
+(MP4, MOV, WebM, MKV) → MP3, WAV, M4A, OGG, FLAC (8 страниц).
 Обзор и команды — README.md, деплой — DEPLOY.md, тесты и замеры — TESTING.md, тексты — CONTENT.md.
 
 ## Правила работы
@@ -35,7 +36,8 @@
 
 Astro 7.4 (Vite 8 + Rolldown, Zod 4), TypeScript 6.0 strict (не 7.x: `@astrojs/check` поддерживает только ^5/^6),
 libheif-js 1.23.5 (libheif 1.23.5 + libde265 1.0.15), @jsquash/jpeg 1.6.0 (MozJPEG 3.3.1), @jsquash/png 3.1.1,
-client-zip 2.5.1, utif2 4.1.0 (UTIF.js, с ним pako 1.0.11), jxl-oxide-wasm 0.12.6, pdfjs-dist 6.4.299 (legacy-сборка:
+client-zip 2.5.1, mediabunny 1.61.6 (+ @mediabunny/mp3-encoder, flac-encoder, aac-encoder 1.61.6; MPL-2.0),
+utif2 4.1.0 (UTIF.js, с ним pako 1.0.11), jxl-oxide-wasm 0.12.6, pdfjs-dist 6.4.299 (legacy-сборка:
 «PDF в JPG/PNG»; в тестах — разбор PDF), шрифт Inter Variable (@fontsource-variable/inter 5.3.0, OFL), Vitest 5, Playwright 1.64, Node 24 LTS, nginx 1.30. Версии закреплены точно (`.npmrc`: `save-exact`).
 
 ## Устройство
@@ -61,6 +63,8 @@ src/converter/metadata/       TIFF/EXIF, фильтр EXIF, APP1/APP2 в JPEG, e
                               на месте, exif-tags.ts — словарь тегов; strip/ — «Удалить метаданные» по форматам;
                               inspect/ — «Посмотреть EXIF» (сводка, таблица тегов, профиль, размер по заголовкам)
 src/converter/color/          ICC-профили (CC0) и выбор по nclx
+src/converter/media/          аудио: formats.ts (битрейт, параметры задания; таблица форматов — AUDIO_FORMATS в реестре),
+                              convert.ts — mediabunny в worker'е (чтение кусками, копирование или перекодирование, сторож)
 src/converter/pdf/            writer.ts — свой писатель PDF («Изображения в PDF»); render.ts — pdf.js в worker'е
                               («PDF в JPG/PNG»), limits.ts — пределы для интерфейса
 src/converter/worker/         convert.worker.ts (конвертация), zip.worker.ts (ZIP), protocol.ts
@@ -310,6 +314,31 @@ scripts/                      serve-dist (тестовый сервер как n
   null}, {document: байты}, …])` копирует страницы без перерисовки (текст остаётся текстом, `/Rotate` сохраняется).
   Info исходных документов при нескольких файлах не переносится; редактор pdf.js пишет «Producer: Firefox» —
   `fixProducer()` меняет на «PDF.js» на месте той же длиной (xref не сдвигается). Имя — `merge-pdf_<дата-время>.pdf`.
+- **Аудио** (решение владельца 20.10.2026, раздел «Аудио»; универсальный виджет, задание `media`): mediabunny 1.61.6
+  (Vanilagy, MPL-2.0) в нашем worker'е — грузится отдельным чанком (≈ 146 КБ gzip) только для аудио и видео.
+  - Вход — по сигнатуре (`sniff.ts`, `MEDIA_KINDS`): ID3/кадр MPEG → MP3, слой 00 → ADTS (AAC), `fLaC`, RIFF WAVE,
+    `OggS` (+ `OpusHead` → Opus), EBML (`webm`/`matroska`), ftyp с брендами M4A/MP4/«qt  » (основной бренд важнее
+    совместимых; неизвестные бренды — CR3, JPEG 2000 — не поддерживаются), старый QuickTime без ftyp (moov/mdat/wide).
+    Есть ли звук, узнаёт mediabunny (`getPrimaryAudioTrack`); нет — `no-audio`. Видео — только источник звука
+    (дорожка видео отбрасывается без декодирования; видео на выходе — следующий шаг).
+  - Выход (`AUDIO_FORMATS` в реестре): MP3 (LAME), WAV (PCM 16 бит), M4A (AAC), OGG (Opus в Ogg — Vorbis браузеры не
+    кодируют), FLAC. MP3 и FLAC кодируют всегда наши WASM-расширения (@mediabunny/mp3-encoder, flac-encoder): WebKit
+    заявляет свои MP3/FLAC, но они то зависают, то дописывают тишину. AAC — кодировщик браузера, без него —
+    @mediabunny/aac-encoder (FFmpeg, LGPL 2.1). Opus — только браузер. Расширения сами запускают вложенный worker
+    из `blob:` со встроенным WASM — CSP это разрешает (`worker-src 'self' blob:`, `'wasm-unsafe-eval'`).
+  - Битрейт 128/192/256/320 (по умолчанию 192, `audioBitrate` в настройках; у WAV и FLAC настроек нет). Тот же кодек
+    (AAC из MP4/ADTS в M4A, Opus из WebM в OGG) — сначала `copy: forced` без битрейта (звук переносится как есть,
+    в строке «без перекодирования»), не вышло — перекодирование. MP3 — только моно/стерео (многоканальный сводится).
+    Теги (название, исполнитель, альбом…) mediabunny переносит сам.
+  - Файл читается кусками (`BlobSource`), в памяти — результат (`BufferTarget`): оценка памяти — по длительности
+    и формату результата (×2 на рост буфера + 64 МБ). Ход — сообщения `media-progress` (не чаще процента).
+  - Сторож (`STALL_MS` = 45 с без хода): кодек браузера бывает зависает без ошибки — и до первого хода, и так, что
+    `cancel()` не завершается; задание завершается гонкой с таймером (`media-stalled`, `recycle` — worker
+    пересоздаётся). Отказ декодера при запуске («not supported») — `media-decode-unsupported`, а не «повреждён».
+  - Ошибка из динамически загруженного чанка на практике бывает не `instanceof ConvertError` — `postError` узнаёт её
+    и по форме (`isConvertError`).
+  - Ограничения окружений (TESTING.md): Firefox на Linux без системного ffmpeg не декодирует AAC; WebKit GTK
+    (Playwright в Docker) заявляет декодеры Vorbis/Opus/FLAC, но не всегда их выполняет.
 - **GIF на входе** — свой декодер на TypeScript (`decoders/gif.ts`, без WASM): LZW, палитра, чересстрочность. Первый
   кадр — как в браузере: на прозрачном холсте логического экрана (фон GIF не рисуется), прозрачный индекс — прозрачный
   пиксель, обрезанный файл — декодированная часть, остальное прозрачно; у анимации — предупреждение. Цвет — sRGB.

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Генерация синтетических фикстур (без личных данных).
 # Запуск: npm run fixtures [-- секции] (собирает Docker-образ и выполняет этот скрипт внутри него).
-# Секции через запятую: heic, jpeg-png, webp, avif, gif, bmp, tiff, jxl, pdf (по умолчанию — все). Секция пересоздаёт только свои файлы:
+# Секции через запятую: heic, jpeg-png, webp, avif, gif, bmp, tiff, jxl, pdf, media (по умолчанию — все). Секция пересоздаёт только свои файлы:
 # HEIC-фикстуры не меняются побайтно, когда добавляются фикстуры других форматов.
 # Внутри контейнера: /out — tests/fixtures, /icc — src/converter/color/icc.
 set -euo pipefail
@@ -458,6 +458,35 @@ for f in quadrants text two-pages encrypted; do
   printf '%s: страниц %s; ' "$f" "$(qpdf --password=secret --show-npages "$OUT/$f.pdf" 2>/dev/null || echo '?')"
   qpdf --password=secret --check "$OUT/$f.pdf" 2>&1 | grep -m2 -E 'No syntax|rror|ncrypt|R = ' | tr '\n' ';' || true
   echo
+done
+fi
+
+if want media; then
+# Аудио и видео (ffmpeg): короткие синтетические тоны и тестовая картинка, теги без личных данных.
+# -bitexact и -map_metadata -1 — без версии кодировщика и даты создания в файлах.
+FF=(ffmpeg -hide_banner -loglevel error -y)
+BITEXACT=(-fflags +bitexact -flags:a +bitexact -flags:v +bitexact -map_metadata -1)
+TAGS=(-metadata title="Test tone" -metadata artist="Synthetic" -metadata album="Fixtures")
+echo "== tone.*: 3 с стерео 44,1 кГц (слева 440 Гц, справа 660 Гц) в WAV, MP3, FLAC, OGG (Vorbis), Opus, M4A (AAC), AAC (ADTS)"
+"${FF[@]}" -f lavfi -i "sine=frequency=440:sample_rate=44100:duration=3" -f lavfi -i "sine=frequency=660:sample_rate=44100:duration=3" \
+  -filter_complex "[0:a][1:a]join=inputs=2:channel_layout=stereo[a]" -map "[a]" "${BITEXACT[@]}" "${TAGS[@]}" -c:a pcm_s16le "$OUT/tone.wav"
+"${FF[@]}" -i "$OUT/tone.wav" "${BITEXACT[@]}" "${TAGS[@]}" -c:a libmp3lame -b:a 128k -id3v2_version 3 "$OUT/tone.mp3"
+"${FF[@]}" -i "$OUT/tone.wav" "${BITEXACT[@]}" "${TAGS[@]}" -c:a flac "$OUT/tone.flac"
+"${FF[@]}" -i "$OUT/tone.wav" "${BITEXACT[@]}" "${TAGS[@]}" -c:a libvorbis -q:a 3 "$OUT/tone.ogg"
+"${FF[@]}" -i "$OUT/tone.wav" "${BITEXACT[@]}" "${TAGS[@]}" -c:a libopus -b:a 96k "$OUT/tone.opus"
+"${FF[@]}" -i "$OUT/tone.wav" "${BITEXACT[@]}" "${TAGS[@]}" -c:a aac -b:a 128k "$OUT/tone.m4a"
+"${FF[@]}" -i "$OUT/tone.wav" "${BITEXACT[@]}" -c:a aac -b:a 128k -f adts "$OUT/tone.aac"
+echo "== clip.*: 2 с 320×240 25 к/с (testsrc) со звуком 440 Гц — MP4 (H.264 + AAC), WebM (VP9 + Opus), MOV; silent.mp4 — без звука"
+VIDEO=(-f lavfi -i "testsrc=size=320x240:rate=25:duration=2" -f lavfi -i "sine=frequency=440:sample_rate=48000:duration=2")
+"${FF[@]}" "${VIDEO[@]}" "${BITEXACT[@]}" -c:v libx264 -preset veryfast -pix_fmt yuv420p -c:a aac -b:a 96k -shortest -movflags +faststart "$OUT/clip.mp4"
+"${FF[@]}" "${VIDEO[@]}" "${BITEXACT[@]}" -c:v libvpx-vp9 -b:v 300k -deadline realtime -cpu-used 8 -c:a libopus -b:a 64k -shortest "$OUT/clip.webm"
+"${FF[@]}" "${VIDEO[@]}" "${BITEXACT[@]}" -c:v libx264 -preset veryfast -pix_fmt yuv420p -c:a aac -b:a 96k -shortest -f mov "$OUT/clip.mov"
+"${FF[@]}" -f lavfi -i "testsrc=size=320x240:rate=25:duration=2" "${BITEXACT[@]}" -c:v libx264 -preset veryfast -pix_fmt yuv420p "$OUT/silent.mp4"
+echo "== garbage.mp3: ID3-заголовок и мусор вместо кадров"
+{ printf 'ID3\x03\x00\x00\x00\x00\x00\x00'; for i in $(seq 1 300); do printf 'not an mp3 frame %03d\n' "$i"; done; } > "$OUT/garbage.mp3"
+echo "== самопроверка медиа"
+for f in tone.wav tone.mp3 tone.flac tone.ogg tone.opus tone.m4a tone.aac clip.mp4 clip.webm clip.mov silent.mp4; do
+  printf '%s: %s\n' "$f" "$(ffprobe -v error -show_entries stream=codec_name -of csv=p=0 "$OUT/$f" | tr '\n' ' ')"
 done
 fi
 

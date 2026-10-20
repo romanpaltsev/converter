@@ -2,7 +2,7 @@
 // Один и тот же код работает в основном потоке (по началу файла, без загрузки WASM) и в worker'е (по всему файлу).
 
 import { readJpegFrame } from './headers';
-import { type SniffKind, sniff } from './sniff';
+import { type SniffKind, isMediaKind, sniff } from './sniff';
 import type { DecoderId, EncoderId, ErrorCode, OutputTarget } from './types';
 
 /** Чем читается формат. Форматы без декодера пока не поддерживаются. */
@@ -53,7 +53,8 @@ export type InputCheck = { ok: true; decoder: DecoderId; encoder: EncoderId } | 
  */
 export function checkInput(bytes: Uint8Array, output: OutputTarget, allowSameFormat = false): InputCheck {
   const { kind } = sniff(bytes);
-  if (kind === 'unknown') return { ok: false, code: 'not-image' };
+  // аудио и видео — не картинки: у них свои конвертеры (универсальный виджет отправляет их в mediabunny)
+  if (kind === 'unknown' || isMediaKind(kind)) return { ok: false, code: 'not-image' };
   // PDF — документ, а не картинка: для него свои страницы («PDF в JPG»)
   if (kind === 'pdf') return { ok: false, code: 'pdf-input' };
   const encoder = output === 'original' ? ORIGINAL_ENCODER[kind] : output;

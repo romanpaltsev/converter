@@ -1,6 +1,7 @@
 // Module Web Worker конвертера: один файл за раз (параллельно работают несколько таких worker'ов — см. widget/worker-pool.ts),
 // WASM-модули грузятся по первому запросу.
 
+import { AUDIO_FORMATS } from '../media/formats';
 import { convertImage } from '../pipeline/convert';
 import { loadDecoder } from '../pipeline/decoders';
 import { loadEncoder } from '../pipeline/encoders';
@@ -12,7 +13,7 @@ import { loadProfile } from '../color/profiles';
 import { estimateNeeds, estimatePdfNeeds, freshFootprint, projectFootprint } from '../pipeline/memory';
 import { downscale } from '../pipeline/preview';
 import { targetSize } from '../pipeline/resize';
-import { sniff } from '../pipeline/sniff';
+import { isImageKind, sniff } from '../pipeline/sniff';
 import { type ConvertOptions, ConvertError, type ErrorCode, WEBP_MAX_DIMENSION } from '../pipeline/types';
 import type { PDFDocumentProxy } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type { FromWorker, ToWorker } from './protocol';
@@ -117,12 +118,19 @@ async function handleConvert(message: Extract<ToWorker, { type: 'convert' }>): P
 
 /** Ошибка задания → ответ; неожиданные ошибки WASM требуют нового worker'а. */
 function postError(id: number, error: unknown): void {
-  if (error instanceof ConvertError) {
+  if (isConvertError(error)) {
     post({ type: 'error', id, code: error.code, fatal: error.fatal, recycle: error.recycle, message: error.message });
   } else {
     const { code, fatal } = classifyUnexpected(error);
     post({ type: 'error', id, code, fatal, recycle: true, message: String(error) });
   }
+}
+
+/** ConvertError — и по форме: ошибка из чанка, загруженного динамически, на практике бывает не instanceof. */
+function isConvertError(error: unknown): error is ConvertError {
+  if (error instanceof ConvertError) return true;
+  const candidate = error as Partial<ConvertError> | null;
+  return typeof candidate?.code === 'string' && typeof candidate.fatal === 'boolean' && typeof candidate.recycle === 'boolean' && typeof candidate.message === 'string';
 }
 
 /** «Удалить метаданные»: модуль грузится только на этой странице; память — вход, копия и результат. */
@@ -131,7 +139,7 @@ async function handleStrip(message: Extract<ToWorker, { type: 'strip' }>): Promi
   try {
     const bytes = new Uint8Array(await message.file.arrayBuffer());
     const { kind } = sniff(bytes);
-    if (kind === 'unknown' || kind === 'pdf') throw new ConvertError(kind === 'pdf' ? 'pdf-input' : 'not-image');
+    if (!isImageKind(kind)) throw new ConvertError(kind === 'pdf' ? 'pdf-input' : 'not-image');
     const footprint = 3 * bytes.length;
     if (footprint > message.memoryLimit) {
       post({ type: 'needs-memory', id, footprint, fresh: footprint });
@@ -156,7 +164,7 @@ async function handlePdfPage(message: Extract<ToWorker, { type: 'pdf-page' }>): 
     const input = checkInput(bytes, 'jpeg', true);
     if (!input.ok) throw new ConvertError(input.code);
     const { kind } = sniff(bytes);
-    if (kind === 'unknown' || kind === 'pdf') throw new ConvertError(kind === 'pdf' ? 'pdf-input' : 'not-image');
+    if (!isImageKind(kind)) throw new ConvertError(kind === 'pdf' ? 'pdf-input' : 'not-image');
     const [decoder, encoder] = await Promise.all([loadDecoder(input.decoder), loadEncoder('jpeg')]);
     modules.set(decoder.module, decoder);
     modules.set(encoder.module, encoder);
@@ -332,13 +340,42 @@ async function handlePdfMerge(message: Extract<ToWorker, { type: 'pdf-merge' }>)
   }
 }
 
+/** Аудио: mediabunny грузится только для аудио и видео; память — по длительности и формату результата. */
+async function handleMedia(message: Extract<ToWorker, { type: 'media' }>): Promise<void> {
+  const { id, options } = message;
+  try {
+    const media = await import('../media/convert');
+    const probe = await media.probeMedia(message.file, options);
+    if (probe.footprint > message.memoryLimit) {
+      probe.input.dispose();
+      post({ type: 'needs-memory', id, footprint: probe.footprint, fresh: probe.footprint });
+      return;
+    }
+    post({ type: 'started', id, footprint: probe.footprint, fresh: probe.footprint });
+    // ход — не чаще, чем на каждый процент: длинный файл даёт тысячи вызовов
+    let reported = -1;
+    const result = await media.convertAudio(probe, options, (progress) => {
+      const percent = Math.floor(progress * 100);
+      if (percent <= reported) return;
+      reported = percent;
+      post({ type: 'media-progress', id, progress });
+    });
+    const format = AUDIO_FORMATS[options.target];
+    const out = result.bytes;
+    const buffer = out.byteOffset === 0 && out.byteLength === out.buffer.byteLength ? (out.buffer as ArrayBuffer) : (out.slice().buffer as ArrayBuffer);
+    post({ type: 'media-done', id, buffer, mime: format.mime, extension: format.extension, duration: result.duration, copied: result.copied }, [buffer]);
+  } catch (error) {
+    postError(id, error);
+  }
+}
+
 /** «Посмотреть EXIF»: модуль грузится только на этой странице; миниатюра передаётся без копирования. */
 async function handleInspect(message: Extract<ToWorker, { type: 'inspect' }>): Promise<void> {
   const { id } = message;
   try {
     const bytes = new Uint8Array(await message.file.arrayBuffer());
     const { kind } = sniff(bytes);
-    if (kind === 'unknown' || kind === 'pdf') throw new ConvertError(kind === 'pdf' ? 'pdf-input' : 'not-image');
+    if (!isImageKind(kind)) throw new ConvertError(kind === 'pdf' ? 'pdf-input' : 'not-image');
     const footprint = 3 * bytes.length;
     if (footprint > message.memoryLimit) {
       post({ type: 'needs-memory', id, footprint, fresh: footprint });
@@ -379,5 +416,7 @@ scope.onmessage = (event) => {
     void handlePdfInfo(message);
   } else if (message.type === 'pdf-merge') {
     void handlePdfMerge(message);
+  } else if (message.type === 'media') {
+    void handleMedia(message);
   }
 };

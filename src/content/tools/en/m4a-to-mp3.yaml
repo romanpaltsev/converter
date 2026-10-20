@@ -1,0 +1,46 @@
+# Texts for /en/m4a-to-mp3. Draft for the owner's review (see CONTENT.md).
+title: "M4A to MP3 Converter — Free, Private, No Upload"
+description: "Convert M4A to MP3 right in your browser: iPhone voice memos, music and audiobooks. Free, no sign-up, and your files never leave your device."
+h1: "M4A to MP3 Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "M4A to MP3"
+card:
+  title: "M4A → MP3"
+  text: "iPhone and iTunes audio, as MP3 for any player."
+app:
+  name: "M4A to MP3 Converter"
+  description: "An online M4A to MP3 converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert M4A to MP3"
+  steps:
+    - "Click the box above or drag your M4A files onto it — you can add many at once."
+    - "Wait while your browser re-encodes the audio — nothing gets uploaded. Progress is shown as a percentage."
+    - "Download each MP3 separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Conversion runs on your device. Recordings are never uploaded, so nobody but you can hear them."
+    - title: "MP3 at the bitrate you choose"
+      text: "MP3 is encoded with LAME, the encoder most audio apps use. Choose 128, 192, 256 or 320 kbps."
+    - title: "Tags are kept"
+      text: "Title, artist, album and other tags are carried over to the new file."
+    - title: "Many files at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What is M4A?"
+      a: "M4A is AAC audio in an MP4 container. iPhone Voice Memos, iTunes music and many apps save in it. MP3, on the other hand, plays in any player, car stereo or older device."
+    - q: "Do iPhone voice memos work?"
+      a: "Yes, Voice Memos recordings are M4A files and convert like any other. For speech, 128 kbps is plenty."
+    - q: "Which bitrate should I pick?"
+      a: "192 kbps is a good choice for music and matches what streaming services use. 320 kbps is the maximum for MP3: slightly better quality, bigger file. For speech, podcasts and lectures, 128 kbps is plenty."
+    - q: "Will I lose quality?"
+      a: "Both AAC and MP3 are lossy, so converting costs a little quality. To keep the loss unnoticeable, choose a bitrate no lower than the original's."
+    - q: "Can I convert iTunes purchases?"
+      a: "Older iTunes purchases with copy protection (DRM) can't be read by the browser. Songs without DRM convert like any other file."
+    - q: "Are the title and artist kept?"
+      a: "Yes. The tags of the original file — title, artist, album and others — are copied to the new file."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your recordings are processed in your browser and never sent to a server."
