@@ -1,6 +1,12 @@
 ---
+// Шапка: логотип, меню «Конвертировать ▾» со всеми инструментами, справа — Pro и язык.
+// Меню — Popover API (`popovertarget`): открывается, закрывается по Esc и кликом снаружи без JS — на страницах
+// без конвертера скриптов нет. Браузер без Popover меню не показывает (кнопка скрыта), навигация — в подвале.
 import { SITE_NAME, type Locale } from '../config/site';
 import { pagePath, type PageId } from '../i18n/routes';
+import { UI } from '../i18n/ui';
+import { toolLinks } from '../lib/tool-links';
+import { toolGroups } from '../tools/registry';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import ProButton from './ProButton.astro';
 
@@ -10,6 +16,13 @@ interface Props {
 }
 
 const { locale, pageId } = Astro.props;
+const t = UI[locale].nav;
+const groups = toolGroups();
+const menu = [
+  { id: 'photo', title: t.groups.photo, links: await toolLinks(groups.photo, locale) },
+  { id: 'pdf', title: t.groups.pdf, links: await toolLinks(groups.pdf, locale) },
+  { id: 'converters', title: t.groups.converters, links: await toolLinks(groups.converters, locale) },
+];
 ---
 
 <header class="header">
@@ -27,6 +40,29 @@ const { locale, pageId } = Astro.props;
       </svg>
       <span>{SITE_NAME[locale]}</span>
     </a>
+    <button type="button" class="menu-button" popovertarget="site-menu">
+      <span class="menu-button__label">{t.convert}</span>
+    </button>
+    <nav id="site-menu" class="mega" popover aria-label={t.allTools}>
+      <div class="container mega__inner">
+        {
+          menu.map((group) => (
+            <div class={`mega__group mega__group--${group.id}`}>
+              <p class="mega__title" id={`menu-${group.id}`}>
+                {group.title}
+              </p>
+              <ul class="mega__links" aria-labelledby={`menu-${group.id}`}>
+                {group.links.map((link) => (
+                  <li>
+                    <a href={link.href}>{link.title}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </nav>
     <div class="header__actions">
       <ProButton />
       <LanguageSwitcher locale={locale} pageId={pageId} />
@@ -44,7 +80,6 @@ const { locale, pageId } = Astro.props;
   .header__inner {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 12px;
     min-height: var(--header-height);
   }
@@ -53,6 +88,7 @@ const { locale, pageId } = Astro.props;
     display: inline-flex;
     align-items: center;
     gap: 10px;
+    margin-right: 12px;
     font-weight: 700;
     font-size: 1.0625rem;
     letter-spacing: -0.02em;
@@ -84,5 +120,188 @@ const { locale, pageId } = Astro.props;
     display: flex;
     align-items: center;
     gap: 8px;
+    margin-left: auto;
+  }
+
+  /* «Конвертировать ▾»; на узком экране — значок меню (подпись остаётся для экранного диктора) */
+  .menu-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 8px 10px;
+    border: 0;
+    border-radius: var(--radius-small);
+    background: none;
+    color: var(--text);
+    font: inherit;
+    font-weight: 550;
+    cursor: pointer;
+    transition: background-color 0.2s var(--ease);
+  }
+
+  .menu-button:hover {
+    background: var(--surface-muted);
+  }
+
+  .menu-button::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1.5 3.5 5 7l3.5-3.5' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+    transition: transform 0.2s var(--ease);
+  }
+
+  .menu-button:has(+ .mega:popover-open)::after {
+    transform: rotate(180deg);
+  }
+
+  @media (max-width: 520px) {
+    .logo {
+      margin-right: 0;
+    }
+
+    .menu-button {
+      padding: 8px;
+    }
+
+    .menu-button__label {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
+    .menu-button::after {
+      width: 22px;
+      height: 22px;
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M4 6.5h14M4 11h14M4 15.5h14' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+
+    .menu-button:has(+ .mega:popover-open)::after {
+      transform: none;
+      mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22'%3E%3Cpath d='M6 6l10 10M16 6 6 16' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+  }
+
+  /* без Popover API меню не открыть — кнопку не показываем */
+  @supports not selector(:popover-open) {
+    .menu-button {
+      display: none;
+    }
+  }
+
+  /* Панель во всю ширину под шапкой. Скрыта, пока не открыта: в браузере без Popover правило с :popover-open
+     отбрасывается целиком, и меню остаётся скрытым, а не разворачивается в шапке. */
+  .mega {
+    display: none;
+  }
+
+  .mega:popover-open {
+    display: block;
+    position: absolute;
+    inset: calc(var(--header-height) + 1px) 0 auto;
+    width: auto;
+    height: auto;
+    max-height: calc(100dvh - var(--header-height));
+    margin: 0;
+    padding: 28px 0 32px;
+    overflow: auto;
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--header-bg);
+    color: var(--text);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .mega__inner {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .mega__group--converters {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 860px) {
+    .mega__inner {
+      grid-template-columns: 1fr 1fr 2.4fr;
+      gap: 32px;
+    }
+
+    .mega__group--converters {
+      grid-column: auto;
+    }
+  }
+
+  .mega__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 12px;
+    font-weight: 650;
+  }
+
+  /* значок группы — контур в круге, как у convertio (круг нарисован в самом SVG) */
+  .mega__title::before {
+    content: '';
+    flex: none;
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    mask: var(--icon) center / contain no-repeat;
+  }
+
+  .mega__group--photo {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='black' stroke-width='1.4' stroke-linejoin='round'%3E%3Ccircle cx='16' cy='16' r='15'/%3E%3Crect x='9' y='10.5' width='14' height='11' rx='2'/%3E%3Ccircle cx='13.5' cy='14.5' r='1.3' fill='black' stroke='none'/%3E%3Cpath d='M10 20l4-4 3 3 2-2 3 3'/%3E%3C/svg%3E");
+  }
+
+  .mega__group--pdf {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='black' stroke-width='1.4' stroke-linejoin='round'%3E%3Ccircle cx='16' cy='16' r='15'/%3E%3Cpath d='M11.5 9h6l3.5 3.5V23h-9.5z'/%3E%3Cpath d='M17.5 9v3.5H21M13.5 16.5h5M13.5 19.5h5'/%3E%3C/svg%3E");
+  }
+
+  .mega__group--converters {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='black' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='16' cy='16' r='15'/%3E%3Cpath d='M10 13.5h10.5M17.5 10.5l3 3-3 3M22 18.5H11.5M14.5 15.5l-3 3 3 3'/%3E%3C/svg%3E");
+  }
+
+  .mega__links {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mega__group--converters .mega__links {
+    display: block;
+    columns: 2;
+    column-gap: 24px;
+  }
+
+  @media (min-width: 860px) {
+    .mega__group--converters .mega__links {
+      columns: 3;
+    }
+  }
+
+  .mega__links li {
+    break-inside: avoid;
+  }
+
+  .mega__links a {
+    display: block;
+    padding: 5px 0;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .mega__links a:hover {
+    color: var(--accent);
+    text-decoration: underline;
   }
 </style>

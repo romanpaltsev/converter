@@ -2483,11 +2483,13 @@
 | `nav.switchLanguage` | Сменить язык | Change language |
 | `nav.skipToContent` | Перейти к содержимому | Skip to content |
 | `nav.breadcrumbs` | Навигационная цепочка | Breadcrumbs |
+| `nav.convert` | Конвертировать | Convert |
+| `nav.allTools` | Все инструменты | All tools |
+| `nav.groups.photo` | Обработка фото | Photo tools |
+| `nav.groups.pdf` | PDF | PDF |
+| `nav.groups.converters` | Конвертеры | Converters |
+| `nav.groups.about` | О сайте | About |
 | `footer.privacy` | Файлы обрабатываются прямо в браузере и никуда не загружаются. | Files are processed right in your browser and never uploaded anywhere. |
-| `footer.groups.photo` | Обработка фото | Photo tools |
-| `footer.groups.pdf` | PDF | PDF |
-| `footer.groups.converters` | Конвертеры | Converters |
-| `footer.groups.about` | О сайте | About |
 | `tool.relatedTitle` | Другие конвертеры | More converters |
 | `widget.dropTitle` | Перетащите {format}-файлы сюда | Drop {format} files here |
 | `widget.dropTitleAny` | Перетащите изображения сюда | Drop images here |

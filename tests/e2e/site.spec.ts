@@ -1,4 +1,5 @@
 import AxeBuilder from '@axe-core/playwright';
+import type { Page } from '@playwright/test';
 import { expect, openConverter, test } from './fixtures';
 import { fixture } from './files';
 
@@ -114,6 +115,59 @@ test.describe('навигация', () => {
   });
 });
 
+test.describe('меню «Конвертировать» (Popover API)', () => {
+  // имя точное: «Конвертировать» — подстрока «Конвертировать заново…» в виджете
+  const menuButton = (page: Page, name = 'Конвертировать') => page.getByRole('banner').getByRole('button', { name, exact: true });
+
+  test('клавиатура: Enter открывает, Tab ведёт в меню, Esc закрывает и возвращает фокус', async ({ page }) => {
+    await page.goto('/heic-v-jpg');
+    const menu = page.locator('#site-menu');
+    await expect(menu).toBeHidden();
+    await menuButton(page).focus();
+    await page.keyboard.press('Enter');
+    await expect(menu).toBeVisible();
+    await page.keyboard.press('Tab');
+    await expect(menu.getByRole('link', { name: 'Сжать фото' })).toBeFocused();
+    await page.keyboard.press('Escape');
+    await expect(menu).toBeHidden();
+    await expect(menuButton(page)).toBeFocused();
+  });
+
+  test('клик снаружи закрывает меню, ссылка ведёт на инструмент (en)', async ({ page }) => {
+    await page.goto('/en/');
+    const menu = page.locator('#site-menu');
+    await menuButton(page, 'Convert').click();
+    await expect(menu).toBeVisible();
+    // меню закрывает заголовок — щёлкаем в левый нижний угол окна, под панелью
+    await page.mouse.click(5, page.viewportSize()!.height - 5);
+    await expect(menu).toBeHidden();
+    await menuButton(page, 'Convert').click();
+    await menu.getByRole('link', { name: 'PNG → JPG' }).click();
+    await expect(page).toHaveURL('/en/png-to-jpg');
+  });
+
+  test('телефон 360×640: значок меню, панель без горизонтальной прокрутки', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 640 });
+    await page.goto('/posmotret-exif');
+    await menuButton(page).click();
+    const box = await page.locator('#site-menu').boundingBox();
+    expect(box!.x).toBe(0);
+    expect(box!.width).toBe(360);
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  });
+
+  test.describe('без JavaScript', () => {
+    test.use({ javaScriptEnabled: false });
+
+    test('/licenses: меню открывается и ведёт на страницу инструмента', async ({ page }) => {
+      await page.goto('/licenses');
+      await menuButton(page).click();
+      await page.locator('#site-menu').getByRole('link', { name: 'HEIC → JPG' }).click();
+      await expect(page).toHaveURL('/heic-v-jpg');
+    });
+  });
+});
+
 test.describe('интерфейс', () => {
   test('зона загрузки — кнопка, работает с клавиатуры', async ({ page }) => {
     await openConverter(page, '/heic-v-jpg');
@@ -150,6 +204,17 @@ test.describe('доступность (axe, WCAG 2.1 AA)', () => {
         await page.emulateMedia({ colorScheme: scheme });
         await page.goto(path);
         await page.locator('details').evaluateAll((list) => list.forEach((d) => d.setAttribute('open', '')));
+        const result = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
+        expect(result.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
+      });
+    }
+
+    for (const path of ['/', '/en/licenses']) {
+      test(`${path}: открытое меню «Конвертировать» (${scheme})`, async ({ page }) => {
+        await page.emulateMedia({ colorScheme: scheme });
+        await page.goto(path);
+        await page.locator('button[popovertarget="site-menu"]').click();
+        await expect(page.locator('#site-menu')).toBeVisible();
         const result = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
         expect(result.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`)).toEqual([]);
       });

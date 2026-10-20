@@ -90,6 +90,18 @@ describe('сборка: шапка и подвал', () => {
     const hrefs = doc.querySelectorAll('footer a').map((a) => a.getAttribute('href'));
     expect(hrefs).toEqual([...TOOLS.map((tool) => pagePath(toolPageId(tool.id), locale)), pagePath('licenses', locale), pagePath('contacts', locale)]);
   });
+
+  test.each(pages)('%s: меню «Конвертировать» без JS (Popover API) — все инструменты своего языка', (file) => {
+    const { doc } = readHtml(file);
+    const button = doc.querySelector('header button[popovertarget="site-menu"]');
+    expect(button?.getAttribute('type')).toBe('button');
+    const menu = doc.querySelector('header nav#site-menu[popover]');
+    expect(menu?.getAttribute('aria-label')).toBeTruthy();
+    // меню идёт сразу за кнопкой: так оно в порядке Tab после неё во всех браузерах
+    expect(button?.nextElementSibling).toBe(menu);
+    const locale = file.startsWith('en/') ? 'en' : 'ru';
+    expect(menu!.querySelectorAll('a').map((a) => a.getAttribute('href'))).toEqual(TOOLS.map((tool) => pagePath(toolPageId(tool.id), locale)));
+  });
 });
 
 describe('сборка: JSON-LD', () => {

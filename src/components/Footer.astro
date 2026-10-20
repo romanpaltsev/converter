@@ -15,12 +15,12 @@ const { locale } = Astro.props;
 const t = UI[locale];
 const groups = toolGroups();
 const columns = [
-  { id: 'photo', title: t.footer.groups.photo, links: await toolLinks(groups.photo, locale) },
-  { id: 'pdf', title: t.footer.groups.pdf, links: await toolLinks(groups.pdf, locale) },
-  { id: 'converters', title: t.footer.groups.converters, links: await toolLinks(groups.converters, locale) },
+  { id: 'photo', title: t.nav.groups.photo, links: await toolLinks(groups.photo, locale) },
+  { id: 'pdf', title: t.nav.groups.pdf, links: await toolLinks(groups.pdf, locale) },
+  { id: 'converters', title: t.nav.groups.converters, links: await toolLinks(groups.converters, locale) },
   {
     id: 'about',
-    title: t.footer.groups.about,
+    title: t.nav.groups.about,
     links: [
       { href: pagePath('licenses', locale), title: t.nav.licenses },
       { href: pagePath('contacts', locale), title: t.nav.contacts },

@@ -14,15 +14,17 @@ const ru = {
     switchLanguage: 'Сменить язык',
     skipToContent: 'Перейти к содержимому',
     breadcrumbs: 'Навигационная цепочка',
-  },
-  footer: {
-    privacy: 'Файлы обрабатываются прямо в браузере и никуда не загружаются.',
+    convert: 'Конвертировать',
+    allTools: 'Все инструменты',
     groups: {
       photo: 'Обработка фото',
       pdf: 'PDF',
       converters: 'Конвертеры',
       about: 'О сайте',
     },
+  },
+  footer: {
+    privacy: 'Файлы обрабатываются прямо в браузере и никуда не загружаются.',
   },
   tool: {
     relatedTitle: 'Другие конвертеры',
@@ -236,15 +238,17 @@ const en: UiStrings = {
     switchLanguage: 'Change language',
     skipToContent: 'Skip to content',
     breadcrumbs: 'Breadcrumbs',
-  },
-  footer: {
-    privacy: 'Files are processed right in your browser and never uploaded anywhere.',
+    convert: 'Convert',
+    allTools: 'All tools',
     groups: {
       photo: 'Photo tools',
       pdf: 'PDF',
       converters: 'Converters',
       about: 'About',
     },
+  },
+  footer: {
+    privacy: 'Files are processed right in your browser and never uploaded anywhere.',
   },
   tool: {
     relatedTitle: 'More converters',
