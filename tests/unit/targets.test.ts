@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import type { SniffKind } from '../../src/converter/pipeline/sniff';
-import { ALL_TARGETS, AUDIO_TARGETS, DOCUMENT_TARGETS, IMAGE_TARGETS, VIDEO_TARGETS, defaultTarget, jobFor, ownTarget, settingsKey, sharedTargets, targetsFor, visibleSettings } from '../../src/converter/widget/targets';
+import { ALL_TARGETS, AUDIO_TARGETS, IMAGE_TARGETS, VIDEO_TARGETS, defaultTarget, jobFor, ownTarget, settingsKey, sharedTargets, targetsFor, visibleSettings } from '../../src/converter/widget/targets';
 
-const settings = { quality: 90, lossless: false, keepMetadata: false, dpi: 150, audioBitrate: 192, videoQuality: 'high', videoHeight: 0, gifWidth: 480, gifFps: 10 };
+const settings = { quality: 90, lossless: false, keepMetadata: false, dpi: 150, audioBitrate: 192, videoQuality: 'high', videoHeight: 0, gifWidth: 480, gifFps: 10, csvDelimiter: ',' };
 
 describe('форматы результата у файла', () => {
   test('картинка — во все форматы и в PDF, кроме своего формата; HEIC, GIF, BMP, TIFF, JPEG XL — во все', () => {
@@ -11,7 +11,7 @@ describe('форматы результата у файла', () => {
     expect(targetsFor('webp')).toEqual(['jpeg', 'png', 'avif', 'ico', 'pdf']);
     expect(targetsFor('avif')).toEqual(['jpeg', 'png', 'webp', 'ico', 'pdf']);
     for (const kind of ['heic', 'gif', 'bmp', 'tiff', 'jxl'] as SniffKind[]) {
-      expect(targetsFor(kind)).toEqual([...IMAGE_TARGETS, ...DOCUMENT_TARGETS]);
+      expect(targetsFor(kind)).toEqual([...IMAGE_TARGETS, 'pdf']);
       expect(ownTarget(kind)).toBeNull();
     }
   });
@@ -43,9 +43,9 @@ describe('форматы результата у файла', () => {
 
   test('«Все файлы в …»: форматы, подходящие хотя бы одному файлу, в порядке меню', () => {
     expect(sharedTargets(['jpeg'])).toEqual(['png', 'webp', 'avif', 'ico', 'pdf']);
-    expect(sharedTargets(['jpeg', 'png'])).toEqual([...IMAGE_TARGETS, ...DOCUMENT_TARGETS]);
-    // картинки, видео и аудио вместе — все пункты меню
-    expect(sharedTargets(['jpeg', 'png', 'mov', 'mp3', 'wav'])).toEqual([...ALL_TARGETS]);
+    expect(sharedTargets(['jpeg', 'png'])).toEqual([...IMAGE_TARGETS, 'pdf']);
+    // картинки, документы, таблицы, видео и аудио вместе — все пункты меню
+    expect(sharedTargets(['jpeg', 'png', 'md', 'html', 'csv', 'json', 'mov', 'mp3', 'wav'])).toEqual([...ALL_TARGETS]);
     expect(sharedTargets(['mp3', 'wav'])).toEqual([...AUDIO_TARGETS]);
     expect(sharedTargets(['pdf'])).toEqual(['jpeg', 'png', 'webp']);
     expect(sharedTargets([])).toEqual([]);
@@ -102,6 +102,29 @@ describe('аудио и видео', () => {
   });
 });
 
+describe('документы и таблицы', () => {
+  test('текст — в PDF (Markdown — и в HTML, HTML — и в TXT), таблицы — друг в друга; задание text', () => {
+    expect(targetsFor('txt')).toEqual(['pdf']);
+    expect(targetsFor('md')).toEqual(['pdf', 'html']);
+    expect(targetsFor('html')).toEqual(['pdf', 'txt']);
+    expect(targetsFor('csv')).toEqual(['xlsx', 'json']);
+    expect(targetsFor('json')).toEqual(['xlsx', 'csv']);
+    expect(targetsFor('xlsx')).toEqual(['csv', 'json']);
+    expect(jobFor('md', 'pdf')).toBe('text');
+    expect(jobFor('png', 'pdf')).toBe('document');
+    expect(defaultTarget('txt', 'pdf')).toBe('pdf');
+    expect(defaultTarget('jpeg', 'csv')).toBeNull();
+  });
+
+  test('настройки: у документов в PDF — никаких (A4), разделитель — у CSV; ключ — только разделитель', () => {
+    expect(Object.values(visibleSettings([{ kind: 'md', target: 'pdf' }], false)).some(Boolean)).toBe(false);
+    expect(visibleSettings([{ kind: 'png', target: 'pdf' }], false).pdfLayout).toBe(true);
+    expect(visibleSettings([{ kind: 'xlsx', target: 'csv' }], false)).toMatchObject({ csv: true, metadata: false, quality: false });
+    expect(settingsKey({ kind: 'xlsx', target: 'csv' }, { ...settings, csvDelimiter: ';' })).toBe('csv:;');
+    expect(settingsKey({ kind: 'csv', target: 'json' }, { ...settings, csvDelimiter: ';', quality: 10 })).toBe('json');
+  });
+});
+
 describe('видимые настройки', () => {
   test('качество — у JPG, AVIF и WebP с потерями; «Без потерь» — у WebP', () => {
     expect(visibleSettings([{ kind: 'heic', target: 'jpeg' }], false)).toEqual({
@@ -116,6 +139,7 @@ describe('видимые настройки', () => {
       audioBitrate: false,
       video: false,
       gif: false,
+      csv: false,
     });
     expect(visibleSettings([{ kind: 'heic', target: 'webp' }], true)).toMatchObject({ quality: false, lossless: true });
     expect(visibleSettings([{ kind: 'heic', target: 'webp' }], false)).toMatchObject({ quality: true, lossless: true });
@@ -152,6 +176,7 @@ describe('видимые настройки', () => {
       audioBitrate: false,
       video: false,
       gif: false,
+      csv: false,
     });
   });
 });

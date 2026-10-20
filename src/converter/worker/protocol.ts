@@ -1,6 +1,8 @@
 // Сообщения между основным потоком и worker'ом конвертера.
 
+import type { DocOptions, DocTarget } from '../documents/convert';
 import type { MediaOptions } from '../media/formats';
+import type { TextKind } from '../pipeline/sniff';
 import type { MetadataReport } from '../metadata/inspect/types';
 import type { RemovedKind, StripMode } from '../metadata/strip/types';
 import type { PdfImage } from '../pdf/writer';
@@ -33,7 +35,9 @@ export type ToWorker =
   /** «Объединить PDF»: документы по порядку → один PDF. */
   | { type: 'pdf-merge'; id: number; files: Blob[] }
   /** Аудио и видео: mediabunny; ход — сообщениями media-progress. */
-  | { type: 'media'; id: number; file: Blob; options: MediaOptions; memoryLimit: number };
+  | { type: 'media'; id: number; file: Blob; options: MediaOptions; memoryLimit: number }
+  /** Документы и таблицы: вид файла определяет основной поток (по расширению — сигнатуры нет). */
+  | { type: 'doc'; id: number; file: Blob; kind: TextKind; target: DocTarget; options: DocOptions; memoryLimit: number };
 
 export interface PdfRenderOptions {
   encoder: EncoderId;
@@ -116,5 +120,7 @@ export type FromWorker =
   | { type: 'media-progress'; id: number; progress: number }
   /** Аудио или видео готово; duration — секунды; copied — дорожки скопированы без перекодирования. */
   | { type: 'media-done'; id: number; buffer: ArrayBuffer; mime: string; extension: string; duration: number; copied: boolean; warnings: WarningCode[] }
+  /** Документ готов: страниц PDF или строк таблицы (null — не считается). */
+  | { type: 'doc-done'; id: number; buffer: ArrayBuffer; pages: number | null; rows: number | null; warnings: WarningCode[] }
   /** fatal — нужен новый worker и повторная попытка; recycle — новый worker без повторной попытки. */
   | { type: 'error'; id: number; code: ErrorCode; fatal: boolean; recycle: boolean; message: string };

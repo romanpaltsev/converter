@@ -22,10 +22,10 @@ import { STRIP_MODES } from '../converter/metadata/strip/types';
 import { PDF_PAGE_LIMIT } from '../converter/pdf/limits';
 import type { SniffKind } from '../converter/pipeline/sniff';
 import type { OutputOption, WidgetConfig } from '../converter/widget/config';
-import { ALL_TARGETS, AUDIO_TARGETS, DOCUMENT_TARGETS, IMAGE_TARGETS, type TargetId, VIDEO_TARGETS, visibleSettings } from '../converter/widget/targets';
+import { ALL_TARGETS, AUDIO_TARGETS, DOCUMENT_TARGETS, IMAGE_TARGETS, TABLE_TARGETS, type TargetId, VIDEO_TARGETS, visibleSettings } from '../converter/widget/targets';
 import { pagePath, toolPageId } from '../i18n/routes';
 import { UI, format } from '../i18n/ui';
-import { DOCUMENT_FORMATS, INPUT_FORMATS, MEDIA_FORMATS, OUTPUT_FORMATS, SOURCE_FORMATS, type SourceFormatId, type ToolConfig, UNIVERSAL_MODES } from '../tools/registry';
+import { DOC_FORMATS, DOCUMENT_FORMATS, INPUT_FORMATS, MEDIA_FORMATS, TEXT_FORMATS, isDocTarget, OUTPUT_FORMATS, SOURCE_FORMATS, type SourceFormatId, type ToolConfig, UNIVERSAL_MODES } from '../tools/registry';
 
 interface Props {
   /** null — главная: универсальный конвертер без предустановки формата, принимает все форматы. */
@@ -40,7 +40,7 @@ const spec = tool
   : {
       id: 'home',
       mode: 'convert' as const,
-      inputFormats: [...Object.keys(INPUT_FORMATS), 'pdf', ...Object.keys(MEDIA_FORMATS)] as SourceFormatId[],
+      inputFormats: [...Object.keys(INPUT_FORMATS), 'pdf', ...Object.keys(MEDIA_FORMATS), ...Object.keys(TEXT_FORMATS)] as SourceFormatId[],
       defaultOutput: 'original' as const,
       outputs: undefined,
       defaultQuality: 90,
@@ -54,11 +54,12 @@ const universal = UNIVERSAL_MODES.includes(spec.mode);
 const preset = universal && spec.defaultOutput !== 'original' ? (spec.defaultOutput as TargetId) : null;
 const presetKind = preset ? (spec.inputFormats[0] as SniffKind) : null;
 const targetLabel = (target: TargetId) =>
-  target === 'pdf' ? DOCUMENT_FORMATS.pdf.label : isAudioTarget(target) ? AUDIO_FORMATS[target].label : isVideoTarget(target) ? VIDEO_FORMATS[target].label : OUTPUT_FORMATS[target].label;
+  target === 'pdf' ? DOCUMENT_FORMATS.pdf.label : isDocTarget(target) ? DOC_FORMATS[target].label : isAudioTarget(target) ? AUDIO_FORMATS[target].label : isVideoTarget(target) ? VIDEO_FORMATS[target].label : OUTPUT_FORMATS[target].label;
 const targets = ALL_TARGETS.map((target) => ({ id: target, label: targetLabel(target) }));
 const TARGET_GROUPS = [
   { name: 'image', targets: IMAGE_TARGETS },
   { name: 'document', targets: DOCUMENT_TARGETS },
+  { name: 'table', targets: TABLE_TARGETS },
   { name: 'video', targets: VIDEO_TARGETS },
   { name: 'audio', targets: AUDIO_TARGETS },
 ] as const;
@@ -77,9 +78,12 @@ const MARGINS = ['none', 'small'] as const;
 // «PDF в JPG/PNG»: формат и качество — как у конвертеров, плюс разрешение; метаданных у страниц нет
 const fromPdf = spec.mode === 'from-pdf';
 const DPI = [72, 150, 300] as const;
+// CSV: русский Excel ждёт точку с запятой, англоязычный и Google Таблицы — запятую
+const CSV_DELIMITERS = [';', ',', '\t'] as const;
+const defaultDelimiter = locale === 'ru' ? ';' : ',';
 const DEFAULT_DPI = 150;
 // шаблоны строк заполняем здесь: формат страницы и список всех поддерживаемых форматов (универсальный виджет читает и PDF)
-const supported = list([...Object.values(INPUT_FORMATS).map((f) => f.label), ...(universal ? [DOCUMENT_FORMATS.pdf.label, ...Object.values(MEDIA_FORMATS).map((f) => f.label)] : [])]);
+const supported = list([...Object.values(INPUT_FORMATS).map((f) => f.label), ...(universal ? [DOCUMENT_FORMATS.pdf.label, ...Object.values(MEDIA_FORMATS).map((f) => f.label), ...Object.values(TEXT_FORMATS).map((f) => f.label)] : [])]);
 const base = UI[locale].widget;
 const t = {
   ...base,
@@ -279,6 +283,24 @@ const DEFAULT_LONG_SIDE = 1920;
                   </div>
                 </fieldset>
                 <p class="settings__hint settings__hint--aligned">{t.videoHint}</p>
+              </div>
+            )
+          }
+          {
+            universal && (
+              <div class="settings__group" data-csv-row hidden={!shown.csv}>
+                <fieldset class="settings__format">
+                  <legend class="settings__label">{t.csvDelimiter}</legend>
+                  <div class="segmented">
+                    {CSV_DELIMITERS.map((delimiter) => (
+                      <label class="segmented__option">
+                        <input type="radio" name="csvDelimiter" value={delimiter} checked={delimiter === defaultDelimiter} />
+                        <span>{t.csvDelimiters[delimiter]}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+                <p class="settings__hint settings__hint--aligned">{t.csvHint}</p>
               </div>
             )
           }

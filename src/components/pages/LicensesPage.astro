@@ -34,6 +34,11 @@ import lgpl20 from '../../content/licenses/LGPL-2.0.txt?raw';
 import lgpl21 from '../../content/licenses/LGPL-2.1.txt?raw';
 import libflacBsd from '../../content/licenses/libFLAC-BSD.txt?raw';
 import gifencMit from '../../content/licenses/gifenc-MIT.txt?raw';
+import pdfLibMit from '../../content/licenses/pdf-lib-MIT.txt?raw';
+import fontkitMit from '../../content/licenses/fontkit-MIT.txt?raw';
+import markedMit from '../../content/licenses/marked-MIT.txt?raw';
+import htmlparser2Mit from '../../content/licenses/htmlparser2-MIT.txt?raw';
+import entitiesBsd from '../../content/licenses/entities-BSD.txt?raw';
 
 interface Props {
   locale: Locale;
@@ -71,6 +76,11 @@ const TEXTS: Record<LicenseTextId, string> = {
   'lgpl-2.1': lgpl21,
   'libflac-bsd': libflacBsd,
   'gifenc-mit': gifencMit,
+  'pdf-lib-mit': pdfLibMit,
+  'fontkit-mit': fontkitMit,
+  'marked-mit': markedMit,
+  'htmlparser2-mit': htmlparser2Mit,
+  'entities-bsd': entitiesBsd,
 };
 const ORDER: LicenseTextId[] = [
   'lgpl-3.0',
@@ -99,6 +109,11 @@ const ORDER: LicenseTextId[] = [
   'lgpl-2.1',
   'libflac-bsd',
   'gifenc-mit',
+  'pdf-lib-mit',
+  'fontkit-mit',
+  'marked-mit',
+  'htmlparser2-mit',
+  'entities-bsd',
   'inter-ofl',
 ];
 const site = import.meta.env.SITE;

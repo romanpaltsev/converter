@@ -97,15 +97,46 @@ export function isVideoTarget(target: string): target is VideoTargetId {
   return (VIDEO_TARGETS as readonly string[]).includes(target);
 }
 
+/**
+ * Документы и таблицы на входе (ключ — вид из pipeline/sniff.ts). У текстовых форматов нет сигнатуры: вид — по
+ * расширению, а содержимое проверяется на «текст» (sniffFile); XLSX — ZIP с расширением .xlsx.
+ */
+export const TEXT_FORMATS = {
+  txt: { label: 'TXT', accept: '.txt,text/plain' },
+  md: { label: 'Markdown', accept: '.md,.markdown,text/markdown' },
+  html: { label: 'HTML', accept: '.html,.htm,text/html' },
+  csv: { label: 'CSV', accept: '.csv,.tsv,text/csv,text/tab-separated-values' },
+  json: { label: 'JSON', accept: '.json,application/json' },
+  xlsx: { label: 'XLSX', accept: '.xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+} as const satisfies Record<string, { label: string; accept: string }>;
+
+/** Документы и таблицы на выходе (PDF — общий пункт с «картинка в PDF», TargetId 'pdf'). */
+export const DOC_TARGETS = ['html', 'txt', 'xlsx', 'csv', 'json'] as const;
+export type DocTargetId = (typeof DOC_TARGETS)[number];
+
+export const DOC_FORMATS: Record<DocTargetId | 'pdf', { label: string; extension: string; mime: string }> = {
+  pdf: { label: 'PDF', extension: 'pdf', mime: 'application/pdf' },
+  html: { label: 'HTML', extension: 'html', mime: 'text/html' },
+  txt: { label: 'TXT', extension: 'txt', mime: 'text/plain' },
+  xlsx: { label: 'XLSX', extension: 'xlsx', mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' },
+  csv: { label: 'CSV', extension: 'csv', mime: 'text/csv' },
+  json: { label: 'JSON', extension: 'json', mime: 'application/json' },
+};
+
+export function isDocTarget(target: string): target is DocTargetId {
+  return (DOC_TARGETS as readonly string[]).includes(target);
+}
+
 export type InputFormatId = keyof typeof INPUT_FORMATS;
 export type DocumentFormatId = keyof typeof DOCUMENT_FORMATS;
 export type MediaFormatId = keyof typeof MEDIA_FORMATS;
-export type SourceFormatId = InputFormatId | DocumentFormatId | MediaFormatId;
+export type TextFormatId = keyof typeof TEXT_FORMATS;
+export type SourceFormatId = InputFormatId | DocumentFormatId | MediaFormatId | TextFormatId;
 /** Всё, что инструмент называет своим входом (accept, заголовок зоны). */
-export const SOURCE_FORMATS: Record<SourceFormatId, { label: string; accept: string }> = { ...INPUT_FORMATS, ...DOCUMENT_FORMATS, ...MEDIA_FORMATS };
+export const SOURCE_FORMATS: Record<SourceFormatId, { label: string; accept: string }> = { ...INPUT_FORMATS, ...DOCUMENT_FORMATS, ...MEDIA_FORMATS, ...TEXT_FORMATS };
 export type OutputFormatId = keyof typeof OUTPUT_FORMATS;
 /** Выбор в переключателе формата: конкретный формат, аудио или «Исходный» (формат входа; HEIC и AVIF — в JPG). */
-export type OutputChoiceId = OutputFormatId | AudioTargetId | VideoTargetId | 'original';
+export type OutputChoiceId = OutputFormatId | AudioTargetId | VideoTargetId | DocTargetId | 'pdf' | 'original';
 
 /**
  * convert — конвертер из одного формата в другой (вход в формате выхода — ошибка «уже в формате …»);
@@ -588,6 +619,79 @@ export const TOOLS: ToolConfig[] = [
     defaultQuality: 90,
     content: 'mp4-to-gif',
   },
+  // документы и таблицы (раздел «Документы»): текст в PDF, Markdown в HTML, CSV/XLSX/JSON друг в друга
+  {
+    id: 'txt-to-pdf',
+    mode: 'convert',
+    slugs: { ru: 'txt-v-pdf', en: 'txt-to-pdf' },
+    inputFormats: ['txt'],
+    defaultOutput: 'pdf',
+    defaultQuality: 90,
+    content: 'txt-to-pdf',
+  },
+  {
+    id: 'md-to-pdf',
+    mode: 'convert',
+    slugs: { ru: 'md-v-pdf', en: 'md-to-pdf' },
+    inputFormats: ['md'],
+    defaultOutput: 'pdf',
+    defaultQuality: 90,
+    content: 'md-to-pdf',
+  },
+  {
+    id: 'html-to-pdf',
+    mode: 'convert',
+    slugs: { ru: 'html-v-pdf', en: 'html-to-pdf' },
+    inputFormats: ['html'],
+    defaultOutput: 'pdf',
+    defaultQuality: 90,
+    content: 'html-to-pdf',
+  },
+  {
+    id: 'md-to-html',
+    mode: 'convert',
+    slugs: { ru: 'md-v-html', en: 'md-to-html' },
+    inputFormats: ['md'],
+    defaultOutput: 'html',
+    defaultQuality: 90,
+    content: 'md-to-html',
+  },
+  {
+    id: 'csv-to-xlsx',
+    mode: 'convert',
+    slugs: { ru: 'csv-v-xlsx', en: 'csv-to-xlsx' },
+    inputFormats: ['csv'],
+    defaultOutput: 'xlsx',
+    defaultQuality: 90,
+    content: 'csv-to-xlsx',
+  },
+  {
+    id: 'xlsx-to-csv',
+    mode: 'convert',
+    slugs: { ru: 'xlsx-v-csv', en: 'xlsx-to-csv' },
+    inputFormats: ['xlsx'],
+    defaultOutput: 'csv',
+    defaultQuality: 90,
+    content: 'xlsx-to-csv',
+  },
+  {
+    id: 'json-to-csv',
+    mode: 'convert',
+    slugs: { ru: 'json-v-csv', en: 'json-to-csv' },
+    inputFormats: ['json'],
+    defaultOutput: 'csv',
+    defaultQuality: 90,
+    content: 'json-to-csv',
+  },
+  {
+    id: 'csv-to-json',
+    mode: 'convert',
+    slugs: { ru: 'csv-v-json', en: 'csv-to-json' },
+    inputFormats: ['csv'],
+    defaultOutput: 'json',
+    defaultQuality: 90,
+    content: 'csv-to-json',
+  },
 ];
 
 export function getTool(id: string): ToolConfig {
@@ -604,9 +708,11 @@ export function getTool(id: string): ToolConfig {
 export const TOOL_CATEGORIES = ['images', 'photo', 'pdf', 'audio', 'video', 'documents', 'ebooks'] as const;
 export type ToolCategory = (typeof TOOL_CATEGORIES)[number];
 
-/** Раздел инструмента: пары форматов изображений, обработка фото (сжатие, размер, метаданные, EXIF), PDF, аудио и видео. */
+/** Раздел инструмента: пары форматов изображений, обработка фото (сжатие, размер, метаданные, EXIF), PDF, документы, аудио и видео. */
 export function toolCategory(tool: ToolConfig): ToolCategory {
   if (PDF_MODES.includes(tool.mode)) return 'pdf';
+  // текст и таблицы (в том числе TXT в PDF) — раздел «Документы»
+  if (tool.inputFormats.some((format) => format in TEXT_FORMATS)) return 'documents';
   // звук в аудиоформат — раздел «Аудио», в том числе из видео («MP4 в MP3»); видео в видео и в GIF — «Видео»
   if (isAudioTarget(tool.defaultOutput)) return 'audio';
   if (isVideoTarget(tool.defaultOutput)) return 'video';

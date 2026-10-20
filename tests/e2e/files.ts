@@ -332,3 +332,15 @@ export function gifInfo(bytes: Uint8Array): { width: number; height: number; fra
   }
   return { width, height, frames, delay, loops };
 }
+
+/** Текст всех страниц PDF (pdf.js в Node) и размер первой страницы в пунктах. */
+export async function pdfText(bytes: Uint8Array): Promise<{ pages: number; text: string; size: number[] }> {
+  const pdf = await openPdf(bytes);
+  const parts: string[] = [];
+  for (let number = 1; number <= pdf.numPages; number++) {
+    const content = await (await pdf.getPage(number)).getTextContent();
+    parts.push(content.items.map((item) => ('str' in item ? item.str : '')).join(' '));
+  }
+  const first = await pdf.getPage(1);
+  return { pages: pdf.numPages, text: parts.join('\n').replace(/\s+/g, ' '), size: first.view.slice(2).map((v) => Math.round(v)) };
+}

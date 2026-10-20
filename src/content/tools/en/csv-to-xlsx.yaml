@@ -1,0 +1,44 @@
+# Texts for /en/csv-to-xlsx. Draft for the owner's review (see CONTENT.md).
+title: "CSV to Excel (XLSX) Converter — Free, No Upload"
+description: "Convert CSV to Excel XLSX right in your browser: delimiter and encoding are detected, numbers stay numbers. Free, no sign-up, and your files never leave your device."
+h1: "CSV to XLSX Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "CSV to XLSX"
+card:
+  title: "CSV → XLSX"
+  text: "A CSV export, as a proper Excel spreadsheet."
+app:
+  name: "CSV to XLSX Converter"
+  description: "An online CSV to XLSX converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert CSV to XLSX"
+  steps:
+    - "Click the box above or drag your CSV files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each XLSX separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Conversion runs on your device. Documents are never uploaded, so nobody but you can see them."
+    - title: "No garbled text"
+      text: "The encoding (UTF-8 or Windows-1251) and the delimiter (comma, semicolon or tab) are detected automatically."
+    - title: "Numbers stay numbers"
+      text: "Numbers are numeric in the XLSX right away, while codes with leading zeros stay text."
+    - title: "Many files at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Why convert CSV to XLSX?"
+      a: "Excel opens CSV by its own rules: it may misread the encoding or delimiter, turn codes into numbers and drop leading zeros. An XLSX already has everything in columns and opens the same everywhere."
+    - q: "Which delimiter does it need?"
+      a: "Any: comma, semicolon or tab is detected from the file's contents. TSV works too."
+    - q: "What happens to numbers?"
+      a: "Numbers become real numbers you can calculate with. Values with leading zeros — codes, phone numbers, ZIP codes — stay text so the zeros aren't lost."
+    - q: "What if the text uses another encoding?"
+      a: "The encoding is detected automatically: UTF-8, UTF-16 or Windows-1251, which older Notepad versions and Excel in Cyrillic locales use."
+    - q: "What about dates?"
+      a: "Dates are carried over as text, exactly as written in the CSV, without converting them to another format."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server."

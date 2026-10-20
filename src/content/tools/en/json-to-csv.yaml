@@ -1,0 +1,44 @@
+# Texts for /en/json-to-csv. Draft for the owner's review (see CONTENT.md).
+title: "JSON to CSV Converter — Free, Private, No Upload"
+description: "Convert JSON to CSV right in your browser: an array of objects becomes a table with a column for each key. Free, no sign-up, and your files never leave your device."
+h1: "JSON to CSV Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "JSON to CSV"
+card:
+  title: "JSON → CSV"
+  text: "A JSON array, as a CSV table for Excel."
+app:
+  name: "JSON to CSV Converter"
+  description: "An online JSON to CSV converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert JSON to CSV"
+  steps:
+    - "Click the box above or drag your JSON files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each CSV separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Conversion runs on your device. Documents are never uploaded, so nobody but you can see them."
+    - title: "Columns from keys"
+      text: "Every key becomes a column in order of appearance — even when objects have different keys."
+    - title: "Ready for Excel"
+      text: "UTF-8 CSV with a BOM and your choice of delimiter opens in Excel without garbled text."
+    - title: "Many files at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Which JSON works?"
+      a: "An array of objects ([{\"name\": …}, …]) — each object becomes a row and its keys become columns. An array of arrays, or an object that holds one such array, works too."
+    - q: "What happens to nested objects?"
+      a: "Nested objects and arrays are written into the cell as JSON text, and the file's row shows a warning."
+    - q: "Which delimiter should I choose?"
+      a: "Comma works for Google Sheets, most apps and English-language Excel. Excel in many European locales expects a semicolon — pick it in the settings if Excel shows everything in one column."
+    - q: "What if the JSON isn't a table?"
+      a: "If it's not an array of objects or arrays, there's nothing to convert — the file's row will say so."
+    - q: "How many files can I convert at once?"
+      a: "Up to 100 files per batch. Download them one by one or all together in a single ZIP file."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server."

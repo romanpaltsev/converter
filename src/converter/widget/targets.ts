@@ -3,17 +3,28 @@
 // Чистые функции: их используют и браузер, и сборка (начальная видимость настроек).
 
 import { AUDIO_FORMATS, AUDIO_TARGETS, type AudioTargetId, VIDEO_TARGETS, type VideoTargetId, isAudioTarget, isVideoTarget } from '../media/formats';
-import { type SniffKind, isMediaKind } from '../pipeline/sniff';
+import { type SniffKind, type TextKind, isMediaKind, isTextKind } from '../pipeline/sniff';
+import type { DocTargetId } from '../../tools/registry';
 import type { EncoderId } from '../pipeline/types';
 
-/** Формат результата: кодировщик изображения, PDF (каждая картинка — свой документ), видео или аудио. */
-export type TargetId = EncoderId | 'pdf' | VideoTargetId | AudioTargetId;
+/** Формат результата: кодировщик изображения, PDF (картинка или текст — свой документ), документ, таблица, видео или аудио. */
+export type TargetId = EncoderId | 'pdf' | DocTargetId | VideoTargetId | AudioTargetId;
 
-/** Пункты меню «Изображение», «Документ», «Видео» и «Аудио» — в этом порядке (у видеофайла видео — первым). */
+/** Пункты меню «Изображение», «Документ», «Таблица», «Видео» и «Аудио» — в этом порядке (у видеофайла видео — первым). */
 export const IMAGE_TARGETS: readonly TargetId[] = ['jpeg', 'png', 'webp', 'avif', 'ico'];
-export const DOCUMENT_TARGETS: readonly TargetId[] = ['pdf'];
+export const DOCUMENT_TARGETS: readonly TargetId[] = ['pdf', 'html', 'txt'];
+export const TABLE_TARGETS: readonly TargetId[] = ['xlsx', 'csv', 'json'];
 export { AUDIO_TARGETS, VIDEO_TARGETS };
-export const ALL_TARGETS: readonly TargetId[] = [...IMAGE_TARGETS, ...DOCUMENT_TARGETS, ...VIDEO_TARGETS, ...AUDIO_TARGETS];
+export const ALL_TARGETS: readonly TargetId[] = [...IMAGE_TARGETS, ...DOCUMENT_TARGETS, ...TABLE_TARGETS, ...VIDEO_TARGETS, ...AUDIO_TARGETS];
+/** Документы и таблицы: текст — в PDF (Markdown — и в HTML, HTML — и в TXT), таблицы — друг в друга. */
+const TEXT_TARGETS: Record<TextKind, readonly TargetId[]> = {
+  txt: ['pdf'],
+  md: ['pdf', 'html'],
+  html: ['pdf', 'txt'],
+  csv: ['xlsx', 'json'],
+  json: ['xlsx', 'csv'],
+  xlsx: ['csv', 'json'],
+};
 /** Контейнеры видео: из них — и видео, и звук; из остальных медиа (MP3, WAV…) — только звук. */
 const VIDEO_KINDS: readonly SniffKind[] = ['mp4', 'mov', 'webm', 'mkv'];
 /** Страницы PDF — картинками в основных форматах (AVIF для многостраничных документов слишком медленный). */
@@ -41,19 +52,21 @@ const OWN_TARGET: Partial<Record<SniffKind, TargetId>> = {
 export function targetsFor(kind: SniffKind): TargetId[] {
   if (kind === 'unknown') return [];
   if (kind === 'pdf') return [...PAGE_TARGETS];
+  if (isTextKind(kind)) return [...TEXT_TARGETS[kind]];
   if (isMediaKind(kind)) {
     const targets: TargetId[] = VIDEO_KINDS.includes(kind) ? [...VIDEO_TARGETS, ...AUDIO_TARGETS] : [...AUDIO_TARGETS];
     return targets.filter((target) => target !== OWN_TARGET[kind]);
   }
-  return [...IMAGE_TARGETS, ...DOCUMENT_TARGETS].filter((target) => target !== OWN_TARGET[kind]);
+  return [...IMAGE_TARGETS, 'pdf' as const].filter((target) => target !== OWN_TARGET[kind]);
 }
 
 /**
  * Что делать с файлом: image — картинка в картинку, document — картинка в свой PDF, pages — страницы PDF картинками
  * (у каждой страницы своя строка под строкой документа), media — аудио и видео через mediabunny.
  */
-export function jobFor(kind: SniffKind, target: TargetId): 'image' | 'document' | 'pages' | 'media' {
+export function jobFor(kind: SniffKind, target: TargetId): 'image' | 'document' | 'pages' | 'media' | 'text' {
   if (kind === 'pdf') return 'pages';
+  if (isTextKind(kind)) return 'text';
   if (isMediaKind(kind)) return 'media';
   return target === 'pdf' ? 'document' : 'image';
 }
@@ -94,6 +107,8 @@ export interface TargetSettings {
   /** Видео в GIF: ширина и частота кадров. */
   gifWidth: number;
   gifFps: number;
+  /** Разделитель CSV на выходе. */
+  csvDelimiter: string;
 }
 
 export interface SettingsVisibility {
@@ -116,6 +131,8 @@ export interface SettingsVisibility {
   video: boolean;
   /** Ширина и частота кадров — когда видео идёт в GIF. */
   gif: boolean;
+  /** Разделитель — когда таблица идёт в CSV. */
+  csv: boolean;
 }
 
 const lossy = (target: TargetId, lossless: boolean) => target === 'jpeg' || target === 'avif' || (target === 'webp' && !lossless);
@@ -128,15 +145,17 @@ export function visibleSettings(pairs: readonly TargetPair[], lossless: boolean)
     quality: any(({ target }) => lossy(target, lossless)),
     lossless: any(({ target }) => target === 'webp'),
     // у страниц PDF метаданных фото нет, в ICO и PDF они не попадают; теги аудио переносятся всегда
-    metadata: any(({ kind, target }) => kind !== 'pdf' && target !== 'ico' && target !== 'pdf' && !isAudioTarget(target) && !isVideoTarget(target)),
+    metadata: any(({ kind, target }) => kind !== 'pdf' && !isTextKind(kind) && target !== 'ico' && target !== 'pdf' && !isAudioTarget(target) && !isVideoTarget(target)),
     pngWarning: any(({ kind, target }) => kind !== 'pdf' && target === 'png'),
     icoHint: any(({ target }) => target === 'ico'),
     avifHint: any(({ target }) => target === 'avif'),
     dpi: any(({ kind }) => kind === 'pdf'),
-    pdfLayout: any(({ target }) => target === 'pdf'),
+    // размер страницы и поля — для картинок в PDF; текст верстается на A4 с полями 20 мм
+    pdfLayout: any(({ kind, target }) => target === 'pdf' && !isTextKind(kind)),
     audioBitrate: any(({ target }) => lossyAudio(target)),
     video: any(({ target }) => target === 'mp4' || target === 'webm'),
     gif: any(({ kind, target }) => target === 'gif' && isMediaKind(kind)),
+    csv: any(({ target }) => target === 'csv'),
   };
 }
 
@@ -147,6 +166,8 @@ export function visibleSettings(pairs: readonly TargetPair[], lossless: boolean)
 export function settingsKey({ kind, target }: TargetPair, settings: TargetSettings): string {
   // картинка → PDF: качество страницы постоянное, размер страницы и поля применяются при сборке без перекодирования
   if (target === 'pdf') return target;
+  // документы: важен только разделитель CSV
+  if (isTextKind(kind)) return target === 'csv' ? `csv:${settings.csvDelimiter}` : target;
   // аудио: важен только битрейт (и только с потерями)
   if (isAudioTarget(target)) return lossyAudio(target) ? `${target}:b${settings.audioBitrate}` : target;
   if (target === 'gif') return `gif:w${settings.gifWidth}:f${settings.gifFps}`;

@@ -1,0 +1,44 @@
+# Texts for /en/html-to-pdf. Draft for the owner's review (see CONTENT.md).
+title: "HTML to PDF Converter — Web Page Text to PDF, Free"
+description: "Convert saved HTML pages to PDF right in your browser: headings, paragraphs, lists and tables. Free, no sign-up, and your files never leave your device."
+h1: "HTML to PDF Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "HTML to PDF"
+card:
+  title: "HTML → PDF"
+  text: "A saved web page, as a PDF with its text and structure."
+app:
+  name: "HTML to PDF Converter"
+  description: "An online HTML to PDF converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert HTML to PDF"
+  steps:
+    - "Click the box above or drag your HTML files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each PDF separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Conversion runs on your device. Documents are never uploaded, so nobody but you can see them."
+    - title: "Document structure"
+      text: "Headings, paragraphs, lists, quotes, code and tables come through as in the original file."
+    - title: "No clutter"
+      text: "Scripts, styles, menus and other technical markup are skipped — the PDF holds just the content."
+    - title: "Many files at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Will the PDF look like the page in a browser?"
+      a: "No: the text and structure come through — headings, paragraphs, lists, tables, code — but not the CSS styling, columns or images. You get a clean text document. For an exact copy of the page, use “Print to PDF” in your browser."
+    - q: "Do emails and app exports work?"
+      a: "Yes, as long as it's an .html or .htm file: emails, saved pages, reports and note exports all convert the same way."
+    - q: "What about images?"
+      a: "Images are not included — only the text. If there were any, the file's row shows a warning."
+    - q: "What does the PDF look like?"
+      a: "A4 pages with 20 mm margins and 11 pt Liberation Sans. Long lines wrap at word boundaries, and the text can be selected and copied."
+    - q: "What about CJK characters and emoji?"
+      a: "The PDF font covers Latin, Cyrillic and Greek. Characters it lacks (CJK, emoji) become “?” in the PDF, and the file's row shows a warning."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server."

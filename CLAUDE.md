@@ -4,7 +4,8 @@
 (module Web Worker + WASM), файлы на сервер не загружаются. Сейчас: HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF и JPEG XL → JPG, PNG, WebP, ICO или AVIF
 (23 страницы-конвертера), «Сжать фото», «Изменить размер», «Удалить метаданные», «Посмотреть EXIF» и «Изображения в PDF»
 (JPG, PNG, HEIC → PDF), «PDF в JPG/PNG» и «Объединить PDF»; аудио — MP3, WAV, FLAC, OGG/Opus, AAC, M4A и звук из видео
-(MP4, MOV, WebM, MKV) → MP3, WAV, M4A, OGG, FLAC (8 страниц); видео — MP4, MOV, WebM, MKV → MP4, WebM и GIF (5 страниц).
+(MP4, MOV, WebM, MKV) → MP3, WAV, M4A, OGG, FLAC (8 страниц); видео — MP4, MOV, WebM, MKV → MP4, WebM и GIF (5 страниц); документы — TXT, Markdown, HTML → PDF, Markdown → HTML,
+CSV ↔ XLSX ↔ JSON (8 страниц).
 Обзор и команды — README.md, деплой — DEPLOY.md, тесты и замеры — TESTING.md, тексты — CONTENT.md.
 
 ## Правила работы
@@ -36,7 +37,7 @@
 
 Astro 7.4 (Vite 8 + Rolldown, Zod 4), TypeScript 6.0 strict (не 7.x: `@astrojs/check` поддерживает только ^5/^6),
 libheif-js 1.23.5 (libheif 1.23.5 + libde265 1.0.15), @jsquash/jpeg 1.6.0 (MozJPEG 3.3.1), @jsquash/png 3.1.1,
-client-zip 2.5.1, mediabunny 1.61.6 (+ @mediabunny/mp3-encoder, flac-encoder, aac-encoder 1.61.6; MPL-2.0), gifenc 1.0.3,
+client-zip 2.5.1, pdf-lib 1.17.1 + @pdf-lib/fontkit 1.1.1, marked 18.1.1, htmlparser2 12.0.0, mediabunny 1.61.6 (+ @mediabunny/mp3-encoder, flac-encoder, aac-encoder 1.61.6; MPL-2.0), gifenc 1.0.3,
 utif2 4.1.0 (UTIF.js, с ним pako 1.0.11), jxl-oxide-wasm 0.12.6, pdfjs-dist 6.4.299 (legacy-сборка:
 «PDF в JPG/PNG»; в тестах — разбор PDF), шрифт Inter Variable (@fontsource-variable/inter 5.3.0, OFL), Vitest 5, Playwright 1.64, Node 24 LTS, nginx 1.30. Версии закреплены точно (`.npmrc`: `save-exact`).
 
@@ -66,6 +67,9 @@ src/converter/color/          ICC-профили (CC0) и выбор по nclx
 src/converter/media/          аудио и видео: formats.ts (настройки и параметры задания; таблицы форматов — AUDIO_FORMATS
                               и VIDEO_FORMATS в реестре), convert.ts (открыть файл, память, выбор пути, сторож),
                               audio.ts, video.ts, gif.ts, encoders.ts (WASM-кодировщики звука), run.ts (запуск, ошибки)
+src/converter/documents/      документы и таблицы: convert.ts (что во что), text.ts (кодировка, XML), blocks.ts (модель
+                              документа, TXT), markdown.ts, html.ts (разбор), pdf.ts (вёрстка pdf-lib), table.ts (CSV,
+                              JSON, XLSX), zip.ts (ZIP для XLSX)
 src/converter/pdf/            writer.ts — свой писатель PDF («Изображения в PDF»); render.ts — pdf.js в worker'е
                               («PDF в JPG/PNG»), limits.ts — пределы для интерфейса
 src/converter/worker/         convert.worker.ts (конвертация), zip.worker.ts (ZIP), protocol.ts
@@ -361,6 +365,30 @@ scripts/                      serve-dist (тестовый сервер как n
     не сделана.
   - Ограничения окружений: Firefox на Linux без ffmpeg не декодирует H.264/AAC (MOV → MP4 перепаковкой работает);
     WebKit GTK в Docker — непостоянно; e2e строги только в Chromium.
+- **Документы и таблицы** (решение владельца 20.10.2026, «простые документы», раздел «Документы»; задание `text`,
+  `documents/`, без WASM, отдельный чанк): вход — TXT, Markdown, HTML, CSV/TSV, JSON, XLSX (`TEXT_FORMATS` в реестре).
+  Сигнатуры у текста нет — вид по расширению имени + «похоже на текст» (нет нулевых байтов), XLSX — ZIP с .xlsx
+  (`sniffFile()`; сигнатура важнее имени). Вид передаётся в worker в сообщении `doc`. Кодировка — BOM, UTF-8 или
+  Windows-1251 (`decodeText`). DOCX → PDF не делаем (нужен LibreOffice-WASM).
+  - Меню: «Документ» — PDF, HTML, TXT; «Таблица» — XLSX, CSV, JSON (`TEXT_TARGETS` в `targets.ts`: TXT → PDF,
+    Markdown → PDF/HTML, HTML → PDF/TXT, таблицы — друг в друга).
+  - В PDF — своя вёрстка на pdf-lib (`documents/pdf.ts`): A4, поля 20 мм, Liberation Sans из pdfjs-dist (подключается
+    `?url`, хешированные файлы в `/_astro/`; GPL с исключением для шрифтов — встраивать можно), подмножество шрифта;
+    заголовки, абзацы, списки (вложенные, «■/□» у задач — «☑» в шрифте нет), цитаты, код (Courier, если только ASCII),
+    таблицы (ширины по содержимому), линии; ссылки — синие с подчёркиванием (без аннотаций); перенос по словам,
+    отступ в начале строки кода и TXT сохраняется. Знаки вне шрифта (иероглифы, эмодзи) — «?» и `missing-glyphs`;
+    картинки не переносятся — `images-dropped`. Info у PDF нет (`updateMetadata: false`). Размер страницы и поля —
+    только для картинок в PDF.
+  - Разбор: Markdown — marked (GFM, токены → `Block[]`; HTML — `marked.parse` + шаблон страницы со стилями), HTML —
+    htmlparser2 (в worker'е нет DOMParser): блочные теги — блоки, строчные — начертание, script/style/head пропускаются.
+  - Таблицы (`documents/table.ts`): CSV — RFC 4180, разделитель определяется по первым строкам; на выходе — BOM и \r\n,
+    разделитель — настройка (по умолчанию «;» на ru — русский Excel, «,» на en); JSON — массив объектов (ключи —
+    столбцы по порядку появления, вложенное — строкой JSON, `json-nested`), массив массивов или объект с одним массивом;
+    числа из CSV — числами, кроме ведущих нулей (коды, телефоны). XLSX: чтение — свой ZIP (центральный каталог,
+    `DecompressionStream('deflate-raw')`, не больше 256 МБ на файл) и разбор SpreadsheetML регулярными выражениями
+    (первый лист по связи, sharedStrings, inlineStr, числа, логические, даты по формату ячейки — встроенные 14–22,
+    45–47 и свои с d/m/y/h → ISO), листов больше одного — `sheets-first-only`; запись — один лист, inlineStr, store-ZIP
+    с CRC32 (детерминированно). Фикстура XLSX — `tests/fixtures/generate/xlsx.py`.
 - **GIF на входе** — свой декодер на TypeScript (`decoders/gif.ts`, без WASM): LZW, палитра, чересстрочность. Первый
   кадр — как в браузере: на прозрачном холсте логического экрана (фон GIF не рисуется), прозрачный индекс — прозрачный
   пиксель, обрезанный файл — декодированная часть, остальное прозрачно; у анимации — предупреждение. Цвет — sRGB.
@@ -458,7 +486,8 @@ scripts/                      serve-dist (тестовый сервер как n
   `--header-height`); тёмный подвал (`--footer-*`) с колонками по разделам (`toolGroups()` в реестре: «Изображения» —
   первой строкой во всю ширину, дальше «Обработка фото», «PDF»… и «О сайте»; подписи — `card.title` через
   `lib/tool-links.ts`), так же устроены меню в шапке и разделы на главной (заголовок, строка о разделе и значок —
-  `data-group-icon`, значки в `global.css`); переключатель языка — в шапке, один
+  `data-group-icon`, значки в `global.css`). Меню на широком экране — сетка из 6 колонок: «Изображения» в трёх
+  подколонках, остальные разделы по одной, всё меню помещается в 1280×720 (e2e щёлкает под ним, чтобы закрыть); переключатель языка — в шапке, один
   на странице. `<main>` во всю ширину: страницы сами ставят `.container` (68rem — шапка, подвал, полосы),
   `.container--widget` (60rem — виджет, шаги, «Почему здесь», похожие инструменты) и `.container--narrow` (50rem —
   заголовок, FAQ, тексты); `.band` — серая полоса от края до края. Блоки — карточки на `--surface` с тонкой рамкой.

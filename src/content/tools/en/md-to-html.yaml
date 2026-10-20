@@ -1,0 +1,44 @@
+# Texts for /en/md-to-html. Draft for the owner's review (see CONTENT.md).
+title: "Markdown to HTML Converter — MD to HTML, Free"
+description: "Convert Markdown (.md) to a ready-to-use HTML page right in your browser: tables, task lists, code. Free, no sign-up, and your files never leave your device."
+h1: "Markdown to HTML Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "Markdown to HTML"
+card:
+  title: "Markdown → HTML"
+  text: "Markdown, as a ready HTML page with clean styles."
+app:
+  name: "Markdown to HTML Converter"
+  description: "An online Markdown to HTML converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert Markdown to HTML"
+  steps:
+    - "Click the box above or drag your Markdown files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each HTML separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Conversion runs on your device. Documents are never uploaded, so nobody but you can see them."
+    - title: "A complete page"
+      text: "You get a standalone HTML file with encoding, a title and clean default styles — open it in any browser right away."
+    - title: "GitHub Flavored Markdown"
+      text: "Tables, task lists, strikethrough and autolinks — just like on GitHub."
+    - title: "Many files at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What do I get?"
+      a: "An .html file with all of the document's markup: headings, paragraphs, lists, tables, code, links and images (at the same addresses as in the Markdown). The page title is the document's first heading."
+    - q: "Can I put the result on my site?"
+      a: "Yes. Take the contents of <body> — clean markup without extra classes — or use the whole file."
+    - q: "Is HTML inside the Markdown kept?"
+      a: "Yes, embedded HTML is carried over as is."
+    - q: "What if the text uses another encoding?"
+      a: "The encoding is detected automatically: UTF-8, UTF-16 or Windows-1251, which older Notepad versions and Excel in Cyrillic locales use."
+    - q: "How many files can I convert at once?"
+      a: "Up to 100 files per batch. Download them one by one or all together in a single ZIP file."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server."

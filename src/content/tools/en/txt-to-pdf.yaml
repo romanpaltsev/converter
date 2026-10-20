@@ -1,0 +1,44 @@
+# Texts for /en/txt-to-pdf. Draft for the owner's review (see CONTENT.md).
+title: "TXT to PDF Converter — Text File to PDF, Free"
+description: "Convert TXT text files to PDF right in your browser: line breaks kept, A4 pages. Free, no sign-up, and your files never leave your device."
+h1: "TXT to PDF Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "TXT to PDF"
+card:
+  title: "TXT → PDF"
+  text: "A text file, as a PDF for printing and sharing."
+app:
+  name: "TXT to PDF Converter"
+  description: "An online TXT to PDF converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert TXT to PDF"
+  steps:
+    - "Click the box above or drag your TXT files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each PDF separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Conversion runs on your device. Documents are never uploaded, so nobody but you can see them."
+    - title: "Line breaks are kept"
+      text: "Every line stays where it was; long lines wrap at word boundaries, and blank lines are kept too."
+    - title: "Any encoding"
+      text: "UTF-8, UTF-16 or Windows-1251 is detected automatically, and the PDF font covers Latin, Cyrillic and Greek."
+    - title: "Many files at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Why convert TXT to PDF?"
+      a: "A PDF looks the same on every device and is easy to print and share: the recipient sees the text exactly as you sent it."
+    - q: "What does the PDF look like?"
+      a: "A4 pages with 20 mm margins and 11 pt Liberation Sans. Long lines wrap at word boundaries, and the text can be selected and copied."
+    - q: "What if the text uses another encoding?"
+      a: "The encoding is detected automatically: UTF-8, UTF-16 or Windows-1251, which older Notepad versions and Excel in Cyrillic locales use."
+    - q: "What about CJK characters and emoji?"
+      a: "The PDF font covers Latin, Cyrillic and Greek. Characters it lacks (CJK, emoji) become “?” in the PDF, and the file's row shows a warning."
+    - q: "How many files can I convert at once?"
+      a: "Up to 100 files per batch. Download them one by one or all together in a single ZIP file."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server."

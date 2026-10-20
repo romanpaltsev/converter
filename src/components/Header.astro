@@ -204,7 +204,7 @@ const menu = await Promise.all(toolGroups().map(async (group) => ({ id: group.id
     height: auto;
     max-height: calc(100dvh - var(--header-height));
     margin: 0;
-    padding: 28px 0 32px;
+    padding: 24px 0 28px;
     overflow: auto;
     border: 0;
     border-bottom: 1px solid var(--border);
@@ -213,23 +213,42 @@ const menu = await Promise.all(toolGroups().map(async (group) => ({ id: group.id
     box-shadow: var(--shadow-lg);
   }
 
-  /* разделы — колонками по ширине; «Изображения» (много пар форматов) — первой строкой во всю ширину */
+  /* Разделы — колонками по ширине; «Изображения» (много пар форматов) на узком экране — первой строкой во всю ширину.
+     На широком — шесть колонок: «Изображения» занимают три (по 8 ссылок в подколонке), остальные разделы — по одной;
+     так всё меню помещается в экран ноутбука (1280×720). */
   .mega__inner {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr));
-    gap: 24px 32px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 9.5rem), 1fr));
+    gap: 24px;
   }
 
   .mega__group--images {
     grid-column: 1 / -1;
   }
 
+  @media (min-width: 960px) {
+    .mega__inner {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .mega__group--images {
+      grid-column: span 3;
+    }
+
+    .mega__group--images .mega__links {
+      columns: 3;
+    }
+  }
+
   .mega__title {
+    --group-icon-size: 28px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin: 0 0 12px;
+    gap: 8px;
+    margin: 0 0 10px;
+    font-size: 0.9375rem;
     font-weight: 650;
+    line-height: 1.25;
   }
 
   .mega__links {
@@ -242,8 +261,8 @@ const menu = await Promise.all(toolGroups().map(async (group) => ({ id: group.id
 
   .mega__group--images .mega__links {
     display: block;
-    columns: 11rem auto;
-    column-gap: 32px;
+    columns: 9.5rem auto;
+    column-gap: 24px;
   }
 
   .mega__links li {
@@ -252,7 +271,8 @@ const menu = await Promise.all(toolGroups().map(async (group) => ({ id: group.id
 
   .mega__links a {
     display: block;
-    padding: 5px 0;
+    padding: 2px 0;
+    font-size: 0.9375rem;
     color: var(--text);
     text-decoration: none;
   }

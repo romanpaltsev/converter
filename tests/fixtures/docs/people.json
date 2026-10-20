@@ -1,0 +1,5 @@
+[
+  { "name": "Анна", "age": 30, "city": "Казань" },
+  { "name": "Борис", "age": 41, "tags": ["admin", "dev"] },
+  { "name": "Вера", "active": true }
+]

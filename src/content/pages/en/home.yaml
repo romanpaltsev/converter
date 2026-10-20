@@ -4,7 +4,7 @@ title: "Free Online File Converter — Images, PDF, Audio and Video"
 description: "Free online file converter: HEIC, JPG, PNG, WebP images, PDF, MP3, WAV, M4A audio, MP4, MOV and GIF video. No sign-up, no uploads — it all runs in your browser."
 h1: "Online file converter"
 subtitle: "Pick your files, then a format — conversion runs right in your browser. Free, no sign-up, no uploads."
-intro: "Converters for different kinds of files in one place: images between HEIC, AVIF, JPG, PNG, WebP and other formats, PDFs to images and back, audio between MP3, WAV, M4A, OGG and FLAC, video to MP4, WebM and GIF, plus audio extracted from video. For photos there is compression to a target size, resizing, and viewing or removing metadata. Everything happens on your device: files are never uploaded."
+intro: "Converters for different kinds of files in one place: images between HEIC, AVIF, JPG, PNG, WebP and other formats, PDFs to images and back, audio between MP3, WAV, M4A, OGG and FLAC, video to MP4, WebM and GIF, plus audio extracted from video. TXT, Markdown and HTML become PDFs, and CSV, Excel and JSON tables convert into each other. For photos there is compression to a target size, resizing, and viewing or removing metadata. Everything happens on your device: files are never uploaded."
 sections:
   images:
     title: "Images"
@@ -21,6 +21,9 @@ sections:
   video:
     title: "Video"
     text: "MOV, WebM and MKV to MP4, MP4 to WebM, and video to GIF."
+  documents:
+    title: "Documents"
+    text: "TXT, Markdown and HTML to PDF, Markdown to HTML, and CSV, Excel and JSON tables to each other."
 featuresTitle: "Why use it"
 features:
   - icon: lock
@@ -28,7 +31,7 @@ features:
     text: "Files are processed right in your browser and never leave your device."
   - icon: formats
     title: "All the popular formats"
-    text: "HEIC, JPG, PNG, WebP, AVIF and other images, PDF, MP3, WAV, M4A, OGG and FLAC audio, and video."
+    text: "Images, PDFs, documents and spreadsheets, MP3, WAV, M4A, OGG and FLAC audio, and MP4, MOV and WebM video."
   - icon: batch
     title: "Many files at once"
     text: "Up to 100 files per batch, downloaded as a single ZIP if you like."

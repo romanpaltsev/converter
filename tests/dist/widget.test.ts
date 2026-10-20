@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import type { SniffKind } from '../../src/converter/pipeline/sniff';
 import { ALL_TARGETS, type TargetId, visibleSettings } from '../../src/converter/widget/targets';
 import { UI } from '../../src/i18n/ui';
-import { AUDIO_FORMATS, DOCUMENT_FORMATS, INPUT_FORMATS, MEDIA_FORMATS, isAudioTarget, isVideoTarget, SOURCE_FORMATS, TOOLS, UNIVERSAL_MODES } from '../../src/tools/registry';
+import { AUDIO_FORMATS, DOCUMENT_FORMATS, INPUT_FORMATS, MEDIA_FORMATS, TEXT_FORMATS, isAudioTarget, isDocTarget, isVideoTarget, SOURCE_FORMATS, TOOLS, UNIVERSAL_MODES } from '../../src/tools/registry';
 import { HOME_PAGES, readHtml } from './helpers';
 
 describe('сборка: конвертер на главной', () => {
@@ -10,7 +10,7 @@ describe('сборка: конвертер на главной', () => {
     const ui = UI[file.startsWith('en/') ? 'en' : 'ru'].widget;
     const root = readHtml(file).doc.querySelector('[data-converter]')!;
     // accept — все форматы: картинки, PDF, аудио и видео (с image/heic: иначе iOS может перекодировать HEIC в JPEG при выборе)
-    expect(root.querySelector('input[type="file"]')?.getAttribute('accept')).toBe([...Object.values(INPUT_FORMATS), DOCUMENT_FORMATS.pdf, ...Object.values(MEDIA_FORMATS)].map((f) => f.accept).join(','));
+    expect(root.querySelector('input[type="file"]')?.getAttribute('accept')).toBe([...Object.values(INPUT_FORMATS), DOCUMENT_FORMATS.pdf, ...Object.values(MEDIA_FORMATS), ...Object.values(TEXT_FORMATS)].map((f) => f.accept).join(','));
     expect(root.querySelector('input[type="file"]')?.hasAttribute('multiple')).toBe(true);
     expect(root.querySelector('.dropzone__title')?.text).toBe(ui.dropTitleUniversal);
     // настраивать нечего, пока ни у одного файла нет формата
@@ -66,7 +66,7 @@ describe('сборка: разметка виджета', () => {
       expect(menu.hasAttribute('hidden')).toBe(true);
       expect(menu.querySelectorAll('[role="menuitemradio"]').map((item) => item.getAttribute('data-target'))).toEqual([...ALL_TARGETS]);
       expect(menu.querySelectorAll('[role="menuitemradio"][tabindex="-1"]')).toHaveLength(ALL_TARGETS.length);
-      expect(menu.querySelectorAll('[role="group"]').map((group) => group.getAttribute('aria-label'))).toEqual([ui.targetGroups.image, ui.targetGroups.document, ui.targetGroups.video, ui.targetGroups.audio]);
+      expect(menu.querySelectorAll('[role="group"]').map((group) => group.getAttribute('aria-label'))).toEqual([ui.targetGroups.image, ui.targetGroups.document, ui.targetGroups.table, ui.targetGroups.video, ui.targetGroups.audio]);
       const all = root.querySelector('[data-target-all]')!;
       expect(all.getAttribute('aria-haspopup')).toBe('menu');
       expect(all.getAttribute('aria-controls')).toBe(menu.getAttribute('id'));
@@ -76,16 +76,19 @@ describe('сборка: разметка виджета', () => {
       expect(root.querySelector('input[name="keepMetadata"]')?.hasAttribute('checked')).toBe(false);
       // до выбора файлов видны настройки формата страницы (у PDF-страниц — разрешение 150 dpi вместо метаданных)
       const shown = visibleSettings([{ kind: tool.inputFormats[0] as SniffKind, target: tool.defaultOutput as TargetId }], false);
-      const rows = { quality: '[data-quality-row]', lossless: '[data-lossless-row]', metadata: '[data-meta-row]', pngWarning: '[data-png-warning]', icoHint: '[data-ico-hint]', avifHint: '[data-avif-hint]', dpi: '[data-dpi-row]', pdfLayout: '[data-pdf-layout-row]', audioBitrate: '[data-audio-bitrate-row]', video: '[data-video-row]', gif: '[data-gif-row]' } as const;
+      const rows = { quality: '[data-quality-row]', lossless: '[data-lossless-row]', metadata: '[data-meta-row]', pngWarning: '[data-png-warning]', icoHint: '[data-ico-hint]', avifHint: '[data-avif-hint]', dpi: '[data-dpi-row]', pdfLayout: '[data-pdf-layout-row]', audioBitrate: '[data-audio-bitrate-row]', video: '[data-video-row]', gif: '[data-gif-row]', csv: '[data-csv-row]' } as const;
       for (const [key, selector] of Object.entries(rows)) {
         expect(root.querySelector(selector)?.hasAttribute('hidden'), `${selector} у ${file}`).toBe(!shown[key as keyof typeof shown]);
       }
       // аудио: вместо качества — битрейт (у WAV и FLAC настроек нет — форма скрыта); видео — качество и размер кадра
       const output = tool.defaultOutput;
-      const media = isAudioTarget(output) || isVideoTarget(output);
+      const media = isAudioTarget(output) || isVideoTarget(output) || isDocTarget(output) || tool.inputFormats[0]! in TEXT_FORMATS;
       expect(shown.quality).toBe(!media && tool.defaultOutput !== 'png' && tool.defaultOutput !== 'ico');
       expect(shown.video).toBe(output === 'mp4' || output === 'webm');
       expect(shown.gif).toBe(output === 'gif');
+      expect(shown.csv).toBe(output === 'csv');
+      // разделитель CSV по умолчанию — под Excel языка страницы
+      expect(root.querySelector('input[name="csvDelimiter"][checked]')?.getAttribute('value')).toBe(file.startsWith('en/') ? ',' : ';');
       expect(shown.audioBitrate).toBe(isAudioTarget(output) && AUDIO_FORMATS[output].lossy);
       expect(root.querySelector('form[data-settings]')?.hasAttribute('hidden')).toBe(!Object.values(shown).some(Boolean));
       expect(root.querySelector('input[name="audioBitrate"][checked]')?.getAttribute('value')).toBe('192');

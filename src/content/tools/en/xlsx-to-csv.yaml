@@ -1,0 +1,46 @@
+# Texts for /en/xlsx-to-csv. Draft for the owner's review (see CONTENT.md).
+title: "Excel (XLSX) to CSV Converter — Free, No Upload"
+description: "Convert Excel XLSX spreadsheets to CSV right in your browser: UTF-8, your choice of delimiter, readable dates. Free, no sign-up, and your files never leave your device."
+h1: "XLSX to CSV Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "XLSX to CSV"
+card:
+  title: "XLSX → CSV"
+  text: "An Excel spreadsheet, as CSV for imports and apps."
+app:
+  name: "XLSX to CSV Converter"
+  description: "An online XLSX to CSV converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert XLSX to CSV"
+  steps:
+    - "Click the box above or drag your XLSX files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each CSV separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Conversion runs on your device. Documents are never uploaded, so nobody but you can see them."
+    - title: "Your choice of delimiter"
+      text: "Comma for apps and Google Sheets, semicolon for Excel in many European locales, tab for TSV."
+    - title: "Values, not formulas"
+      text: "The CSV gets cell values as Excel shows them, with dates written as 2024-07-15."
+    - title: "Many files at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Which sheet goes into the CSV?"
+      a: "The workbook's first sheet. A CSV holds one sheet, so if there are several, the file's row shows a warning."
+    - q: "What happens to formulas?"
+      a: "The CSV gets the values Excel saved in the file at its last recalculation, not the formulas themselves."
+    - q: "How are dates written?"
+      a: "Dates as 2024-07-15, dates with time as 2024-07-15 14:30:00 — understood by both apps and Excel."
+    - q: "Which delimiter should I choose?"
+      a: "Comma works for Google Sheets, most apps and English-language Excel. Excel in many European locales expects a semicolon — pick it in the settings if Excel shows everything in one column."
+    - q: "Which encoding is the CSV in?"
+      a: "UTF-8 with a BOM, so Excel opens it without garbled characters."
+    - q: "Does the old XLS format work?"
+      a: "No, only XLSX — the format of Excel 2007 and later. You can re-save an XLS file as XLSX in Excel."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server."

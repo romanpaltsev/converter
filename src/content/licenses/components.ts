@@ -30,7 +30,12 @@ export type LicenseTextId =
   | 'lgpl-2.0'
   | 'lgpl-2.1'
   | 'libflac-bsd'
-  | 'gifenc-mit';
+  | 'gifenc-mit'
+  | 'pdf-lib-mit'
+  | 'fontkit-mit'
+  | 'marked-mit'
+  | 'htmlparser2-mit'
+  | 'entities-bsd';
 
 export interface ThirdPartyComponent {
   name: string;
@@ -223,7 +228,7 @@ export const COMPONENTS: ThirdPartyComponent[] = [
   {
     name: 'Liberation Sans',
     version: '6.4.299',
-    purpose: { ru: 'стандартные шрифты PDF (Helvetica, Arial)', en: 'standard PDF fonts (Helvetica, Arial)' },
+    purpose: { ru: 'стандартные шрифты PDF (Helvetica, Arial); шрифт PDF из TXT, Markdown и HTML', en: 'standard PDF fonts (Helvetica, Arial); the font of PDFs made from TXT, Markdown and HTML' },
     license: 'GNU GPL 2 с исключением для шрифтов',
     texts: ['liberation-fonts'],
     source: 'https://github.com/liberationfonts/liberation-fonts',
@@ -293,6 +298,46 @@ export const COMPONENTS: ThirdPartyComponent[] = [
     source: 'https://github.com/mattdesl/gifenc/tree/v1.0.3',
   },
   {
+    name: 'pdf-lib',
+    version: '1.17.1',
+    purpose: { ru: 'документы в PDF (вместе с @pdf-lib/standard-fonts и @pdf-lib/upng)', en: 'documents to PDF (with @pdf-lib/standard-fonts and @pdf-lib/upng)' },
+    license: 'MIT',
+    texts: ['pdf-lib-mit'],
+    source: 'https://github.com/Hopding/pdf-lib/tree/v1.17.1',
+  },
+  {
+    name: '@pdf-lib/fontkit',
+    version: '1.1.1',
+    purpose: { ru: 'встраивание шрифта в PDF', en: 'embedding the font into PDF' },
+    license: 'MIT',
+    texts: ['fontkit-mit'],
+    source: 'https://github.com/Hopding/fontkit',
+  },
+  {
+    name: 'marked',
+    version: '18.1.1',
+    purpose: { ru: 'разбор Markdown', en: 'Markdown parsing' },
+    license: 'MIT',
+    texts: ['marked-mit'],
+    source: 'https://github.com/markedjs/marked/tree/v18.1.1',
+  },
+  {
+    name: 'htmlparser2',
+    version: '12.0.0',
+    purpose: { ru: 'разбор HTML', en: 'HTML parsing' },
+    license: 'MIT',
+    texts: ['htmlparser2-mit'],
+    source: 'https://github.com/fb55/htmlparser2/tree/v12.0.0',
+  },
+  {
+    name: 'entities',
+    version: '8.1.0',
+    purpose: { ru: 'сущности HTML (для htmlparser2)', en: 'HTML entities (for htmlparser2)' },
+    license: 'BSD-2-Clause',
+    texts: ['entities-bsd'],
+    source: 'https://github.com/fb55/entities/tree/v8.1.0',
+  },
+  {
     name: 'Compact ICC Profiles',
     version: '—',
     purpose: { ru: 'цветовые профили sRGB, Display P3, Rec. 2020', en: 'sRGB, Display P3 and Rec. 2020 color profiles' },
@@ -330,6 +375,11 @@ export const LICENSE_TITLES: Record<LicenseTextId, string> = {
   'lgpl-2.1': 'GNU Lesser General Public License, version 2.1',
   'libflac-bsd': 'libFLAC (BSD-3-Clause, Xiph.Org Foundation)',
   'gifenc-mit': 'gifenc (MIT, Matt DesLauriers)',
+  'pdf-lib-mit': 'pdf-lib (MIT, Andrew Dillon)',
+  'fontkit-mit': 'fontkit (MIT, Devon Govett; @pdf-lib/fontkit)',
+  'marked-mit': 'marked (MIT)',
+  'htmlparser2-mit': 'htmlparser2 (MIT, Felix Böhm)',
+  'entities-bsd': 'entities (BSD-2-Clause, Felix Böhm)',
 };
 
 /** Обязательная фраза лицензии IJG для бинарных дистрибутивов libjpeg. */

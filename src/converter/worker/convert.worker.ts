@@ -369,6 +369,26 @@ async function handleMedia(message: Extract<ToWorker, { type: 'media' }>): Promi
   }
 }
 
+/** Документы и таблицы: без WASM; память — с запасом на распаковку XLSX и вёрстку PDF. */
+async function handleDoc(message: Extract<ToWorker, { type: 'doc' }>): Promise<void> {
+  const { id } = message;
+  try {
+    const footprint = 32 * 1024 * 1024 + 20 * message.file.size;
+    if (footprint > message.memoryLimit) {
+      post({ type: 'needs-memory', id, footprint, fresh: footprint });
+      return;
+    }
+    post({ type: 'started', id, footprint, fresh: footprint });
+    const { convertDocument } = await import('../documents/convert');
+    const result = await convertDocument(new Uint8Array(await message.file.arrayBuffer()), message.kind, message.target, message.options);
+    const out = result.bytes;
+    const buffer = out.byteOffset === 0 && out.byteLength === out.buffer.byteLength ? (out.buffer as ArrayBuffer) : (out.slice().buffer as ArrayBuffer);
+    post({ type: 'doc-done', id, buffer, pages: result.pages, rows: result.rows, warnings: result.warnings }, [buffer]);
+  } catch (error) {
+    postError(id, error);
+  }
+}
+
 /** «Посмотреть EXIF»: модуль грузится только на этой странице; миниатюра передаётся без копирования. */
 async function handleInspect(message: Extract<ToWorker, { type: 'inspect' }>): Promise<void> {
   const { id } = message;
@@ -418,5 +438,7 @@ scope.onmessage = (event) => {
     void handlePdfMerge(message);
   } else if (message.type === 'media') {
     void handleMedia(message);
+  } else if (message.type === 'doc') {
+    void handleDoc(message);
   }
 };

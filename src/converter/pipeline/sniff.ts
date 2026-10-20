@@ -14,22 +14,32 @@ export type SniffResult =
   | { kind: 'pdf' }
   /** Аудио и видео (контейнер по сигнатуре; какие в нём дорожки, узнаёт mediabunny в worker'е). */
   | { kind: MediaKind }
+  /** Документы и таблицы: сигнатуры нет — только sniffFile() по расширению и содержимому. */
+  | { kind: TextKind }
   | { kind: 'unknown' };
 
 /** Аудио: MP3, WAV, FLAC, Ogg (Vorbis или Opus), Opus, AAC (ADTS), M4A. Видео: MP4, MOV, WebM, MKV. */
 export const MEDIA_KINDS = ['mp3', 'wav', 'flac', 'ogg', 'opus', 'aac', 'm4a', 'mp4', 'mov', 'webm', 'mkv'] as const;
 export type MediaKind = (typeof MEDIA_KINDS)[number];
 
+/** Текст (TXT, Markdown, HTML), таблицы (CSV, JSON, XLSX). */
+export const TEXT_KINDS = ['txt', 'md', 'html', 'csv', 'json', 'xlsx'] as const;
+export type TextKind = (typeof TEXT_KINDS)[number];
+
 export type SniffKind = SniffResult['kind'];
 /** Форматы изображений (то, что читают декодеры). */
-export type ImageKind = Exclude<SniffKind, 'unknown' | 'pdf' | MediaKind>;
+export type ImageKind = Exclude<SniffKind, 'unknown' | 'pdf' | MediaKind | TextKind>;
+
+export function isTextKind(kind: SniffKind): kind is TextKind {
+  return (TEXT_KINDS as readonly string[]).includes(kind);
+}
 
 export function isMediaKind(kind: SniffKind): kind is MediaKind {
   return (MEDIA_KINDS as readonly string[]).includes(kind);
 }
 
 export function isImageKind(kind: SniffKind): kind is ImageKind {
-  return kind !== 'unknown' && kind !== 'pdf' && !isMediaKind(kind);
+  return kind !== 'unknown' && kind !== 'pdf' && !isMediaKind(kind) && !isTextKind(kind);
 }
 
 /** Подпись формата аудио или видео в строке файла (до результата). */
@@ -47,9 +57,12 @@ export const MEDIA_LABELS: Record<MediaKind, string> = {
   mkv: 'MKV',
 };
 
-/** Подпись любого распознанного формата (картинка, PDF, аудио, видео). */
+const TEXT_LABELS: Record<TextKind, string> = { txt: 'TXT', md: 'MD', html: 'HTML', csv: 'CSV', json: 'JSON', xlsx: 'XLSX' };
+
+/** Подпись любого распознанного формата (картинка, PDF, аудио, видео, документ). */
 export function kindLabel(kind: Exclude<SniffKind, 'unknown'>): string {
   if (kind === 'pdf') return 'PDF';
+  if (isTextKind(kind)) return TEXT_LABELS[kind];
   return isMediaKind(kind) ? MEDIA_LABELS[kind] : KIND_FILES[kind].label;
 }
 
@@ -163,4 +176,37 @@ function sniffMedia(bytes: Uint8Array): MediaKind | null {
     if ((b(1) & 0x18) !== 0x08 && (b(1) & 0x06) !== 0 && b(2) >> 4 !== 0x0f) return 'mp3';
   }
   return null;
+}
+
+/** Расширение → вид для форматов без сигнатуры. */
+const TEXT_EXTENSIONS: Record<string, TextKind> = {
+  txt: 'txt',
+  text: 'txt',
+  md: 'md',
+  markdown: 'md',
+  html: 'html',
+  htm: 'html',
+  csv: 'csv',
+  tsv: 'csv',
+  json: 'json',
+};
+
+/** Похоже на текст: нет нулевых байтов (UTF-16 с BOM — тоже текст). */
+function looksLikeText(bytes: Uint8Array): boolean {
+  if ((bytes[0] === 0xff && bytes[1] === 0xfe) || (bytes[0] === 0xfe && bytes[1] === 0xff)) return true;
+  return !bytes.includes(0);
+}
+
+/**
+ * Вид файла по сигнатуре, а для форматов без неё — по расширению: текст (TXT, Markdown, HTML, CSV, JSON) — если
+ * начало файла похоже на текст, XLSX — если это ZIP. Сигнатура важнее расширения (JPEG с именем .txt — JPEG).
+ */
+export function sniffFile(name: string, bytes: Uint8Array): SniffKind {
+  const { kind } = sniff(bytes);
+  if (kind !== 'unknown') return kind;
+  const dot = name.lastIndexOf('.');
+  const extension = dot >= 0 ? name.slice(dot + 1).toLowerCase() : '';
+  if (extension === 'xlsx') return ascii(bytes, 0, 4) === 'PK\x03\x04' ? 'xlsx' : 'unknown';
+  const text = TEXT_EXTENSIONS[extension];
+  return text && looksLikeText(bytes) ? text : 'unknown';
 }

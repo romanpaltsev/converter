@@ -2,7 +2,9 @@
 // Сколько worker'ов работает одновременно, когда файл ждёт памяти и когда worker пересоздаётся, решает пул
 // (worker-pool.ts): память WASM после роста не уменьшается.
 
+import type { DocOptions, DocTarget } from '../documents/convert';
 import type { MediaOptions } from '../media/formats';
+import type { TextKind } from '../pipeline/sniff';
 import type { MetadataReport } from '../metadata/inspect/types';
 import type { RemovedKind, StripMode } from '../metadata/strip/types';
 import type { PdfImage } from '../pdf/writer';
@@ -76,6 +78,8 @@ export type MediaOutcome =
   | { status: 'done'; buffer: ArrayBuffer; mime: string; extension: string; duration: number; copied: boolean; warnings: WarningCode[] }
   | ConvertFailure
   | NeedsMemory;
+
+export type DocOutcome = { status: 'done'; buffer: ArrayBuffer; pages: number | null; rows: number | null; warnings: WarningCode[] } | ConvertFailure | NeedsMemory;
 
 type OnStarted = (footprint: number, fresh: number) => void;
 
@@ -246,6 +250,16 @@ export class WorkerClient implements PoolClient {
     if (reply.type === 'media-done') {
       this.files++;
       return { status: 'done', buffer: reply.buffer, mime: reply.mime, extension: reply.extension, duration: reply.duration, copied: reply.copied, warnings: reply.warnings };
+    }
+    return failure(reply);
+  }
+
+  /** Документы и таблицы: без WASM. */
+  async doc(file: Blob, kind: TextKind, target: DocTarget, options: DocOptions, memoryLimit: number, onStarted: OnStarted): Promise<DocOutcome> {
+    const reply = await this.request((id) => ({ type: 'doc', id, file, kind, target, options, memoryLimit }), onStarted);
+    if (reply.type === 'doc-done') {
+      this.files++;
+      return { status: 'done', buffer: reply.buffer, pages: reply.pages, rows: reply.rows, warnings: reply.warnings };
     }
     return failure(reply);
   }

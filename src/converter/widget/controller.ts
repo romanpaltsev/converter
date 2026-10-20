@@ -2,13 +2,16 @@
 // Разметку отдаёт сервер (ConverterWidget.astro), здесь — только поведение. Строки — из конфигурации.
 
 import { track } from '../../lib/analytics';
+import type { DocTarget } from '../documents/convert';
+import type { CsvDelimiter } from '../documents/table';
+import { DOC_FORMATS } from '../../tools/registry';
 import { AUDIO_FORMATS, type AudioTargetId, DEFAULT_AUDIO_BITRATE, DEFAULT_GIF_FPS, DEFAULT_GIF_WIDTH, DEFAULT_VIDEO_QUALITY, type MediaOptions, VIDEO_FORMATS, type VideoQuality, type VideoTargetId, isAudioTarget } from '../media/formats';
 import type { MetadataReport } from '../metadata/inspect/types';
 import type { RemovedKind, StripMode } from '../metadata/strip/types';
 import { SMALL_MARGIN } from '../pdf/limits';
 import type { PageSize, PdfImage, PdfLayout } from '../pdf/writer';
 import { checkInput } from '../pipeline/input';
-import { type ImageKind, KIND_FILES, SNIFF_BYTES, type SniffKind, isImageKind, isMediaKind, kindLabel, sniff } from '../pipeline/sniff';
+import { type ImageKind, KIND_FILES, SNIFF_BYTES, type SniffKind, type TextKind, isImageKind, isMediaKind, isTextKind, kindLabel, sniff, sniffFile } from '../pipeline/sniff';
 import type { ResizeSpec } from '../pipeline/resize';
 import { ENCODER_EXTENSIONS, type EncoderId, type ErrorCode, type OutputTarget, type WarningCode } from '../pipeline/types';
 import { type OutputOption, type WidgetConfig, readConfig } from './config';
@@ -47,6 +50,8 @@ interface Settings {
   /** Универсальный виджет: видео — качество и наибольшая короткая сторона кадра (0 — исходная), GIF — ширина и частота;
    *  иначе null. */
   video: { quality: VideoQuality; height: number; gifWidth: number; gifFps: number } | null;
+  /** Универсальный виджет: разделитель CSV на выходе; иначе null. */
+  csvDelimiter: CsvDelimiter | null;
 }
 
 /** Целевой размер — в десятичных килобайтах и мегабайтах: файл «до 1 МБ» пройдёт и лимит 1 000 000, и 1 048 576 байт. */
@@ -96,6 +101,8 @@ interface Item {
   progress: number | null;
   duration: number | null;
   copied: boolean;
+  /** Документы: страниц PDF и строк таблицы (для строки файла). */
+  counts: { pages: number | null; rows: number | null } | null;
   /** Размеры до и после уменьшения (страница «Изменить размер»). */
   dimensions: { before: [number, number]; after: [number, number] } | null;
   /** Оценка памяти, если файл не поместился рядом с другими (ждёт в очереди первым). */
@@ -137,7 +144,8 @@ const sameSettings = (a: Settings, b: Settings) =>
   a.strip === b.strip &&
   a.dpi === b.dpi &&
   a.audioBitrate === b.audioBitrate &&
-  JSON.stringify(a.video) === JSON.stringify(b.video);
+  JSON.stringify(a.video) === JSON.stringify(b.video) &&
+  a.csvDelimiter === b.csvDelimiter;
 
 /** Сконвертированный файл или «уже в этом формате» — после смены настроек их можно сконвертировать заново. */
 function isOutdated(item: Item, current: Settings): boolean {
@@ -154,7 +162,8 @@ function fill(template: string, values: Record<string, string | number>): string
 /** Общие настройки, важные формату файла (у универсального виджета dpi есть всегда). */
 function targetSettings(settings: Settings): TargetSettings {
   return { quality: settings.quality, lossless: settings.lossless, keepMetadata: settings.keepMetadata, dpi: settings.dpi ?? 0, audioBitrate: settings.audioBitrate ?? 0,
-    videoQuality: settings.video?.quality ?? '', videoHeight: settings.video?.height ?? 0, gifWidth: settings.video?.gifWidth ?? 0, gifFps: settings.video?.gifFps ?? 0 };
+    videoQuality: settings.video?.quality ?? '', videoHeight: settings.video?.height ?? 0, gifWidth: settings.video?.gifWidth ?? 0, gifFps: settings.video?.gifFps ?? 0,
+    csvDelimiter: settings.csvDelimiter ?? '' };
 }
 
 /** По какому селектору найти «ту же» кнопку в перерисованной строке. */
@@ -193,6 +202,7 @@ export class ConverterWidget {
   private readonly audioBitrateRow: HTMLElement | null;
   private readonly videoRow: HTMLElement | null;
   private readonly gifRow: HTMLElement | null;
+  private readonly csvRow: HTMLElement | null;
   /** Размер страницы и поля, с которыми собраны готовые PDF: сменились — документы пересобираются. */
   private layoutKey = '';
   private readonly metaRow: HTMLElement | null;
@@ -256,6 +266,7 @@ export class ConverterWidget {
     this.audioBitrateRow = root.querySelector('[data-audio-bitrate-row]');
     this.videoRow = root.querySelector('[data-video-row]');
     this.gifRow = root.querySelector('[data-gif-row]');
+    this.csvRow = root.querySelector('[data-csv-row]');
     this.metaRow = root.querySelector('[data-meta-row]');
     this.stripHint = root.querySelector('[data-strip-hint]');
     this.compressionRow = root.querySelector('[data-compression-row]');
@@ -374,6 +385,7 @@ export class ConverterWidget {
             gifFps: Number(data.get('gifFps') ?? DEFAULT_GIF_FPS),
           }
         : null,
+      csvDelimiter: this.config.universal ? ((data.get('csvDelimiter') ?? ',') as CsvDelimiter) : null,
     };
   }
 
@@ -451,6 +463,7 @@ export class ConverterWidget {
     if (this.audioBitrateRow) this.audioBitrateRow.hidden = !show.audioBitrate;
     if (this.videoRow) this.videoRow.hidden = !show.video;
     if (this.gifRow) this.gifRow.hidden = !show.gif;
+    if (this.csvRow) this.csvRow.hidden = !show.csv;
     // размер страницы и поля применяются к готовым PDF сразу, без повторной обработки
     const layout = JSON.stringify(settings.pdf);
     if (layout !== this.layoutKey) {
@@ -538,15 +551,17 @@ export class ConverterWidget {
       this.fail(item, 'internal');
       return;
     }
-    const { kind } = sniff(head);
+    // у текста и таблиц сигнатуры нет — вид по расширению имени
+    const kind = sniffFile(item.file.name, head);
     item.source = kind;
     if (kind === 'pdf' && !supportsPdfRendering()) {
       this.run.total++;
       this.fail(item, 'pdf-unsupported');
       return;
     }
-    // картинка: CMYK и неподдерживаемый JPEG видны по заголовку (PDF проверит pdf.js, аудио и видео — mediabunny в worker'е)
-    const check = kind === 'pdf' || isMediaKind(kind) ? null : checkInput(head, 'png', true);
+    // картинка: CMYK и неподдерживаемый JPEG видны по заголовку (PDF проверит pdf.js, аудио и видео — mediabunny,
+    // документы — свои разборщики в worker'е)
+    const check = kind === 'pdf' || isMediaKind(kind) || isTextKind(kind) ? null : checkInput(head, 'png', true);
     if (kind === 'unknown' || (check && !check.ok)) {
       this.run.total++;
       this.fail(item, check && !check.ok ? check.code : 'not-image');
@@ -619,6 +634,7 @@ export class ConverterWidget {
       const job = jobFor(pair.kind, pair.target);
       if (job === 'pages') return this.renderPdf(item, head, pair.target as EncoderId, settings, lease, ticket);
       if (job === 'document') return this.pdfPage(item, head, lease, ticket, settings.pdf);
+      if (job === 'text') return this.convertText(item, pair.kind as TextKind, pair.target as DocTarget, settings, lease, ticket);
       if (job === 'media') return this.convertMedia(item, pair.target as AudioTargetId | VideoTargetId, settings, lease, ticket);
       return this.convertImage(item, head, pair.target as EncoderId, pair.target === 'webp' && settings.lossless, settings, lease, ticket);
     }
@@ -762,6 +778,40 @@ export class ConverterWidget {
     item.format = format.label;
     item.duration = outcome.duration;
     item.copied = outcome.copied;
+    item.warnings = outcome.warnings;
+    item.status = 'done';
+    this.run.done++;
+    this.run.formats[target] = (this.run.formats[target] ?? 0) + 1;
+    this.renderRow(item);
+    this.syncSettings();
+    return false;
+  }
+
+  /** Документы и таблицы: без WASM; в строке — страниц PDF или строк таблицы. */
+  private async convertText(item: Item, kind: TextKind, target: DocTarget, settings: Settings, lease: Lease, ticket: Ticket): Promise<boolean> {
+    const format = DOC_FORMATS[target];
+    item.name ??= this.names.allocate(outputName(item.file.name, format.extension));
+    this.setStatus(fill(this.t.progress, { done: this.run.done + this.run.failed, total: this.run.total }));
+    const title = item.file.name.replace(/\.[^.]*$/, '');
+    const outcome = await lease.client.doc(item.file, kind, target, { csvDelimiter: settings.csvDelimiter ?? ',', title }, lease.memoryLimit, (footprint, fresh) => {
+      if (this.stale(item, ticket)) return;
+      lease.started(footprint, fresh);
+      this.pump();
+    });
+    if (this.stale(item, ticket)) return false;
+    if (outcome.status === 'needs-memory') {
+      item.estimate = outcome.fresh;
+      this.requeue(item);
+      return true;
+    }
+    if (outcome.status === 'error') {
+      this.fail(item, outcome.code);
+      return outcome.fatal || outcome.recycle;
+    }
+    item.blob = new Blob([outcome.buffer], { type: format.mime });
+    item.url = URL.createObjectURL(item.blob);
+    item.format = format.label;
+    item.counts = { pages: outcome.pages, rows: outcome.rows };
     item.warnings = outcome.warnings;
     item.status = 'done';
     this.run.done++;
@@ -1104,6 +1154,7 @@ export class ConverterWidget {
       progress: null,
       duration: null,
       copied: false,
+      counts: null,
       dimensions: null,
       estimate: null,
       retry: false,
@@ -1431,6 +1482,8 @@ export class ConverterWidget {
       // аудио: длительность; звук того же кодека скопирован без перекодирования
       if (item.duration !== null) parts.splice(1, 0, this.duration(item.duration));
       if (item.copied) parts.push(this.t.audioCopied);
+      if (item.counts?.pages) parts.push(fill(this.t.docPages, { count: item.counts.pages }));
+      if (item.counts?.rows !== null && item.counts?.rows !== undefined) parts.push(fill(this.t.docRows, { count: item.counts.rows }));
       // картинка → PDF: JPEG вставлен как есть
       if (item.passthrough) parts.push(this.t.passthrough);
       meta.textContent = parts.join(' · ');

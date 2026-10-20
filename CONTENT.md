@@ -3306,6 +3306,568 @@
 - **Does the GIF loop?** Yes, it loops forever, as people expect in chats and on social media.
 - **Is it safe?** Yes. Only the converter itself is loaded from the site; your video is processed in your browser and never sent to a server.
 
+### txt-to-pdf
+
+#### Русский — `/txt-v-pdf`
+
+Файл: `src/content/tools/ru/txt-to-pdf.yaml`
+
+- **title:** TXT в PDF онлайн — текстовый файл в PDF бесплатно _(49 симв.)_
+- **description:** Конвертируйте текстовые файлы TXT в PDF прямо в браузере: кириллица, переносы строк, A4. Бесплатно, без регистрации и загрузки на сервер. _(137 симв.)_
+- **H1:** Конвертер TXT в PDF
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** TXT в PDF
+- **Карточка:** TXT → PDF — Текстовый файл — в PDF для печати и отправки.
+- **JSON-LD:** Конвертер TXT в PDF — Онлайн-конвертер TXT в PDF, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать TXT в PDF**
+
+1. Нажмите на область выше или перетащите на неё TXT-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте PDF по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Документы не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Переносы строк сохраняются.** Каждая строка остаётся на своём месте, длинные строки переносятся по словам, пустые строки — тоже.
+- **Кириллица и любая кодировка.** Кодировка определяется сама — UTF-8, UTF-16 или Windows-1251, а шрифт PDF поддерживает кириллицу.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Зачем переводить TXT в PDF?** PDF одинаково выглядит на любом устройстве и удобен для печати и отправки: получатель увидит текст ровно таким, каким вы его отправили.
+- **Как выглядит PDF?** Страницы A4 с полями 20 мм, шрифт Liberation Sans 11 пт с кириллицей. Длинные строки переносятся по словам, текст можно выделять и копировать.
+- **А если текст в другой кодировке?** Кодировка определяется сама: UTF-8, UTF-16 или Windows-1251 — в ней сохраняют файлы старые версии «Блокнота» и русский Excel.
+- **Что будет с иероглифами и эмодзи?** В шрифте PDF есть латиница, кириллица и греческий. Знаков, которых в нём нет (иероглифы, эмодзи), в PDF не будет — вместо них «?», а в строке файла появится предупреждение.
+- **Сколько файлов можно конвертировать за раз?** До 100 файлов за раз. Готовые файлы можно скачать по одному или все сразу одним ZIP-архивом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а файл обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/txt-to-pdf`
+
+Файл: `src/content/tools/en/txt-to-pdf.yaml`
+
+- **title:** TXT to PDF Converter — Text File to PDF, Free _(45 симв.)_
+- **description:** Convert TXT text files to PDF right in your browser: line breaks kept, A4 pages. Free, no sign-up, and your files never leave your device. _(138 симв.)_
+- **H1:** TXT to PDF Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** TXT to PDF
+- **Карточка:** TXT → PDF — A text file, as a PDF for printing and sharing.
+- **JSON-LD:** TXT to PDF Converter — An online TXT to PDF converter that runs in your browser without uploading your files.
+
+**How to convert TXT to PDF**
+
+1. Click the box above or drag your TXT files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each PDF separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Documents are never uploaded, so nobody but you can see them.
+- **Line breaks are kept.** Every line stays where it was; long lines wrap at word boundaries, and blank lines are kept too.
+- **Any encoding.** UTF-8, UTF-16 or Windows-1251 is detected automatically, and the PDF font covers Latin, Cyrillic and Greek.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **Why convert TXT to PDF?** A PDF looks the same on every device and is easy to print and share: the recipient sees the text exactly as you sent it.
+- **What does the PDF look like?** A4 pages with 20 mm margins and 11 pt Liberation Sans. Long lines wrap at word boundaries, and the text can be selected and copied.
+- **What if the text uses another encoding?** The encoding is detected automatically: UTF-8, UTF-16 or Windows-1251, which older Notepad versions and Excel in Cyrillic locales use.
+- **What about CJK characters and emoji?** The PDF font covers Latin, Cyrillic and Greek. Characters it lacks (CJK, emoji) become “?” in the PDF, and the file's row shows a warning.
+- **How many files can I convert at once?** Up to 100 files per batch. Download them one by one or all together in a single ZIP file.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server.
+
+### md-to-pdf
+
+#### Русский — `/md-v-pdf`
+
+Файл: `src/content/tools/ru/md-to-pdf.yaml`
+
+- **title:** Markdown в PDF онлайн — MD в PDF бесплатно _(42 симв.)_
+- **description:** Конвертируйте Markdown (.md) в PDF прямо в браузере: заголовки, списки, таблицы и код. Бесплатно, без регистрации, файлы не загружаются на сервер. _(146 симв.)_
+- **H1:** Конвертер Markdown в PDF
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** Markdown в PDF
+- **Карточка:** Markdown → PDF — README и заметки — в аккуратный PDF.
+- **JSON-LD:** Конвертер Markdown в PDF — Онлайн-конвертер Markdown в PDF, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать Markdown в PDF**
+
+1. Нажмите на область выше или перетащите на неё Markdown-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте PDF по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Документы не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Вся разметка.** Заголовки, жирный и курсив, списки (в том числе вложенные и с флажками), цитаты, блоки кода и таблицы.
+- **Текст остаётся текстом.** PDF собирается из текста, а не из картинки: его можно выделять, искать и копировать.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что из Markdown попадёт в PDF?** Заголовки, абзацы, жирный и курсив, списки (нумерованные, маркированные, вложенные, с флажками), цитаты, блоки кода, таблицы, горизонтальные линии. Ссылки выделяются синим с подчёркиванием.
+- **А картинки?** Картинки не переносятся — только текст. Если в файле были картинки, в строке файла появится предупреждение.
+- **Как выглядит PDF?** Страницы A4 с полями 20 мм, шрифт Liberation Sans 11 пт с кириллицей. Длинные строки переносятся по словам, текст можно выделять и копировать.
+- **Что будет с иероглифами и эмодзи?** В шрифте PDF есть латиница, кириллица и греческий. Знаков, которых в нём нет (иероглифы, эмодзи), в PDF не будет — вместо них «?», а в строке файла появится предупреждение.
+- **Какой Markdown поддерживается?** Распространённый вариант GitHub Flavored Markdown: таблицы, списки задач, зачёркивание и автоссылки.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а файл обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/md-to-pdf`
+
+Файл: `src/content/tools/en/md-to-pdf.yaml`
+
+- **title:** Markdown to PDF Converter — MD to PDF, Free _(43 симв.)_
+- **description:** Convert Markdown (.md) to PDF right in your browser: headings, lists, tables and code. Free, no sign-up, and your files never leave your device. _(144 симв.)_
+- **H1:** Markdown to PDF Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** Markdown to PDF
+- **Карточка:** Markdown → PDF — READMEs and notes, as a clean PDF.
+- **JSON-LD:** Markdown to PDF Converter — An online Markdown to PDF converter that runs in your browser without uploading your files.
+
+**How to convert Markdown to PDF**
+
+1. Click the box above or drag your Markdown files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each PDF separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Documents are never uploaded, so nobody but you can see them.
+- **All the formatting.** Headings, bold and italic, lists (including nested and task lists), quotes, code blocks and tables.
+- **Text stays text.** The PDF is built from text, not an image: you can select, search and copy it.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **What ends up in the PDF?** Headings, paragraphs, bold and italic, lists (numbered, bulleted, nested, task lists), quotes, code blocks, tables and horizontal rules. Links are shown in blue and underlined.
+- **What about images?** Images are not included — only the text. If the file had images, its row shows a warning.
+- **What does the PDF look like?** A4 pages with 20 mm margins and 11 pt Liberation Sans. Long lines wrap at word boundaries, and the text can be selected and copied.
+- **What about CJK characters and emoji?** The PDF font covers Latin, Cyrillic and Greek. Characters it lacks (CJK, emoji) become “?” in the PDF, and the file's row shows a warning.
+- **Which Markdown flavor is supported?** The common GitHub Flavored Markdown: tables, task lists, strikethrough and autolinks.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server.
+
+### html-to-pdf
+
+#### Русский — `/html-v-pdf`
+
+Файл: `src/content/tools/ru/html-to-pdf.yaml`
+
+- **title:** HTML в PDF онлайн — текст веб-страницы в PDF бесплатно _(54 симв.)_
+- **description:** Конвертируйте сохранённые HTML-страницы в PDF прямо в браузере: заголовки, абзацы, списки и таблицы. Бесплатно, без регистрации и загрузки на сервер. _(149 симв.)_
+- **H1:** Конвертер HTML в PDF
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** HTML в PDF
+- **Карточка:** HTML → PDF — Сохранённая веб-страница — в PDF с текстом и структурой.
+- **JSON-LD:** Конвертер HTML в PDF — Онлайн-конвертер HTML в PDF, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать HTML в PDF**
+
+1. Нажмите на область выше или перетащите на неё HTML-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте PDF по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Документы не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Структура документа.** Заголовки, абзацы, списки, цитаты, код и таблицы переносятся как в исходном файле.
+- **Без мусора.** Скрипты, стили, меню и прочая служебная разметка пропускаются — в PDF только содержимое.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Будет ли PDF выглядеть как страница в браузере?** Нет: переносятся текст и структура — заголовки, абзацы, списки, таблицы, код, — но не оформление CSS, колонки и картинки. Получается аккуратный текстовый документ. Точную копию страницы даёт печать в PDF из самого браузера.
+- **Подойдут ли письма и экспорт из программ?** Да, если это файл .html или .htm: письма, сохранённые страницы, отчёты и экспорт заметок конвертируются одинаково.
+- **А картинки?** Картинки не переносятся — только текст. Если они были, в строке файла появится предупреждение.
+- **Как выглядит PDF?** Страницы A4 с полями 20 мм, шрифт Liberation Sans 11 пт с кириллицей. Длинные строки переносятся по словам, текст можно выделять и копировать.
+- **Что будет с иероглифами и эмодзи?** В шрифте PDF есть латиница, кириллица и греческий. Знаков, которых в нём нет (иероглифы, эмодзи), в PDF не будет — вместо них «?», а в строке файла появится предупреждение.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а файл обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/html-to-pdf`
+
+Файл: `src/content/tools/en/html-to-pdf.yaml`
+
+- **title:** HTML to PDF Converter — Web Page Text to PDF, Free _(50 симв.)_
+- **description:** Convert saved HTML pages to PDF right in your browser: headings, paragraphs, lists and tables. Free, no sign-up, and your files never leave your device. _(152 симв.)_
+- **H1:** HTML to PDF Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** HTML to PDF
+- **Карточка:** HTML → PDF — A saved web page, as a PDF with its text and structure.
+- **JSON-LD:** HTML to PDF Converter — An online HTML to PDF converter that runs in your browser without uploading your files.
+
+**How to convert HTML to PDF**
+
+1. Click the box above or drag your HTML files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each PDF separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Documents are never uploaded, so nobody but you can see them.
+- **Document structure.** Headings, paragraphs, lists, quotes, code and tables come through as in the original file.
+- **No clutter.** Scripts, styles, menus and other technical markup are skipped — the PDF holds just the content.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **Will the PDF look like the page in a browser?** No: the text and structure come through — headings, paragraphs, lists, tables, code — but not the CSS styling, columns or images. You get a clean text document. For an exact copy of the page, use “Print to PDF” in your browser.
+- **Do emails and app exports work?** Yes, as long as it's an .html or .htm file: emails, saved pages, reports and note exports all convert the same way.
+- **What about images?** Images are not included — only the text. If there were any, the file's row shows a warning.
+- **What does the PDF look like?** A4 pages with 20 mm margins and 11 pt Liberation Sans. Long lines wrap at word boundaries, and the text can be selected and copied.
+- **What about CJK characters and emoji?** The PDF font covers Latin, Cyrillic and Greek. Characters it lacks (CJK, emoji) become “?” in the PDF, and the file's row shows a warning.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server.
+
+### md-to-html
+
+#### Русский — `/md-v-html`
+
+Файл: `src/content/tools/ru/md-to-html.yaml`
+
+- **title:** Markdown в HTML онлайн — MD в HTML бесплатно _(44 симв.)_
+- **description:** Конвертируйте Markdown (.md) в готовую HTML-страницу прямо в браузере: таблицы, списки задач, код. Бесплатно, без регистрации и загрузки на сервер. _(147 симв.)_
+- **H1:** Конвертер Markdown в HTML
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** Markdown в HTML
+- **Карточка:** Markdown → HTML — Markdown — в готовую HTML-страницу с аккуратными стилями.
+- **JSON-LD:** Конвертер Markdown в HTML — Онлайн-конвертер Markdown в HTML, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать Markdown в HTML**
+
+1. Нажмите на область выше или перетащите на неё Markdown-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте HTML по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Документы не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Готовая страница.** Получается самостоятельный HTML-файл с кодировкой, заголовком и аккуратными стилями — его можно сразу открыть в браузере.
+- **GitHub Flavored Markdown.** Таблицы, списки задач, зачёркивание и автоссылки — как на GitHub.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Что получится на выходе?** Файл .html со всей разметкой документа: заголовки, абзацы, списки, таблицы, код, ссылки и картинки (по тем же адресам, что в Markdown). Заголовок страницы — первый заголовок документа.
+- **Можно ли вставить результат на свой сайт?** Да. Возьмите содержимое <body> — это чистая разметка без лишних классов — или используйте файл целиком.
+- **Сохранится ли HTML внутри Markdown?** Да, HTML-вставки переносятся как есть.
+- **А если текст в другой кодировке?** Кодировка определяется сама: UTF-8, UTF-16 или Windows-1251 — в ней сохраняют файлы старые версии «Блокнота» и русский Excel.
+- **Сколько файлов можно конвертировать за раз?** До 100 файлов за раз. Готовые файлы можно скачать по одному или все сразу одним ZIP-архивом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а файл обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/md-to-html`
+
+Файл: `src/content/tools/en/md-to-html.yaml`
+
+- **title:** Markdown to HTML Converter — MD to HTML, Free _(45 симв.)_
+- **description:** Convert Markdown (.md) to a ready-to-use HTML page right in your browser: tables, task lists, code. Free, no sign-up, and your files never leave your device. _(157 симв.)_
+- **H1:** Markdown to HTML Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** Markdown to HTML
+- **Карточка:** Markdown → HTML — Markdown, as a ready HTML page with clean styles.
+- **JSON-LD:** Markdown to HTML Converter — An online Markdown to HTML converter that runs in your browser without uploading your files.
+
+**How to convert Markdown to HTML**
+
+1. Click the box above or drag your Markdown files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each HTML separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Documents are never uploaded, so nobody but you can see them.
+- **A complete page.** You get a standalone HTML file with encoding, a title and clean default styles — open it in any browser right away.
+- **GitHub Flavored Markdown.** Tables, task lists, strikethrough and autolinks — just like on GitHub.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **What do I get?** An .html file with all of the document's markup: headings, paragraphs, lists, tables, code, links and images (at the same addresses as in the Markdown). The page title is the document's first heading.
+- **Can I put the result on my site?** Yes. Take the contents of <body> — clean markup without extra classes — or use the whole file.
+- **Is HTML inside the Markdown kept?** Yes, embedded HTML is carried over as is.
+- **What if the text uses another encoding?** The encoding is detected automatically: UTF-8, UTF-16 or Windows-1251, which older Notepad versions and Excel in Cyrillic locales use.
+- **How many files can I convert at once?** Up to 100 files per batch. Download them one by one or all together in a single ZIP file.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server.
+
+### csv-to-xlsx
+
+#### Русский — `/csv-v-xlsx`
+
+Файл: `src/content/tools/ru/csv-to-xlsx.yaml`
+
+- **title:** CSV в Excel (XLSX) онлайн — бесплатно, без загрузки _(51 симв.)_
+- **description:** Конвертируйте CSV в Excel XLSX прямо в браузере: разделитель и кодировка определяются сами, числа остаются числами. Бесплатно, без регистрации и загрузки на сервер. _(164 симв.)_
+- **H1:** Конвертер CSV в XLSX
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** CSV в XLSX
+- **Карточка:** CSV → XLSX — Выгрузка CSV — в таблицу Excel без кракозябр.
+- **JSON-LD:** Конвертер CSV в XLSX — Онлайн-конвертер CSV в XLSX, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать CSV в XLSX**
+
+1. Нажмите на область выше или перетащите на неё CSV-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте XLSX по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Документы не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Без кракозябр.** Кодировка (UTF-8 или Windows-1251) и разделитель (запятая, точка с запятой, табуляция) определяются сами.
+- **Числа — числами.** Числа в XLSX сразу числовые, а коды с ведущими нулями остаются текстом.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Зачем переводить CSV в XLSX?** Excel открывает CSV по своим правилам: путает кодировку, разделитель, превращает коды в числа и теряет ведущие нули. В XLSX всё уже разложено по столбцам — файл открывается одинаково везде.
+- **Какой разделитель нужен?** Любой: запятая, точка с запятой или табуляция определяются автоматически по содержимому файла. Подходит и TSV.
+- **Что будет с числами?** Числа становятся числами: с ними можно считать. Значения с ведущими нулями — коды, телефоны, индексы — остаются текстом, чтобы нули не пропали.
+- **А если текст в другой кодировке?** Кодировка определяется сама: UTF-8, UTF-16 или Windows-1251 — в ней сохраняют файлы старые версии «Блокнота» и русский Excel.
+- **А даты?** Даты переносятся текстом в том виде, в каком записаны в CSV, — без пересчёта в другой формат.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а файл обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/csv-to-xlsx`
+
+Файл: `src/content/tools/en/csv-to-xlsx.yaml`
+
+- **title:** CSV to Excel (XLSX) Converter — Free, No Upload _(47 симв.)_
+- **description:** Convert CSV to Excel XLSX right in your browser: delimiter and encoding are detected, numbers stay numbers. Free, no sign-up, and your files never leave your device. _(165 симв.)_
+- **H1:** CSV to XLSX Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** CSV to XLSX
+- **Карточка:** CSV → XLSX — A CSV export, as a proper Excel spreadsheet.
+- **JSON-LD:** CSV to XLSX Converter — An online CSV to XLSX converter that runs in your browser without uploading your files.
+
+**How to convert CSV to XLSX**
+
+1. Click the box above or drag your CSV files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each XLSX separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Documents are never uploaded, so nobody but you can see them.
+- **No garbled text.** The encoding (UTF-8 or Windows-1251) and the delimiter (comma, semicolon or tab) are detected automatically.
+- **Numbers stay numbers.** Numbers are numeric in the XLSX right away, while codes with leading zeros stay text.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **Why convert CSV to XLSX?** Excel opens CSV by its own rules: it may misread the encoding or delimiter, turn codes into numbers and drop leading zeros. An XLSX already has everything in columns and opens the same everywhere.
+- **Which delimiter does it need?** Any: comma, semicolon or tab is detected from the file's contents. TSV works too.
+- **What happens to numbers?** Numbers become real numbers you can calculate with. Values with leading zeros — codes, phone numbers, ZIP codes — stay text so the zeros aren't lost.
+- **What if the text uses another encoding?** The encoding is detected automatically: UTF-8, UTF-16 or Windows-1251, which older Notepad versions and Excel in Cyrillic locales use.
+- **What about dates?** Dates are carried over as text, exactly as written in the CSV, without converting them to another format.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server.
+
+### xlsx-to-csv
+
+#### Русский — `/xlsx-v-csv`
+
+Файл: `src/content/tools/ru/xlsx-to-csv.yaml`
+
+- **title:** Excel (XLSX) в CSV онлайн — бесплатно, без загрузки _(51 симв.)_
+- **description:** Конвертируйте таблицы Excel XLSX в CSV прямо в браузере: UTF-8, разделитель на выбор, даты в понятном виде. Бесплатно, без регистрации и загрузки на сервер. _(156 симв.)_
+- **H1:** Конвертер XLSX в CSV
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** XLSX в CSV
+- **Карточка:** XLSX → CSV — Таблица Excel — в CSV для импорта и программ.
+- **JSON-LD:** Конвертер XLSX в CSV — Онлайн-конвертер XLSX в CSV, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать XLSX в CSV**
+
+1. Нажмите на область выше или перетащите на неё XLSX-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте CSV по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Документы не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Разделитель на выбор.** Точка с запятой — для русского Excel, запятая — для программ и Google Таблиц, табуляция — для TSV.
+- **Значения, а не формулы.** В CSV попадают значения ячеек, как их показывает Excel, даты — в виде 2024-07-15.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Какой лист попадёт в CSV?** Первый лист книги. CSV — один лист, поэтому, если листов несколько, в строке файла появится предупреждение.
+- **Что будет с формулами?** В CSV записываются значения, которые Excel сохранил в файле при последнем пересчёте, а не сами формулы.
+- **Как записываются даты?** Даты — в виде 2024-07-15, дата со временем — 2024-07-15 14:30:00: так их понимают и программы, и Excel.
+- **Почему разделитель — точка с запятой?** Русский Excel открывает CSV с точкой с запятой, а с запятой показывает всё в одном столбце. Для Google Таблиц и программ выберите в настройках запятую.
+- **В какой кодировке CSV?** В UTF-8 с меткой BOM — Excel открывает такой файл без кракозябр.
+- **Подойдёт ли старый формат XLS?** Нет, только XLSX — формат Excel 2007 и новее. Файл XLS можно пересохранить в XLSX в самом Excel.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а файл обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/xlsx-to-csv`
+
+Файл: `src/content/tools/en/xlsx-to-csv.yaml`
+
+- **title:** Excel (XLSX) to CSV Converter — Free, No Upload _(47 симв.)_
+- **description:** Convert Excel XLSX spreadsheets to CSV right in your browser: UTF-8, your choice of delimiter, readable dates. Free, no sign-up, and your files never leave your device. _(168 симв.)_
+- **H1:** XLSX to CSV Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** XLSX to CSV
+- **Карточка:** XLSX → CSV — An Excel spreadsheet, as CSV for imports and apps.
+- **JSON-LD:** XLSX to CSV Converter — An online XLSX to CSV converter that runs in your browser without uploading your files.
+
+**How to convert XLSX to CSV**
+
+1. Click the box above or drag your XLSX files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each CSV separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Documents are never uploaded, so nobody but you can see them.
+- **Your choice of delimiter.** Comma for apps and Google Sheets, semicolon for Excel in many European locales, tab for TSV.
+- **Values, not formulas.** The CSV gets cell values as Excel shows them, with dates written as 2024-07-15.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **Which sheet goes into the CSV?** The workbook's first sheet. A CSV holds one sheet, so if there are several, the file's row shows a warning.
+- **What happens to formulas?** The CSV gets the values Excel saved in the file at its last recalculation, not the formulas themselves.
+- **How are dates written?** Dates as 2024-07-15, dates with time as 2024-07-15 14:30:00 — understood by both apps and Excel.
+- **Which delimiter should I choose?** Comma works for Google Sheets, most apps and English-language Excel. Excel in many European locales expects a semicolon — pick it in the settings if Excel shows everything in one column.
+- **Which encoding is the CSV in?** UTF-8 with a BOM, so Excel opens it without garbled characters.
+- **Does the old XLS format work?** No, only XLSX — the format of Excel 2007 and later. You can re-save an XLS file as XLSX in Excel.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server.
+
+### json-to-csv
+
+#### Русский — `/json-v-csv`
+
+Файл: `src/content/tools/ru/json-to-csv.yaml`
+
+- **title:** JSON в CSV онлайн — бесплатно, без загрузки на сервер _(53 симв.)_
+- **description:** Конвертируйте JSON в CSV прямо в браузере: массив объектов становится таблицей со столбцами по ключам. Бесплатно, без регистрации и загрузки на сервер. _(151 симв.)_
+- **H1:** Конвертер JSON в CSV
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** JSON в CSV
+- **Карточка:** JSON → CSV — Массив JSON — в таблицу CSV для Excel.
+- **JSON-LD:** Конвертер JSON в CSV — Онлайн-конвертер JSON в CSV, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать JSON в CSV**
+
+1. Нажмите на область выше или перетащите на неё JSON-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте CSV по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Документы не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Столбцы по ключам.** Все ключи объектов становятся столбцами в порядке появления — даже если у разных объектов они разные.
+- **Готово для Excel.** CSV в UTF-8 с меткой BOM и разделителем на выбор открывается в Excel без кракозябр.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Какой JSON подходит?** Массив объектов ([{"имя": …}, …]) — каждый объект становится строкой, ключи — столбцами. Подходят и массив массивов, и объект, внутри которого один такой массив.
+- **Что будет с вложенными объектами?** Вложенные объекты и массивы записываются в ячейку как текст JSON, а в строке файла появляется предупреждение.
+- **Почему разделитель — точка с запятой?** Русский Excel открывает CSV с точкой с запятой, а с запятой показывает всё в одном столбце. Для Google Таблиц и программ выберите в настройках запятую.
+- **Что, если в JSON нет таблицы?** Если это не массив объектов или массивов, конвертировать нечего — в строке файла появится сообщение об этом.
+- **Сколько файлов можно конвертировать за раз?** До 100 файлов за раз. Готовые файлы можно скачать по одному или все сразу одним ZIP-архивом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а файл обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/json-to-csv`
+
+Файл: `src/content/tools/en/json-to-csv.yaml`
+
+- **title:** JSON to CSV Converter — Free, Private, No Upload _(48 симв.)_
+- **description:** Convert JSON to CSV right in your browser: an array of objects becomes a table with a column for each key. Free, no sign-up, and your files never leave your device. _(164 симв.)_
+- **H1:** JSON to CSV Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** JSON to CSV
+- **Карточка:** JSON → CSV — A JSON array, as a CSV table for Excel.
+- **JSON-LD:** JSON to CSV Converter — An online JSON to CSV converter that runs in your browser without uploading your files.
+
+**How to convert JSON to CSV**
+
+1. Click the box above or drag your JSON files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each CSV separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Documents are never uploaded, so nobody but you can see them.
+- **Columns from keys.** Every key becomes a column in order of appearance — even when objects have different keys.
+- **Ready for Excel.** UTF-8 CSV with a BOM and your choice of delimiter opens in Excel without garbled text.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **Which JSON works?** An array of objects ([{"name": …}, …]) — each object becomes a row and its keys become columns. An array of arrays, or an object that holds one such array, works too.
+- **What happens to nested objects?** Nested objects and arrays are written into the cell as JSON text, and the file's row shows a warning.
+- **Which delimiter should I choose?** Comma works for Google Sheets, most apps and English-language Excel. Excel in many European locales expects a semicolon — pick it in the settings if Excel shows everything in one column.
+- **What if the JSON isn't a table?** If it's not an array of objects or arrays, there's nothing to convert — the file's row will say so.
+- **How many files can I convert at once?** Up to 100 files per batch. Download them one by one or all together in a single ZIP file.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server.
+
+### csv-to-json
+
+#### Русский — `/csv-v-json`
+
+Файл: `src/content/tools/ru/csv-to-json.yaml`
+
+- **title:** CSV в JSON онлайн — бесплатно, без загрузки на сервер _(53 симв.)_
+- **description:** Конвертируйте CSV в JSON прямо в браузере: первая строка — ключи, числа — числами. Бесплатно, без регистрации, файлы не загружаются на сервер. _(142 симв.)_
+- **H1:** Конвертер CSV в JSON
+- **Подзаголовок:** Бесплатно и без регистрации. Файлы не покидают ваше устройство.
+- **Хлебные крошки:** CSV в JSON
+- **Карточка:** CSV → JSON — Таблица CSV — в массив объектов JSON.
+- **JSON-LD:** Конвертер CSV в JSON — Онлайн-конвертер CSV в JSON, который работает в браузере без загрузки файлов на сервер.
+
+**Как конвертировать CSV в JSON**
+
+1. Нажмите на область выше или перетащите на неё CSV-файлы — можно сразу несколько.
+2. Подождите немного: конвертация идёт прямо в браузере, файлы никуда не отправляются.
+3. Скачайте JSON по одному или все сразу одним ZIP-архивом.
+
+**Почему здесь**
+
+- **Файлы остаются у вас.** Конвертация выполняется на вашем устройстве. Документы не загружаются на сервер, поэтому их не видит никто, кроме вас.
+- **Массив объектов.** Первая строка — ключи, каждая следующая — объект. Такой JSON сразу подходит для кода и API.
+- **Разделитель и кодировка — сами.** Запятая, точка с запятой или табуляция и кодировка UTF-8 или Windows-1251 определяются автоматически.
+- **Сразу много файлов.** Добавьте до 100 файлов за раз и скачайте результат одним ZIP-архивом.
+
+**Частые вопросы**
+
+- **Какой получится JSON?** Массив объектов: ключи — из первой строки CSV, значения — из следующих строк. JSON отформатирован с отступами, чтобы его было удобно читать.
+- **Что будет с числами?** Числа становятся числами: с ними можно считать. Значения с ведущими нулями — коды, телефоны, индексы — остаются текстом, чтобы нули не пропали.
+- **Что, если в заголовке пустая ячейка?** Столбец без названия получает ключ column_N, где N — его номер.
+- **А если текст в другой кодировке?** Кодировка определяется сама: UTF-8, UTF-16 или Windows-1251 — в ней сохраняют файлы старые версии «Блокнота» и русский Excel.
+- **Сколько файлов можно конвертировать за раз?** До 100 файлов за раз. Готовые файлы можно скачать по одному или все сразу одним ZIP-архивом.
+- **Безопасно ли это?** Да. С сайта загружается только сам конвертер, а файл обрабатывается в вашем браузере и не отправляется на сервер.
+
+#### English — `/en/csv-to-json`
+
+Файл: `src/content/tools/en/csv-to-json.yaml`
+
+- **title:** CSV to JSON Converter — Free, Private, No Upload _(48 симв.)_
+- **description:** Convert CSV to JSON right in your browser: the first row becomes keys, numbers stay numbers. Free, no sign-up, and your files never leave your device. _(150 симв.)_
+- **H1:** CSV to JSON Converter
+- **Подзаголовок:** Free, no sign-up. Your files never leave your device.
+- **Хлебные крошки:** CSV to JSON
+- **Карточка:** CSV → JSON — A CSV table, as a JSON array of objects.
+- **JSON-LD:** CSV to JSON Converter — An online CSV to JSON converter that runs in your browser without uploading your files.
+
+**How to convert CSV to JSON**
+
+1. Click the box above or drag your CSV files onto it — you can add many at once.
+2. Wait a moment while your browser converts them. Nothing gets uploaded.
+3. Download each JSON separately or grab them all in one ZIP file.
+
+**Why use this converter**
+
+- **Your files stay with you.** Conversion runs on your device. Documents are never uploaded, so nobody but you can see them.
+- **An array of objects.** The first row gives the keys and every following row becomes an object — ready for code and APIs.
+- **Delimiter and encoding detected.** Comma, semicolon or tab and UTF-8 or Windows-1251 encoding are detected automatically.
+- **Many files at once.** Add up to 100 files at a time and download the results as one ZIP.
+
+**Frequently asked questions**
+
+- **What does the JSON look like?** An array of objects: keys from the first CSV row, values from the rows below. The JSON is indented so it's easy to read.
+- **What happens to numbers?** Numbers become real numbers you can calculate with. Values with leading zeros — codes, phone numbers, ZIP codes — stay text so the zeros aren't lost.
+- **What if a header cell is empty?** A column without a name gets the key column_N, where N is its number.
+- **What if the text uses another encoding?** The encoding is detected automatically: UTF-8, UTF-16 or Windows-1251, which older Notepad versions and Excel in Cyrillic locales use.
+- **How many files can I convert at once?** Up to 100 files per batch. Download them one by one or all together in a single ZIP file.
+- **Is it safe?** Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server.
+
 ## Другие страницы
 
 ### Главная
@@ -3318,12 +3880,12 @@
 - **description:** Бесплатный онлайн-конвертер файлов: изображения HEIC, JPG, PNG, WebP, PDF, аудио MP3, WAV, M4A, видео MP4, MOV и GIF. Без регистрации и загрузки на сервер. _(155 симв.)_
 - **h1:** Конвертер файлов онлайн
 - **subtitle:** Выберите файлы, затем формат — конвертация идёт прямо в браузере. Бесплатно, без регистрации и без загрузки на сервер.
-- **intro:** Здесь собраны конвертеры для разных типов файлов: изображения переводятся между HEIC, AVIF, JPG, PNG, WebP и другими форматами, PDF — в картинки и обратно, аудио — между MP3, WAV, M4A, OGG и FLAC, видео — в MP4, WebM и GIF, а из видео можно извлечь звук. Для фото есть сжатие до нужного размера, изменение размера, просмотр и удаление метаданных. Всё работает на вашем устройстве: файлы не загружаются на сервер.
-- **sections:** [object Object] · [object Object] · [object Object] · [object Object] · [object Object]
+- **intro:** Здесь собраны конвертеры для разных типов файлов: изображения переводятся между HEIC, AVIF, JPG, PNG, WebP и другими форматами, PDF — в картинки и обратно, аудио — между MP3, WAV, M4A, OGG и FLAC, видео — в MP4, WebM и GIF, а из видео можно извлечь звук. Тексты TXT, Markdown и HTML превращаются в PDF, таблицы CSV, Excel и JSON — друг в друга. Для фото есть сжатие до нужного размера, изменение размера, просмотр и удаление метаданных. Всё работает на вашем устройстве: файлы не загружаются на сервер.
+- **sections:** [object Object] · [object Object] · [object Object] · [object Object] · [object Object] · [object Object]
 - **featuresTitle:** Почему здесь
 - **features:**
   - **Без загрузки на сервер.** Файлы обрабатываются прямо в браузере и не покидают ваше устройство.
-  - **Все популярные форматы.** Изображения HEIC, JPG, PNG, WebP, AVIF и другие, PDF, аудио MP3, WAV, M4A, OGG, FLAC и видео.
+  - **Все популярные форматы.** Изображения, PDF, документы и таблицы, аудио MP3, WAV, M4A, OGG, FLAC и видео MP4, MOV, WebM.
   - **Много файлов сразу.** До 100 файлов за раз, скачать можно одним ZIP-архивом.
   - **Метаданные под контролем.** По умолчанию дата съёмки сохраняется, а геолокация удаляется.
   - **Без регистрации.** Откройте сайт и сразу выберите файлы.
@@ -3337,12 +3899,12 @@
 - **description:** Free online file converter: HEIC, JPG, PNG, WebP images, PDF, MP3, WAV, M4A audio, MP4, MOV and GIF video. No sign-up, no uploads — it all runs in your browser. _(160 симв.)_
 - **h1:** Online file converter
 - **subtitle:** Pick your files, then a format — conversion runs right in your browser. Free, no sign-up, no uploads.
-- **intro:** Converters for different kinds of files in one place: images between HEIC, AVIF, JPG, PNG, WebP and other formats, PDFs to images and back, audio between MP3, WAV, M4A, OGG and FLAC, video to MP4, WebM and GIF, plus audio extracted from video. For photos there is compression to a target size, resizing, and viewing or removing metadata. Everything happens on your device: files are never uploaded.
-- **sections:** [object Object] · [object Object] · [object Object] · [object Object] · [object Object]
+- **intro:** Converters for different kinds of files in one place: images between HEIC, AVIF, JPG, PNG, WebP and other formats, PDFs to images and back, audio between MP3, WAV, M4A, OGG and FLAC, video to MP4, WebM and GIF, plus audio extracted from video. TXT, Markdown and HTML become PDFs, and CSV, Excel and JSON tables convert into each other. For photos there is compression to a target size, resizing, and viewing or removing metadata. Everything happens on your device: files are never uploaded.
+- **sections:** [object Object] · [object Object] · [object Object] · [object Object] · [object Object] · [object Object]
 - **featuresTitle:** Why use it
 - **features:**
   - **No uploads.** Files are processed right in your browser and never leave your device.
-  - **All the popular formats.** HEIC, JPG, PNG, WebP, AVIF and other images, PDF, MP3, WAV, M4A, OGG and FLAC audio, and video.
+  - **All the popular formats.** Images, PDFs, documents and spreadsheets, MP3, WAV, M4A, OGG and FLAC audio, and MP4, MOV and WebM video.
   - **Many files at once.** Up to 100 files per batch, downloaded as a single ZIP if you like.
   - **Metadata under control.** By default the capture date is kept and the location is removed.
   - **No sign-up.** Open the site and pick your files — that's it.
@@ -3445,6 +4007,7 @@
 | `widget.targetMenu` | Формат результата | Output format |
 | `widget.targetGroups.image` | Изображение | Image |
 | `widget.targetGroups.document` | Документ | Document |
+| `widget.targetGroups.table` | Таблица | Spreadsheet |
 | `widget.targetGroups.video` | Видео | Video |
 | `widget.targetGroups.audio` | Аудио | Audio |
 | `widget.pdfCombineHint` | Каждая картинка станет отдельным PDF. Один документ из нескольких картинок — | Each image becomes its own PDF. For one document from several images, use |
@@ -3535,6 +4098,13 @@
 | `widget.videoOriginal` | Исходный | Original |
 | `widget.videoHint` | MOV и MKV с H.264 и AAC перепаковываются в MP4 без перекодирования — быстро и без потерь. Остальное перекодируется в браузере: это долго, минута видео — от десятков секунд до нескольких минут. 720p — короткая сторона кадра 720 точек. | MOV and MKV with H.264 and AAC are repackaged into MP4 without re-encoding — fast and lossless. Everything else is re-encoded in your browser, which is slow: a minute of video takes from tens of seconds to a few minutes. 720p means the short side of the frame is 720 pixels. |
 | `widget.gifWidth` | Ширина GIF, пикс. | GIF width, px |
+| `widget.csvDelimiter` | Разделитель CSV | CSV delimiter |
+| `widget.csvDelimiters.;` | Точка с запятой | Semicolon |
+| `widget.csvDelimiters.,` | Запятая | Comma |
+| `widget.csvDelimiters.	` | Табуляция | Tab |
+| `widget.csvHint` | Русский Excel открывает CSV с точкой с запятой; запятая — для Google Таблиц, программ и других стран. Файл сохраняется в UTF-8. | Comma works for Google Sheets, most apps and English-language Excel; Excel in many European locales expects a semicolon. The file is saved as UTF-8. |
+| `widget.docPages` | страниц: {count} | pages: {count} |
+| `widget.docRows` | строк: {count} | rows: {count} |
 | `widget.gifFps` | Кадров в секунду | Frames per second |
 | `widget.gifHint` | В GIF попадают первые 20 секунд видео, без звука. Ширина и частота кадров сильно влияют на размер файла. | The GIF gets the first 20 seconds of the video, without sound. Width and frame rate have a big impact on file size. |
 | `widget.pdfRendering` | Страница {page} из {total}… | Page {page} of {total}… |
@@ -3635,6 +4205,7 @@
 | `widget.errors.pdf-unsupported` | Этот браузер не умеет рисовать страницы PDF. Обновите браузер или откройте сайт в другом. | This browser can't render PDF pages. Please update it or use another browser. |
 | `widget.errors.no-audio` | В файле нет звуковой дорожки. | The file has no audio track. |
 | `widget.errors.no-video` | В файле нет видео — это аудио. Выберите аудиоформат. | The file has no video — it is audio. Pick an audio format. |
+| `widget.errors.not-table` | В файле нет таблицы: нужен массив объектов или массивов (JSON) или хотя бы одна строка. | The file has no table: it needs an array of objects or arrays (JSON) or at least one row. |
 | `widget.errors.media-decode-unsupported` | Этот браузер не умеет читать звук этого файла (кодек не поддерживается). Попробуйте другой браузер, например свежий Chrome или Edge. | This browser can't read the audio in this file (unsupported codec). Try another browser, such as an up-to-date Chrome or Edge. |
 | `widget.errors.media-stalled` | Браузер перестал отвечать при обработке звука. Попробуйте другой формат или другой браузер. | The browser stopped responding while processing the audio. Try another format or another browser. |
 | `widget.errors.media-encode-unsupported` | Этот браузер не умеет сохранять в этот формат. Выберите другой формат или откройте сайт в другом браузере, например в свежем Chrome или Edge. | This browser can't save to this format. Pick another format or try another browser, such as an up-to-date Chrome or Edge. |
@@ -3656,6 +4227,10 @@
 | `widget.warnings.pdf-page-limit` | Страниц слишком много — сохранены первые {limit}. | Too many pages — the first {limit} were saved. |
 | `widget.warnings.audio-dropped` | Звук не сохранён: браузер не умеет кодировать его для этого формата. Видео — без звука. | The sound wasn't kept: this browser can't encode it for this format. The video has no sound. |
 | `widget.warnings.gif-trimmed` | Видео длиннее 20 секунд — в GIF попало начало. | The video is longer than 20 seconds — the GIF has the beginning. |
+| `widget.warnings.missing-glyphs` | Некоторых знаков (например, иероглифов или эмодзи) нет в шрифте PDF — они заменены на «?». | Some characters (such as CJK or emoji) are missing from the PDF font and were replaced with “?”. |
+| `widget.warnings.images-dropped` | Картинки из документа не переносятся — только текст. | Images from the document are not carried over — only the text. |
+| `widget.warnings.sheets-first-only` | В книге несколько листов — сконвертирован первый. | The workbook has several sheets — the first one was converted. |
+| `widget.warnings.json-nested` | Вложенные объекты и массивы записаны в ячейки как текст JSON. | Nested objects and arrays were written into cells as JSON text. |
 | `notFound.title` | Страница не найдена | Page not found |
 | `notFound.text` | Такой страницы нет. Возможно, адрес изменился или в нём опечатка. | This page does not exist. The address may have changed or contain a typo. |
 | `notFound.toHome` | На главную | Go to the home page |

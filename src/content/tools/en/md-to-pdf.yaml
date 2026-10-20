@@ -1,0 +1,44 @@
+# Texts for /en/md-to-pdf. Draft for the owner's review (see CONTENT.md).
+title: "Markdown to PDF Converter — MD to PDF, Free"
+description: "Convert Markdown (.md) to PDF right in your browser: headings, lists, tables and code. Free, no sign-up, and your files never leave your device."
+h1: "Markdown to PDF Converter"
+subtitle: "Free, no sign-up. Your files never leave your device."
+breadcrumb: "Markdown to PDF"
+card:
+  title: "Markdown → PDF"
+  text: "READMEs and notes, as a clean PDF."
+app:
+  name: "Markdown to PDF Converter"
+  description: "An online Markdown to PDF converter that runs in your browser without uploading your files."
+howTo:
+  title: "How to convert Markdown to PDF"
+  steps:
+    - "Click the box above or drag your Markdown files onto it — you can add many at once."
+    - "Wait a moment while your browser converts them. Nothing gets uploaded."
+    - "Download each PDF separately or grab them all in one ZIP file."
+why:
+  title: "Why use this converter"
+  items:
+    - title: "Your files stay with you"
+      text: "Conversion runs on your device. Documents are never uploaded, so nobody but you can see them."
+    - title: "All the formatting"
+      text: "Headings, bold and italic, lists (including nested and task lists), quotes, code blocks and tables."
+    - title: "Text stays text"
+      text: "The PDF is built from text, not an image: you can select, search and copy it."
+    - title: "Many files at once"
+      text: "Add up to 100 files at a time and download the results as one ZIP."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "What ends up in the PDF?"
+      a: "Headings, paragraphs, bold and italic, lists (numbered, bulleted, nested, task lists), quotes, code blocks, tables and horizontal rules. Links are shown in blue and underlined."
+    - q: "What about images?"
+      a: "Images are not included — only the text. If the file had images, its row shows a warning."
+    - q: "What does the PDF look like?"
+      a: "A4 pages with 20 mm margins and 11 pt Liberation Sans. Long lines wrap at word boundaries, and the text can be selected and copied."
+    - q: "What about CJK characters and emoji?"
+      a: "The PDF font covers Latin, Cyrillic and Greek. Characters it lacks (CJK, emoji) become “?” in the PDF, and the file's row shows a warning."
+    - q: "Which Markdown flavor is supported?"
+      a: "The common GitHub Flavored Markdown: tables, task lists, strikethrough and autolinks."
+    - q: "Is it safe?"
+      a: "Yes. Only the converter itself is loaded from the site; your file is processed in your browser and never sent to a server."

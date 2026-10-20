@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { type TargetId, defaultTarget } from '../../src/converter/widget/targets';
-import { AUDIO_FORMATS, FIXED_OUTPUT_MODES, VIDEO_FORMATS, INPUT_FORMATS, MEDIA_FORMATS, OUTPUT_FORMATS, PDF_MODES, TOOLS, TOOL_CATEGORIES, UNIVERSAL_MODES, relatedTools, toolCategory, toolGroups } from '../../src/tools/registry';
+import { AUDIO_FORMATS, DOC_FORMATS, FIXED_OUTPUT_MODES, TEXT_FORMATS, VIDEO_FORMATS, INPUT_FORMATS, MEDIA_FORMATS, OUTPUT_FORMATS, PDF_MODES, TOOLS, TOOL_CATEGORIES, UNIVERSAL_MODES, relatedTools, toolCategory, toolGroups } from '../../src/tools/registry';
 
 describe('реестр инструментов', () => {
   test('слаги конвертеров: ru «x-v-y», en «x-to-y»; входной формат не совпадает с целевым', () => {
@@ -10,7 +10,10 @@ describe('реестр инструментов', () => {
       expect(tool.id).toBe(tool.slugs.en);
       expect(tool.inputFormats).not.toContain(tool.defaultOutput);
       // картинка — в картинку; аудио и видео — в аудио (раздел «Аудио») и видео в видео или GIF («Видео»)
-      if (toolCategory(tool) === 'video') {
+      if (toolCategory(tool) === 'documents') {
+        expect(DOC_FORMATS).toHaveProperty(tool.defaultOutput);
+        for (const id of tool.inputFormats) expect(TEXT_FORMATS).toHaveProperty(id);
+      } else if (toolCategory(tool) === 'video') {
         expect(VIDEO_FORMATS).toHaveProperty(tool.defaultOutput);
         for (const id of tool.inputFormats) expect(MEDIA_FORMATS).toHaveProperty(id);
       } else if (toolCategory(tool) === 'audio') {
@@ -53,6 +56,7 @@ describe('реестр инструментов', () => {
       ['pdf', 6],
       ['audio', 8],
       ['video', 5],
+      ['documents', 8],
     ]);
     expect(groups.map((g) => g.id)).toEqual(TOOL_CATEGORIES.filter((id) => groups.some((g) => g.id === id)));
     expect(groups.flatMap((g) => g.tools).sort((a, b) => TOOLS.indexOf(a) - TOOLS.indexOf(b))).toEqual(TOOLS);
@@ -131,6 +135,14 @@ describe('реестр инструментов', () => {
       'mkv-to-mp4': ['mov-to-mp4', 'webm-to-mp4', 'mp4-to-webm', 'mp4-to-gif'],
       'mp4-to-webm': ['webm-to-mp4', 'mp4-to-mp3', 'mp4-to-gif', 'mov-to-mp4'],
       'mp4-to-gif': ['mp4-to-mp3', 'mp4-to-webm', 'mov-to-mp4', 'webm-to-mp4'],
+      'txt-to-pdf': ['md-to-pdf', 'html-to-pdf', 'md-to-html', 'csv-to-xlsx'],
+      'md-to-pdf': ['md-to-html', 'txt-to-pdf', 'html-to-pdf', 'csv-to-xlsx'],
+      'html-to-pdf': ['txt-to-pdf', 'md-to-pdf', 'md-to-html', 'csv-to-xlsx'],
+      'md-to-html': ['md-to-pdf', 'txt-to-pdf', 'html-to-pdf', 'csv-to-xlsx'],
+      'csv-to-xlsx': ['xlsx-to-csv', 'csv-to-json', 'txt-to-pdf', 'md-to-pdf'],
+      'xlsx-to-csv': ['csv-to-xlsx', 'json-to-csv', 'txt-to-pdf', 'md-to-pdf'],
+      'json-to-csv': ['csv-to-json', 'xlsx-to-csv', 'txt-to-pdf', 'md-to-pdf'],
+      'csv-to-json': ['json-to-csv', 'csv-to-xlsx', 'txt-to-pdf', 'md-to-pdf'],
     });
   });
 
