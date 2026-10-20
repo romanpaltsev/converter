@@ -45,7 +45,9 @@ const jsonLd = [
       <h1>{c.h1}</h1>
       <p class="lead">{c.subtitle}</p>
     </div>
+  </div>
 
+  <div class="container container--widget">
     <ConverterWidget tool={tool} locale={locale} />
 
     <AdSlot locale={locale} placement="tool-after-widget" />
@@ -56,8 +58,10 @@ const jsonLd = [
         {c.howTo.steps.map((step) => <li>{step}</li>)}
       </ol>
     </section>
+  </div>
 
-    <section class="section">
+  <section class="band">
+    <div class="container container--widget">
       <h2>{c.why.title}</h2>
       <ul class="features">
         {
@@ -69,8 +73,10 @@ const jsonLd = [
           ))
         }
       </ul>
-    </section>
+    </div>
+  </section>
 
+  <div class="container container--narrow">
     <section class="section">
       <h2>{c.faq.title}</h2>
       <div class="faq">
@@ -84,7 +90,9 @@ const jsonLd = [
         }
       </div>
     </section>
+  </div>
 
+  <div class="container container--widget">
     <section class="section related">
       <h2>{UI[locale].tool.relatedTitle}</h2>
       <ToolCards locale={locale} toolIds={relatedTools(tool).map((t) => t.id)} />
@@ -164,9 +172,9 @@ const jsonLd = [
     font-variant-numeric: tabular-nums;
   }
 
-  /* четыре соседних конвертера — сеткой 2 × 2 */
+  /* четыре соседних инструмента — в ряд, на узком экране 2 × 2 или столбиком */
   .related :global(.cards) {
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
   }
 
   .faq {

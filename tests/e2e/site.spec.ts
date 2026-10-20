@@ -171,7 +171,7 @@ test.describe('меню «Конвертировать» (Popover API)', () => {
 test.describe('интерфейс', () => {
   test('зона загрузки — кнопка, работает с клавиатуры', async ({ page }) => {
     await openConverter(page, '/heic-v-jpg');
-    const dropzone = page.getByRole('button', { name: /Перетащите HEIC-файлы сюда/ });
+    const dropzone = page.getByRole('button', { name: /Выберите HEIC-файлы или перетащите их сюда/ });
     await dropzone.focus();
     await expect(dropzone).toBeFocused();
     const chooser = page.waitForEvent('filechooser');

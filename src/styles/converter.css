@@ -1,59 +1,78 @@
 /* Стили виджета конвертера. Глобальные (не scoped): строки файлов создаёт JavaScript.
-   Виджет — одна приподнятая панель: зона выбора файлов, настройки, статус и результаты. */
+   Виджет — одна карточка: сверху графитовая зона выбора файлов (как у convertio), под ней настройки, статус
+   и результаты на белом. */
 
 .converter {
   display: grid;
-  gap: 8px;
+  gap: 12px;
   margin: 0;
-  padding: 8px;
+  padding: 0 0 18px;
   border: 1px solid var(--border);
   border-radius: var(--radius-large);
   background: var(--surface);
   box-shadow: var(--shadow-lg);
 }
 
+/* всё под зоной загрузки — с полями по бокам */
+.converter > :not(.dropzone, input) {
+  margin-inline: 20px;
+}
+
 .dropzone {
   display: grid;
   justify-items: center;
   align-content: center;
-  gap: 2px;
+  gap: 4px;
   width: 100%;
-  min-height: 176px;
-  padding: 24px 16px;
-  border: 1.5px dashed var(--border-strong);
-  border-radius: calc(var(--radius-large) - 6px);
-  background: var(--surface-muted);
-  color: var(--text);
+  min-height: 224px;
+  padding: 32px 20px;
+  border: 0;
+  border-radius: calc(var(--radius-large) - 1px) calc(var(--radius-large) - 1px) 0 0;
+  background-color: var(--panel);
+  /* едва заметная «шахматка» */
+  background-image: conic-gradient(var(--panel-pattern) 25%, transparent 0 50%, var(--panel-pattern) 0 75%, transparent 0);
+  background-size: 32px 32px;
+  color: var(--panel-muted);
   font: inherit;
   text-align: center;
   cursor: pointer;
-  transition:
-    border-color 0.2s var(--ease),
-    background-color 0.2s var(--ease);
 }
 
-.dropzone:hover,
+.dropzone:focus-visible {
+  outline: 2px solid var(--panel-text);
+  outline-offset: -8px;
+}
+
+/* файлы над зоной: пунктирная рамка внутри панели */
 .dropzone.is-dragging {
-  border-color: var(--accent);
-  background: var(--accent-soft);
+  outline: 2px dashed var(--panel-text);
+  outline-offset: -12px;
+}
+
+/* большая кнопка-акцент внутри зоны (сама зона — одна кнопка, это её часть) */
+.dropzone__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 16px 32px;
+  border-radius: 12px;
+  background: var(--accent);
+  color: var(--accent-text);
+  box-shadow: var(--shadow-lg);
+  transition:
+    background-color 0.2s var(--ease),
+    transform 0.25s var(--ease);
+}
+
+.dropzone:hover .dropzone__button,
+.dropzone.is-dragging .dropzone__button {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
 }
 
 .dropzone__icon {
-  box-sizing: content-box;
-  margin-bottom: 10px;
-  padding: 11px;
-  border-radius: 14px;
-  background: var(--accent);
-  color: var(--accent-text);
-  box-shadow:
-    0 6px 16px -4px var(--accent-ring),
-    0 2px 4px var(--accent-ring);
-  transition: transform 0.25s var(--ease);
-}
-
-.dropzone:hover .dropzone__icon,
-.dropzone.is-dragging .dropzone__icon {
-  transform: translateY(-2px);
+  flex: none;
 }
 
 .dropzone__title {
@@ -63,20 +82,19 @@
 }
 
 .dropzone__action {
-  color: var(--accent);
-  font-weight: 600;
+  color: var(--panel-text);
+  font-weight: 550;
 }
 
 .dropzone__hint {
-  margin-top: 6px;
-  color: var(--muted);
+  color: var(--panel-muted);
   font-size: 0.875rem;
 }
 
 .settings {
   display: grid;
   gap: 14px;
-  padding: 14px 12px 10px;
+  padding: 8px 0 0;
 }
 
 .settings__format {
@@ -345,7 +363,7 @@
 }
 
 .notice {
-  margin: 0 4px;
+  margin: 0;
   padding: 10px 14px;
   border-radius: var(--radius-small);
   background: var(--surface-muted);
@@ -366,19 +384,17 @@
 
 .converter__status {
   margin: 0;
-  padding: 0 12px;
   font-weight: 600;
 }
 
 /* пустая живая область остаётся в DOM (так её надёжнее озвучивают), но не занимает места */
 .converter__status:empty {
-  margin-top: -8px;
+  margin-top: -12px;
 }
 
 .converter__results {
   display: grid;
   gap: 12px;
-  padding: 4px 4px 4px;
 }
 
 .converter__results[hidden],
@@ -386,11 +402,12 @@
   display: none;
 }
 
+/* список файлов — строки с разделителями */
 .files {
   display: grid;
-  gap: 6px;
   margin: 0;
   padding: 0;
+  border-block: 1px solid var(--border);
   list-style: none;
 }
 
@@ -399,18 +416,15 @@
   grid-template-columns: 52px 1fr auto;
   align-items: center;
   gap: 14px;
-  padding: 10px 12px 10px 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface);
+  padding: 12px 0;
+}
+
+.file + .file {
+  border-top: 1px solid var(--border);
 }
 
 .file--page {
-  margin-left: clamp(16px, 4vw, 32px);
-}
-
-.file[data-status='error'] {
-  border-color: color-mix(in srgb, var(--error) 30%, var(--border));
+  padding-left: clamp(16px, 4vw, 32px);
 }
 
 .file__thumb {
@@ -717,13 +731,27 @@
 
 @media (max-width: 480px) {
   .converter {
-    padding: 6px;
     border-radius: 20px;
   }
 
+  .converter > :not(.dropzone, input) {
+    margin-inline: 14px;
+  }
+
   .dropzone {
-    min-height: 160px;
-    border-radius: 15px;
+    min-height: 168px;
+    padding: 24px 14px;
+    border-radius: 19px 19px 0 0;
+  }
+
+  .dropzone__button {
+    gap: 10px;
+    margin-bottom: 8px;
+    padding: 12px 22px;
+  }
+
+  .dropzone__title {
+    font-size: 1rem;
   }
 
   .settings__quality {

@@ -1,5 +1,5 @@
 ---
-// Главная-хаб: короткое описание сервиса и карточки всех конвертеров.
+// Главная-хаб: заголовок, полоса преимуществ со значками (как у convertio), описание и карточки всех инструментов.
 import { getEntry } from 'astro:content';
 import ToolCards from '../ToolCards.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -21,9 +21,29 @@ const groups = toolGroups();
   <div class="container container--narrow">
     <section class="hero">
       <h1>{c.h1}</h1>
-      <p class="lead">{c.intro}</p>
+      <p class="lead">{c.subtitle}</p>
     </section>
-    <section>
+  </div>
+
+  <section class="band">
+    <div class="container">
+      <h2 class="band__title">{c.featuresTitle}</h2>
+      <ul class="feature-grid">
+        {
+          c.features.map((f) => (
+            <li class="feature" data-icon={f.icon}>
+              <h3>{f.title}</h3>
+              <p>{f.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <div class="container container--widget">
+    <p class="intro">{c.intro}</p>
+    <section class="section">
       <h2>{c.editToolsTitle}</h2>
       <ToolCards locale={locale} toolIds={groups.photo.map((t) => t.id)} />
     </section>
@@ -35,22 +55,12 @@ const groups = toolGroups();
       <h2>{c.toolsTitle}</h2>
       <ToolCards locale={locale} toolIds={groups.converters.map((t) => t.id)} />
     </section>
-    <ul class="features">
-      {
-        c.features.map((f) => (
-          <li>
-            <h3>{f.title}</h3>
-            <p>{f.text}</p>
-          </li>
-        ))
-      }
-    </ul>
   </div>
 </BaseLayout>
 
 <style>
   .hero {
-    padding: clamp(32px, 7vw, 80px) 0 clamp(32px, 5vw, 56px);
+    padding: clamp(32px, 6vw, 64px) 0 0;
     text-align: center;
   }
 
@@ -60,14 +70,81 @@ const groups = toolGroups();
     font-size: clamp(2.25rem, 1.4rem + 3.6vw, 3.5rem);
   }
 
-  /* три коротких преимущества — в одну строку */
-  .features {
-    margin-top: clamp(48px, 6vw, 72px);
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-  }
-
   .hero .lead {
     max-width: 36rem;
     margin: 0 auto;
+  }
+
+  .band__title {
+    text-align: center;
+    margin-bottom: clamp(24px, 4vw, 40px);
+  }
+
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: clamp(24px, 4vw, 40px) 32px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-align: center;
+  }
+
+  /* значок — контур в круге (круг нарисован в самом SVG) */
+  .feature::before {
+    content: '';
+    display: block;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 14px;
+    background: var(--accent);
+    mask: var(--icon) center / contain no-repeat;
+  }
+
+  .feature h3 {
+    margin-bottom: 6px;
+  }
+
+  .feature p {
+    max-width: 18rem;
+    margin: 0 auto;
+    color: var(--muted);
+    font-size: 0.9375rem;
+  }
+
+  .feature[data-icon='lock'] {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='black' stroke-width='1.2' stroke-linejoin='round'%3E%3Ccircle cx='16' cy='16' r='15'/%3E%3Crect x='11' y='15' width='10' height='8' rx='1.5'/%3E%3Cpath d='M13 15v-2.5a3 3 0 0 1 6 0V15'/%3E%3C/svg%3E");
+  }
+
+  .feature[data-icon='formats'] {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='black' stroke-width='1.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='16' cy='16' r='15'/%3E%3Cpath d='M10 13.5h10.5M17.5 10.5l3 3-3 3M22 18.5H11.5M14.5 15.5l-3 3 3 3'/%3E%3C/svg%3E");
+  }
+
+  .feature[data-icon='batch'] {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='black' stroke-width='1.2' stroke-linejoin='round'%3E%3Ccircle cx='16' cy='16' r='15'/%3E%3Crect x='13' y='13' width='9' height='9' rx='1.5'/%3E%3Cpath d='M10.5 19.5v-7.5a1.5 1.5 0 0 1 1.5-1.5h7.5'/%3E%3C/svg%3E");
+  }
+
+  .feature[data-icon='location'] {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='black' stroke-width='1.2' stroke-linejoin='round'%3E%3Ccircle cx='16' cy='16' r='15'/%3E%3Cpath d='M16 23.5s-5-4.6-5-8.6a5 5 0 0 1 10 0c0 4-5 8.6-5 8.6z'/%3E%3Ccircle cx='16' cy='14.8' r='1.8'/%3E%3C/svg%3E");
+  }
+
+  .feature[data-icon='account'] {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='black' stroke-width='1.2' stroke-linecap='round'%3E%3Ccircle cx='16' cy='16' r='15'/%3E%3Ccircle cx='16' cy='13' r='3'/%3E%3Cpath d='M10.5 22.5a5.5 5.5 0 0 1 11 0'/%3E%3C/svg%3E");
+  }
+
+  .feature[data-icon='free'] {
+    --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke='black' stroke-width='1.2' stroke-linejoin='round'%3E%3Ccircle cx='16' cy='16' r='15'/%3E%3Cpath d='M16 22s-5.5-3.4-5.5-7.3a3 3 0 0 1 5.5-1.6 3 3 0 0 1 5.5 1.6c0 3.9-5.5 7.3-5.5 7.3z'/%3E%3C/svg%3E");
+  }
+
+  .intro {
+    max-width: var(--content-width);
+    margin: clamp(48px, 6vw, 72px) auto 0;
+    color: var(--muted);
+    font-size: 1.0625rem;
+    text-align: center;
+  }
+
+  .intro + .section {
+    margin-top: clamp(32px, 4vw, 48px);
   }
 </style>

@@ -38,9 +38,18 @@
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   /* шапка, полосы и подвал — на ширину контейнера, тексты — уже */
   --container-width: 68rem;
+  /* виджет и блоки вокруг него (шаги, преимущества, похожие инструменты) */
+  --widget-width: 60rem;
   --content-width: 50rem;
   --header-bg: #ffffff;
   --header-height: 64px;
+  /* серая полоса во всю ширину (преимущества) */
+  --band: #f4f5f8;
+  /* графитовая панель зоны загрузки — тёмная в обеих темах */
+  --panel: #2b2e35;
+  --panel-text: #f5f6f8;
+  --panel-muted: #c3c7d0;
+  --panel-pattern: rgb(255 255 255 / 4%);
   /* тёмный подвал */
   --footer-bg: #1f2228;
   --footer-text: #c4c8d0;
@@ -76,6 +85,9 @@
     --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 4px 12px -2px rgb(0 0 0 / 30%);
     --shadow-lg: 0 1px 0 rgb(255 255 255 / 4%) inset, 0 16px 40px -12px rgb(0 0 0 / 60%);
     --header-bg: #14161c;
+    --band: #111318;
+    --panel: #1d2027;
+    --panel-pattern: rgb(255 255 255 / 3%);
     --footer-bg: #07080b;
   }
 }
@@ -173,6 +185,17 @@ img {
 /* тексты страниц: строки не длиннее ~80 знаков */
 .container--narrow {
   max-width: var(--content-width);
+}
+
+.container--widget {
+  max-width: var(--widget-width);
+}
+
+/* серая полоса от края до края (main во всю ширину) */
+.band {
+  margin-top: clamp(48px, 6vw, 72px);
+  padding: clamp(40px, 5vw, 64px) 0;
+  background: var(--band);
 }
 
 /* общий вводный абзац под H1 */

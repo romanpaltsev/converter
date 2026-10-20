@@ -2387,13 +2387,18 @@
 - **title:** Конвертер изображений онлайн — HEIC, AVIF, JPG, PNG и WebP в браузере _(69 симв.)_
 - **description:** Бесплатные онлайн-инструменты для фото и PDF: конвертеры HEIC, AVIF, JPG, PNG и WebP, сжатие и удаление метаданных. Без регистрации и загрузки на сервер. _(153 симв.)_
 - **h1:** Конвертер изображений прямо в браузере
+- **subtitle:** Фото и PDF — в нужный формат. Бесплатно, без регистрации и без загрузки на сервер.
 - **intro:** Переводите фото между форматами HEIC, AVIF, JPG, PNG и WebP, сжимайте их до нужного размера, удаляйте метаданные, собирайте картинки в PDF и сохраняйте страницы PDF картинками. Всё происходит на вашем устройстве: файлы не загружаются на сервер.
 - **editToolsTitle:** Обработка фото
 - **pdfToolsTitle:** PDF
 - **toolsTitle:** Конвертеры
+- **featuresTitle:** Почему здесь
 - **features:**
-  - **Без загрузки на сервер.** Изображения обрабатываются в браузере и не покидают ваше устройство.
-  - **Без регистрации.** Откройте нужный конвертер и сразу выберите файлы.
+  - **Без загрузки на сервер.** Файлы обрабатываются прямо в браузере и не покидают ваше устройство.
+  - **Все популярные форматы.** HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF, JPEG XL и PDF.
+  - **Много файлов сразу.** До 100 файлов за раз, скачать можно одним ZIP-архивом.
+  - **Метаданные под контролем.** По умолчанию дата съёмки сохраняется, а геолокация удаляется.
+  - **Без регистрации.** Откройте сайт и сразу выберите файлы.
   - **Бесплатно.** Конвертируйте столько файлов, сколько нужно.
 
 #### English
@@ -2403,13 +2408,18 @@
 - **title:** Free Online Image Converter — HEIC, AVIF, JPG, PNG and WebP _(59 симв.)_
 - **description:** Free online photo and PDF tools: HEIC, AVIF, JPG, PNG and WebP converters, compression and EXIF removal. No sign-up and no uploads — it all runs in your browser. _(161 симв.)_
 - **h1:** Convert images right in your browser
+- **subtitle:** Photos and PDFs in the format you need. Free, no sign-up, no uploads.
 - **intro:** Convert photos between HEIC, AVIF, JPG, PNG and WebP, compress them to the size you need, strip their metadata, turn images into PDFs and PDF pages into images. Everything happens on your device: files are never uploaded.
 - **editToolsTitle:** Photo tools
 - **pdfToolsTitle:** PDF
 - **toolsTitle:** Converters
+- **featuresTitle:** Why use it
 - **features:**
-  - **No uploads.** Images are processed in your browser and never leave your device.
-  - **No sign-up.** Open a converter and pick your files — that's it.
+  - **No uploads.** Files are processed right in your browser and never leave your device.
+  - **All the popular formats.** HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF, JPEG XL and PDF.
+  - **Many files at once.** Up to 100 files per batch, downloaded as a single ZIP if you like.
+  - **Metadata under control.** By default the capture date is kept and the location is removed.
+  - **No sign-up.** Open the site and pick your files — that's it.
   - **Free.** Convert as many files as you need.
 
 ### Лицензии
@@ -2491,8 +2501,8 @@
 | `nav.groups.about` | О сайте | About |
 | `footer.privacy` | Файлы обрабатываются прямо в браузере и никуда не загружаются. | Files are processed right in your browser and never uploaded anywhere. |
 | `tool.relatedTitle` | Другие конвертеры | More converters |
-| `widget.dropTitle` | Перетащите {format}-файлы сюда | Drop {format} files here |
-| `widget.dropTitleAny` | Перетащите изображения сюда | Drop images here |
+| `widget.dropTitle` | Выберите {format}-файлы | Choose {format} files |
+| `widget.dropTitleAny` | Выберите изображения | Choose images |
 | `widget.originalFormat` | Исходный | Original |
 | `widget.icoHint` | В иконку войдут размеры от 16 до 256 пикселей (не больше исходника); прямоугольная картинка впишется в квадрат с прозрачными полями. Метаданные в ICO не сохраняются. | The icon gets sizes from 16 to 256 pixels (no larger than the original); a non-square image is fitted into a square with transparent margins. ICO keeps no metadata. |
 | `widget.originalHint` | Формат файла сохраняется; HEIC, AVIF, JPEG XL и TIFF сохраняются в JPG, GIF и BMP — в PNG. | The file keeps its format; HEIC, AVIF, JPEG XL and TIFF are saved as JPG, GIF and BMP as PNG. |
@@ -2611,7 +2621,7 @@
 | `widget.report.download` | Скачать без метаданных | Download without metadata |
 | `widget.report.downloadLabel` | Скачать без метаданных: {name} | Download without metadata: {name} |
 | `widget.report.thumbnail` | Встроенная миниатюра | Embedded thumbnail |
-| `widget.dropAction` | или нажмите, чтобы выбрать | or click to choose |
+| `widget.dropAction` | или перетащите их сюда | or drop them here |
 | `widget.dropHint` | Можно сразу много файлов — до 100 за раз | Add many files at once — up to 100 |
 | `widget.dropActive` | Отпустите, чтобы добавить файлы | Release to add files |
 | `widget.settings` | Настройки | Settings |

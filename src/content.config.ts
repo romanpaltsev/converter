@@ -30,16 +30,23 @@ const tools = defineCollection({
   }),
 });
 
+/** Значки преимуществ на главной (контур в круге, рисуются в CSS). */
+export const FEATURE_ICONS = ['lock', 'formats', 'batch', 'location', 'account', 'free'] as const;
+
 const home = z.object({
   page: z.literal('home'),
   ...seo,
+  /** Одна строка под H1. */
+  subtitle: text,
   intro: text,
   /** Раздел «Обработка фото»: сжатие, размер, метаданные — инструменты, которые не меняют формат. */
   editToolsTitle: text,
   /** Раздел «PDF». */
   pdfToolsTitle: text,
   toolsTitle: text,
-  features: z.array(z.object({ title: text, text })).min(2).max(4),
+  /** Полоса преимуществ: 3 × 2 карточки со значком. */
+  featuresTitle: text,
+  features: z.array(z.object({ icon: z.enum(FEATURE_ICONS), title: text, text })).length(6),
 });
 
 const licenses = z.object({
