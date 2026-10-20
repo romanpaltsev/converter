@@ -6,6 +6,18 @@
 /* Inter Variable (OFL) со своего домена: браузер скачивает только нужные поднаборы (латиница, кириллица) */
 @import '@fontsource-variable/inter/wght.css';
 
+/* Пока Inter грузится, текст набран системным Arial (или метрически совместимым Liberation Sans), подогнанным под
+   метрики Inter: строки переносятся так же, и после подмены шрифта вёрстка не сдвигается (CLS) — иначе на главной
+   заголовок менял число строк и сдвигал весь конвертер. */
+@font-face {
+  font-family: 'Inter Fallback';
+  src: local('Arial'), local('Liberation Sans'), local('Helvetica');
+  size-adjust: 107.12%;
+  ascent-override: 90.44%;
+  descent-override: 22.52%;
+  line-gap-override: 0%;
+}
+
 :root {
   color-scheme: light dark;
   --bg: #ffffff;
@@ -34,7 +46,7 @@
   --shadow-sm: 0 1px 2px rgb(16 20 40 / 5%);
   --shadow: 0 1px 2px rgb(16 20 40 / 5%), 0 4px 12px -2px rgb(16 20 40 / 6%);
   --shadow-lg: 0 1px 2px rgb(16 20 40 / 4%), 0 12px 32px -8px rgb(16 20 40 / 12%), 0 32px 64px -24px rgb(16 20 40 / 10%);
-  --font: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  --font: 'Inter Variable', 'Inter Fallback', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   /* шапка, полосы и подвал — на ширину контейнера, тексты — уже */
   --container-width: 68rem;

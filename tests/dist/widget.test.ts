@@ -1,8 +1,25 @@
 import { describe, expect, test } from 'vitest';
 import { IMAGE_TARGETS } from '../../src/converter/widget/targets';
 import { UI } from '../../src/i18n/ui';
-import { SOURCE_FORMATS, TOOLS, UNIVERSAL_MODES } from '../../src/tools/registry';
-import { readHtml } from './helpers';
+import { INPUT_FORMATS, SOURCE_FORMATS, TOOLS, UNIVERSAL_MODES } from '../../src/tools/registry';
+import { HOME_PAGES, readHtml } from './helpers';
+
+describe('сборка: конвертер на главной', () => {
+  test.each(HOME_PAGES)('%s: любой формат на входе, формат результата — у каждого файла, без предустановки', (file) => {
+    const ui = UI[file.startsWith('en/') ? 'en' : 'ru'].widget;
+    const root = readHtml(file).doc.querySelector('[data-converter]')!;
+    // accept — все форматы (с image/heic: иначе iOS может перекодировать HEIC в JPEG при выборе)
+    expect(root.querySelector('input[type="file"]')?.getAttribute('accept')).toBe(Object.values(INPUT_FORMATS).map((f) => f.accept).join(','));
+    expect(root.querySelector('input[type="file"]')?.hasAttribute('multiple')).toBe(true);
+    expect(root.querySelector('.dropzone__title')?.text).toBe(ui.dropTitleUniversal);
+    // настраивать нечего, пока ни у одного файла нет формата
+    expect(root.querySelector('form[data-settings]')?.hasAttribute('hidden')).toBe(true);
+    expect(root.querySelector('input[name="format"]')).toBeNull();
+    expect(root.querySelectorAll('[data-picker] [role="menuitemradio"]').map((item) => item.getAttribute('data-target'))).toEqual([...IMAGE_TARGETS]);
+    const config = JSON.parse(root.querySelector('script[data-converter-config]')!.text);
+    expect(config).toMatchObject({ toolId: 'home', mode: 'convert', universal: true, preset: null, presetKind: null, zipName: 'converter', iphoneHint: false, outputs: [] });
+  });
+});
 
 describe('сборка: разметка виджета', () => {
   test.each(TOOLS.flatMap((tool) => [[tool.id, `${tool.slugs.ru}.html`], [tool.id, `en/${tool.slugs.en}.html`]]))('%s (%s)', (id, file) => {

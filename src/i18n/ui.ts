@@ -32,6 +32,8 @@ const ru = {
   widget: {
     dropTitle: 'Выберите {format}-файлы',
     dropTitleAny: 'Выберите изображения',
+    // главная: любой формат, формат результата выбирается потом
+    dropTitleUniversal: 'Выберите файлы',
     originalFormat: 'Исходный',
     icoHint: 'В иконку войдут размеры от 16 до 256 пикселей (не больше исходника); прямоугольная картинка впишется в квадрат с прозрачными полями. Метаданные в ICO не сохраняются.',
     avifHint: 'AVIF кодируется заметно дольше других форматов: большой снимок — десятки секунд.',
@@ -270,6 +272,7 @@ const en: UiStrings = {
   widget: {
     dropTitle: 'Choose {format} files',
     dropTitleAny: 'Choose images',
+    dropTitleUniversal: 'Choose files',
     originalFormat: 'Original',
     icoHint: "The icon gets sizes from 16 to 256 pixels (no larger than the original); a non-square image is fitted into a square with transparent margins. ICO keeps no metadata.",
     avifHint: 'AVIF takes much longer to encode than other formats: tens of seconds for a large photo.',

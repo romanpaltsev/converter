@@ -2503,6 +2503,7 @@
 | `tool.relatedTitle` | Другие конвертеры | More converters |
 | `widget.dropTitle` | Выберите {format}-файлы | Choose {format} files |
 | `widget.dropTitleAny` | Выберите изображения | Choose images |
+| `widget.dropTitleUniversal` | Выберите файлы | Choose files |
 | `widget.originalFormat` | Исходный | Original |
 | `widget.icoHint` | В иконку войдут размеры от 16 до 256 пикселей (не больше исходника); прямоугольная картинка впишется в квадрат с прозрачными полями. Метаданные в ICO не сохраняются. | The icon gets sizes from 16 to 256 pixels (no larger than the original); a non-square image is fitted into a square with transparent margins. ICO keeps no metadata. |
 | `widget.avifHint` | AVIF кодируется заметно дольше других форматов: большой снимок — десятки секунд. | AVIF takes much longer to encode than other formats: tens of seconds for a large photo. |

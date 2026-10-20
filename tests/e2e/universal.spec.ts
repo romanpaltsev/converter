@@ -1,8 +1,50 @@
 // Формат у каждого файла (страницы пар форматов): меню в строке, «Все файлы в …», смена формата на ходу.
 import { SETTLED_ROWS, convertFiles, expect, fileRow, openConverter, pickTarget, test } from './fixtures';
-import { downloadBytes, fixture } from './files';
+import { downloadBytes, expectTimestamped, fixture, unzip } from './files';
 
 const menu = (page: import('@playwright/test').Page) => page.locator('[data-picker]');
+
+test.describe('главная: любой файл, формат — потом', () => {
+  test('файлы ждут формата; выбранный у строки — конвертация сразу; «Все файлы в WebP» — заново; новые файлы — тоже в WebP; ZIP', async ({ page }) => {
+    await openConverter(page, '/');
+    await expect(page.getByRole('button', { name: /Выберите файлы или перетащите их сюда/ })).toBeVisible();
+    await expect(page.locator('[data-settings]')).toBeHidden();
+    await page.setInputFiles('[data-input]', ['basic.heic', 'alpha.png'].map(fixture));
+    await expect(page.locator('.file[data-status="waiting"]')).toHaveCount(2);
+    await expect(page.locator('[data-status-text]')).toHaveText('Ждут выбора формата: 2.');
+    await expect(fileRow(page, 'basic.heic').locator('.file__thumb')).toHaveText('HEIC');
+    await expect(page.locator('[data-target-all]')).toHaveText('Выбрать');
+
+    await pickTarget(page, 'basic.heic', 'JPG');
+    await expect(page.getByText('basic.jpg', { exact: true })).toBeVisible();
+    await expect(page.locator('[data-settings]')).toBeVisible(); // качество и метаданные для JPG
+    await expect(page.locator('[data-status-text]')).toHaveText('Готово: 1 из 1. Ждут выбора формата: 1.');
+
+    await page.locator('[data-target-all]').click();
+    await menu(page).getByRole('menuitemradio', { name: 'WebP', exact: true }).click();
+    await expect(page.locator('.file__name')).toHaveText(['basic.webp', 'alpha.webp'], { timeout: 60_000 });
+    await expect(page.locator('[data-target-all]')).toHaveText('WebP');
+    // формат «Все файлы в …» действует и на файлы, добавленные после
+    await page.setInputFiles('[data-input]', [fixture('photo.jpg')]);
+    await expect(page.locator('.file__name')).toHaveText(['basic.webp', 'alpha.webp', 'photo.webp'], { timeout: 60_000 });
+
+    const pending = page.waitForEvent('download');
+    await page.getByRole('button', { name: 'Скачать всё (ZIP)' }).click();
+    const zip = await pending;
+    expectTimestamped(zip.suggestedFilename(), 'converter.zip');
+    expect(Object.keys(unzip(await downloadBytes(zip))).sort()).toEqual(['alpha.webp', 'basic.webp', 'photo.webp']);
+  });
+
+  test('en: «Choose files», файл ждёт формата', async ({ page }) => {
+    await openConverter(page, '/en/');
+    await expect(page.getByRole('button', { name: /Choose files or drop them here/ })).toBeVisible();
+    await page.setInputFiles('[data-input]', [fixture('basic.heic')]);
+    await expect(page.locator('.file[data-status="waiting"]')).toContainText('Choose a format');
+    await expect(page.locator('[data-status-text]')).toHaveText('Waiting for a format: 1.');
+    await pickTarget(page, 'basic.heic', 'PNG');
+    await expect(page.getByText('basic.png', { exact: true })).toBeVisible();
+  });
+});
 
 test.describe('формат у каждого файла', () => {
   test('смена формата во время конвертации: задание прерывается, результат один — в новом формате', async ({ page }) => {

@@ -1,4 +1,4 @@
-import { expect, openConverter, test } from './fixtures';
+import { expect, openConverter, pickTarget, test } from './fixtures';
 import { fixture } from './files';
 
 test('до выбора файла WASM и worker не загружаются, потом — «Загружаем конвертер…»', async ({ page, network }) => {
@@ -20,6 +20,22 @@ test('до выбора файла WASM и worker не загружаются, �
   const history = await page.evaluate(() => (window as unknown as { __statusHistory: string[] }).__statusHistory);
   expect(history[0]).toBe('Загружаем конвертер…');
   expect(network.requests.some((r) => r.url.endsWith('.wasm'))).toBe(true);
+});
+
+test('главная: файлы ждут выбора формата без WASM и worker\'а; выбрали формат — грузится конвертер', async ({ page, network }) => {
+  await openConverter(page, '/');
+  await page.setInputFiles('[data-input]', ['basic.heic', 'alpha.png'].map(fixture));
+  await expect(page.locator('.file[data-status="waiting"]')).toHaveCount(2);
+  await expect(page.locator('[data-status-text]')).toHaveText('Ждут выбора формата: 2.');
+  expect(network.requests.filter((r) => /^\/_astro\/.*(\.wasm|worker)/.test(r.url))).toEqual([]);
+  await pickTarget(page, 'basic.heic', 'JPG');
+  await expect(page.locator('.file[data-status="done"]')).toHaveCount(1);
+  expect(network.requests.some((r) => r.url.endsWith('.wasm'))).toBe(true);
+  for (const request of network.requests) {
+    expect(request.method, request.url).toBe('GET');
+    expect(request.hasBody, request.url).toBe(false);
+    expect(request.url).toMatch(/^\/(_astro\/[\w.-]+|favicon\.svg)?$/);
+  }
 });
 
 test('нет сетевых запросов с данными файлов', async ({ page, context, network }) => {

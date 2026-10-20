@@ -185,7 +185,7 @@ test.describe('интерфейс', () => {
     await expect(page.locator('.file[data-status="done"]')).toHaveCount(1);
   });
 
-  for (const path of ['/heic-v-jpg', '/en/heic-to-png', '/szhat-foto', '/en/compress-image', '/izmenit-razmer-foto', '/udalit-metadannye-foto', '/posmotret-exif', '/jpg-v-pdf', '/pdf-v-jpg', '/obedinit-pdf']) {
+  for (const path of ['/', '/en/', '/heic-v-jpg', '/en/heic-to-png', '/szhat-foto', '/en/compress-image', '/izmenit-razmer-foto', '/udalit-metadannye-foto', '/posmotret-exif', '/jpg-v-pdf', '/pdf-v-jpg', '/obedinit-pdf']) {
     test(`${path}: конвертер в первом экране телефона (360×640)`, async ({ page }) => {
       await page.setViewportSize({ width: 360, height: 640 });
       await openConverter(page, path);

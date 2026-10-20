@@ -1,6 +1,8 @@
 ---
-// Главная-хаб: заголовок, полоса преимуществ со значками (как у convertio), описание и карточки всех инструментов.
+// Главная: заголовок, конвертер «выберите любой файл, потом формат» (как у convertio), полоса преимуществ со значками,
+// описание и карточки всех инструментов.
 import { getEntry } from 'astro:content';
+import ConverterWidget from '../ConverterWidget.astro';
 import ToolCards from '../ToolCards.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import type { Locale } from '../../config/site';
@@ -23,6 +25,10 @@ const groups = toolGroups();
       <h1>{c.h1}</h1>
       <p class="lead">{c.subtitle}</p>
     </section>
+  </div>
+
+  <div class="container container--widget converter-wrap">
+    <ConverterWidget tool={null} locale={locale} />
   </div>
 
   <section class="band">
@@ -65,14 +71,16 @@ const groups = toolGroups();
   }
 
   .hero h1 {
-    max-width: 40rem;
-    margin: 0 auto 16px;
-    font-size: clamp(2.25rem, 1.4rem + 3.6vw, 3.5rem);
+    margin: 0 auto 14px;
   }
 
   .hero .lead {
     max-width: 36rem;
     margin: 0 auto;
+  }
+
+  .converter-wrap {
+    margin-top: clamp(20px, 3vw, 32px);
   }
 
   .band__title {

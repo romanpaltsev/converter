@@ -29,6 +29,10 @@ export function readText(file: string): string {
 
 /** Файлы страниц-конвертеров в dist (на всех языках). */
 export const TOOL_PAGES = TOOLS.flatMap((tool) => [`${tool.slugs.ru}.html`, `en/${tool.slugs.en}.html`]);
+/** Главная — универсальный конвертер (формат выбирается у каждого файла). */
+export const HOME_PAGES = ['index.html', 'en/index.html'];
+/** Страницы с виджетом конвертера, то есть с клиентским JS. */
+export const WIDGET_PAGES = [...TOOL_PAGES, ...HOME_PAGES];
 
 /** Адрес страницы, который отдаёт nginx для файла из dist. */
 export function urlPathFor(file: string): string {
