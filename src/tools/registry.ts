@@ -775,6 +775,42 @@ export function toolCategory(tool: ToolConfig): ToolCategory {
   return tool.mode === 'convert' ? 'images' : 'photo';
 }
 
+/** Страницы разделов (как у convertio: «Конвертер аудио» и т. д.) — слаги без префикса /en/. */
+export const CATEGORY_SLUGS: Record<ToolCategory, Record<Locale, string>> = {
+  images: { ru: 'konverter-izobrazhenij', en: 'image-converter' },
+  photo: { ru: 'obrabotka-foto', en: 'photo-tools' },
+  pdf: { ru: 'instrumenty-pdf', en: 'pdf-tools' },
+  audio: { ru: 'konverter-audio', en: 'audio-converter' },
+  video: { ru: 'konverter-video', en: 'video-converter' },
+  documents: { ru: 'konverter-dokumentov', en: 'document-converter' },
+  ebooks: { ru: 'konverter-elektronnyh-knig', en: 'ebook-converter' },
+};
+
+/**
+ * Что принимает конвертер на странице раздела (формат результата — у каждого файла, как на главной); null —
+ * конвертера нет («Обработка фото»: у сжатия, размера и метаданных разные настройки — только карточки).
+ * Аудио принимает и видео: из него берётся звук.
+ */
+export function categoryInputs(category: ToolCategory): SourceFormatId[] | null {
+  const keys = <T extends object>(table: T) => Object.keys(table) as (keyof T & SourceFormatId)[];
+  switch (category) {
+    case 'images':
+      return keys(INPUT_FORMATS);
+    case 'photo':
+      return null;
+    case 'pdf':
+      return ['pdf', ...keys(INPUT_FORMATS)];
+    case 'audio':
+      return keys(MEDIA_FORMATS);
+    case 'video':
+      return ['mp4', 'mov', 'webm', 'mkv'];
+    case 'documents':
+      return keys(TEXT_FORMATS);
+    case 'ebooks':
+      return keys(BOOK_FORMATS);
+  }
+}
+
 export interface ToolGroup {
   id: ToolCategory;
   tools: ToolConfig[];

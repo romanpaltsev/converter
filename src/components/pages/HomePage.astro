@@ -6,6 +6,7 @@ import ConverterWidget from '../ConverterWidget.astro';
 import ToolCards from '../ToolCards.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import type { Locale } from '../../config/site';
+import { categoryPageId, pagePath } from '../../i18n/routes';
 import { toolGroups } from '../../tools/registry';
 
 interface Props {
@@ -20,7 +21,7 @@ const c = entry.data;
 const sections = toolGroups().map((group) => {
   const text = c.sections[group.id];
   if (!text) throw new Error(`Нет текстов раздела ${group.id} на главной (${locale})`);
-  return { ...text, id: group.id, toolIds: group.tools.map((tool) => tool.id) };
+  return { ...text, id: group.id, href: pagePath(categoryPageId(group.id), locale), toolIds: group.tools.map((tool) => tool.id) };
 });
 ---
 
@@ -58,7 +59,9 @@ const sections = toolGroups().map((group) => {
       sections.map((section) => (
         <section class="section" aria-labelledby={`section-${section.id}`}>
           <div class="section__head" data-group-icon={section.id}>
-            <h2 id={`section-${section.id}`}>{section.title}</h2>
+            <h2 id={`section-${section.id}`}>
+              <a href={section.href}>{section.title}</a>
+            </h2>
             <p>{section.text}</p>
           </div>
           <ToolCards locale={locale} toolIds={section.toolIds} />
@@ -172,6 +175,16 @@ const sections = toolGroups().map((group) => {
 
   .section__head h2 {
     margin: 0;
+  }
+
+  /* заголовок раздела — ссылка на страницу раздела */
+  .section__head h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .section__head h2 a:hover {
+    color: var(--accent);
   }
 
   .section__head p {

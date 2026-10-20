@@ -1,0 +1,22 @@
+# Category page texts. Draft for the owner's review (see CONTENT.md).
+page: category
+category: audio
+title: "Audio Converter Online — MP3, WAV, M4A, OGG, FLAC"
+description: "Free audio converter in your browser: MP3, WAV, M4A, OGG, FLAC, Opus and AAC to each other, audio from video to MP3. No sign-up, no uploads."
+h1: "Audio Converter"
+subtitle: "MP3, WAV, M4A, OGG and FLAC — and audio from video — right in your browser."
+breadcrumb: "Audio Converter"
+menu: "Audio converter"
+toolsTitle: "Audio converters"
+intro: "Convert music, voice messages and voice memos between MP3, WAV, M4A, OGG and FLAC, or extract the audio from a video. Bitrate from 128 to 320 kbps, tags (title, artist, album) are kept, and when the codec is the same the audio is copied without re-encoding."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Which formats are supported?"
+      a: "Input: MP3, WAV, FLAC, OGG, Opus, AAC, M4A, plus the audio of MP4, MOV, WebM and MKV videos. Output: MP3, WAV, M4A, OGG (Opus) and FLAC."
+    - q: "Which bitrate should I pick?"
+      a: "192 kbps is a good choice for music and 320 kbps is the MP3 maximum. For speech and podcasts, 128 kbps is plenty."
+    - q: "How does it work?"
+      a: "Pick files or drop them onto the page, then choose a format for each file — or one for all of them. Download the results one by one or as a single ZIP."
+    - q: "Are my files uploaded?"
+      a: "No. The converter runs right in your browser: files are processed on your device and never sent anywhere."

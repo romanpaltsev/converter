@@ -1,0 +1,22 @@
+# Category page texts. Draft for the owner's review (see CONTENT.md).
+page: category
+category: ebooks
+title: "eBook Converter Online — FB2, EPUB, PDF"
+description: "Free ebook converter in your browser: FB2 to EPUB and back, FB2 and EPUB to PDF, FB2 to TXT. No sign-up and no uploads."
+h1: "eBook Converter"
+subtitle: "FB2 and EPUB to each other, to PDF and to plain text — right in your browser."
+breadcrumb: "eBook Converter"
+menu: "eBook converter"
+toolsTitle: "eBook converters"
+intro: "FB2 books from Russian-language libraries open on iPhone, Android and Kindle once converted to EPUB, and EPUB books open in readers that prefer FB2. Cover, authors, description, chapters, illustrations and footnotes come through, and you can also save a book as PDF for printing."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Which formats are supported?"
+      a: "Input: FB2 (including .fb2.zip) and EPUB. Output: EPUB, FB2, PDF and TXT."
+    - q: "Do purchased books work?"
+      a: "Books with copy protection (DRM) can't be read. DRM-free books — from libraries, your own and free ones — convert as usual."
+    - q: "How does it work?"
+      a: "Pick files or drop them onto the page, then choose a format for each file — or one for all of them. Download the results one by one or as a single ZIP."
+    - q: "Are my files uploaded?"
+      a: "No. The converter runs right in your browser: files are processed on your device and never sent anywhere."

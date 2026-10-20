@@ -1,15 +1,16 @@
 ---
 // Страница-конвертер: H1 и подзаголовок, виджет в первом экране, инструкция, «Почему здесь», FAQ, перелинковка.
 import { getEntry } from 'astro:content';
+import '../../styles/page.css';
 import AdSlot from '../AdSlot.astro';
 import ConverterWidget from '../ConverterWidget.astro';
 import ToolCards from '../ToolCards.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import type { Locale } from '../../config/site';
-import { absoluteUrl, pagePath, toolPageId } from '../../i18n/routes';
+import { absoluteUrl, categoryPageId, pagePath, toolPageId } from '../../i18n/routes';
 import { UI } from '../../i18n/ui';
 import { breadcrumbList, faqPage, webApplication } from '../../lib/seo';
-import { getTool, relatedTools } from '../../tools/registry';
+import { getTool, relatedTools, toolCategory } from '../../tools/registry';
 
 interface Props {
   toolId: string;
@@ -24,11 +25,17 @@ const c = entry.data;
 const pageId = toolPageId(tool.id);
 const site = import.meta.env.SITE;
 const url = absoluteUrl(site, pagePath(pageId, locale));
+// хлебные крошки: главная → раздел («Конвертер аудио») → инструмент
+const category = toolCategory(tool);
+const categoryEntry = await getEntry('pages', `${locale}/category-${category}`);
+if (categoryEntry?.data.page !== 'category') throw new Error(`Нет текстов раздела ${category} (${locale})`);
+const categoryCrumb = { name: categoryEntry.data.breadcrumb, href: pagePath(categoryPageId(category), locale) };
 const jsonLd = [
   webApplication({ name: c.app.name, description: c.app.description, url, locale }),
   faqPage(c.faq.items),
   breadcrumbList([
     { name: UI[locale].nav.home, url: absoluteUrl(site, pagePath('home', locale)) },
+    { name: categoryCrumb.name, url: absoluteUrl(site, categoryCrumb.href) },
     { name: c.breadcrumb, url },
   ]),
 ];
@@ -39,6 +46,8 @@ const jsonLd = [
     <div class="hero">
       <nav class="breadcrumbs" aria-label={UI[locale].nav.breadcrumbs}>
         <a href={pagePath('home', locale)}>{UI[locale].nav.home}</a>
+        <span aria-hidden="true">/</span>
+        <a href={categoryCrumb.href}>{categoryCrumb.name}</a>
         <span aria-hidden="true">/</span>
         <span aria-current="page">{c.breadcrumb}</span>
       </nav>
@@ -101,44 +110,6 @@ const jsonLd = [
 </BaseLayout>
 
 <style>
-  .hero {
-    padding: clamp(20px, 4vw, 48px) 0 clamp(20px, 3vw, 32px);
-    text-align: center;
-  }
-
-  .hero h1 {
-    margin-bottom: 14px;
-  }
-
-  .hero .lead {
-    max-width: 34rem;
-    margin: 0 auto;
-  }
-
-  .breadcrumbs {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-    margin: 0 0 16px;
-    color: var(--muted);
-    font-size: 0.875rem;
-  }
-
-  .breadcrumbs a {
-    color: var(--muted);
-    text-decoration: none;
-  }
-
-  .breadcrumbs a:hover {
-    color: var(--text);
-    text-decoration: underline;
-  }
-
-  .breadcrumbs span[aria-hidden] {
-    opacity: 0.5;
-  }
-
   .steps {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
@@ -177,62 +148,4 @@ const jsonLd = [
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
   }
 
-  .faq {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
-  }
-
-  .faq details + details {
-    border-top: 1px solid var(--border);
-  }
-
-  .faq summary {
-    position: relative;
-    padding: 16px 52px 16px 20px;
-    font-weight: 600;
-    cursor: pointer;
-    list-style: none;
-    transition: background-color 0.2s var(--ease);
-  }
-
-  .faq summary:hover {
-    background: var(--surface-muted);
-  }
-
-  .faq summary:focus-visible {
-    outline-offset: -2px;
-  }
-
-  .faq summary::-webkit-details-marker {
-    display: none;
-  }
-
-  /* шеврон: поворачивается при раскрытии */
-  .faq summary::after {
-    content: '';
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    width: 9px;
-    height: 9px;
-    margin-top: -7px;
-    border-right: 2px solid var(--muted);
-    border-bottom: 2px solid var(--muted);
-    transform: rotate(45deg);
-    transition: transform 0.25s var(--ease);
-  }
-
-  .faq details[open] summary::after {
-    margin-top: -2px;
-    transform: rotate(-135deg);
-  }
-
-  .faq p {
-    margin: 0;
-    padding: 0 20px 18px;
-    color: var(--muted);
-  }
 </style>

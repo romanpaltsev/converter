@@ -2,7 +2,7 @@ import { describe, expect, test } from 'vitest';
 import type { SniffKind } from '../../src/converter/pipeline/sniff';
 import { ALL_TARGETS, type TargetId, visibleSettings } from '../../src/converter/widget/targets';
 import { UI } from '../../src/i18n/ui';
-import { AUDIO_FORMATS, BOOK_FORMATS, DOCUMENT_FORMATS, INPUT_FORMATS, MEDIA_FORMATS, TEXT_FORMATS, isAudioTarget, isDocTarget, isVideoTarget, SOURCE_FORMATS, TOOLS, UNIVERSAL_MODES } from '../../src/tools/registry';
+import { AUDIO_FORMATS, BOOK_FORMATS, CATEGORY_SLUGS, DOCUMENT_FORMATS, TOOL_CATEGORIES, type ToolCategory, categoryInputs, INPUT_FORMATS, MEDIA_FORMATS, TEXT_FORMATS, isAudioTarget, isDocTarget, isVideoTarget, SOURCE_FORMATS, TOOLS, UNIVERSAL_MODES } from '../../src/tools/registry';
 import { HOME_PAGES, readHtml } from './helpers';
 
 describe('сборка: конвертер на главной', () => {
@@ -132,5 +132,19 @@ describe('сборка: разметка виджета', () => {
     // шаблоны строк заполнены при сборке
     expect(JSON.stringify(config.strings)).not.toMatch(/\{formats?\}/);
     expect(root.querySelector('.dropzone__title')?.text).toBe(config.strings.dropTitle);
+  });
+});
+
+describe('сборка: конвертер на страницах разделов', () => {
+  test.each(TOOL_CATEGORIES.flatMap((category) => [[category, `${CATEGORY_SLUGS[category].ru}.html`], [category, `en/${CATEGORY_SLUGS[category].en}.html`]]))('%s (%s): форматы раздела, без предустановки; у «Обработки фото» конвертера нет', (category, file) => {
+    const root = readHtml(file).doc.querySelector('[data-converter]');
+    const inputs = categoryInputs(category as ToolCategory);
+    if (!inputs) {
+      expect(root).toBeNull();
+      return;
+    }
+    expect(root!.querySelector('input[type="file"]')?.getAttribute('accept')).toBe(inputs.map((id) => SOURCE_FORMATS[id].accept).join(','));
+    const config = JSON.parse(root!.querySelector('script[data-converter-config]')!.text);
+    expect(config).toMatchObject({ toolId: `category-${category}`, universal: true, preset: null, zipName: CATEGORY_SLUGS[category as ToolCategory].en });
   });
 });

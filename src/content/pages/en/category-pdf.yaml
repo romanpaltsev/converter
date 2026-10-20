@@ -1,0 +1,22 @@
+# Category page texts. Draft for the owner's review (see CONTENT.md).
+page: category
+category: pdf
+title: "PDF Tools Online — Images to PDF, PDF to JPG, Merge PDF"
+description: "Free PDF tools in your browser: images to PDF, PDF pages to JPG and PNG, merging PDFs. No sign-up and no uploads."
+h1: "PDF Tools"
+subtitle: "Images to PDF, PDF pages to images and merging documents."
+breadcrumb: "PDF Tools"
+menu: "PDF tools"
+toolsTitle: "PDF tools"
+intro: "Put photos and scans into one PDF or save each image as its own document, turn PDF pages into JPG or PNG at the resolution you need, and merge several PDFs into one. Your documents never leave your device."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "How do I put several images into one PDF?"
+      a: "Open “JPG to PDF”, add your files and order them with the arrows — each image becomes a page. On this page, each image becomes its own separate PDF."
+    - q: "Can I open a password-protected PDF?"
+      a: "No: password-protected documents can't be opened, and the file's row will say so."
+    - q: "How does it work?"
+      a: "Pick files or drop them onto the page, then choose a format for each file — or one for all of them. Download the results one by one or as a single ZIP."
+    - q: "Are my files uploaded?"
+      a: "No. The converter runs right in your browser: files are processed on your device and never sent anywhere."

@@ -1,0 +1,22 @@
+# Category page texts. Draft for the owner's review (see CONTENT.md).
+page: category
+category: photo
+title: "Photo Tools Online — Compress, Resize, Remove EXIF"
+description: "Free photo tools in your browser: compress to a target size, resize, remove or view metadata. No sign-up and no uploads."
+h1: "Photo Tools"
+subtitle: "Compression, resizing and metadata — the file keeps its format."
+breadcrumb: "Photo Tools"
+menu: "Photo tools"
+toolsTitle: "Photo tools"
+intro: "Shrink photos for email and websites — by quality or to a target size in KB or MB — resize them for social media, strip the location and phone model before sharing, or see what's recorded in EXIF. Everything runs right in your browser."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "How is compressing different from resizing?"
+      a: "Compression lowers the file size without changing the pixel count by picking the quality. Resizing makes the image itself smaller — for example, 1920 pixels on the long side."
+    - q: "What is photo metadata?"
+      a: "Information the camera writes into the file: date and time, phone model, shooting settings and often the location. It's worth removing before you post a photo."
+    - q: "Is it free?"
+      a: "Yes, with no sign-up and no limit on conversions. You can add up to 100 files at a time."
+    - q: "Are my files uploaded?"
+      a: "No. The converter runs right in your browser: files are processed on your device and never sent anywhere."

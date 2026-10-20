@@ -2,7 +2,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { type HTMLElement, parse } from 'node-html-parser';
-import { TOOLS } from '../../src/tools/registry';
+import { CATEGORY_SLUGS, TOOLS, TOOL_CATEGORIES, categoryInputs } from '../../src/tools/registry';
 
 export const DIST = fileURLToPath(new URL('../../dist/', import.meta.url));
 export const SITE = (process.env.SITE_URL || 'https://converter.hotbar.pro').replace(/\/+$/, '');
@@ -31,8 +31,11 @@ export function readText(file: string): string {
 export const TOOL_PAGES = TOOLS.flatMap((tool) => [`${tool.slugs.ru}.html`, `en/${tool.slugs.en}.html`]);
 /** Главная — универсальный конвертер (формат выбирается у каждого файла). */
 export const HOME_PAGES = ['index.html', 'en/index.html'];
+/** Страницы разделов («Конвертер аудио»…); у всех, кроме «Обработки фото», — универсальный конвертер. */
+export const CATEGORY_PAGES = TOOL_CATEGORIES.flatMap((category) => [`${CATEGORY_SLUGS[category].ru}.html`, `en/${CATEGORY_SLUGS[category].en}.html`]);
+const CATEGORY_WIDGET_PAGES = TOOL_CATEGORIES.filter((category) => categoryInputs(category) !== null).flatMap((category) => [`${CATEGORY_SLUGS[category].ru}.html`, `en/${CATEGORY_SLUGS[category].en}.html`]);
 /** Страницы с виджетом конвертера, то есть с клиентским JS. */
-export const WIDGET_PAGES = [...TOOL_PAGES, ...HOME_PAGES];
+export const WIDGET_PAGES = [...TOOL_PAGES, ...HOME_PAGES, ...CATEGORY_WIDGET_PAGES];
 
 /** Адрес страницы, который отдаёт nginx для файла из dist. */
 export function urlPathFor(file: string): string {

@@ -1,0 +1,22 @@
+# Category page texts. Draft for the owner's review (see CONTENT.md).
+page: category
+category: video
+title: "Video Converter Online — MOV, MKV, WebM to MP4, Video to GIF"
+description: "Free video converter in your browser: MOV, MKV and WebM to MP4, MP4 to WebM, video to GIF and audio from video. No sign-up, no uploads."
+h1: "Video Converter"
+subtitle: "MOV, MKV and WebM to MP4, MP4 to WebM and video to GIF — right in your browser."
+breadcrumb: "Video Converter"
+menu: "Video converter"
+toolsTitle: "Video converters"
+intro: "iPhone and camera videos, screen recordings and movies convert to MP4 (H.264 and AAC) or WebM (VP9 and Opus) at the quality and frame size you pick, and short clips become GIFs. When the codecs fit, the video is repackaged in seconds without loss."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Which formats are supported?"
+      a: "Input: MP4, MOV, WebM and MKV. Output: MP4, WebM and GIF, plus audio as MP3, WAV, M4A, OGG and FLAC."
+    - q: "Why does it take a while?"
+      a: "Video is re-encoded right on your device with the browser's built-in codecs. A minute of video takes from tens of seconds to a few minutes; MOV and MKV with H.264 are repackaged into MP4 in seconds."
+    - q: "How does it work?"
+      a: "Pick files or drop them onto the page, then choose a format for each file — or one for all of them. Download the results one by one or as a single ZIP."
+    - q: "Are my files uploaded?"
+      a: "No. The converter runs right in your browser: files are processed on your device and never sent anywhere."

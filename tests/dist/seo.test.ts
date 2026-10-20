@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import { CONTACT_EMAIL, LOCALES } from '../../src/config/site';
-import { PAGES, pagePath, toolPageId } from '../../src/i18n/routes';
-import { toolGroups } from '../../src/tools/registry';
-import { INDEXING, SITE, TOOL_PAGES, htmlFiles, readHtml, readText, urlPathFor } from './helpers';
+import { PAGES, categoryPageId, pagePath, toolPageId } from '../../src/i18n/routes';
+import { CATEGORY_SLUGS, TOOLS, TOOL_CATEGORIES, toolCategory, toolGroups } from '../../src/tools/registry';
+import { CATEGORY_PAGES, INDEXING, SITE, TOOL_PAGES, htmlFiles, readHtml, readText, urlPathFor } from './helpers';
 
 const pages = htmlFiles();
 const notFound = pages.filter((f) => /(^|\/)404\.html$/.test(f));
@@ -81,8 +81,10 @@ describe('сборка: контакты', () => {
   });
 });
 
-/** Все инструменты по разделам (изображения, обработка фото, PDF…) — как в меню и подвале. */
-const toolHrefs = (locale: 'ru' | 'en') => toolGroups().flatMap((group) => group.tools.map((tool) => pagePath(toolPageId(tool.id), locale)));
+/** Подвал: по разделам — ссылка на страницу раздела, затем все его инструменты. */
+const footerHrefs = (locale: 'ru' | 'en') => toolGroups().flatMap((group) => [pagePath(categoryPageId(group.id), locale), ...group.tools.map((tool) => pagePath(toolPageId(tool.id), locale))]);
+/** Меню «Конвертировать»: страницы разделов, как у convertio. */
+const menuHrefs = (locale: 'ru' | 'en') => toolGroups().map((group) => pagePath(categoryPageId(group.id), locale));
 
 describe('сборка: шапка и подвал', () => {
   test.each(pages)('%s: один переключатель языка — в шапке; в подвале все инструменты своего языка', (file) => {
@@ -91,10 +93,10 @@ describe('сборка: шапка и подвал', () => {
     expect(doc.querySelector('header nav.lang')).not.toBeNull();
     const locale = file.startsWith('en/') ? 'en' : 'ru';
     const hrefs = doc.querySelectorAll('footer a').map((a) => a.getAttribute('href'));
-    expect(hrefs).toEqual([...toolHrefs(locale), pagePath('licenses', locale), pagePath('contacts', locale)]);
+    expect(hrefs).toEqual([...footerHrefs(locale), pagePath('licenses', locale), pagePath('contacts', locale)]);
   });
 
-  test.each(pages)('%s: меню «Конвертировать» без JS (Popover API) — все инструменты своего языка', (file) => {
+  test.each(pages)('%s: меню «Конвертировать» без JS (Popover API) — разделы своего языка со значками', (file) => {
     const { doc } = readHtml(file);
     const button = doc.querySelector('header button[popovertarget="site-menu"]');
     expect(button?.getAttribute('type')).toBe('button');
@@ -103,7 +105,8 @@ describe('сборка: шапка и подвал', () => {
     // меню идёт сразу за кнопкой: так оно в порядке Tab после неё во всех браузерах
     expect(button?.nextElementSibling).toBe(menu);
     const locale = file.startsWith('en/') ? 'en' : 'ru';
-    expect(menu!.querySelectorAll('a').map((a) => a.getAttribute('href'))).toEqual(toolHrefs(locale));
+    expect(menu!.querySelectorAll('a').map((a) => a.getAttribute('href'))).toEqual(menuHrefs(locale));
+    expect(menu!.querySelectorAll('a').map((a) => a.getAttribute('data-group-icon'))).toEqual(toolGroups().map((group) => group.id));
   });
 });
 
@@ -120,6 +123,20 @@ describe('сборка: JSON-LD', () => {
     expect(faq.mainEntity.length).toBeGreaterThanOrEqual(6);
     const app = data.find((d) => d['@type'] === 'WebApplication') as { url: string };
     expect(app.url).toBe(SITE + urlPathFor(file));
+    // хлебные крошки: главная → раздел → инструмент
+    const crumbs = data.find((d) => d['@type'] === 'BreadcrumbList') as { itemListElement: { item: string }[] };
+    const tool = TOOLS.find((t) => file === `${t.slugs.ru}.html` || file === `en/${t.slugs.en}.html`)!;
+    const locale = file.startsWith('en/') ? 'en' : 'ru';
+    expect(crumbs.itemListElement.map((crumb) => crumb.item)).toEqual([SITE + pagePath('home', locale), SITE + pagePath(categoryPageId(toolCategory(tool)), locale), SITE + urlPathFor(file)]);
+  });
+
+  test.each(CATEGORY_PAGES)('%s: страница раздела — FAQPage и BreadcrumbList (главная → раздел), карточки всех инструментов раздела', (file) => {
+    const data = types(file);
+    expect(data.map((d) => d['@type'])).toEqual(expect.arrayContaining(['BreadcrumbList', 'FAQPage']));
+    const category = TOOL_CATEGORIES.find((c) => file === `${CATEGORY_SLUGS[c].ru}.html` || file === `en/${CATEGORY_SLUGS[c].en}.html`)!;
+    const locale = file.startsWith('en/') ? 'en' : 'ru';
+    const cards = readHtml(file).doc.querySelectorAll('main .card a').map((a) => a.getAttribute('href'));
+    expect(cards).toEqual(TOOLS.filter((t) => toolCategory(t) === category).map((t) => pagePath(toolPageId(t.id), locale)));
   });
 
   test('JSON-LD не ломает разметку (нет «</» внутри)', () => {

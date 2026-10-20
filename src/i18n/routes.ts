@@ -2,9 +2,9 @@
 // переключатель языка, перелинковка и карта сайта. Слаги на разных языках разные.
 
 import { DEFAULT_LOCALE, LOCALES, type Locale } from '../config/site';
-import { TOOLS } from '../tools/registry';
+import { CATEGORY_SLUGS, TOOLS, TOOL_CATEGORIES, type ToolCategory } from '../tools/registry';
 
-export type PageId = 'home' | 'licenses' | 'contacts' | `tool:${string}`;
+export type PageId = 'home' | 'licenses' | 'contacts' | `tool:${string}` | `category:${ToolCategory}`;
 
 export interface PageRoute {
   id: PageId;
@@ -13,6 +13,7 @@ export interface PageRoute {
 
 export const PAGES: PageRoute[] = [
   { id: 'home', paths: { ru: '/', en: '/en/' } },
+  ...TOOL_CATEGORIES.map((category): PageRoute => ({ id: `category:${category}`, paths: { ru: `/${CATEGORY_SLUGS[category].ru}`, en: `/en/${CATEGORY_SLUGS[category].en}` } })),
   ...TOOLS.map((tool): PageRoute => ({ id: `tool:${tool.id}`, paths: { ru: `/${tool.slugs.ru}`, en: `/en/${tool.slugs.en}` } })),
   { id: 'licenses', paths: { ru: '/licenses', en: '/en/licenses' } },
   { id: 'contacts', paths: { ru: '/contacts', en: '/en/contacts' } },
@@ -30,6 +31,10 @@ export function pagePath(id: PageId, locale: Locale): string {
 
 export function toolPageId(toolId: string): PageId {
   return `tool:${toolId}`;
+}
+
+export function categoryPageId(category: ToolCategory): PageId {
+  return `category:${category}`;
 }
 
 /** Абсолютный URL: адрес сайта берётся из SITE_URL (astro.config.mjs → import.meta.env.SITE). */

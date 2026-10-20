@@ -1,0 +1,104 @@
+---
+// Страница раздела (как у convertio: «Конвертер аудио»): заголовок, универсальный конвертер для форматов раздела
+// (у «Обработки фото» его нет — у инструментов разные настройки), карточки всех инструментов раздела, описание, FAQ.
+import { getEntry } from 'astro:content';
+import '../../styles/page.css';
+import ConverterWidget from '../ConverterWidget.astro';
+import ToolCards from '../ToolCards.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import type { Locale } from '../../config/site';
+import { absoluteUrl, categoryPageId, pagePath } from '../../i18n/routes';
+import { UI } from '../../i18n/ui';
+import { breadcrumbList, faqPage, webApplication } from '../../lib/seo';
+import { TOOLS, type ToolCategory, categoryInputs, toolCategory } from '../../tools/registry';
+
+interface Props {
+  category: ToolCategory;
+  locale: Locale;
+}
+
+const { category, locale } = Astro.props;
+const entry = await getEntry('pages', `${locale}/category-${category}`);
+if (entry?.data.page !== 'category') throw new Error(`Нет текстов раздела ${category} (${locale})`);
+const c = entry.data;
+const pageId = categoryPageId(category);
+const site = import.meta.env.SITE;
+const url = absoluteUrl(site, pagePath(pageId, locale));
+const tools = TOOLS.filter((tool) => toolCategory(tool) === category);
+const widget = categoryInputs(category) !== null;
+const jsonLd = [
+  ...(widget ? [webApplication({ name: c.h1, description: c.description, url, locale })] : []),
+  faqPage(c.faq.items),
+  breadcrumbList([
+    { name: UI[locale].nav.home, url: absoluteUrl(site, pagePath('home', locale)) },
+    { name: c.breadcrumb, url },
+  ]),
+];
+---
+
+<BaseLayout locale={locale} pageId={pageId} title={c.title} description={c.description} jsonLd={jsonLd}>
+  <div class="container container--narrow">
+    <div class="hero">
+      <nav class="breadcrumbs" aria-label={UI[locale].nav.breadcrumbs}>
+        <a href={pagePath('home', locale)}>{UI[locale].nav.home}</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{c.breadcrumb}</span>
+      </nav>
+      <h1 class="category-title" data-group-icon={category}>{c.h1}</h1>
+      <p class="lead">{c.subtitle}</p>
+    </div>
+  </div>
+
+  {
+    widget && (
+      <div class="container container--widget">
+        <ConverterWidget tool={null} category={category} locale={locale} />
+      </div>
+    )
+  }
+
+  <div class="container container--widget">
+    <section class="section" class:list={{ 'section--first': !widget }}>
+      <h2>{c.toolsTitle}</h2>
+      <ToolCards locale={locale} toolIds={tools.map((tool) => tool.id)} />
+    </section>
+  </div>
+
+  <div class="container container--narrow">
+    <p class="intro">{c.intro}</p>
+    <section class="section">
+      <h2>{c.faq.title}</h2>
+      <div class="faq">
+        {
+          c.faq.items.map((item) => (
+            <details>
+              <summary>{item.q}</summary>
+              <p>{item.a}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  /* значок раздела над заголовком — как в меню «Конвертировать» */
+  .category-title {
+    --group-icon-size: 56px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .section--first {
+    margin-top: 8px;
+  }
+
+  .intro {
+    margin: clamp(40px, 5vw, 56px) 0 0;
+    color: var(--muted);
+    font-size: 1.0625rem;
+  }
+</style>

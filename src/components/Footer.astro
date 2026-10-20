@@ -2,7 +2,7 @@
 // Тёмный подвал: колонки ссылок на все инструменты (по группам) и страницы сайта, внизу — название и обещание
 // приватности. Ссылка «Контакты» на странице одна — по ней её находят тесты и пользователи.
 import { SITE_NAME, type Locale } from '../config/site';
-import { pagePath } from '../i18n/routes';
+import { categoryPageId, pagePath } from '../i18n/routes';
 import { UI } from '../i18n/ui';
 import { toolLinks } from '../lib/tool-links';
 import { toolGroups } from '../tools/registry';
@@ -13,12 +13,16 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = UI[locale];
-const groups = await Promise.all(toolGroups().map(async (group) => ({ id: group.id, title: t.nav.groups[group.id], links: await toolLinks(group.tools, locale) })));
+// заголовок колонки раздела ведёт на страницу раздела («Изображения» → «Конвертер изображений»)
+const groups = await Promise.all(
+  toolGroups().map(async (group) => ({ id: group.id, title: t.nav.groups[group.id], href: pagePath(categoryPageId(group.id), locale), links: await toolLinks(group.tools, locale) })),
+);
 const columns = [
   ...groups,
   {
     id: 'about',
     title: t.nav.groups.about,
+    href: null,
     links: [
       { href: pagePath('licenses', locale), title: t.nav.licenses },
       { href: pagePath('contacts', locale), title: t.nav.contacts },
@@ -34,7 +38,7 @@ const columns = [
         columns.map((column) => (
           <div class={`footer__group footer__group--${column.id}`}>
             <p class="footer__title" id={`footer-${column.id}`}>
-              {column.title}
+              {column.href ? <a href={column.href}>{column.title}</a> : column.title}
             </p>
             <ul class="footer__links" aria-labelledby={`footer-${column.id}`}>
               {column.links.map((link) => (
@@ -108,6 +112,15 @@ const columns = [
     margin: 0;
     padding: 0;
     list-style: none;
+  }
+
+  .footer__title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .footer__title a:hover {
+    text-decoration: underline;
   }
 
   .footer__links a {

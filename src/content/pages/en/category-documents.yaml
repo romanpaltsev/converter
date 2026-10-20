@@ -1,0 +1,22 @@
+# Category page texts. Draft for the owner's review (see CONTENT.md).
+page: category
+category: documents
+title: "Document Converter Online — TXT, Markdown, HTML to PDF, CSV to Excel"
+description: "Free document converter in your browser: TXT, Markdown and HTML to PDF, Markdown to HTML, and CSV, Excel XLSX and JSON to each other. No uploads."
+h1: "Document Converter"
+subtitle: "Text to PDF, and CSV, Excel and JSON tables to each other — right in your browser."
+breadcrumb: "Document Converter"
+menu: "Document converter"
+toolsTitle: "Document converters"
+intro: "Text files, Markdown notes and saved web pages become clean PDFs, and Markdown becomes a ready-to-use HTML page. CSV, Excel and JSON tables convert into each other: the delimiter and encoding are detected automatically, and numbers stay numbers."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Which formats are supported?"
+      a: "Text: TXT, Markdown and HTML to PDF, Markdown to HTML too, HTML to TXT too. Tables: CSV (and TSV), Excel XLSX and JSON to each other."
+    - q: "What about Word documents?"
+      a: "Not yet: faithfully turning DOCX layout into PDF takes a whole office suite. If you can save the document as HTML or TXT, convert it to PDF here."
+    - q: "How does it work?"
+      a: "Pick files or drop them onto the page, then choose a format for each file — or one for all of them. Download the results one by one or as a single ZIP."
+    - q: "Are my files uploaded?"
+      a: "No. The converter runs right in your browser: files are processed on your device and never sent anywhere."

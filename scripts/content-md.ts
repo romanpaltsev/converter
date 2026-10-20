@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { parse } from 'yaml';
 import { CONTACT_EMAIL } from '../src/config/site.ts';
 import { UI } from '../src/i18n/ui.ts';
-import { TOOLS } from '../src/tools/registry.ts';
+import { CATEGORY_SLUGS, TOOLS, TOOL_CATEGORIES } from '../src/tools/registry.ts';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const LOCALES = ['ru', 'en'] as const;
@@ -47,7 +47,9 @@ function pageSection(page: string): string[] {
       if (key === 'page') continue;
       if (typeof value === 'string') out.push(`- **${key}:** ${key === 'title' || key === 'description' ? len(value) : value}`);
       else if (Array.isArray(value)) out.push(`- **${key}:**`, ...value.map((v: Yaml) => `  - **${v.title}.** ${v.text}`));
-      else out.push(`- **${key}:** ${Object.values(value as Yaml).join(' · ')}`);
+      else if (key === 'faq') out.push(`- **${(value as Yaml).title}:**`, ...(value as Yaml).items.map((i: Yaml) => `  - **${i.q}** ${i.a}`));
+      else if (Object.values(value as Yaml).every((v) => typeof v === 'string')) out.push(`- **${key}:** ${Object.values(value as Yaml).join(' · ')}`);
+      else out.push(`- **${key}:**`, ...Object.entries(value as Yaml).map(([name, v]) => `  - **${name}:** ${(v as Yaml).title} — ${(v as Yaml).text}`));
     }
     out.push('');
   }
@@ -92,6 +94,8 @@ export function buildContentMd(): string {
     lines.push(`### ${tool.id}`, '', ...toolSection(tool.content, tool.slugs));
   }
   if (toolContents.size > 0) throw new Error(`Тексты без инструмента в реестре: ${[...toolContents].join(', ')}`);
+  lines.push('## Страницы разделов', '');
+  for (const category of TOOL_CATEGORIES) lines.push(`### ${category} — \`/${CATEGORY_SLUGS[category].ru}\`, \`/en/${CATEGORY_SLUGS[category].en}\``, '', ...pageSection(`category-${category}`));
   lines.push('## Другие страницы', '', '### Главная', '', ...pageSection('home'));
   lines.push('### Лицензии', '', ...pageSection('licenses'));
   lines.push('### Контакты', '', `Адрес почты: ${CONTACT_EMAIL} (\`src/config/site.ts\`, \`CONTACT_EMAIL\`).`, '', ...pageSection('contacts'));

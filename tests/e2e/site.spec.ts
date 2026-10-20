@@ -28,13 +28,15 @@ const PAGES = [
   '/en/compress-image',
   '/izmenit-razmer-foto',
   '/en/resize-image',
+  '/konverter-audio',
+  '/en/photo-tools',
   '/licenses',
   '/en/licenses',
   '/contacts',
   '/en/contacts',
 ];
 // страницы-конвертеры собраны из одного шаблона — для axe достаточно представителей каждого вида
-const AXE_PAGES = ['/', '/en/', '/heic-v-jpg', '/szhat-foto', '/en/resize-image', '/en/remove-exif', '/posmotret-exif', '/en/jpg-to-pdf', '/en/pdf-to-png', '/en/png-to-webp', '/webp-v-png', '/licenses', '/en/contacts'];
+const AXE_PAGES = ['/', '/en/', '/heic-v-jpg', '/szhat-foto', '/en/resize-image', '/en/remove-exif', '/posmotret-exif', '/en/jpg-to-pdf', '/en/pdf-to-png', '/en/png-to-webp', '/webp-v-png', '/konverter-video', '/en/photo-tools', '/licenses', '/en/contacts'];
 
 test.describe('заголовки ответа', () => {
   for (const path of PAGES) {
@@ -127,13 +129,13 @@ test.describe('меню «Конвертировать» (Popover API)', () => {
     await page.keyboard.press('Enter');
     await expect(menu).toBeVisible();
     await page.keyboard.press('Tab');
-    await expect(menu.getByRole('link', { name: 'HEIC → JPG' })).toBeFocused();
+    await expect(menu.getByRole('link', { name: 'Конвертер изображений' })).toBeFocused();
     await page.keyboard.press('Escape');
     await expect(menu).toBeHidden();
     await expect(menuButton(page)).toBeFocused();
   });
 
-  test('клик снаружи закрывает меню, ссылка ведёт на инструмент (en)', async ({ page }) => {
+  test('клик снаружи закрывает меню, ссылка ведёт на страницу раздела (en)', async ({ page }) => {
     await page.goto('/en/');
     const menu = page.locator('#site-menu');
     await menuButton(page, 'Convert').click();
@@ -142,8 +144,9 @@ test.describe('меню «Конвертировать» (Popover API)', () => {
     await page.mouse.click(5, page.viewportSize()!.height - 5);
     await expect(menu).toBeHidden();
     await menuButton(page, 'Convert').click();
-    await menu.getByRole('link', { name: 'PNG → JPG' }).click();
-    await expect(page).toHaveURL('/en/png-to-jpg');
+    await menu.getByRole('link', { name: 'Audio converter' }).click();
+    await expect(page).toHaveURL('/en/audio-converter');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Audio Converter');
   });
 
   test('телефон 360×640: значок меню, панель без горизонтальной прокрутки', async ({ page }) => {
@@ -159,12 +162,34 @@ test.describe('меню «Конвертировать» (Popover API)', () => {
   test.describe('без JavaScript', () => {
     test.use({ javaScriptEnabled: false });
 
-    test('/licenses: меню открывается и ведёт на страницу инструмента', async ({ page }) => {
+    test('/licenses: меню открывается и ведёт на страницу раздела', async ({ page }) => {
       await page.goto('/licenses');
       await menuButton(page).click();
-      await page.locator('#site-menu').getByRole('link', { name: 'HEIC → JPG' }).click();
-      await expect(page).toHaveURL('/heic-v-jpg');
+      await page.locator('#site-menu').getByRole('link', { name: 'Конвертер изображений' }).click();
+      await expect(page).toHaveURL('/konverter-izobrazhenij');
     });
+  });
+});
+
+test.describe('страницы разделов', () => {
+  test('«Конвертер аудио»: хлебные крошки, конвертер принимает аудио и видео, карточки ведут на инструменты раздела', async ({ page }) => {
+    await openConverter(page, '/konverter-audio');
+    await expect(page.getByRole('navigation', { name: 'Навигационная цепочка' })).toHaveText(/Главная\s*\/\s*Конвертер аудио/);
+    await page.setInputFiles('[data-input]', [fixture('tone.wav')]);
+    await expect(page.locator('.file[data-status="waiting"]')).toHaveCount(1);
+    await pickTarget(page, 'tone.wav', 'MP3');
+    await expect(fileRow(page, 'tone.mp3')).toHaveAttribute('data-status', 'done', { timeout: 60_000 });
+    await page.getByRole('main').getByRole('link', { name: 'WAV → MP3' }).click();
+    await expect(page).toHaveURL('/wav-v-mp3');
+    // со страницы инструмента — обратно в раздел
+    await page.getByRole('navigation', { name: 'Навигационная цепочка' }).getByRole('link', { name: 'Конвертер аудио' }).click();
+    await expect(page).toHaveURL('/konverter-audio');
+  });
+
+  test('«Обработка фото» — без конвертера, только инструменты', async ({ page }) => {
+    await page.goto('/obrabotka-foto');
+    await expect(page.locator('[data-converter]')).toHaveCount(0);
+    await expect(page.locator('main .card')).toHaveCount(4);
   });
 });
 
@@ -185,7 +210,7 @@ test.describe('интерфейс', () => {
     await expect(page.locator('.file[data-status="done"]')).toHaveCount(1);
   });
 
-  for (const path of ['/', '/en/', '/heic-v-jpg', '/en/heic-to-png', '/szhat-foto', '/en/compress-image', '/izmenit-razmer-foto', '/udalit-metadannye-foto', '/posmotret-exif', '/jpg-v-pdf', '/pdf-v-jpg', '/obedinit-pdf']) {
+  for (const path of ['/', '/en/', '/heic-v-jpg', '/en/heic-to-png', '/szhat-foto', '/en/compress-image', '/izmenit-razmer-foto', '/udalit-metadannye-foto', '/posmotret-exif', '/jpg-v-pdf', '/pdf-v-jpg', '/obedinit-pdf', '/konverter-audio', '/en/ebook-converter']) {
     test(`${path}: конвертер в первом экране телефона (360×640)`, async ({ page }) => {
       await page.setViewportSize({ width: 360, height: 640 });
       await openConverter(page, path);

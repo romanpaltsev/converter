@@ -1,13 +1,17 @@
 ---
-// Страницы-конвертеры строятся из реестра инструментов: слаг на этом языке → id инструмента.
+// Страницы-конвертеры и страницы разделов строятся из реестра: слаг на этом языке → инструмент или раздел.
+import CategoryPage from '../components/pages/CategoryPage.astro';
 import ToolPage from '../components/pages/ToolPage.astro';
-import { TOOLS } from '../tools/registry';
+import { CATEGORY_SLUGS, TOOLS, TOOL_CATEGORIES, type ToolCategory } from '../tools/registry';
 
 export function getStaticPaths() {
-  return TOOLS.map((tool) => ({ params: { tool: tool.slugs.ru }, props: { toolId: tool.id } }));
+  return [
+    ...TOOLS.map((tool) => ({ params: { tool: tool.slugs.ru }, props: { toolId: tool.id, category: null } })),
+    ...TOOL_CATEGORIES.map((category) => ({ params: { tool: CATEGORY_SLUGS[category].ru }, props: { toolId: null, category } })),
+  ];
 }
 
-const { toolId } = Astro.props;
+const { toolId, category } = Astro.props as { toolId: string | null; category: ToolCategory | null };
 ---
 
-<ToolPage toolId={toolId} locale="ru" />
+{category ? <CategoryPage category={category} locale="ru" /> : <ToolPage toolId={toolId!} locale="ru" />}

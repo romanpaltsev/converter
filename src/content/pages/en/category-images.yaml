@@ -1,0 +1,24 @@
+# Category page texts. Draft for the owner's review (see CONTENT.md).
+page: category
+category: images
+title: "Image Converter Online — HEIC, JPG, PNG, WebP, AVIF"
+description: "Free image converter in your browser: HEIC, JPG, PNG, WebP, AVIF, GIF, BMP, TIFF and JPEG XL to JPG, PNG, WebP, AVIF or ICO. No sign-up, no uploads."
+h1: "Image Converter"
+subtitle: "HEIC, JPG, PNG, WebP, AVIF, GIF, BMP, TIFF and JPEG XL — to the format you need, right in your browser."
+breadcrumb: "Image Converter"
+menu: "Image converter"
+toolsTitle: "Image converters"
+intro: "iPhone photos in HEIC, web images in WebP and AVIF, scans in TIFF — everything converts to JPG, PNG, WebP, AVIF or an ICO icon. The color profile is kept, EXIF rotation is applied, and you can keep all metadata or just the capture date."
+faq:
+  title: "Frequently asked questions"
+  items:
+    - q: "Which formats are supported?"
+      a: "Input: HEIC and HEIF, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF and JPEG XL. Output: JPG, PNG, WebP, AVIF, ICO — plus PDF, saving each image as its own document."
+    - q: "What about quality?"
+      a: "JPG, WebP and AVIF are lossy — set the quality with the slider, 90 by default. PNG keeps every pixel without loss."
+    - q: "How does it work?"
+      a: "Pick files or drop them onto the page, then choose a format for each file — or one for all of them. Download the results one by one or as a single ZIP."
+    - q: "Is it free?"
+      a: "Yes, with no sign-up and no limit on conversions. You can add up to 100 files at a time."
+    - q: "Are my files uploaded?"
+      a: "No. The converter runs right in your browser: files are processed on your device and never sent anywhere."

@@ -1,0 +1,98 @@
+/* Общее для страниц инструмента и раздела: шапка страницы с хлебными крошками и FAQ. */
+
+.hero {
+  padding: clamp(20px, 4vw, 48px) 0 clamp(20px, 3vw, 32px);
+  text-align: center;
+}
+
+.hero h1 {
+  margin-bottom: 14px;
+}
+
+.hero .lead {
+  max-width: 34rem;
+  margin: 0 auto;
+}
+
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.breadcrumbs a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+.breadcrumbs span[aria-hidden] {
+  opacity: 0.5;
+}
+
+.faq {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.faq details + details {
+  border-top: 1px solid var(--border);
+}
+
+.faq summary {
+  position: relative;
+  padding: 16px 52px 16px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+  transition: background-color 0.2s var(--ease);
+}
+
+.faq summary:hover {
+  background: var(--surface-muted);
+}
+
+.faq summary:focus-visible {
+  outline-offset: -2px;
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+/* шеврон: поворачивается при раскрытии */
+.faq summary::after {
+  content: '';
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  margin-top: -7px;
+  border-right: 2px solid var(--muted);
+  border-bottom: 2px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform 0.25s var(--ease);
+}
+
+.faq details[open] summary::after {
+  margin-top: -2px;
+  transform: rotate(-135deg);
+}
+
+.faq p {
+  margin: 0;
+  padding: 0 20px 18px;
+  color: var(--muted);
+}

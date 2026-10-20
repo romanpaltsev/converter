@@ -4220,6 +4220,290 @@
 - **Can I convert several books?** Yes, up to 100 files at once. Download them one by one or all together in a single ZIP file.
 - **Is it safe?** Yes. Only the converter itself is loaded from the site; your book is processed in your browser and never sent to a server.
 
+## Страницы разделов
+
+### images — `/konverter-izobrazhenij`, `/en/image-converter`
+
+#### Русский
+
+Файл: `src/content/pages/ru/category-images.yaml`
+
+- **category:** images
+- **title:** Конвертер изображений онлайн — HEIC, JPG, PNG, WebP, AVIF _(57 симв.)_
+- **description:** Бесплатный конвертер изображений в браузере: HEIC, JPG, PNG, WebP, AVIF, GIF, BMP, TIFF и JPEG XL в JPG, PNG, WebP, AVIF или ICO. Без регистрации и загрузки на сервер. _(167 симв.)_
+- **h1:** Конвертер изображений
+- **subtitle:** HEIC, JPG, PNG, WebP, AVIF, GIF, BMP, TIFF и JPEG XL — в нужный формат прямо в браузере.
+- **breadcrumb:** Конвертер изображений
+- **menu:** Конвертер изображений
+- **toolsTitle:** Конвертеры изображений
+- **intro:** Фото с iPhone в HEIC, картинки с сайтов в WebP и AVIF, сканы в TIFF — всё переводится в JPG, PNG, WebP, AVIF или иконку ICO. Цветовой профиль переносится, поворот по EXIF применяется, а метаданные можно сохранить или оставить только дату съёмки.
+- **Частые вопросы:**
+  - **Какие форматы поддерживаются?** На входе — HEIC и HEIF, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF и JPEG XL. На выходе — JPG, PNG, WebP, AVIF, ICO, а ещё PDF: каждую картинку можно сохранить отдельным документом.
+  - **Что будет с качеством?** JPG, WebP и AVIF сжимают с потерями — качество настраивается ползунком, по умолчанию 90. PNG сохраняет каждый пиксель без потерь.
+  - **Как пользоваться?** Выберите файлы или перетащите их на страницу, затем у каждого файла выберите формат — или сразу для всех. Готовые файлы можно скачать по одному или одним ZIP-архивом.
+  - **Это бесплатно?** Да, без регистрации и без ограничений по числу конвертаций. За раз можно добавить до 100 файлов.
+  - **Файлы загружаются на сервер?** Нет. Конвертер работает прямо в браузере: файлы обрабатываются на вашем устройстве и никуда не отправляются.
+
+#### English
+
+Файл: `src/content/pages/en/category-images.yaml`
+
+- **category:** images
+- **title:** Image Converter Online — HEIC, JPG, PNG, WebP, AVIF _(51 симв.)_
+- **description:** Free image converter in your browser: HEIC, JPG, PNG, WebP, AVIF, GIF, BMP, TIFF and JPEG XL to JPG, PNG, WebP, AVIF or ICO. No sign-up, no uploads. _(148 симв.)_
+- **h1:** Image Converter
+- **subtitle:** HEIC, JPG, PNG, WebP, AVIF, GIF, BMP, TIFF and JPEG XL — to the format you need, right in your browser.
+- **breadcrumb:** Image Converter
+- **menu:** Image converter
+- **toolsTitle:** Image converters
+- **intro:** iPhone photos in HEIC, web images in WebP and AVIF, scans in TIFF — everything converts to JPG, PNG, WebP, AVIF or an ICO icon. The color profile is kept, EXIF rotation is applied, and you can keep all metadata or just the capture date.
+- **Frequently asked questions:**
+  - **Which formats are supported?** Input: HEIC and HEIF, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF and JPEG XL. Output: JPG, PNG, WebP, AVIF, ICO — plus PDF, saving each image as its own document.
+  - **What about quality?** JPG, WebP and AVIF are lossy — set the quality with the slider, 90 by default. PNG keeps every pixel without loss.
+  - **How does it work?** Pick files or drop them onto the page, then choose a format for each file — or one for all of them. Download the results one by one or as a single ZIP.
+  - **Is it free?** Yes, with no sign-up and no limit on conversions. You can add up to 100 files at a time.
+  - **Are my files uploaded?** No. The converter runs right in your browser: files are processed on your device and never sent anywhere.
+
+### photo — `/obrabotka-foto`, `/en/photo-tools`
+
+#### Русский
+
+Файл: `src/content/pages/ru/category-photo.yaml`
+
+- **category:** photo
+- **title:** Обработка фото онлайн — сжать, изменить размер, убрать EXIF _(59 симв.)_
+- **description:** Бесплатные инструменты для фото в браузере: сжатие до нужного размера, изменение размера, удаление и просмотр метаданных. Без регистрации и загрузки на сервер. _(159 симв.)_
+- **h1:** Обработка фото
+- **subtitle:** Сжатие, изменение размера и метаданные — формат файла остаётся прежним.
+- **breadcrumb:** Обработка фото
+- **menu:** Обработка фото
+- **toolsTitle:** Инструменты для фото
+- **intro:** Уменьшите вес фото для почты и сайта — по качеству или до нужного размера в КБ и МБ, — подгоните размер под соцсети, уберите геолокацию и модель телефона перед публикацией или посмотрите, что записано в EXIF. Всё работает прямо в браузере.
+- **Частые вопросы:**
+  - **Чем сжатие отличается от изменения размера?** Сжатие уменьшает вес файла, не меняя число пикселей: подбирается качество. Изменение размера уменьшает само изображение — например, до 1920 точек по длинной стороне.
+  - **Что такое метаданные фото?** Сведения, которые камера записывает в файл: дата и время, модель телефона, настройки съёмки и часто геолокация. Перед публикацией их стоит удалить.
+  - **Это бесплатно?** Да, без регистрации и без ограничений по числу конвертаций. За раз можно добавить до 100 файлов.
+  - **Файлы загружаются на сервер?** Нет. Конвертер работает прямо в браузере: файлы обрабатываются на вашем устройстве и никуда не отправляются.
+
+#### English
+
+Файл: `src/content/pages/en/category-photo.yaml`
+
+- **category:** photo
+- **title:** Photo Tools Online — Compress, Resize, Remove EXIF _(50 симв.)_
+- **description:** Free photo tools in your browser: compress to a target size, resize, remove or view metadata. No sign-up and no uploads. _(120 симв.)_
+- **h1:** Photo Tools
+- **subtitle:** Compression, resizing and metadata — the file keeps its format.
+- **breadcrumb:** Photo Tools
+- **menu:** Photo tools
+- **toolsTitle:** Photo tools
+- **intro:** Shrink photos for email and websites — by quality or to a target size in KB or MB — resize them for social media, strip the location and phone model before sharing, or see what's recorded in EXIF. Everything runs right in your browser.
+- **Frequently asked questions:**
+  - **How is compressing different from resizing?** Compression lowers the file size without changing the pixel count by picking the quality. Resizing makes the image itself smaller — for example, 1920 pixels on the long side.
+  - **What is photo metadata?** Information the camera writes into the file: date and time, phone model, shooting settings and often the location. It's worth removing before you post a photo.
+  - **Is it free?** Yes, with no sign-up and no limit on conversions. You can add up to 100 files at a time.
+  - **Are my files uploaded?** No. The converter runs right in your browser: files are processed on your device and never sent anywhere.
+
+### pdf — `/instrumenty-pdf`, `/en/pdf-tools`
+
+#### Русский
+
+Файл: `src/content/pages/ru/category-pdf.yaml`
+
+- **category:** pdf
+- **title:** Инструменты PDF онлайн — картинки в PDF, PDF в JPG, объединение _(63 симв.)_
+- **description:** Бесплатные инструменты PDF в браузере: картинки в PDF, страницы PDF в JPG и PNG, объединение PDF. Без регистрации и загрузки на сервер. _(135 симв.)_
+- **h1:** Инструменты PDF
+- **subtitle:** Картинки в PDF, страницы PDF в картинки и объединение документов.
+- **breadcrumb:** Инструменты PDF
+- **menu:** Инструменты PDF
+- **toolsTitle:** Инструменты PDF
+- **intro:** Соберите фото и сканы в один PDF или сохраните каждую картинку отдельным документом, превратите страницы PDF в JPG или PNG с нужным разрешением, объедините несколько PDF в один. Документы не покидают ваше устройство.
+- **Частые вопросы:**
+  - **Как собрать несколько картинок в один PDF?** Откройте «JPG в PDF», добавьте файлы и расставьте их стрелками — каждая картинка станет страницей. Здесь же каждая картинка превращается в свой отдельный PDF.
+  - **Можно ли открыть PDF с паролем?** Нет: документы с паролем не открываются, в строке файла появится сообщение об этом.
+  - **Как пользоваться?** Выберите файлы или перетащите их на страницу, затем у каждого файла выберите формат — или сразу для всех. Готовые файлы можно скачать по одному или одним ZIP-архивом.
+  - **Файлы загружаются на сервер?** Нет. Конвертер работает прямо в браузере: файлы обрабатываются на вашем устройстве и никуда не отправляются.
+
+#### English
+
+Файл: `src/content/pages/en/category-pdf.yaml`
+
+- **category:** pdf
+- **title:** PDF Tools Online — Images to PDF, PDF to JPG, Merge PDF _(55 симв.)_
+- **description:** Free PDF tools in your browser: images to PDF, PDF pages to JPG and PNG, merging PDFs. No sign-up and no uploads. _(113 симв.)_
+- **h1:** PDF Tools
+- **subtitle:** Images to PDF, PDF pages to images and merging documents.
+- **breadcrumb:** PDF Tools
+- **menu:** PDF tools
+- **toolsTitle:** PDF tools
+- **intro:** Put photos and scans into one PDF or save each image as its own document, turn PDF pages into JPG or PNG at the resolution you need, and merge several PDFs into one. Your documents never leave your device.
+- **Frequently asked questions:**
+  - **How do I put several images into one PDF?** Open “JPG to PDF”, add your files and order them with the arrows — each image becomes a page. On this page, each image becomes its own separate PDF.
+  - **Can I open a password-protected PDF?** No: password-protected documents can't be opened, and the file's row will say so.
+  - **How does it work?** Pick files or drop them onto the page, then choose a format for each file — or one for all of them. Download the results one by one or as a single ZIP.
+  - **Are my files uploaded?** No. The converter runs right in your browser: files are processed on your device and never sent anywhere.
+
+### audio — `/konverter-audio`, `/en/audio-converter`
+
+#### Русский
+
+Файл: `src/content/pages/ru/category-audio.yaml`
+
+- **category:** audio
+- **title:** Конвертер аудио онлайн — MP3, WAV, M4A, OGG, FLAC _(49 симв.)_
+- **description:** Бесплатный аудиоконвертер в браузере: MP3, WAV, M4A, OGG, FLAC, Opus и AAC друг в друга, звук из видео в MP3. Без регистрации и загрузки на сервер. _(147 симв.)_
+- **h1:** Конвертер аудио
+- **subtitle:** MP3, WAV, M4A, OGG и FLAC — и звук из видео — прямо в браузере.
+- **breadcrumb:** Конвертер аудио
+- **menu:** Конвертер аудио
+- **toolsTitle:** Конвертеры аудио
+- **intro:** Переводите музыку, голосовые сообщения и записи диктофона между MP3, WAV, M4A, OGG и FLAC, извлекайте звук из видео. Битрейт — от 128 до 320 кбит/с, теги (название, исполнитель, альбом) переносятся, а если кодек тот же — звук копируется без перекодирования.
+- **Частые вопросы:**
+  - **Какие форматы поддерживаются?** На входе — MP3, WAV, FLAC, OGG, Opus, AAC, M4A, а ещё звук из видео MP4, MOV, WebM и MKV. На выходе — MP3, WAV, M4A, OGG (Opus) и FLAC.
+  - **Какой битрейт выбрать?** 192 кбит/с — хороший выбор для музыки, 320 кбит/с — максимум для MP3. Для речи и подкастов хватит 128 кбит/с.
+  - **Как пользоваться?** Выберите файлы или перетащите их на страницу, затем у каждого файла выберите формат — или сразу для всех. Готовые файлы можно скачать по одному или одним ZIP-архивом.
+  - **Файлы загружаются на сервер?** Нет. Конвертер работает прямо в браузере: файлы обрабатываются на вашем устройстве и никуда не отправляются.
+
+#### English
+
+Файл: `src/content/pages/en/category-audio.yaml`
+
+- **category:** audio
+- **title:** Audio Converter Online — MP3, WAV, M4A, OGG, FLAC _(49 симв.)_
+- **description:** Free audio converter in your browser: MP3, WAV, M4A, OGG, FLAC, Opus and AAC to each other, audio from video to MP3. No sign-up, no uploads. _(140 симв.)_
+- **h1:** Audio Converter
+- **subtitle:** MP3, WAV, M4A, OGG and FLAC — and audio from video — right in your browser.
+- **breadcrumb:** Audio Converter
+- **menu:** Audio converter
+- **toolsTitle:** Audio converters
+- **intro:** Convert music, voice messages and voice memos between MP3, WAV, M4A, OGG and FLAC, or extract the audio from a video. Bitrate from 128 to 320 kbps, tags (title, artist, album) are kept, and when the codec is the same the audio is copied without re-encoding.
+- **Frequently asked questions:**
+  - **Which formats are supported?** Input: MP3, WAV, FLAC, OGG, Opus, AAC, M4A, plus the audio of MP4, MOV, WebM and MKV videos. Output: MP3, WAV, M4A, OGG (Opus) and FLAC.
+  - **Which bitrate should I pick?** 192 kbps is a good choice for music and 320 kbps is the MP3 maximum. For speech and podcasts, 128 kbps is plenty.
+  - **How does it work?** Pick files or drop them onto the page, then choose a format for each file — or one for all of them. Download the results one by one or as a single ZIP.
+  - **Are my files uploaded?** No. The converter runs right in your browser: files are processed on your device and never sent anywhere.
+
+### video — `/konverter-video`, `/en/video-converter`
+
+#### Русский
+
+Файл: `src/content/pages/ru/category-video.yaml`
+
+- **category:** video
+- **title:** Конвертер видео онлайн — MOV, MKV, WebM в MP4, видео в GIF _(58 симв.)_
+- **description:** Бесплатный видеоконвертер в браузере: MOV, MKV и WebM в MP4, MP4 в WebM, видео в GIF и звук из видео. Без регистрации и загрузки на сервер. _(139 симв.)_
+- **h1:** Конвертер видео
+- **subtitle:** MOV, MKV и WebM в MP4, MP4 в WebM и видео в GIF — прямо в браузере.
+- **breadcrumb:** Конвертер видео
+- **menu:** Конвертер видео
+- **toolsTitle:** Конвертеры видео
+- **intro:** Видео с iPhone и камер, записи экрана и фильмы переводятся в MP4 (H.264 и AAC) или WebM (VP9 и Opus) с нужным качеством и размером кадра, короткие ролики — в GIF. Если кодеки подходят, видео перепаковывается за секунды и без потерь.
+- **Частые вопросы:**
+  - **Какие форматы поддерживаются?** На входе — MP4, MOV, WebM и MKV. На выходе — MP4, WebM и GIF, а ещё звук в MP3, WAV, M4A, OGG и FLAC.
+  - **Почему конвертация идёт долго?** Видео перекодируется прямо на вашем устройстве встроенными кодеками браузера. Минута видео обрабатывается от десятков секунд до нескольких минут; MOV и MKV с H.264 перепаковываются в MP4 за секунды.
+  - **Как пользоваться?** Выберите файлы или перетащите их на страницу, затем у каждого файла выберите формат — или сразу для всех. Готовые файлы можно скачать по одному или одним ZIP-архивом.
+  - **Файлы загружаются на сервер?** Нет. Конвертер работает прямо в браузере: файлы обрабатываются на вашем устройстве и никуда не отправляются.
+
+#### English
+
+Файл: `src/content/pages/en/category-video.yaml`
+
+- **category:** video
+- **title:** Video Converter Online — MOV, MKV, WebM to MP4, Video to GIF _(60 симв.)_
+- **description:** Free video converter in your browser: MOV, MKV and WebM to MP4, MP4 to WebM, video to GIF and audio from video. No sign-up, no uploads. _(135 симв.)_
+- **h1:** Video Converter
+- **subtitle:** MOV, MKV and WebM to MP4, MP4 to WebM and video to GIF — right in your browser.
+- **breadcrumb:** Video Converter
+- **menu:** Video converter
+- **toolsTitle:** Video converters
+- **intro:** iPhone and camera videos, screen recordings and movies convert to MP4 (H.264 and AAC) or WebM (VP9 and Opus) at the quality and frame size you pick, and short clips become GIFs. When the codecs fit, the video is repackaged in seconds without loss.
+- **Frequently asked questions:**
+  - **Which formats are supported?** Input: MP4, MOV, WebM and MKV. Output: MP4, WebM and GIF, plus audio as MP3, WAV, M4A, OGG and FLAC.
+  - **Why does it take a while?** Video is re-encoded right on your device with the browser's built-in codecs. A minute of video takes from tens of seconds to a few minutes; MOV and MKV with H.264 are repackaged into MP4 in seconds.
+  - **How does it work?** Pick files or drop them onto the page, then choose a format for each file — or one for all of them. Download the results one by one or as a single ZIP.
+  - **Are my files uploaded?** No. The converter runs right in your browser: files are processed on your device and never sent anywhere.
+
+### documents — `/konverter-dokumentov`, `/en/document-converter`
+
+#### Русский
+
+Файл: `src/content/pages/ru/category-documents.yaml`
+
+- **category:** documents
+- **title:** Конвертер документов онлайн — TXT, Markdown, HTML в PDF, CSV в Excel _(68 симв.)_
+- **description:** Бесплатный конвертер документов в браузере: TXT, Markdown и HTML в PDF, Markdown в HTML, CSV, Excel XLSX и JSON друг в друга. Без загрузки на сервер. _(149 симв.)_
+- **h1:** Конвертер документов
+- **subtitle:** Текст в PDF и таблицы CSV, Excel и JSON друг в друга — прямо в браузере.
+- **breadcrumb:** Конвертер документов
+- **menu:** Конвертер документов
+- **toolsTitle:** Конвертеры документов
+- **intro:** Текстовые файлы, заметки в Markdown и сохранённые веб-страницы превращаются в аккуратный PDF с кириллицей, Markdown — в готовую HTML-страницу. Таблицы CSV, Excel и JSON переводятся друг в друга: разделитель и кодировка определяются сами, числа остаются числами.
+- **Частые вопросы:**
+  - **Какие форматы поддерживаются?** Текст: TXT, Markdown и HTML — в PDF, Markdown — и в HTML, HTML — и в TXT. Таблицы: CSV (и TSV), Excel XLSX и JSON — друг в друга.
+  - **А документы Word?** Пока нет: чтобы точно перенести вёрстку DOCX в PDF, нужен целый офисный пакет. Если документ можно сохранить как HTML или TXT, сконвертируйте его в PDF здесь.
+  - **Как пользоваться?** Выберите файлы или перетащите их на страницу, затем у каждого файла выберите формат — или сразу для всех. Готовые файлы можно скачать по одному или одним ZIP-архивом.
+  - **Файлы загружаются на сервер?** Нет. Конвертер работает прямо в браузере: файлы обрабатываются на вашем устройстве и никуда не отправляются.
+
+#### English
+
+Файл: `src/content/pages/en/category-documents.yaml`
+
+- **category:** documents
+- **title:** Document Converter Online — TXT, Markdown, HTML to PDF, CSV to Excel _(68 симв.)_
+- **description:** Free document converter in your browser: TXT, Markdown and HTML to PDF, Markdown to HTML, and CSV, Excel XLSX and JSON to each other. No uploads. _(145 симв.)_
+- **h1:** Document Converter
+- **subtitle:** Text to PDF, and CSV, Excel and JSON tables to each other — right in your browser.
+- **breadcrumb:** Document Converter
+- **menu:** Document converter
+- **toolsTitle:** Document converters
+- **intro:** Text files, Markdown notes and saved web pages become clean PDFs, and Markdown becomes a ready-to-use HTML page. CSV, Excel and JSON tables convert into each other: the delimiter and encoding are detected automatically, and numbers stay numbers.
+- **Frequently asked questions:**
+  - **Which formats are supported?** Text: TXT, Markdown and HTML to PDF, Markdown to HTML too, HTML to TXT too. Tables: CSV (and TSV), Excel XLSX and JSON to each other.
+  - **What about Word documents?** Not yet: faithfully turning DOCX layout into PDF takes a whole office suite. If you can save the document as HTML or TXT, convert it to PDF here.
+  - **How does it work?** Pick files or drop them onto the page, then choose a format for each file — or one for all of them. Download the results one by one or as a single ZIP.
+  - **Are my files uploaded?** No. The converter runs right in your browser: files are processed on your device and never sent anywhere.
+
+### ebooks — `/konverter-elektronnyh-knig`, `/en/ebook-converter`
+
+#### Русский
+
+Файл: `src/content/pages/ru/category-ebooks.yaml`
+
+- **category:** ebooks
+- **title:** Конвертер электронных книг онлайн — FB2, EPUB, PDF _(50 симв.)_
+- **description:** Бесплатный конвертер электронных книг в браузере: FB2 в EPUB и обратно, FB2 и EPUB в PDF, FB2 в TXT. Без регистрации и загрузки на сервер. _(138 симв.)_
+- **h1:** Конвертер электронных книг
+- **subtitle:** FB2 и EPUB друг в друга, в PDF и в обычный текст — прямо в браузере.
+- **breadcrumb:** Конвертер электронных книг
+- **menu:** Конвертер электронных книг
+- **toolsTitle:** Конвертеры электронных книг
+- **intro:** Книги из русскоязычных библиотек в FB2 открываются на iPhone, Android и Kindle после перевода в EPUB, а EPUB — в читалках, которые любят FB2. Обложка, авторы, аннотация, главы, иллюстрации и примечания переносятся; книгу можно сохранить и в PDF для печати.
+- **Частые вопросы:**
+  - **Какие форматы поддерживаются?** На входе — FB2 (в том числе .fb2.zip) и EPUB. На выходе — EPUB, FB2, PDF и TXT.
+  - **Подойдут ли купленные книги?** Книги с защитой от копирования (DRM) прочитать нельзя. Книги без защиты — из библиотек, личные и бесплатные — конвертируются как обычно.
+  - **Как пользоваться?** Выберите файлы или перетащите их на страницу, затем у каждого файла выберите формат — или сразу для всех. Готовые файлы можно скачать по одному или одним ZIP-архивом.
+  - **Файлы загружаются на сервер?** Нет. Конвертер работает прямо в браузере: файлы обрабатываются на вашем устройстве и никуда не отправляются.
+
+#### English
+
+Файл: `src/content/pages/en/category-ebooks.yaml`
+
+- **category:** ebooks
+- **title:** eBook Converter Online — FB2, EPUB, PDF _(39 симв.)_
+- **description:** Free ebook converter in your browser: FB2 to EPUB and back, FB2 and EPUB to PDF, FB2 to TXT. No sign-up and no uploads. _(119 симв.)_
+- **h1:** eBook Converter
+- **subtitle:** FB2 and EPUB to each other, to PDF and to plain text — right in your browser.
+- **breadcrumb:** eBook Converter
+- **menu:** eBook converter
+- **toolsTitle:** eBook converters
+- **intro:** FB2 books from Russian-language libraries open on iPhone, Android and Kindle once converted to EPUB, and EPUB books open in readers that prefer FB2. Cover, authors, description, chapters, illustrations and footnotes come through, and you can also save a book as PDF for printing.
+- **Frequently asked questions:**
+  - **Which formats are supported?** Input: FB2 (including .fb2.zip) and EPUB. Output: EPUB, FB2, PDF and TXT.
+  - **Do purchased books work?** Books with copy protection (DRM) can't be read. DRM-free books — from libraries, your own and free ones — convert as usual.
+  - **How does it work?** Pick files or drop them onto the page, then choose a format for each file — or one for all of them. Download the results one by one or as a single ZIP.
+  - **Are my files uploaded?** No. The converter runs right in your browser: files are processed on your device and never sent anywhere.
+
 ## Другие страницы
 
 ### Главная
@@ -4233,7 +4517,14 @@
 - **h1:** Конвертер файлов онлайн
 - **subtitle:** Выберите файлы, затем формат — конвертация идёт прямо в браузере. Бесплатно, без регистрации и без загрузки на сервер.
 - **intro:** Здесь собраны конвертеры для разных типов файлов: изображения переводятся между HEIC, AVIF, JPG, PNG, WebP и другими форматами, PDF — в картинки и обратно, аудио — между MP3, WAV, M4A, OGG и FLAC, видео — в MP4, WebM и GIF, а из видео можно извлечь звук. Тексты TXT, Markdown и HTML превращаются в PDF, таблицы CSV, Excel и JSON — друг в друга, электронные книги FB2 и EPUB — друг в друга и в PDF. Для фото есть сжатие до нужного размера, изменение размера, просмотр и удаление метаданных. Всё работает на вашем устройстве: файлы не загружаются на сервер.
-- **sections:** [object Object] · [object Object] · [object Object] · [object Object] · [object Object] · [object Object] · [object Object]
+- **sections:**
+  - **images:** Изображения — Конвертеры между HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF, JPEG XL и ICO.
+  - **photo:** Обработка фото — Сжатие, изменение размера и метаданные — формат файла остаётся прежним.
+  - **pdf:** PDF — Картинки в PDF, страницы PDF в картинки и объединение документов.
+  - **audio:** Аудио — MP3, WAV, M4A, OGG и FLAC — в том числе звук из видео.
+  - **video:** Видео — MOV, WebM и MKV в MP4, MP4 в WebM и видео в GIF.
+  - **documents:** Документы — TXT, Markdown и HTML в PDF, Markdown в HTML, таблицы CSV, Excel и JSON друг в друга.
+  - **ebooks:** Электронные книги — FB2 и EPUB друг в друга, в PDF и в обычный текст.
 - **featuresTitle:** Почему здесь
 - **features:**
   - **Без загрузки на сервер.** Файлы обрабатываются прямо в браузере и не покидают ваше устройство.
@@ -4252,7 +4543,14 @@
 - **h1:** Online file converter
 - **subtitle:** Pick your files, then a format — conversion runs right in your browser. Free, no sign-up, no uploads.
 - **intro:** Converters for different kinds of files in one place: images between HEIC, AVIF, JPG, PNG, WebP and other formats, PDFs to images and back, audio between MP3, WAV, M4A, OGG and FLAC, video to MP4, WebM and GIF, plus audio extracted from video. TXT, Markdown and HTML become PDFs, CSV, Excel and JSON tables convert into each other, and FB2 and EPUB ebooks convert into each other and to PDF. For photos there is compression to a target size, resizing, and viewing or removing metadata. Everything happens on your device: files are never uploaded.
-- **sections:** [object Object] · [object Object] · [object Object] · [object Object] · [object Object] · [object Object] · [object Object]
+- **sections:**
+  - **images:** Images — Converters between HEIC, AVIF, JPG, PNG, WebP, GIF, BMP, TIFF, JPEG XL and ICO.
+  - **photo:** Photo tools — Compression, resizing and metadata — the file keeps its format.
+  - **pdf:** PDF — Images to PDF, PDF pages to images and merging documents.
+  - **audio:** Audio — MP3, WAV, M4A, OGG and FLAC — including audio from video.
+  - **video:** Video — MOV, WebM and MKV to MP4, MP4 to WebM, and video to GIF.
+  - **documents:** Documents — TXT, Markdown and HTML to PDF, Markdown to HTML, and CSV, Excel and JSON tables to each other.
+  - **ebooks:** eBooks — FB2 and EPUB to each other, to PDF and to plain text.
 - **featuresTitle:** Why use it
 - **features:**
   - **No uploads.** Files are processed right in your browser and never leave your device.

@@ -80,10 +80,26 @@ const contacts = z.object({
   note: text,
 });
 
+/** Страница раздела (как у convertio: «Конвертер аудио»): src/content/pages/<locale>/category-<раздел>.yaml. */
+const category = z.object({
+  page: z.literal('category'),
+  category: z.enum(['images', 'photo', 'pdf', 'audio', 'video', 'documents', 'ebooks']),
+  ...seo,
+  subtitle: text,
+  breadcrumb: text,
+  /** Пункт меню «Конвертировать» и заголовок раздела в подвале. */
+  menu: text,
+  /** Заголовок списка инструментов раздела. */
+  toolsTitle: text,
+  /** Абзац о разделе под инструментами. */
+  intro: text,
+  faq: z.object({ title: text, items: z.array(z.object({ q: text, a: text })).min(4).max(8) }),
+});
+
 /** Прочие страницы: src/content/pages/<locale>/<page>.yaml. */
 const pages = defineCollection({
   loader: glob({ pattern: '**/*.yaml', base: './src/content/pages' }),
-  schema: z.discriminatedUnion('page', [home, licenses, contacts]),
+  schema: z.discriminatedUnion('page', [home, licenses, contacts, category]),
 });
 
 export const collections = { tools, pages };
