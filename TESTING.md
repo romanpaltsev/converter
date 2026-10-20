@@ -148,10 +148,12 @@
 
 | Страница | Performance | Accessibility | Best Practices | SEO |
 |---|---|---|---|---|
-| `/heic-v-jpg`, `/heic-v-png`, `/png-v-webp`, `/en/heic-to-jpg`, `/` | 100 | 100 | 100 | 66 при `PUBLIC_INDEXING=false`, 100 при `true` |
+| `/heic-v-jpg`, `/heic-v-png`, `/png-v-webp`, `/en/heic-to-jpg`, `/` | 99–100 | 100 | 100 | 66 при `PUBLIC_INDEXING=false`, 100 при `true` |
 
-FCP 0,9 с, LCP 0,9–1,1 с, TBT 0 мс, CLS 0. SEO 66 в тестовом режиме — только из-за намеренного noindex.
+FCP 0,9 с, LCP 0,9–1,1 с, TBT 0 мс, CLS 0 (18.10.2026). SEO 66 в тестовом режиме — только из-за намеренного noindex.
 Против живого https://converter.hotbar.pro (HTTP/2, 18.10.2026) — те же оценки, FCP и LCP 0,8–0,9 с.
+20.10.2026 (после редизайна со шрифтом Inter): Performance 99, FCP и LCP 1,5–1,7 с, TBT 0 мс, CLS ≤ 0,005 — так же
+и у коммита до инструментов метаданных и PDF (963f94f): рост FCP — от редизайна (шрифт и стили), а не от виджета.
 
 ## Ручной чек-лист
 
