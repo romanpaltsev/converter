@@ -130,25 +130,26 @@ const jsonLd = [
     <h1 class="title">{c.h1}</h1>
     <p>{c.intro}</p>
     <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th scope="col">{c.columns.name}</th>
-            <th scope="col">{c.columns.purpose}</th>
-            <th scope="col">{c.columns.license}</th>
-            <th scope="col">{c.columns.source}</th>
+      {/* роли — явно: на телефоне у строк другой display, а без ролей часть браузеров перестаёт считать это таблицей */}
+      <table role="table">
+        <thead role="rowgroup">
+          <tr role="row">
+            <th scope="col" role="columnheader">{c.columns.name}</th>
+            <th scope="col" role="columnheader">{c.columns.purpose}</th>
+            <th scope="col" role="columnheader">{c.columns.license}</th>
+            <th scope="col" role="columnheader">{c.columns.source}</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody role="rowgroup">
           {
             COMPONENTS.map((component) => (
-              <tr>
-                <td>
+              <tr role="row">
+                <td role="cell">
                   <strong>{component.name}</strong> {component.version !== '—' && <span class="version">{component.version}</span>}
                 </td>
-                <td>{component.purpose[locale]}</td>
-                <td>{component.license}</td>
-                <td>
+                <td role="cell">{component.purpose[locale]}</td>
+                <td role="cell">{component.license}</td>
+                <td role="cell">
                   <a href={component.source} rel="noopener">
                     GitHub
                   </a>
@@ -202,6 +203,47 @@ const jsonLd = [
   .version {
     color: var(--muted);
     white-space: nowrap;
+  }
+
+  /* На телефоне строка — карточка: название и ссылка на исходники, ниже назначение и лицензия. Четыре колонки
+     в 360 px не помещались — половина таблицы уходила в горизонтальную прокрутку. */
+  @media (max-width: 640px) {
+    thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2px 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 0;
+      border: 0;
+    }
+
+    td:nth-child(2),
+    td:nth-child(3) {
+      grid-column: 1 / -1;
+    }
+
+    td:nth-child(3) {
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    td:nth-child(4) {
+      grid-row: 1;
+      grid-column: 2;
+    }
   }
 
   .license {

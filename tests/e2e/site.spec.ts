@@ -312,6 +312,24 @@ test.describe('интерфейс', () => {
     await expect(page.locator('.file[data-status="done"]')).toHaveCount(1);
   });
 
+  for (const path of ['/', '/konverter-audio', '/posmotret-exif']) {
+    test(`${path}: под зоной загрузки ничего нет — карточка без полосы снизу`, async ({ page }) => {
+      await openConverter(page, path);
+      const card = (await page.locator('[data-converter]').boundingBox())!;
+      const dropzone = (await page.locator('[data-dropzone]').boundingBox())!;
+      // от панели до края карточки — только рамка
+      expect(Math.round(card.y + card.height - (dropzone.y + dropzone.height))).toBe(1);
+    });
+  }
+
+  test('/heic-v-jpg: под настройками — только нижнее поле карточки', async ({ page }) => {
+    await openConverter(page, '/heic-v-jpg');
+    const card = (await page.locator('[data-converter]').boundingBox())!;
+    const settings = (await page.locator('[data-settings]').boundingBox())!;
+    // поле 18 px и рамка; пустая строка статуса места не занимает
+    expect(Math.round(card.y + card.height - (settings.y + settings.height))).toBe(19);
+  });
+
   for (const path of ['/', '/en/', '/heic-v-jpg', '/en/heic-to-png', '/szhat-foto', '/en/compress-image', '/izmenit-razmer-foto', '/udalit-metadannye-foto', '/posmotret-exif', '/jpg-v-pdf', '/pdf-v-jpg', '/obedinit-pdf', '/konverter-audio', '/en/ebook-converter']) {
     test(`${path}: конвертер в первом экране телефона (360×640)`, async ({ page }) => {
       await page.setViewportSize({ width: 360, height: 640 });

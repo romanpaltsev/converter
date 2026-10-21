@@ -99,6 +99,20 @@ const columns = [
     break-inside: avoid;
   }
 
+  /* на телефоне — ровно две колонки: две по 9.5rem в 360 px не помещаются, и подвал выстраивался в один столбец
+     на три с половиной экрана */
+  @media (max-width: 480px) {
+    .footer__nav {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px 16px;
+    }
+
+    .footer__group--images .footer__links {
+      columns: 2;
+      column-gap: 16px;
+    }
+  }
+
   .footer__title {
     margin: 0 0 14px;
     color: var(--footer-heading);

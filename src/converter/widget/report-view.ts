@@ -16,6 +16,12 @@ function fill(template: string, values: Record<string, string | number>): string
   return template.replace(/\{(\w+)\}/g, (match, key: string) => (key in values ? String(values[key]) : match));
 }
 
+/** Слова слитного имени тега: «DateTimeOriginal» → Date, Time, Original; «GPSLatitudeRef» → GPS, Latitude, Ref. */
+export function tagWords(name: string): string[] {
+  // без ретроспективной проверки (?<=…): её не знает Safari до 16.4
+  return name.replace(/([a-z\d])(?=[A-Z])|([A-Z])(?=[A-Z][a-z])/g, '$1$2\0').split('\0');
+}
+
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, className?: string, text?: string): HTMLElementTagNameMap[K] {
   const node = document.createElement(tag);
   if (className) node.className = className;
@@ -148,8 +154,13 @@ export class ReportView {
         body.append(row);
       }
       const row = el('tr');
-      const name = el('th', undefined, tag.name);
+      const name = el('th');
       name.scope = 'row';
+      // в узкой колонке имя переносится между словами: «DateTime / Original», а не «DateTimeOrigi / nal»
+      for (const [index, word] of tagWords(tag.name).entries()) {
+        if (index > 0) name.append(el('wbr'));
+        name.append(word);
+      }
       const value = tag.value ?? fill(r.binary, { size: formatBytes(tag.size, this.locale, this.t.units) });
       row.append(name, el('td', tag.value === null ? 'report__binary' : undefined, value));
       body.append(row);

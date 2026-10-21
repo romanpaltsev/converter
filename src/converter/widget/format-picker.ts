@@ -47,7 +47,14 @@ export class FormatPicker {
       },
       true,
     );
-    window.addEventListener('resize', () => this.close(false));
+    // Другая ширина окна (поворот экрана) перестраивает строки — меню закрывается. Только высоту телефон меняет,
+    // когда при прокрутке прячет адресную строку: кнопка на месте, меню остаётся открытым.
+    let width = document.documentElement.clientWidth;
+    window.addEventListener('resize', () => {
+      if (document.documentElement.clientWidth === width) return;
+      width = document.documentElement.clientWidth;
+      this.close(false);
+    });
   }
 
   isOpenFor(owner: object): boolean {

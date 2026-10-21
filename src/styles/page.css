@@ -38,6 +38,23 @@
   opacity: 0.5;
 }
 
+/* У инструмента на телефоне — только путь к разделу, в одну строку: текущая страница — это заголовок прямо под
+   крошками (для диктора она остаётся). */
+@media (max-width: 480px) {
+  .breadcrumbs:has(> a ~ a) > span[aria-hidden]:has(+ [aria-current='page']) {
+    display: none;
+  }
+
+  .breadcrumbs:has(> a ~ a) > [aria-current='page'] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
 .faq {
   border: 1px solid var(--border);
   border-radius: var(--radius);

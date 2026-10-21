@@ -9,21 +9,25 @@ interface Props {
   locale: Locale;
   toolIds: string[];
   headingLevel?: 'h2' | 'h3';
+  /** На телефоне — плитки по две в ряд, только названия: длинный список карточек с описаниями — это десяток экранов. */
+  compact?: boolean;
 }
 
-const { locale, toolIds, headingLevel = 'h3' } = Astro.props;
+const { locale, toolIds, headingLevel = 'h3', compact = false } = Astro.props;
 const Heading = headingLevel;
 const cards = await Promise.all(
   toolIds.map(async (id) => {
     const tool = getTool(id);
     const entry = await getEntry('tools', `${locale}/${tool.content}`);
     if (!entry) throw new Error(`Нет текстов ${locale}/${tool.content}`);
-    return { href: pagePath(toolPageId(id), locale), ...entry.data.card };
+    const { title, text } = entry.data.card;
+    // стрелка не начинает строку: в узкой плитке «Markdown → / HTML», а не «Markdown / → HTML»
+    return { href: pagePath(toolPageId(id), locale), title: title.replace(/ →/g, '\u00a0→'), text };
   }),
 );
 ---
 
-<ul class="cards">
+<ul class:list={['cards', { 'cards--compact': compact }]}>
   {
     cards.map((card) => (
       <li class="card">
@@ -59,10 +63,18 @@ const cards = await Promise.all(
       transform 0.2s var(--ease);
   }
 
-  .card:hover {
-    border-color: var(--border-strong);
-    box-shadow: var(--shadow);
-    transform: translateY(-2px);
+  /* наведение — только там, где оно есть: на телефоне :hover «залипает», и карточка остаётся приподнятой */
+  @media (hover: hover) {
+    .card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+
+    .card:hover::after {
+      background: var(--accent);
+      transform: translateX(3px);
+    }
   }
 
   .card:has(a:focus-visible) {
@@ -84,11 +96,6 @@ const cards = await Promise.all(
     transition:
       transform 0.2s var(--ease),
       background-color 0.2s var(--ease);
-  }
-
-  .card:hover::after {
-    background: var(--accent);
-    transform: translateX(3px);
   }
 
   .card__title {
@@ -120,5 +127,31 @@ const cards = await Promise.all(
     color: var(--muted);
     font-size: 0.9375rem;
     line-height: 1.5;
+  }
+
+  /* «HEIC → JPG», «Сжать фото» понятны и без описания: на телефоне длинный список — плитки по две в ряд */
+  @media (max-width: 480px) {
+    .cards--compact {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .cards--compact .card {
+      display: flex;
+      align-items: center;
+      min-height: 56px;
+      padding: 12px 14px;
+    }
+
+    .cards--compact .card::after,
+    .cards--compact .card__text {
+      display: none;
+    }
+
+    .cards--compact .card__title {
+      margin: 0;
+      font-size: 0.9375rem;
+      line-height: 1.3;
+    }
   }
 </style>

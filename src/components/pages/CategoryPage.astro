@@ -25,6 +25,8 @@ const pageId = categoryPageId(category);
 const site = import.meta.env.SITE;
 const url = absoluteUrl(site, pagePath(pageId, locale));
 const tools = TOOLS.filter((tool) => toolCategory(tool) === category);
+// длинный список (изображения — три десятка конвертеров) на телефоне — плитками без описаний, короткий — с описаниями
+const compactCards = tools.length > 8;
 const widget = categoryInputs(category) !== null;
 const jsonLd = [
   ...(widget ? [webApplication({ name: c.h1, description: c.description, url, locale })] : []),
@@ -60,7 +62,7 @@ const jsonLd = [
   <div class="container container--widget">
     <section class="section" class:list={{ 'section--first': !widget }}>
       <h2>{c.toolsTitle}</h2>
-      <ToolCards locale={locale} toolIds={tools.map((tool) => tool.id)} />
+      <ToolCards locale={locale} toolIds={tools.map((tool) => tool.id)} compact={compactCards} />
     </section>
   </div>
 

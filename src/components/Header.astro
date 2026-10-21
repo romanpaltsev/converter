@@ -157,12 +157,24 @@ const menu = await Promise.all(
   }
 
   @media (max-width: 520px) {
+    /* три кнопки по 40 px и логотип помещаются и в 320 px */
+    .header__inner {
+      gap: 8px;
+    }
+
+    .header__actions {
+      gap: 6px;
+    }
+
     .logo {
       margin-right: 8px;
     }
 
     .menu-button {
-      padding: 8px;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
     }
 
     .menu-button__label {
@@ -214,6 +226,14 @@ const menu = await Promise.all(
     background: var(--header-bg);
     color: var(--text);
     box-shadow: var(--shadow-lg);
+  }
+
+  /* на телефоне меню — до низа экрана: под ним не просвечивает страница */
+  @media (max-width: 520px) {
+    .mega:popover-open {
+      min-height: calc(100dvh - var(--header-height) - 1px);
+      padding: 12px 0 24px;
+    }
   }
 
   /* разделы — как у convertio: по четыре в ряд (на планшете — по два, на телефоне — столбиком), значок и подпись */

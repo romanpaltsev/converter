@@ -148,4 +148,18 @@ const jsonLd = [
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
   }
 
+  /* на телефоне номер шага — слева от текста: карточки вдвое ниже */
+  @media (max-width: 480px) {
+    .steps li {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: start;
+      gap: 14px;
+      padding: 16px;
+    }
+
+    .steps li::before {
+      margin-bottom: 0;
+    }
+  }
 </style>

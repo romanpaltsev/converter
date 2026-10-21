@@ -64,7 +64,7 @@ const sections = toolGroups().map((group) => {
             </h2>
             <p>{section.text}</p>
           </div>
-          <ToolCards locale={locale} toolIds={section.toolIds} />
+          <ToolCards locale={locale} toolIds={section.toolIds} compact />
         </section>
       ))
     }
@@ -194,5 +194,43 @@ const sections = toolGroups().map((group) => {
 
   .intro + .section {
     margin-top: clamp(32px, 4vw, 48px);
+  }
+
+  @media (max-width: 480px) {
+    /* преимущества списком — значок слева, текст рядом: столбиком по центру полоса занимала два с половиной экрана */
+    .band__title {
+      text-align: left;
+    }
+
+    .feature-grid {
+      gap: 20px;
+      text-align: left;
+    }
+
+    .feature {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: 16px;
+    }
+
+    .feature::before {
+      grid-row: span 2;
+      width: 44px;
+      height: 44px;
+      margin: 0;
+    }
+
+    .feature h3 {
+      margin: 0 0 2px;
+    }
+
+    .feature p {
+      max-width: none;
+    }
+
+    /* длинный абзац по центру на узком экране читается плохо */
+    .intro {
+      text-align: left;
+    }
   }
 </style>

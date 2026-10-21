@@ -135,6 +135,28 @@ test.describe('формат у каждого файла', () => {
     expect(Math.round(box!.width)).toBe(Math.round(list!.width));
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });
+
+  test('телефон: меню не закрывается, когда меняется только высота окна (прячется адресная строка)', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 640 });
+    await openConverter(page, '/');
+    await page.setInputFiles('[data-input]', [fixture('photo.jpg')]);
+    await expect(page.locator('.file[data-status="waiting"]')).toHaveCount(1);
+    await fileRow(page, 'photo.jpg').locator('[data-target-button]').click();
+    await expect(menu(page)).toBeVisible();
+    // ждём само событие resize: обработчик меню подписан раньше и к этому моменту уже отработал
+    const resize = async (width: number, height: number) => {
+      await page.evaluate(() => {
+        (window as unknown as { resized: Promise<unknown> }).resized = new Promise((resolve) => addEventListener('resize', resolve, { once: true }));
+      });
+      await page.setViewportSize({ width, height });
+      await page.evaluate(() => (window as unknown as { resized: Promise<unknown> }).resized);
+    };
+    await resize(360, 560);
+    await expect(menu(page)).toBeVisible();
+    // поворот экрана — строки перестроились, меню закрывается
+    await resize(640, 360);
+    await expect(menu(page)).toBeHidden();
+  });
 });
 
 test.describe('PDF в универсальном виджете', () => {

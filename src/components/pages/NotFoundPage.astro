@@ -22,7 +22,7 @@ const t = UI[locale].notFound;
       <p>{t.text}</p>
       <p><a href={pagePath('home', locale)}>{t.toHome}</a></p>
     </section>
-    <ToolCards locale={locale} toolIds={TOOLS.map((tool) => tool.id)} />
+    <ToolCards locale={locale} toolIds={TOOLS.map((tool) => tool.id)} compact />
   </div>
 </BaseLayout>
 
