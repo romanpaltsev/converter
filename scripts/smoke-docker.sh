@@ -62,8 +62,9 @@ else
 fi
 
 echo "== WASM и ассеты"
-WASM=$(curl -s "$BASE/heic-v-jpg" | grep -o '/_astro/[^"]*\.js' | head -1)
-WORKER=$(curl -s "$BASE$WASM" | grep -o 'convert\.worker-[^"`]*\.js' | head -1)
+# модуль виджета (первый скрипт страницы — тема, обычный скрипт без type)
+WIDGET=$(curl -s "$BASE/heic-v-jpg" | grep -o '<script type="module" src="/_astro/[^"]*\.js"' | grep -o '/_astro/[^"]*\.js' | head -1)
+WORKER=$(curl -s "$BASE$WIDGET" | grep -o 'convert\.worker-[^"`]*\.js' | head -1)
 LIBHEIF=$(docker compose -p "$PROJECT" exec -T web sh -c 'ls /usr/share/nginx/html/_astro/ | grep "^libheif-.*\.wasm$"')
 check "worker найден" ".js" "$WORKER"
 check "worker: CSP" "'wasm-unsafe-eval'" "$(header content-security-policy "$BASE/_astro/$WORKER")"
