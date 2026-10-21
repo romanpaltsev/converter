@@ -16,6 +16,8 @@ const ru = {
     breadcrumbs: 'Навигационная цепочка',
     convert: 'Конвертировать',
     allTools: 'Все инструменты',
+    themeDark: 'Включить тёмную тему',
+    themeLight: 'Включить светлую тему',
     groups: {
       images: 'Изображения',
       photo: 'Обработка фото',
@@ -297,6 +299,8 @@ const en: UiStrings = {
     breadcrumbs: 'Breadcrumbs',
     convert: 'Convert',
     allTools: 'All tools',
+    themeDark: 'Switch to dark theme',
+    themeLight: 'Switch to light theme',
     groups: {
       images: 'Images',
       photo: 'Photo tools',

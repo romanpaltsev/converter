@@ -2,6 +2,7 @@
 // Общий макет всех страниц: <head> с SEO, шапка, основное содержимое, подвал.
 // <main> во всю ширину: страницы сами ставят контейнеры (.container, .container--narrow) — полосы идут от края до края.
 import '../styles/global.css';
+import themeScript from '../lib/theme.js?url';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import SeoHead from '../components/SeoHead.astro';
@@ -25,6 +26,8 @@ const { locale, pageId, title, description, noindex, jsonLd } = Astro.props;
 <html lang={LOCALE_META[locale].htmlLang}>
   <head>
     <SeoHead locale={locale} pageId={pageId} title={title} description={description} noindex={noindex} jsonLd={jsonLd} />
+    {/* тема до первой отрисовки: обычный блокирующий скрипт (module отложен — была бы вспышка другой темы) */}
+    <script is:inline src={themeScript}></script>
   </head>
   <body>
     <a class="skip-link" href="#main">{UI[locale].nav.skipToContent}</a>

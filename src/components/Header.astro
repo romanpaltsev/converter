@@ -1,8 +1,8 @@
 ---
 // Шапка: логотип, меню «Конвертировать ▾» с разделами (как у convertio: «Конвертер аудио» и т. д. со значками,
-// по четыре в ряд — ведут на страницы разделов), справа — Pro и язык.
-// Меню — Popover API (`popovertarget`): открывается, закрывается по Esc и кликом снаружи без JS — на страницах
-// без конвертера скриптов нет. Браузер без Popover меню не показывает (кнопка скрыта), навигация — в подвале.
+// по четыре в ряд — ведут на страницы разделов), справа — Pro, тема «день/ночь» и язык.
+// Меню — Popover API (`popovertarget`): открывается, закрывается по Esc и кликом снаружи без JS (на страницах
+// без конвертера есть только скрипт темы). Браузер без Popover меню не показывает (кнопка скрыта), навигация — в подвале.
 import { SITE_NAME, type Locale } from '../config/site';
 import { getEntry } from 'astro:content';
 import { categoryPageId, pagePath, type PageId } from '../i18n/routes';
@@ -10,6 +10,7 @@ import { UI } from '../i18n/ui';
 import { toolGroups } from '../tools/registry';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import ProButton from './ProButton.astro';
+import ThemeToggle from './ThemeToggle.astro';
 
 interface Props {
   locale: Locale;
@@ -60,6 +61,7 @@ const menu = await Promise.all(
     </nav>
     <div class="header__actions">
       <ProButton />
+      <ThemeToggle locale={locale} />
       <LanguageSwitcher locale={locale} pageId={pageId} />
     </div>
   </div>

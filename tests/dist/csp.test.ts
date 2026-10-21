@@ -27,13 +27,22 @@ describe('сборка: совместимость со строгим CSP', () 
     for (const url of resources) expect(url, `${file}: ${url}`).toMatch(/^\/(?!\/)/);
   });
 
-  test('клиентский JS только на страницах с конвертером (инструменты и главная), WASM в HTML не подключается', () => {
+  test('JS: на каждой странице — скрипт темы в <head>, на страницах с конвертером — ещё модуль виджета; WASM в HTML не подключается', () => {
     expect(pages.filter((file) => WIDGET_PAGES.includes(file)).sort()).toEqual([...WIDGET_PAGES].sort());
     for (const file of pages) {
       const { raw, doc } = readHtml(file);
-      const scripts = doc.querySelectorAll('script[src]');
-      if (WIDGET_PAGES.includes(file)) expect(scripts.length, file).toBe(1);
-      else expect(scripts, `на ${file} не должно быть JS`).toHaveLength(0);
+      // тема — обычный (не module, без defer/async) скрипт до стилей: ставит data-theme до первой отрисовки
+      const head = doc.querySelector('head')!;
+      const theme = head.querySelector('script[src]');
+      expect(theme?.getAttribute('src'), file).toMatch(/^\/_astro\/theme\.[\w-]+\.js$/);
+      for (const attr of ['type', 'defer', 'async']) expect(theme!.hasAttribute(attr), `${file}: ${attr}`).toBe(false);
+      const order = head.querySelectorAll('script[src], link[rel="stylesheet"]');
+      expect(order[0], file).toBe(theme);
+      const others = doc.querySelectorAll('script[src]').filter((script) => script !== theme);
+      expect(
+        others.map((script) => script.getAttribute('type')),
+        `${file}: кроме темы — только модуль виджета и только на страницах с конвертером`,
+      ).toEqual(WIDGET_PAGES.includes(file) ? ['module'] : []);
       expect(raw).not.toMatch(/\.wasm/);
     }
   });

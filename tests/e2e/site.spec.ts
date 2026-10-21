@@ -171,6 +171,108 @@ test.describe('меню «Конвертировать» (Popover API)', () => {
   });
 });
 
+test.describe('тема «день/ночь»', () => {
+  const toggle = (page: Page) => page.getByRole('banner').locator('[data-theme-toggle]');
+  const theme = (page: Page) => page.evaluate(() => document.documentElement.dataset.theme);
+  const saved = (page: Page) => page.evaluate(() => localStorage.getItem('theme'));
+  const background = (page: Page) => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  const themeColors = (page: Page) => page.locator('meta[name="theme-color"]').evaluateAll((list) => list.map((meta) => meta.getAttribute('content')));
+
+  test('без выбора — системная тема и следует за её сменой', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await page.goto('/licenses');
+    expect(await theme(page)).toBe('dark');
+    await expect(toggle(page)).toHaveAccessibleName('Включить светлую тему');
+    await page.emulateMedia({ colorScheme: 'light' });
+    await expect.poll(() => theme(page)).toBe('light');
+    await expect(toggle(page)).toHaveAccessibleName('Включить тёмную тему');
+    expect(await background(page)).toBe('rgb(255, 255, 255)');
+  });
+
+  test('кнопка переключает тему, выбор запоминается; совпал с системным — снова «как в системе»', async ({ page }) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.goto('/heic-v-jpg');
+    await toggle(page).click();
+    expect(await theme(page)).toBe('dark');
+    expect(await saved(page)).toBe('dark');
+    expect(await background(page)).toBe('rgb(11, 12, 16)');
+    expect(await themeColors(page)).toEqual(['#14161c', '#14161c']);
+    await expect(toggle(page)).toHaveAccessibleName('Включить светлую тему');
+    // на другой странице и после смены системной темы — выбранная
+    await page.goto('/en/licenses');
+    expect(await theme(page)).toBe('dark');
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await page.emulateMedia({ colorScheme: 'light' });
+    expect(await theme(page)).toBe('dark');
+    await expect(toggle(page)).toHaveAccessibleName('Switch to light theme');
+    // обратно в светлую = системную: выбор не хранится
+    await toggle(page).click();
+    expect(await theme(page)).toBe('light');
+    expect(await saved(page)).toBeNull();
+    expect(await themeColors(page)).toEqual(['#ffffff', '#ffffff']);
+  });
+
+  test('светлая при тёмной системе; выбор в одной вкладке применяется в другой', async ({ page, context }) => {
+    await page.emulateMedia({ colorScheme: 'dark' });
+    await page.goto('/');
+    const other = await context.newPage();
+    await other.emulateMedia({ colorScheme: 'dark' });
+    await other.goto('/contacts');
+    await toggle(page).click();
+    expect(await saved(page)).toBe('light');
+    expect(await background(page)).toBe('rgb(255, 255, 255)');
+    await expect.poll(() => theme(other)).toBe('light');
+    expect(await other.evaluate(() => getComputedStyle(document.documentElement).colorScheme)).toBe('light');
+  });
+
+  test('страница из кэша «назад/вперёд» берёт тему, выбранную на другой странице', async ({ page }) => {
+    await page.goto('/licenses');
+    expect(await theme(page)).toBe('light');
+    // в кэше «назад/вперёд» событий storage нет — тема сверяется при показе страницы
+    await page.evaluate(() => {
+      localStorage.setItem('theme', 'dark');
+      dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true }));
+    });
+    expect(await theme(page)).toBe('dark');
+  });
+
+  test('клавиатура: кнопка в порядке Tab перед переключателем языка', async ({ page }) => {
+    await page.goto('/licenses');
+    await toggle(page).focus();
+    await page.keyboard.press('Tab');
+    await expect(page.getByRole('link', { name: 'English' })).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await page.keyboard.press('Enter');
+    expect(await theme(page)).toBe('dark');
+    await page.keyboard.press('Space');
+    expect(await theme(page)).toBe('light');
+  });
+
+  test('телефон 360×640: кнопка темы и значок языка в шапке без горизонтальной прокрутки', async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 640 });
+    for (const path of ['/', '/en/']) {
+      await page.goto(path);
+      await expect(toggle(page)).toBeVisible();
+      const language = page.getByRole('banner').getByRole('link', { name: path === '/' ? 'English' : 'Русский' });
+      const [button, link] = [await toggle(page).boundingBox(), await language.boundingBox()];
+      expect(button!.x + button!.width).toBeLessThan(link!.x);
+      expect(link!.x + link!.width).toBeLessThanOrEqual(360);
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    }
+  });
+
+  test.describe('без JavaScript', () => {
+    test.use({ javaScriptEnabled: false });
+
+    test('кнопки нет, тема — системная', async ({ page }) => {
+      await page.emulateMedia({ colorScheme: 'dark' });
+      await page.goto('/licenses');
+      await expect(toggle(page)).toBeHidden();
+      await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(11, 12, 16)');
+    });
+  });
+});
+
 test.describe('страницы разделов', () => {
   test('«Конвертер аудио»: хлебные крошки, конвертер принимает аудио и видео, карточки ведут на инструменты раздела', async ({ page }) => {
     await openConverter(page, '/konverter-audio');

@@ -4633,6 +4633,8 @@
 | `nav.breadcrumbs` | Навигационная цепочка | Breadcrumbs |
 | `nav.convert` | Конвертировать | Convert |
 | `nav.allTools` | Все инструменты | All tools |
+| `nav.themeDark` | Включить тёмную тему | Switch to dark theme |
+| `nav.themeLight` | Включить светлую тему | Switch to light theme |
 | `nav.groups.images` | Изображения | Images |
 | `nav.groups.photo` | Обработка фото | Photo tools |
 | `nav.groups.pdf` | PDF | PDF |

@@ -1,5 +1,6 @@
 /* Глобальные стили: шрифт, токены темы, типографика, общие примитивы (карточки, кнопки-ссылки).
-   Тема — по prefers-color-scheme. Контраст текста и элементов управления — не ниже WCAG AA (проверяет axe в e2e).
+   Тема — по prefers-color-scheme или выбору пользователя (кнопка в шапке, lib/theme.js). Контраст текста
+   и элементов управления — не ниже WCAG AA (проверяет axe в e2e).
    Компоновка — в духе convertio (решение владельца 20.10.2026): белая шапка, графитовая зона загрузки, серые полосы,
    тёмный подвал; акцент — индиго. */
 
@@ -71,8 +72,11 @@
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
+/* Тёмная тема — два одинаковых блока (их совпадение проверяет unit-тест theme.test.ts): без JS — по системе,
+   с JS lib/theme.js ставит data-theme на <html> до отрисовки — выбор пользователя или системную тему. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]) {
+    color-scheme: dark;
     --bg: #0b0c10;
     --surface: #14161c;
     --surface-muted: #181a21;
@@ -102,6 +106,49 @@
     --panel-pattern: rgb(255 255 255 / 3%);
     --footer-bg: #07080b;
   }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0b0c10;
+  --surface: #14161c;
+  --surface-muted: #181a21;
+  --surface-strong: #24272f;
+  --text: #eceef2;
+  --muted: #a0a6b4;
+  --border: #262932;
+  --border-strong: #3a3e4a;
+  --accent: #a5b4fc;
+  --accent-hover: #c7d2fe;
+  --accent-text: #0d0f24;
+  --accent-soft: #1d2040;
+  --accent-ring: rgb(165 180 252 / 22%);
+  --success: #6fd39d;
+  --success-soft: #13291d;
+  --warning-bg: #3a2c0c;
+  --warning-text: #f3cf86;
+  --error: #ff9b91;
+  --error-bg: #3b1714;
+  --focus: #c7d2fe;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
+  --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 4px 12px -2px rgb(0 0 0 / 30%);
+  --shadow-lg: 0 1px 0 rgb(255 255 255 / 4%) inset, 0 16px 40px -12px rgb(0 0 0 / 60%);
+  --header-bg: #14161c;
+  --band: #111318;
+  --panel: #1d2027;
+  --panel-pattern: rgb(255 255 255 / 3%);
+  --footer-bg: #07080b;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+/* смена темы кнопкой — без переходов (theme.js): иначе часть элементов меняет цвет плавно, а фон — сразу */
+:root[data-theme-switching] *,
+:root[data-theme-switching] *::before,
+:root[data-theme-switching] *::after {
+  transition: none !important;
 }
 
 *,

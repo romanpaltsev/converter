@@ -1,0 +1,67 @@
+---
+// Кнопка «день/ночь» в шапке, перед переключателем языка. Тему переключает и запоминает lib/theme.js (подключён
+// в <head>, BaseLayout); он же ставит подпись-действие. Без JS кнопка скрыта — тема следует за системой.
+import type { Locale } from '../config/site';
+import { UI } from '../i18n/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const t = UI[Astro.props.locale].nav;
+---
+
+<button
+  type="button"
+  class="theme-toggle"
+  data-theme-toggle
+  data-label-dark={t.themeDark}
+  data-label-light={t.themeLight}
+  aria-label={t.themeDark}
+  title={t.themeDark}
+></button>
+
+<style>
+  /* как переключатель языка: квадратная «плашка» со значком; data-theme на <html> ставит theme.js до отрисовки */
+  .theme-toggle {
+    display: none;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-small);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    color: var(--muted);
+    cursor: pointer;
+    transition:
+      border-color 0.2s var(--ease),
+      color 0.2s var(--ease);
+  }
+
+  :global(:root[data-theme]) .theme-toggle {
+    display: inline-flex;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--border-strong);
+    color: var(--text);
+  }
+
+  /* значок — тема, которая включится: в светлой луна, в тёмной солнце */
+  .theme-toggle::before {
+    content: '';
+    width: 18px;
+    height: 18px;
+    background: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M20.5 12.5A8.5 8.5 0 1 1 11.5 3.5a6.5 6.5 0 0 0 9 9Z' fill='none' stroke='black' stroke-width='1.8' stroke-linejoin='round'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+
+  :global(:root[data-theme='dark']) .theme-toggle::before {
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round'%3E%3Ccircle cx='12' cy='12' r='4'/%3E%3Cpath d='M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.64 5.64 7.4 7.4M16.6 16.6l1.76 1.76M5.64 18.36 7.4 16.6M16.6 7.4l1.76-1.76'/%3E%3C/svg%3E");
+  }
+</style>
